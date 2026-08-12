@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>text-to-ui · Component Gallery</title>
+    <style>
+      :root { color-scheme: light; }
+      * { box-sizing: border-box; }
+      html { min-width: 1100px; background: var(--color-bg-subtle); }
+      body { min-width: 1100px; min-height: 720px; margin: 0; color: var(--color-text); background: var(--color-bg-subtle); font-family: var(--font-sans); font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); }
+      button, input { font: inherit; }
+      .gallery-shell { min-height: 100vh; display: grid; grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr); }
+      .gallery-sidebar { position: sticky; top: 0; height: 100vh; overflow: auto; padding: var(--space-6) var(--space-3); border-right: var(--layout-navigation-divider-width) solid var(--color-border); background: var(--color-sidebar-bg); }
+      .gallery-brand { height: var(--height-button); display: flex; align-items: center; gap: var(--gap-titlebar-brand); padding: 0 var(--space-3); margin-bottom: var(--space-6); font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
+      .gallery-brand__mark { width: var(--icon-size-lg); height: var(--icon-size-lg); display: grid; place-items: center; flex: 0 0 var(--icon-size-lg); border-radius: var(--radius-2); color: var(--color-primary-text); background: var(--color-primary); font-size: var(--type-caption-l-size); font-weight: var(--type-caption-l-weight); }
+      .gallery-nav { display: grid; gap: var(--gap-list-item); }
+      .gallery-nav a { min-height: var(--height-list-item); display: flex; align-items: center; gap: var(--gap-menu-item-content); padding: 0 var(--space-3); border-radius: var(--radius-sidebar-nav-item); color: var(--color-text-muted); text-decoration: none; }
+      .gallery-nav a:hover { background: var(--color-sidebar-accent); color: var(--color-text-muted); }
+      .gallery-nav a[aria-current="page"] { color: var(--color-sidebar-selected-text); background: var(--color-sidebar-selected); }
+      .gallery-nav a[aria-current="page"]::before { color: currentColor; }
+      .gallery-nav__label { margin: var(--space-6) var(--space-3) var(--space-2); color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); font-weight: var(--type-caption-l-weight); }
+      .gallery-main { min-width: 0; }
+      .gallery-titlebar { position: sticky; top: 0; z-index: 2; height: var(--height-titlebar-lg); display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); padding: 0 var(--space-6); border-bottom: var(--layout-navigation-divider-width) solid var(--color-border); background: color-mix(in srgb, var(--color-bg-subtle) 92%, transparent); backdrop-filter: blur(18px); }
+      .gallery-titlebar h1 { margin: 0; font-size: var(--type-title-s-size); line-height: var(--type-title-s-leading); font-weight: var(--type-title-s-weight); }
+      .gallery-titlebar__actions { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .gallery-content { width: min(1440px, 100%); padding: var(--space-6); }
+      .gallery-intro { display: grid; gap: var(--space-2); margin-bottom: var(--space-7); }
+      .gallery-intro h2 { margin: 0; font-size: var(--type-title-l-size); line-height: var(--type-title-l-leading); font-weight: var(--type-title-l-weight); }
+      .gallery-intro p { max-width: 960px; margin: 0; color: var(--color-text-muted); }
+      .gallery-surface { display: grid; gap: var(--space-5); padding: var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); }
+      .gallery-surface__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-6); }
+      .gallery-surface__head h3 { margin: 0; font-size: var(--type-subtitle-l-size); line-height: var(--type-subtitle-l-leading); font-weight: var(--type-subtitle-l-weight); }
+      .gallery-surface__head span { color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); font-weight: var(--type-caption-l-weight); }
+      .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+      .gallery-card { min-width: 0; display: grid; align-content: start; gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); }
+      .gallery-card[data-component-card="button"] { grid-column: 1 / -1; }
+      .gallery-card h4 { margin: 0; font-size: var(--type-title-s-size); line-height: var(--type-title-s-leading); font-weight: var(--type-title-s-weight); }
+      .gallery-card__note { margin: 0; color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); }
+      .gallery-card__stack { display: grid; gap: var(--space-3); }
+      .gallery-card__surface { min-width: 0; padding: var(--space-5); border-radius: var(--radius-3); background: transparent; }
+      .gallery-card__surface > .tui-sidebar { max-width: 100%; }
+      .gallery-card__surface > .tui-list-card { max-width: 100%; }
+      .framework-label { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text-muted); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); }
+      .framework-label::before { width: var(--size-2); height: var(--size-2); border-radius: var(--radius-full); background: var(--color-success); content: ""; }
+      .coverage { width: 100%; border-collapse: collapse; }
+      .coverage th, .coverage td { padding: var(--space-3); border-bottom: 1px solid var(--color-border); text-align: start; vertical-align: middle; }
+      .coverage th { color: var(--color-text-subtle); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); font-weight: var(--type-body-m-weight); }
+      .coverage td { font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); }
+      .coverage code { padding: 2px 6px; border-radius: var(--radius-1); color: var(--color-text-muted); background: var(--color-bg-subtle); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-caption-l-size); }
+      .coverage-status { display: inline-flex; align-items: center; min-height: var(--height-button-sm); padding-inline: var(--space-2); border-radius: var(--radius-full); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); font-weight: var(--type-caption-l-weight); }
+      .coverage-status--ready { color: var(--color-success); background: var(--color-success-subtle); }
+      .coverage-status--pending { color: var(--color-text-subtle); background: var(--color-bg-subtle); }
+      .status { min-height: var(--type-body-l-leading); margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .canonical-preview { display: grid; gap: var(--space-4); }
+      .canonical-preview__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); }
+      .canonical-preview__head strong { font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
+      .canonical-preview__head a { color: var(--color-brand-100); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .canonical-preview iframe { width: 100%; height: 1160px; border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-bg-subtle); }
+      /* The canonical visual baseline is a content surface, not a card inside
+         another card. Keep its frame flush with the surrounding surface so a
+         second grey outline is not mistaken for part of the design. */
+      .canonical-preview iframe.contract-visual-frame { height: 1500px; border: 0; border-radius: 0; box-shadow: none; background: var(--color-surface); }
+      .gallery-view { display: grid; gap: var(--space-6); }
+      .gallery-view[hidden] { display: none; }
+      .gallery-mode-switch { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-2); background: var(--color-bg-subtle); }
+      .gallery-mode-switch button { min-height: var(--height-button); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-2); color: var(--color-text-muted); background: transparent; cursor: pointer; font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); }
+      .gallery-mode-switch button[aria-selected="true"] { color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-1); }
+      .gallery-mode-switch button:focus-visible { outline: 2px solid var(--color-brand-100); outline-offset: 2px; }
+      .gallery-view__intro { display: grid; gap: var(--space-2); }
+      .gallery-view__intro h3 { margin: 0; font-size: var(--type-title-m-size); line-height: var(--type-title-m-leading); font-weight: var(--type-title-m-weight); }
+      .gallery-view__intro p { max-width: 960px; margin: 0; color: var(--color-text-muted); }
+      .gallery-view__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .gallery-view__meta code { padding: 2px 6px; border-radius: var(--radius-1); color: var(--color-text-muted); background: var(--color-bg-subtle); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-caption-l-size); }
+      .runtime-framework-note { max-width: 960px; margin: 0; color: var(--color-text-muted); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); }
+      .runtime-framework-note[hidden] { display: none; }
+      .tui-runtime-framework-switch button:disabled { color: var(--color-text-subtle); background: transparent; cursor: not-allowed; opacity: .58; }
+      .tui-runtime-framework-switch button:disabled:focus-visible { outline: 1px solid var(--color-border); }
+      .runtime-directory { gap: var(--space-5); }
+      .runtime-framework-summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .runtime-framework-summary > span { display: inline-flex; align-items: center; gap: var(--space-2); }
+      .runtime-framework-summary > span::before { width: var(--size-2); height: var(--size-2); border-radius: var(--radius-full); background: var(--color-warning); content: ""; }
+      .runtime-framework-summary > .runtime-framework-summary__ready::before { background: var(--color-success); }
+      .runtime-framework-summary strong { color: var(--color-text); font-weight: var(--type-body-l-weight); }
+      .tui-runtime-core-card { grid-column: 1 / -1; }
+      .tui-runtime-core-card > header { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--space-3); }
+      .tui-runtime-core-card > header p { grid-column: 1 / -1; margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .tui-runtime-core-card > .tui-generated-gallery__preview { min-height: 0; }
+      .tui-runtime-core-card .tui-button-gallery { padding: var(--space-2); }
+      .tui-runtime-core-card .tui-input, .tui-runtime-core-card .tui-search { max-width: 520px; }
+      .tui-runtime-core-card .tui-sidebar { max-width: 520px; }
+      .tui-runtime-core-card .tui-list-card { max-width: 680px; }
+      .regression-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+      .regression-card { display: grid; align-content: start; gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); }
+      .regression-card h3 { margin: 0; font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
+      .regression-card p { margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .regression-card a { color: var(--color-brand-100); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      .regression-card--wide { grid-column: 1 / -1; }
+      .regression-details { display: grid; gap: var(--space-4); }
+      .regression-details summary { width: fit-content; color: var(--color-brand-100); cursor: pointer; font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+      @media (max-width: 1100px) { .gallery-content { padding: var(--space-5); } .gallery-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="gallery-shell">
+      <aside class="gallery-sidebar" aria-label="组件预览导航">
+        <div class="gallery-brand"><span class="gallery-brand__mark">T</span><span>Text to UI</span></div>
+        <div class="gallery-nav__label">主要预览</div>
+        <nav class="gallery-nav">
+          <a href="#contract-view" data-view-link="contract" aria-current="page">◇ 契约组件 · 看样子</a>
+          <a href="#runtime-view" data-view-link="runtime">▣ 原生组件</a>
+        </nav>
+        <div class="gallery-nav__label">工程回归</div>
+        <nav class="gallery-nav">
+          <a href="#regression-view" data-view-link="regression">▤ 回归资料 · 开发查看</a>
+          <a href="/legacy-skill/preview/component-gallery.html#primary-navigation-shell" data-legacy-path="preview/component-gallery.html#primary-navigation-shell">主导航壳原稿</a>
+          <a href="/legacy-skill/preview/component-gallery.html#three-pane-list-detail-shell" data-legacy-path="preview/component-gallery.html#three-pane-list-detail-shell">三栏列表详情原稿</a>
+          <a href="/legacy-skill/preview/component-gallery.html#feedback" data-legacy-path="preview/component-gallery.html#feedback">提示与反馈原稿</a>
+        </nav>
+      </aside>
+      <main class="gallery-main">
+        <header class="gallery-titlebar"><h1>组件预览</h1><div class="gallery-titlebar__actions"><span>画布基线</span><strong>HarmonyOS PC · 1728 × 1152</strong></div></header>
+        <div class="gallery-content">
+          <section class="gallery-intro"><h2>HarmonyOS PC 组件包预览</h2><p>这里分成两个主要入口：<strong>契约组件 · 看样子</strong>只确认唯一的完整视觉基线、结构和 Token；<strong>原生组件</strong>用于体验真实 HTML / React / Vue 实现。工程回归区只放覆盖矩阵和维护资料。</p><div class="gallery-mode-switch" role="tablist" aria-label="预览模式"><button type="button" data-view-tab="contract" role="tab" aria-selected="true">契约组件 · 看样子</button><button type="button" data-view-tab="runtime" role="tab" aria-selected="false">原生组件</button></div></section>
+          <section class="gallery-view" id="contract-view" data-view="contract" aria-labelledby="contract-view-title">
+            <div class="gallery-view__intro"><h3 id="contract-view-title">契约组件 · 看样子</h3><p>这里现在只有一份视觉契约：直接展示旧 Skill 已验收的完整视觉基线。已独立实现的组件与待迁移组件不再拆成两套样例，所有尺寸、状态、布局、Token 和交互说明都以这份全量基线为准。</p><div class="gallery-view__meta"><span class="framework-label">50 个当前登记组件 · 旧 Skill 历史基线保留 56 项</span><code>visualAuthority: skill-canonical</code></div></div>
+            <section class="gallery-surface canonical-contract" id="contract-visual-baseline" aria-labelledby="contract-visual-baseline-title">
+              <div class="gallery-surface__head"><h3 id="contract-visual-baseline-title">契约视觉基线 · 全量</h3><span class="framework-label">旧 Skill 全量视觉原稿 · 唯一视觉来源</span></div>
+              <p class="status">这不是第二个组件包，也不是缩水版样例，而是原 Skill 的完整 1728 × 1152 视觉基线。组件包的三框架实现必须逐项对齐这里的结构、样式、状态和 Token。</p>
+              <div class="canonical-preview">
+                <div class="canonical-preview__head"><strong>HarmonyOS PC · 完整组件与 Pattern 视觉基线</strong><a href="/legacy-skill/preview/component-gallery.html" data-legacy-path="preview/component-gallery.html" target="_blank" rel="noreferrer">单独打开完整基线</a></div>
+                <iframe class="contract-visual-frame" title="旧 Skill 全量视觉基线" data-legacy-lazy="true" data-legacy-path="preview/component-gallery.html?embedded=contract&rev=20260807-1"></iframe>
+              </div>
+            </section>
+          </section>
+          <section class="gallery-view" id="runtime-view" data-view="runtime" aria-labelledby="runtime-view-title" hidden>
+            <div class="gallery-view__intro"><h3 id="runtime-view-title">原生组件</h3><p>这里直接展示真实的 HTML、React、Vue 组件。框架选择是一级目录里的单元切换，不跳转二级页面；三种框架共用契约顺序、Fixture、卡片结构和 Token。目录只展示结构性 Variant，Hover、Pressed、Focus、Open 等状态由鼠标或键盘实际触发。</p><div class="gallery-view__meta"><span class="framework-label" id="runtime-coverage-count">50 registered · 0 verified · 50 partial</span><code>契约顺序 → Fixture → 同页原生组件</code><span>契约视觉基线仍是唯一视觉来源</span></div><div class="tui-runtime-framework-switch" role="tablist" aria-label="选择原生组件框架"><button type="button" role="tab" data-runtime-framework="html" aria-selected="true">HTML</button><button type="button" role="tab" data-runtime-framework="react" aria-selected="false" aria-describedby="runtime-framework-note">React</button><button type="button" role="tab" data-runtime-framework="vue" aria-selected="false" aria-describedby="runtime-framework-note">Vue</button></div><p id="runtime-framework-note" class="runtime-framework-note" hidden>直接打开文件时仅提供 HTML 静态 fallback；React、Vue 需要通过 HTTP 开发服务器打开本页。</p></div>
+            <section class="gallery-surface runtime-directory" id="runtime-directory" aria-labelledby="runtime-directory-title">
+            <div class="gallery-surface__head"><h3 id="runtime-directory-title">原生组件目录 · 50 个</h3><span class="framework-label">每个组件对应一个 logicalName</span></div>
+              <div class="runtime-framework-summary" id="runtime-framework-summary" aria-label="三框架覆盖状态"></div>
+              <p class="status">当前选择的框架会在这组一级目录卡片中直接渲染；视觉章节和组件顺序严格跟随左侧契约页，可按相同位置逐项对比。业务分类与注册表顺序只用于代码组织，工程来源、Ready 判定和差异数据请在“工程回归”查看。</p>
+              <div data-component-mount="component-catalog" aria-live="polite"></div>
+              <p class="status" id="gallery-status" aria-live="polite">准备就绪</p>
+            </section>
+          </section>
+          <section class="gallery-view" id="regression-view" data-view="regression" aria-labelledby="regression-view-title" hidden>
+            <div class="gallery-view__intro"><h3 id="regression-view-title">工程回归资料</h3><p>这一层只给维护者使用：旧 Skill 视觉原稿、覆盖矩阵和迁移资料都放在这里，避免干扰日常查看契约样式和原生组件。</p></div>
+            <div class="regression-grid">
+              <article class="regression-card"><h3>旧 Skill 视觉回归源</h3><p>完整视觉基线已经在“契约组件 · 看样子”中作为唯一来源展示；这里仅保留维护入口。</p><a href="/legacy-skill/preview/component-gallery.html" data-legacy-path="preview/component-gallery.html" target="_blank" rel="noreferrer">在新窗口打开完整画廊</a></article>
+              <article class="regression-card"><h3>三框架原生组件调试样例</h3><p>这里保留少量 React / Vue / HTML 切换样例，仅用于开发调试；日常查看请使用“原生组件 · 看组件”的完整 50 项目录。</p><a href="/legacy-skill/preview/framework-component-contract/preview.html" data-legacy-path="preview/framework-component-contract/preview.html" target="_blank" rel="noreferrer">打开调试样例</a></article>
+              <article class="regression-card"><h3>迁移说明</h3><p>组件包源码位于 packages；契约位于 component-contracts；Pixso 只保存逻辑映射，运行时重新解析 NewComponents。</p><a href="../../docs/component-architecture.md" target="_blank" rel="noreferrer">查看组件架构文档</a></article>
+              <article class="regression-card regression-card--wide" id="coverage" aria-labelledby="coverage-title"><div class="gallery-surface__head"><h3 id="coverage-title">组件覆盖矩阵</h3><span>契约、三框架适配与 Pixso 逻辑映射</span></div><table class="coverage"><thead><tr><th>逻辑组件</th><th>HTML</th><th>React</th><th>Vue</th><th>Pixso</th></tr></thead><tbody id="coverage-body"></tbody></table></article>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <button id="show-toast" type="button" hidden>提示</button><div id="toast" hidden></div>
+    <script>
+      // The gallery is also opened directly from the filesystem during review.
+      // Resolve copied legacy assets differently for file:// and the Vite server.
+      (() => {
+        const prefix = location.protocol === "file:" ? "./public/legacy-skill/" : "/legacy-skill/";
+        const resolveLegacy = (element) => new URL(prefix + element.dataset.legacyPath, document.baseURI).href;
+        window.__loadLegacyFrames = () => {
+          document.querySelectorAll("[data-legacy-lazy][data-legacy-path]").forEach((element) => {
+            if (!element.getAttribute("src")) element.setAttribute("src", element.dataset.legacyResolved || resolveLegacy(element));
+          });
+        };
+        document.querySelectorAll("[data-legacy-path]").forEach((element) => {
+          element.dataset.legacyResolved = resolveLegacy(element);
+          if (element.hasAttribute("data-legacy-lazy")) return;
+          element.setAttribute("src" in element ? "src" : "href", element.dataset.legacyResolved);
+        });
+      })();
+    </script>
+    <script>
+      // Keep primary navigation usable even when a browser refuses to execute
+      // the ES module entry from file:// (for example, due to local MIME/CORS
+      // rules). The module repeats this state sync after it loads, while this
+      // small fallback makes hash navigation deterministic on its own.
+      (() => {
+        const aliases = {
+          "contract-view": "contract",
+          "runtime-view": "runtime",
+          "regression-view": "regression",
+          "contract-components": "contract",
+          "all-components": "contract",
+          "framework-runtime": "runtime",
+          "legacy-catalog": "regression",
+          "skill-baseline": "regression",
+          coverage: "regression"
+        };
+        const views = [...document.querySelectorAll("[data-view]")];
+        const links = [...document.querySelectorAll("[data-view-link]")];
+        const tabs = [...document.querySelectorAll("[data-view-tab]")];
+        const setView = (requested) => {
+          const alias = aliases[requested] ?? requested;
+          const view = ["contract", "runtime", "regression"].includes(alias) ? alias : "contract";
+          views.forEach((section) => { section.hidden = section.dataset.view !== view; });
+          links.forEach((link) => {
+            if (link.dataset.viewLink === view) link.setAttribute("aria-current", "page");
+            else link.removeAttribute("aria-current");
+          });
+          tabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.viewTab === view)));
+          if (view === "contract") window.__loadLegacyFrames?.();
+        };
+        const sync = () => setView(location.hash.slice(1));
+        links.forEach((link) => link.addEventListener("click", () => setTimeout(sync, 0)));
+        tabs.forEach((tab) => tab.addEventListener("click", () => {
+          const view = tab.dataset.viewTab;
+          if (location.hash !== `#${view}-view`) history.replaceState(null, "", `#${view}-view`);
+          setView(view);
+        }));
+        window.addEventListener("hashchange", sync);
+        sync();
+
+        // A file:// page cannot execute the React/Vue module graph. Make the
+        // limitation explicit before the module entry gets a chance to load,
+        // so the controls never look interactive while doing nothing.
+        if (location.protocol === "file:") {
+          const runtimeButtons = [...document.querySelectorAll("[data-runtime-framework]")]
+            .filter((element) => element.matches("button"));
+          runtimeButtons.forEach((button) => {
+            const isHtml = button.dataset.runtimeFramework === "html";
+            button.disabled = !isHtml;
+            button.setAttribute("aria-disabled", String(!isHtml));
+            if (!isHtml) {
+              button.title = "直接打开文件时仅提供 HTML 静态 fallback；请使用 HTTP 开发服务器查看真实 React/Vue。";
+            }
+          });
+          const note = document.querySelector("#runtime-framework-note");
+          if (note) note.hidden = false;
+          const runtimeStatus = document.querySelector("#gallery-status");
+          if (runtimeStatus) runtimeStatus.textContent = "HTML 静态 fallback 已加载；React/Vue 已禁用，请使用 HTTP 开发服务器验收三框架。";
+        }
+      })();
+    </script>
+    <script src="./runtime-file-fallback.js?rev=20260810-4"></script>
+    <script type="module" src="./preview.js?rev=20260810-26"></script>
+  </body>
+</html>

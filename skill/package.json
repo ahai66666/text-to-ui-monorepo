@@ -1,0 +1,29 @@
+{
+  "name": "text-to-ui-skill",
+  "version": "1.4.0",
+  "private": true,
+  "description": "Local dependencies used by the Text to UI component and icon system.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "colors:audit": "node scripts/audit-core-colors.mjs",
+    "tokens:dual-output:build": "node scripts/build-pixso-token-manifest.mjs --write && node scripts/build-token-runtime-map.mjs && node scripts/build-dual-output-token-map.mjs --write",
+    "tokens:dual-output:check": "node scripts/build-pixso-token-manifest.mjs --check && node scripts/build-token-runtime-map.mjs --check && node scripts/build-dual-output-token-map.mjs --check",
+    "icons:search": "node scripts/search-lucide-icons.mjs",
+    "icons:export": "node scripts/export-icon-sprite.mjs",
+    "icons:prepare-pixso": "node scripts/prepare-pixso-html.mjs",
+    "icons:audit": "node scripts/audit-icons.mjs --strict",
+    "pixso:components:build": "node scripts/build-pixso-component-specs.mjs",
+    "pixso:components:check": "node scripts/build-pixso-component-specs.mjs --check && node scripts/validate-pixso-component-specs.mjs",
+    "pixso:components:validate": "node scripts/validate-pixso-component-registry.mjs && node scripts/validate-pixso-component-specs.mjs && node scripts/validate-harmonyos-component-adapter-map.mjs && node scripts/validate-pixso-component-migration.mjs",
+    "pixso:components:adapters:validate": "node scripts/validate-harmonyos-component-adapter-map.mjs && node scripts/validate-pixso-component-migration.mjs",
+    "framework:components:test": "node scripts/validate-framework-component-adapter-map.mjs && node scripts/test-framework-component-contract.mjs && node scripts/validate-framework-component-runtime.mjs && node scripts/validate-framework-component-runtime.mjs --negative-layout-test",
+    "page-spec:validate": "node scripts/validate-page-spec.mjs",
+    "page-contract:validate": "node scripts/validate-page-contract.mjs",
+    "page-contract:test": "node scripts/test-validate-page-contract.mjs",
+    "page-contract:stamp": "node scripts/stamp-page-contract.mjs",
+    "dual-output:validate": "node scripts/validate-dual-output.mjs"
+  },
+  "dependencies": {
+    "lucide": "1.24.0"
+  }
+}

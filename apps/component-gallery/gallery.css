@@ -1,0 +1,2 @@
+/* Gallery-shell rules only. Canonical component and runtime CSS are imported
+   as module dependencies by preview.js so Vite emits a self-contained bundle. */

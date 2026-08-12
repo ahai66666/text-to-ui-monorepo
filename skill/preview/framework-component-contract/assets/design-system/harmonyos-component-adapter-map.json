@@ -1,0 +1,457 @@
+{
+  "schemaVersion": 2,
+  "sourceLibrary": "HarmonyOS Component Library",
+  "sourcePage": "NewComponents",
+  "targetLibrary": "鸿蒙客户端设计规范",
+  "policy": {
+    "componentSetsAreSourceOnly": false,
+    "registeredTargetsRemainStandaloneUntilTakeoverGate": true,
+    "verifiedComponentSetVariantsMayBecomeActiveProviders": true,
+    "nativeDeletionByCodex": false,
+    "migrationRegistry": "assets/design-system/pixso-component-migration.json",
+    "resolveSourceByExactNameAndAxes": true,
+    "persistSourceGuids": false,
+    "copyStructureBeforeBinding": true,
+    "forbidIconFontsInTargets": true,
+    "requireTextStyles": true,
+    "requireVariableBindings": true,
+    "partialCoverageAllowed": true,
+    "strictParityRequiresEveryUsedTargetVerified": true,
+    "coverageArtifact": "assets/design-system/harmonyos-component-mapping-table.json"
+  },
+  "surfaceSemantics": {
+    "whiteContext": "On a white canvas, use the subtle gray control surface.",
+    "grayContext": "On a gray canvas, use the white control surface.",
+    "nativeGraySceneOn": "Maps to the target Gray Surface context because the native control itself is white.",
+    "nativeGraySceneOff": "Maps to the target White Surface context because the native control itself is subtle gray."
+  },
+  "adapters": [
+    {
+      "source": {
+        "componentSet": "Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Primary" }
+      },
+      "target": "Button/Primary/Default",
+      "reuse": "component-set-variant-candidate",
+      "takeoverStatus": "adapting",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "tokens": {
+        "background": "brand/100",
+        "content": "neutral-light/100",
+        "height": "size/40",
+        "radius": "radius/08",
+        "paddingX": "space/5"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Secondary" }
+      },
+      "target": "Button/Secondary/Default",
+      "reuse": "component-set-variant-candidate",
+      "takeoverStatus": "adapting",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/90",
+        "height": "size/40",
+        "radius": "radius/08",
+        "paddingX": "space/5"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+      },
+      "target": "Button/Ghost/Default",
+      "reuse": "component-set-variant-candidate",
+      "takeoverStatus": "adapting",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "tokens": {
+        "content": "brand/100",
+        "height": "size/40",
+        "radius": "radius/08",
+        "paddingX": "space/5"
+      },
+      "notes": ["Keep the target background transparent."]
+    },
+    {
+      "source": {
+        "componentSet": "Icon Text Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Primary" }
+      },
+      "target": "Icon Text Button/Primary/Default",
+      "reuse": "structure",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "icons": { "Leading": "action/add" },
+      "tokens": {
+        "background": "brand/100",
+        "content": "neutral-light/100",
+        "gap": "space/3",
+        "height": "size/40",
+        "iconSize": "size/20",
+        "radius": "radius/08",
+        "paddingX": "space/5"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "Icon Text Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+      },
+      "target": "Icon Text Button/Ghost/Default",
+      "reuse": "structure",
+      "takeoverStatus": "adapting",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "icons": { "Leading": "action/add" },
+      "tokens": {
+        "content": "brand/100",
+        "gap": "space/3",
+        "height": "size/40",
+        "iconSize": "size/20",
+        "radius": "radius/08",
+        "paddingX": "space/5"
+      },
+      "sourceVariantAliases": [
+        { "componentSet": "Icon + Text", "variant": { "尺寸": "Medium", "类型": "Normal", "状态": "Enabled" } }
+      ],
+      "notes": ["Exact live source match: Icon Text Button / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."]
+    },
+    {
+      "source": {
+        "componentSet": "Icon Text Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Primary" }
+      },
+      "target": "Icon Text Button/Secondary/Default",
+      "reuse": "structure",
+      "takeoverStatus": "needs-rebuild",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "icons": { "Leading": "action/add" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/90",
+        "gap": "space/3",
+        "height": "size/40",
+        "iconSize": "size/20",
+        "radius": "radius/08",
+        "paddingX": "space/5"
+      },
+      "notes": ["The live Icon Text Button set currently exposes Primary and Ghost only. Do not treat Primary as a Secondary match; add a Secondary variant before strict delivery."]
+    },
+    {
+      "source": {
+        "componentSet": "Icon Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+      },
+      "target": "Icon Button/Secondary/Default",
+      "reuse": "structure",
+      "takeoverStatus": "needs-rebuild",
+      "icons": { "Icon": "action/more" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/90",
+        "height": "size/40",
+        "width": "size/40",
+        "iconSize": "size/20",
+        "radius": "radius/08"
+      },
+      "notes": ["The live Icon Button set currently exposes Ghost only. Add a Secondary variant before strict delivery."]
+    },
+    {
+      "source": {
+        "componentSet": "Icon Button",
+        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+      },
+      "target": "Icon Button/Ghost/Default",
+      "reuse": "structure",
+      "takeoverStatus": "adapting",
+      "icons": { "Icon": "action/more" },
+      "tokens": {
+        "content": "neutral-dark/90",
+        "height": "size/40",
+        "width": "size/40",
+        "iconSize": "size/20",
+        "radius": "radius/08"
+      },
+      "sourceVariantAliases": [
+        { "componentSet": "Iconbutton", "variant": { "尺寸": "Medium", "类型": "Normal", "状态": "Enabled" } }
+      ],
+      "notes": ["Exact live source match: Icon Button / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Icon slot."]
+    },
+    {
+      "source": {
+        "componentSet": "Selection Dropdown",
+        "variant": { "size": "Medium", "state": "Default" }
+      },
+      "target": "Selection Dropdown/Default",
+      "reuse": "structure",
+      "takeoverStatus": "adapting",
+      "textStyles": { "Label": "Typography/Body_L" },
+      "icons": { "Trailing": "navigation/chevron-down" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/90",
+        "gap": "space/3",
+        "height": "size/40",
+        "iconSize": "size/16",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      },
+      "notes": ["Expose the label as instance-safe content and replace the icon-font arrow with the registered semantic SVG."]
+    },
+    {
+      "source": {
+        "componentSet": "Search",
+        "variant": { "surface": "white", "state": "Default" }
+      },
+      "target": "Search/White Surface/Default",
+      "reuse": "structure",
+      "textStyles": { "Placeholder": "Typography/Body_L" },
+      "icons": { "Leading": "field/search" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/60",
+        "gap": "space/3",
+        "height": "size/40",
+        "iconSize": "size/16",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "Search",
+        "variant": { "surface": "dark", "state": "Default" }
+      },
+      "target": "Search/Gray Surface/Default",
+      "reuse": "structure",
+      "takeoverStatus": "needs-rebuild",
+      "textStyles": { "Placeholder": "Typography/Body_L" },
+      "icons": { "Leading": "field/search" },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/60",
+        "gap": "space/3",
+        "height": "size/40",
+        "iconSize": "size/16",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      },
+      "notes": ["Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."]
+    },
+    {
+      "source": {
+        "componentSet": "Selection Dropdown",
+        "variant": { "size": "Medium", "state": "Default" }
+      },
+      "target": "Select/White Surface/Default",
+      "reuse": "structure",
+      "takeoverStatus": "needs-rebuild",
+      "textStyles": { "Value": "Typography/Body_L" },
+      "icons": { "Trailing": "navigation/chevron-down" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/90",
+        "height": "size/40",
+        "iconSize": "size/16",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "Selection Dropdown",
+        "variant": { "size": "Medium", "state": "Default" }
+      },
+      "target": "Select/Gray Surface/Default",
+      "reuse": "structure",
+      "takeoverStatus": "needs-rebuild",
+      "textStyles": { "Value": "Typography/Body_L" },
+      "icons": { "Trailing": "navigation/chevron-down" },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/90",
+        "height": "size/40",
+        "iconSize": "size/16",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "TextInput-Box-2in1",
+        "variant": { "灰色场景": "OFF", "状态": "Normal" }
+      },
+      "target": "Input/White Surface/Default",
+      "reuse": "structure",
+      "textStyles": { "Value": "Typography/Body_L" },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/60",
+        "height": "size/40",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "TextInput-Box-2in1",
+        "variant": { "灰色场景": "ON", "状态": "Normal" }
+      },
+      "target": "Input/Gray Surface/Default",
+      "reuse": "structure",
+      "textStyles": { "Value": "Typography/Body_L" },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/60",
+        "height": "size/40",
+        "radius": "radius/08",
+        "paddingX": "space/4"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "TextInput-Muti-2in1",
+        "variant": { "灰色场景": "OFF", "状态": "Normal" }
+      },
+      "target": "Textarea/White Surface/Default",
+      "reuse": "structure",
+      "textStyles": {
+        "Placeholder": "Typography/Body_L",
+        "Counter": "Typography/Caption_L"
+      },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/60",
+        "radius": "radius/08",
+        "paddingX": "space/4",
+        "paddingY": "space/3"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "TextInput-Muti-2in1",
+        "variant": { "灰色场景": "ON", "状态": "Normal" }
+      },
+      "target": "Textarea/Gray Surface/Default",
+      "reuse": "structure",
+      "textStyles": {
+        "Placeholder": "Typography/Body_L",
+        "Counter": "Typography/Caption_L"
+      },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/60",
+        "radius": "radius/08",
+        "paddingX": "space/4",
+        "paddingY": "space/3"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "CheckBox-2 in 1",
+        "variant": { "Selected": "OFF", "状态": "Enabled" }
+      },
+      "target": "Checkbox/Unchecked/Default",
+      "reuse": "visual-reference",
+      "textStyles": { "Label": "Typography/Body_M" },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/90",
+        "gap": "space/3"
+      },
+      "deltas": ["Native control is 24px; Text to UI desktop control remains 20px."]
+    },
+    {
+      "source": {
+        "componentSet": "Radio-Phone",
+        "variant": { "Selected": "OFF", "状态": "Enabled" }
+      },
+      "target": "Radio/Unselected/Default",
+      "reuse": "visual-reference",
+      "textStyles": { "Label": "Typography/Body_M" },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/90",
+        "gap": "space/3"
+      },
+      "deltas": ["Native control is 24px; Text to UI desktop control remains 20px."]
+    },
+    {
+      "source": {
+        "componentSet": "Switch-Phone",
+        "variant": { "Selected": "OFF", "状态": "Enabled" }
+      },
+      "target": "Switch/Off/Default",
+      "reuse": "visual-reference",
+      "textStyles": { "Label": "Typography/Body_M" },
+      "tokens": {
+        "track": "neutral-dark/05",
+        "thumb": "neutral-light/100",
+        "content": "neutral-dark/90",
+        "gap": "space/3"
+      },
+      "deltas": ["Native track is 36x20; Text to UI desktop track remains 44x24."]
+    },
+    {
+      "source": {
+        "componentSet": "Snackbar",
+        "variant": { "左侧区域": "1" }
+      },
+      "target": "Snackbar/Default",
+      "reuse": "structure",
+      "textStyles": { "Message": "Typography/Body_L" },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/90",
+        "height": "size/48",
+        "radius": "radius/08"
+      },
+      "effectStyle": "Effect/Foundation/shadow-3"
+    }
+  ],
+  "sourceOnly": [
+    {
+      "name": "Toggle-状态按钮-2in1",
+      "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
+    },
+    {
+      "name": "Chips-2in1",
+      "reason": "No registered static target in the current component scope."
+    },
+    {
+      "name": "ScrollBar-Phone",
+      "reason": "Platform utility, not a registered reusable component in the current scope."
+    },
+    {
+      "name": "Menu-2in1",
+      "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
+    },
+    {
+      "name": "CheckboxGroup-Phone",
+      "reason": "Composite form group; current registry keeps Checkbox as the primitive."
+    },
+    {
+      "name": ".2in1 Container",
+      "reason": "Dialog dependency only."
+    },
+    {
+      "name": ".text",
+      "reason": "Dialog dependency only."
+    },
+    {
+      "name": "Dialog-2in1",
+      "reason": "Dialogs are explicitly excluded from the current formal component registry."
+    },
+    {
+      "name": "ColorPicker-Tablet",
+      "reason": "No registered static target in the current component scope."
+    },
+    {
+      "name": "Search-Second Page-2in1",
+      "reason": "Composite secondary-page pattern, not a primitive Search component."
+    }
+  ]
+}

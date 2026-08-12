@@ -1,0 +1,4 @@
+interface:
+  display_name: "Text to UI"
+  short_description: "Reuse registered HarmonyOS components across HTML and Pixso"
+  default_prompt: "Use $text-to-ui to build my HarmonyOS PC tool from one page contract, reusing registered Tokens, components, variants, and Patterns across HTML and Pixso before verification."

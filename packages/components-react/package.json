@@ -1,0 +1,9 @@
+{
+  "name": "@text-to-ui/components-react",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "peerDependencies": {"react": ">=18", "react-dom": ">=18"},
+  "dependencies": {"@text-to-ui/tokens": "workspace:*", "@text-to-ui/component-styles": "workspace:*", "@text-to-ui/component-contracts": "workspace:*"},
+  "exports": {".": "./src/index.jsx", "./Button": "./src/index.jsx", "./Input": "./src/index.jsx", "./Search": "./src/index.jsx", "./Sidebar": "./src/index.jsx", "./ListCard": "./src/index.jsx", "./generated": "./src/generated/index.jsx", "./styles.css": "./src/styles.css"}
+}

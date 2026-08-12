@@ -1,0 +1,986 @@
+{
+  "schemaVersion": 1,
+  "sourceLibrary": "HarmonyOS Component Library",
+  "targetLibrary": "鸿蒙客户端设计规范",
+  "registry": "assets/design-system/pixso-component-registry.json",
+  "adapterMap": "assets/design-system/harmonyos-component-adapter-map.json",
+  "policy": {
+    "partialMappingAllowed": true,
+    "mappedDoesNotMeanVerified": true,
+    "strictParityRequiresEveryUsedTargetVerified": true
+  },
+  "summary": {
+    "total": 76,
+    "mapped-pending-verification": 16,
+    "mapped-needs-rebuild": 5,
+    "missing-target": 55
+  },
+  "rows": [
+    {
+      "category": "01 Actions",
+      "target": "Button/Primary/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Primary"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "component-set-variant-candidate",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Button/Secondary/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Secondary"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "component-set-variant-candidate",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Button/Ghost/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Ghost"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "component-set-variant-candidate",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Icon Text Button/Primary/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Icon Text Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Primary"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Icon Text Button/Secondary/Default",
+      "status": "mapped-needs-rebuild",
+      "sourceComponentSet": "Icon Text Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Primary"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Icon Text Button/Ghost/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Icon Text Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Ghost"
+      },
+      "sourceVariantAliases": [
+        {
+          "componentSet": "Icon + Text",
+          "variant": {
+            "尺寸": "Medium",
+            "类型": "Normal",
+            "状态": "Enabled"
+          }
+        }
+      ],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Icon Button/Ghost/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Icon Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Ghost"
+      },
+      "sourceVariantAliases": [
+        {
+          "componentSet": "Iconbutton",
+          "variant": {
+            "尺寸": "Medium",
+            "类型": "Normal",
+            "状态": "Enabled"
+          }
+        }
+      ],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Icon Button/Secondary/Default",
+      "status": "mapped-needs-rebuild",
+      "sourceComponentSet": "Icon Button",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Ghost"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Selection Dropdown/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Selection Dropdown",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Split Dropdown Button/Icon Text/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Split Dropdown Button/Icon Only/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "01 Actions",
+      "target": "Toggle/Off/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Field/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Field/With Description",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Input/White Surface/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "TextInput-Box-2in1",
+      "sourceVariant": {
+        "灰色场景": "OFF",
+        "状态": "Normal"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Input/Gray Surface/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "TextInput-Box-2in1",
+      "sourceVariant": {
+        "灰色场景": "ON",
+        "状态": "Normal"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Search/White Surface/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Search",
+      "sourceVariant": {
+        "surface": "white",
+        "state": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Search/Gray Surface/Default",
+      "status": "mapped-needs-rebuild",
+      "sourceComponentSet": "Search",
+      "sourceVariant": {
+        "surface": "dark",
+        "state": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Textarea/White Surface/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "TextInput-Muti-2in1",
+      "sourceVariant": {
+        "灰色场景": "OFF",
+        "状态": "Normal"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Textarea/Gray Surface/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "TextInput-Muti-2in1",
+      "sourceVariant": {
+        "灰色场景": "ON",
+        "状态": "Normal"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Select/White Surface/Default",
+      "status": "mapped-needs-rebuild",
+      "sourceComponentSet": "Selection Dropdown",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Select/Gray Surface/Default",
+      "status": "mapped-needs-rebuild",
+      "sourceComponentSet": "Selection Dropdown",
+      "sourceVariant": {
+        "size": "Medium",
+        "state": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Combobox/White Surface/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Combobox/Gray Surface/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Input OTP/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Checkbox/Unchecked/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "CheckBox-2 in 1",
+      "sourceVariant": {
+        "Selected": "OFF",
+        "状态": "Enabled"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "visual-reference",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Radio/Unselected/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Radio-Phone",
+      "sourceVariant": {
+        "Selected": "OFF",
+        "状态": "Enabled"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "visual-reference",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Switch/Off/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Switch-Phone",
+      "sourceVariant": {
+        "Selected": "OFF",
+        "状态": "Enabled"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "visual-reference",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Slider/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Date Picker/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Time Picker/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Titlebar/S/Normal",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Titlebar/M/Normal",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Titlebar/L/Normal",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Titlebar/XL/Normal",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Sidebar Item/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Sidebar Group Header/Collapsed",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Primary Level Icon/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Tabs/Filled/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Tabs/Line/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Tabs/Vertical/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Breadcrumb/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Pagination Item/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Accordion/Collapsed",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Collapsible/Collapsed",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Card/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Card/Header Body Footer",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Metric Card/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "List Item/White Surface/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "List Item/Gray Surface/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "List Container/White Canvas",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "List Container/Gray Canvas",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Table/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Table Header/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Table Row/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Badge/Neutral",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Badge/Info",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Badge/Success",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Badge/Warning",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Avatar/32/Image",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Avatar/32/Fallback",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Avatar/40/Image",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Avatar/40/Fallback",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Progress/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Spinner/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Skeleton/Text",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Skeleton/Avatar",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Skeleton/List Row",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "04 Data Display",
+      "target": "Skeleton/Card",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Alert/Info",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Alert/Success",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Alert/Error",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Alert/Warning",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Alert/Neutral",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Snackbar/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Snackbar",
+      "sourceVariant": {
+        "左侧区域": "1"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "05 Feedback",
+      "target": "Tooltip/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    }
+  ],
+  "sourceOnly": [
+    {
+      "name": "Toggle-状态按钮-2in1",
+      "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
+    },
+    {
+      "name": "Chips-2in1",
+      "reason": "No registered static target in the current component scope."
+    },
+    {
+      "name": "ScrollBar-Phone",
+      "reason": "Platform utility, not a registered reusable component in the current scope."
+    },
+    {
+      "name": "Menu-2in1",
+      "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
+    },
+    {
+      "name": "CheckboxGroup-Phone",
+      "reason": "Composite form group; current registry keeps Checkbox as the primitive."
+    },
+    {
+      "name": ".2in1 Container",
+      "reason": "Dialog dependency only."
+    },
+    {
+      "name": ".text",
+      "reason": "Dialog dependency only."
+    },
+    {
+      "name": "Dialog-2in1",
+      "reason": "Dialogs are explicitly excluded from the current formal component registry."
+    },
+    {
+      "name": "ColorPicker-Tablet",
+      "reason": "No registered static target in the current component scope."
+    },
+    {
+      "name": "Search-Second Page-2in1",
+      "reason": "Composite secondary-page pattern, not a primitive Search component."
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+/**
+ * Normalize the generated registry into an honest cross-framework contract.
+ *
+ * The old Skill gallery remains the visual authority for every component.
+ * Every registered component now has an independent HTML/React/Vue adapter;
+ * the old gallery is retained only as a visual regression source.
+ */
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const registryPath = path.join(root, "packages/component-contracts/src/components.json");
+const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
+
+const readyIds = new Set();
+const customIds = new Set([
+  "button", "input", "search", "field", "textarea", "select", "combobox", "native-select", "checkbox", "radio-group", "switch", "tabs", "accordion", "collapsible", "sidebar", "list-card", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast",
+  "dialog", "alert-dialog", "semi-modal", "navigation-menu", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment", "carousel"
+]);
+const shadcnIds = new Set([
+  "accordion", "alert-dialog", "calendar", "carousel", "checkbox", "collapsible",
+  "combobox", "context-menu", "dialog", "dropdown-menu", "hover-card", "input-otp",
+  "menubar", "navigation-menu", "pagination", "popover", "radio-group", "select",
+  "slider", "switch", "tabs", "tooltip"
+]);
+
+const sourceStrategy = (id) => {
+  if (customIds.has(id)) return "canonical-custom";
+  if (shadcnIds.has(id)) return "shadcn-behavior-canonical-style";
+  return "canonical-static";
+};
+
+const implementationPaths = {
+  button: { html: "packages/components-html/src/button.html", react: "packages/components-react/src/index.jsx#Button", vue: "packages/components-vue/src/Button.vue" },
+  input: { html: "packages/components-html/src/input.html", react: "packages/components-react/src/index.jsx#Input", vue: "packages/components-vue/src/Input.vue" },
+  search: { html: "packages/components-html/src/search.html", react: "packages/components-react/src/index.jsx#Search", vue: "packages/components-vue/src/Search.vue" },
+  titlebar: { html: "packages/components-html/src/index.js#titlebar", react: "packages/components-react/src/index.jsx#Titlebar", vue: "packages/components-vue/src/Titlebar.vue" },
+  textarea: { html: "packages/components-html/src/index.js#textarea", react: "packages/components-react/src/index.jsx#Textarea", vue: "packages/components-vue/src/Textarea.vue" },
+  field: { html: "packages/components-html/src/index.js#field", react: "packages/components-react/src/index.jsx#Field", vue: "packages/components-vue/src/Field.vue" },
+  select: { html: "packages/components-html/src/index.js#select", react: "packages/components-react/src/index.jsx#Select", vue: "packages/components-vue/src/Select.vue" },
+  combobox: { html: "packages/components-html/src/index.js#combobox", react: "packages/components-react/src/index.jsx#Combobox", vue: "packages/components-vue/src/Combobox.vue" },
+  "native-select": { html: "packages/components-html/src/index.js#nativeSelect", react: "packages/components-react/src/index.jsx#NativeSelect", vue: "packages/components-vue/src/NativeSelect.vue" },
+  checkbox: { html: "packages/components-html/src/index.js#checkbox", react: "packages/components-react/src/index.jsx#Checkbox", vue: "packages/components-vue/src/Checkbox.vue" },
+  "radio-group": { html: "packages/components-html/src/index.js#radioGroup", react: "packages/components-react/src/index.jsx#RadioGroup", vue: "packages/components-vue/src/RadioGroup.vue" },
+  switch: { html: "packages/components-html/src/index.js#switch", react: "packages/components-react/src/index.jsx#Switch", vue: "packages/components-vue/src/Switch.vue" },
+  tabs: { html: "packages/components-html/src/index.js#tabs", react: "packages/components-react/src/index.jsx#Tabs", vue: "packages/components-vue/src/Tabs.vue" },
+  accordion: { html: "packages/components-html/src/index.js#accordion", react: "packages/components-react/src/index.jsx#Accordion", vue: "packages/components-vue/src/Accordion.vue" },
+  collapsible: { html: "packages/components-html/src/index.js#collapsible", react: "packages/components-react/src/index.jsx#Collapsible", vue: "packages/components-vue/src/Collapsible.vue" },
+  avatar: { html: "packages/components-html/src/index.js#avatar", react: "packages/components-react/src/index.jsx#Avatar", vue: "packages/components-vue/src/Avatar.vue" },
+  badge: { html: "packages/components-html/src/index.js#badge", react: "packages/components-react/src/index.jsx#Badge", vue: "packages/components-vue/src/Badge.vue" },
+  card: { html: "packages/components-html/src/index.js#card", react: "packages/components-react/src/index.jsx#Card", vue: "packages/components-vue/src/Card.vue" },
+  item: { html: "packages/components-html/src/index.js#item", react: "packages/components-react/src/index.jsx#Item", vue: "packages/components-vue/src/Item.vue" },
+  table: { html: "packages/components-html/src/index.js#table", react: "packages/components-react/src/index.jsx#Table", vue: "packages/components-vue/src/Table.vue" },
+  "data-table": { html: "packages/components-html/src/index.js#dataTable", react: "packages/components-react/src/index.jsx#DataTable", vue: "packages/components-vue/src/DataTable.vue" },
+  pagination: { html: "packages/components-html/src/index.js#pagination", react: "packages/components-react/src/index.jsx#Pagination", vue: "packages/components-vue/src/Pagination.vue" },
+  breadcrumb: { html: "packages/components-html/src/index.js#breadcrumb", react: "packages/components-react/src/index.jsx#Breadcrumb", vue: "packages/components-vue/src/Breadcrumb.vue" },
+  progress: { html: "packages/components-html/src/index.js#progress", react: "packages/components-react/src/index.jsx#Progress", vue: "packages/components-vue/src/Progress.vue" },
+  empty: { html: "packages/components-html/src/index.js#empty", react: "packages/components-react/src/index.jsx#Empty", vue: "packages/components-vue/src/Empty.vue" },
+  separator: { html: "packages/components-html/src/index.js#separator", react: "packages/components-react/src/index.jsx#Separator", vue: "packages/components-vue/src/Separator.vue" },
+  label: { html: "packages/components-html/src/index.js#label", react: "packages/components-react/src/index.jsx#Label", vue: "packages/components-vue/src/Label.vue" },
+  alert: { html: "packages/components-html/src/index.js#alert", react: "packages/components-react/src/index.jsx#Alert", vue: "packages/components-vue/src/Alert.vue" },
+  tooltip: { html: "packages/components-html/src/index.js#tooltip", react: "packages/components-react/src/index.jsx#Tooltip", vue: "packages/components-vue/src/Tooltip.vue" },
+  toast: { html: "packages/components-html/src/index.js#toast", react: "packages/components-react/src/index.jsx#Toast", vue: "packages/components-vue/src/Toast.vue" },
+  sidebar: { html: "packages/components-html/src/sidebar.html", react: "packages/components-react/src/index.jsx#Sidebar", vue: "packages/components-vue/src/Sidebar.vue" },
+  "list-card": { html: "packages/components-html/src/list-card.html", react: "packages/components-react/src/index.jsx#ListCard", vue: "packages/components-vue/src/ListCard.vue" },
+  dialog: { html: "packages/components-html/src/advanced.js#dialog", react: "packages/components-react/src/advanced.jsx#Dialog", vue: "packages/components-vue/src/advanced.js#Dialog" },
+  "alert-dialog": { html: "packages/components-html/src/advanced.js#alert-dialog", react: "packages/components-react/src/advanced.jsx#AlertDialog", vue: "packages/components-vue/src/advanced.js#AlertDialog" },
+  "semi-modal": { html: "packages/components-html/src/advanced.js#semi-modal", react: "packages/components-react/src/advanced.jsx#SemiModal", vue: "packages/components-vue/src/advanced.js#SemiModal" },
+  "navigation-menu": { html: "packages/components-html/src/advanced.js#navigation-menu", react: "packages/components-react/src/advanced.jsx#NavigationMenu", vue: "packages/components-vue/src/advanced.js#NavigationMenu" },
+  menubar: { html: "packages/components-html/src/advanced.js#menubar", react: "packages/components-react/src/advanced.jsx#Menubar", vue: "packages/components-vue/src/advanced.js#Menubar" },
+  "context-menu": { html: "packages/components-html/src/advanced.js#context-menu", react: "packages/components-react/src/advanced.jsx#ContextMenu", vue: "packages/components-vue/src/advanced.js#ContextMenu" },
+  "dropdown-menu": { html: "packages/components-html/src/advanced.js#dropdown-menu", react: "packages/components-react/src/advanced.jsx#DropdownMenu", vue: "packages/components-vue/src/advanced.js#DropdownMenu" },
+  popover: { html: "packages/components-html/src/advanced.js#popover", react: "packages/components-react/src/advanced.jsx#Popover", vue: "packages/components-vue/src/advanced.js#Popover" },
+  "hover-card": { html: "packages/components-html/src/advanced.js#hover-card", react: "packages/components-react/src/advanced.jsx#HoverCard", vue: "packages/components-vue/src/advanced.js#HoverCard" },
+  slider: { html: "packages/components-html/src/advanced.js#slider", react: "packages/components-react/src/advanced.jsx#Slider", vue: "packages/components-vue/src/advanced.js#Slider" },
+  "input-otp": { html: "packages/components-html/src/advanced.js#input-otp", react: "packages/components-react/src/advanced.jsx#InputOtp", vue: "packages/components-vue/src/advanced.js#InputOtp" },
+  kbd: { html: "packages/components-html/src/advanced.js#kbd", react: "packages/components-react/src/advanced.jsx#Kbd", vue: "packages/components-vue/src/advanced.js#Kbd" },
+  chart: { html: "packages/components-html/src/advanced.js#chart", react: "packages/components-react/src/advanced.jsx#Chart", vue: "packages/components-vue/src/advanced.js#Chart" },
+  calendar: { html: "packages/components-html/src/advanced.js#calendar", react: "packages/components-react/src/advanced.jsx#Calendar", vue: "packages/components-vue/src/advanced.js#Calendar" },
+  "date-picker": { html: "packages/components-html/src/advanced.js#date-picker", react: "packages/components-react/src/advanced.jsx#DatePicker", vue: "packages/components-vue/src/advanced.js#DatePicker" },
+  "time-picker": { html: "packages/components-html/src/advanced.js#time-picker", react: "packages/components-react/src/advanced.jsx#TimePicker", vue: "packages/components-vue/src/advanced.js#TimePicker" },
+  attachment: { html: "packages/components-html/src/advanced.js#attachment", react: "packages/components-react/src/advanced.jsx#Attachment", vue: "packages/components-vue/src/advanced.js#Attachment" },
+  carousel: { html: "packages/components-html/src/advanced.js#carousel", react: "packages/components-react/src/advanced.jsx#Carousel", vue: "packages/components-vue/src/advanced.js#Carousel" },
+  
+};
+
+const pascal = (value) => value.split(/[-_]/g).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
+const sourcePathsFor = (component) => implementationPaths[component.id] ?? {
+  html: `packages/components-html/src/generated/${component.id}.html`,
+  react: `packages/components-react/src/generated/${pascal(component.id)}.jsx#${pascal(component.id)}`,
+  vue: `packages/components-vue/src/generated/${pascal(component.id)}.vue`
+};
+
+const sourceExists = async (source) => {
+  const file = source.split("#", 1)[0];
+  try {
+    await fs.access(path.join(root, file));
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+for (const component of registry.components) {
+  const sources = sourcePathsFor(component);
+  const ready = (await Promise.all(Object.values(sources).map(sourceExists))).every(Boolean);
+  if (ready) readyIds.add(component.id);
+  const strategy = sourceStrategy(component.id);
+  component.source = strategy;
+  component.visualAuthority = "skill-canonical";
+  component.sourceStrategy = strategy;
+  // Source files are necessary but not sufficient for cross-framework Ready.
+  // Preserve enriched readiness metadata when normalization is rerun.
+  const readiness = component.readiness ?? {
+    sourceReady: ready,
+    contractReady: Boolean(component.slots?.length && component.variants?.length),
+    visualParity: false,
+    behaviorParity: false,
+    accessibilityParity: false,
+    tokenParity: true
+  };
+  readiness.sourceReady = ready;
+  component.readiness = readiness;
+  const isReady = Object.values(readiness).every(Boolean);
+  component.status = isReady ? "ready" : "partial";
+  component.frameworks = Object.fromEntries(["html", "react", "vue"].map((framework) => [framework, {
+    ...(component.frameworks?.[framework] ?? {}),
+    status: isReady ? "ready" : "partial",
+    source: sources[framework]
+  }]));
+  component.implementations = ready ? sources : {
+    html: "skill/preview/component-gallery.html",
+    react: null,
+    vue: null
+  };
+  component.pixso = {
+    status: "logical-mapping",
+    libraryPage: "NewComponents",
+    resolveGuidsAtRuntime: true,
+    linkedInstanceRequired: true,
+    variableReadbackRequired: true
+  };
+  component.contractNotes = component.contractNotes ?? "独立 HTML、React、Vue 源码由统一契约入口管理；视觉值由 canonical Skill Token 提供，可被 Skill 组装。";
+}
+
+registry.registryPolicy = {
+  ...(registry.registryPolicy ?? {}),
+  visualAuthority: "skill-canonical",
+  readyRequires: ["sourceReady", "contractReady", "visualParity", "behaviorParity", "accessibilityParity", "tokenParity"],
+  partialMayBeUsedFor: [],
+  partialMustNotBeUsedFor: ["strict-pixso-component-parity"],
+  deletedComponents: ["drawer", "sonner", "marker", "message-scroller", "toggle", "spinner", "skeleton"]
+};
+
+await fs.writeFile(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+console.log(`Normalized ${registry.components.length} contracts: ${readyIds.size} ready, ${registry.components.length - readyIds.size} partial.`);

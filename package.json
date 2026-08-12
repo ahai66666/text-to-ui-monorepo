@@ -1,0 +1,26 @@
+{
+  "name": "text-to-ui-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "icons:build": "node tools/build-inline-icon-map.mjs && node tools/sync-core-html-fixtures.mjs",
+    "contracts:normalize": "node tools/normalize-contract-registry.mjs && node tools/enrich-contract-registry.mjs && node tools/build-parity-manifest.mjs && pnpm icons:build && node tools/build-component-runtime-module.mjs && node tools/build-file-runtime-fallback.mjs",
+    "components:generate": "node tools/generate-full-component-adapters.mjs && node tools/normalize-contract-registry.mjs && node tools/enrich-contract-registry.mjs && node tools/build-parity-manifest.mjs && pnpm icons:build && node tools/build-component-runtime-module.mjs && node tools/build-file-runtime-fallback.mjs",
+    "contracts:validate": "node tools/validate-components.mjs",
+    "styles:validate": "node tools/validate-component-style-parity.mjs",
+    "pixso:mapping:test": "node tools/test-pixso-mapping.mjs",
+    "tokens:validate": "node skill/scripts/build-pixso-token-manifest.mjs --check && node skill/scripts/build-token-runtime-map.mjs --check && node skill/scripts/build-dual-output-token-map.mjs --check",
+    "frameworks:validate": "node skill/scripts/validate-framework-component-adapter-map.mjs && node skill/scripts/test-framework-component-contract.mjs && node skill/scripts/validate-framework-component-runtime.mjs && node tools/validate-runtime-parity.mjs",
+    "runtime:evidence": "node tools/validate-runtime-evidence.mjs",
+    "dialogs:validate": "node tools/validate-dialog-contract.mjs",
+    "runtime:evidence:strict": "node tools/validate-runtime-evidence.mjs --strict",
+    "runtime:http": "node tools/validate-runtime-http.mjs",
+    "skill:preview:check": "python3 skill/scripts/update_preview_cache.py --check",
+    "gallery:sync-legacy": "node tools/sync-legacy-visual-baseline.mjs",
+    "gallery:baseline:validate": "node tools/validate-legacy-baseline.mjs",
+    "gallery:build": "pnpm gallery:sync-legacy && pnpm --filter @text-to-ui/component-gallery build && node tools/validate-gallery-dist.mjs",
+    "delivery:validate": "node tools/validate-repository-delivery.mjs",
+    "test": "pnpm delivery:validate && pnpm contracts:validate && pnpm styles:validate && pnpm pixso:mapping:test && pnpm frameworks:validate && pnpm runtime:evidence && pnpm dialogs:validate && pnpm gallery:baseline:validate && pnpm tokens:validate"
+  }
+}

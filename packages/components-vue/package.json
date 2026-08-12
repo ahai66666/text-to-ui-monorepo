@@ -1,0 +1,9 @@
+{
+  "name": "@text-to-ui/components-vue",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "peerDependencies": {"vue": ">=3"},
+  "dependencies": {"@text-to-ui/tokens": "workspace:*", "@text-to-ui/component-styles": "workspace:*", "@text-to-ui/component-contracts": "workspace:*"},
+  "exports": {".": "./src/index.js", "./Button": "./src/Button.vue", "./Input": "./src/Input.vue", "./Search": "./src/Search.vue", "./Sidebar": "./src/Sidebar.vue", "./ListCard": "./src/ListCard.vue", "./generated": "./src/generated/index.js", "./styles.css": "./src/styles.css"}
+}

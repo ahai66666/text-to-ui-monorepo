@@ -1,0 +1,16 @@
+{
+  "name": "@text-to-ui/component-gallery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"dev": "vite", "build": "vite build"},
+  "devDependencies": {
+    "@vitejs/plugin-vue": "latest",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vite": "^7.0.0"
+  },
+  "dependencies": {
+    "vue": "^3.5.41"
+  }
+}

@@ -1,0 +1,9 @@
+<script setup>
+import "./styles.css";
+import { computed, ref } from "vue";
+const props = defineProps({ modelValue: String, tabs: { type: Array, default: () => [{ id: "overview", label: "概览", content: "工作空间概览" }, { id: "projects", label: "项目", content: "项目列表" }, { id: "members", label: "成员", content: "成员列表" }] } });
+const emit = defineEmits(["update:modelValue", "change"]); const internal = ref(props.tabs[0]?.id); const selected = computed(() => props.modelValue === undefined ? internal.value : props.modelValue);
+const choose = (id) => { if (props.modelValue === undefined) internal.value = id; emit("update:modelValue", id); emit("change", id); };
+const keydown = (event) => { const index = Math.max(0, props.tabs.findIndex((tab) => tab.id === selected.value)); if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(event.key)) return; event.preventDefault(); const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : props.tabs.length - 1; const next = props.tabs[(index + direction) % props.tabs.length]; choose(next.id); event.currentTarget.querySelector(`[data-tab="${next.id}"]`)?.focus(); };
+</script>
+<template><div class="tui-component tui-tabs" data-component="tabs" data-logical-component="Tabs/Default" data-variant="default" data-state="default" data-framework="vue"><div class="tui-tabs__list" role="tablist" aria-label="项目视图" @keydown="keydown"><button v-for="tab in props.tabs" :key="tab.id" type="button" role="tab" :data-tab="tab.id" :aria-selected="selected === tab.id" :class="{ 'is-selected': selected === tab.id }" data-typography-role="body-m" @click="choose(tab.id)">{{ tab.label }}</button></div><div class="tui-tabs__panel" role="tabpanel" :data-tab-panel="selected" data-typography-role="body-l">{{ props.tabs.find((tab) => tab.id === selected)?.content }}</div></div></template>

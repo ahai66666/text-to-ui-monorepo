@@ -1,0 +1,78 @@
+/* The framework gallery is a shell around the same canonical component CSS.
+   It must not introduce framework-specific visual values. */
+.tui-runtime-core-gallery { display: grid; gap: var(--space-4); }
+.tui-runtime-note { margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+.tui-runtime-surface-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.tui-runtime-state-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); }
+.tui-runtime-state-grid--single { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tui-runtime-state-group { display: grid; gap: var(--space-3); }
+.tui-runtime-state-group > strong { color: var(--color-text); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); font-weight: var(--type-body-m-weight); }
+.tui-runtime-state-cell { min-width: 0; display: grid; align-content: start; gap: var(--space-2); }
+.tui-runtime-state-cell > span, .tui-runtime-state-cell > small { color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); font-weight: var(--type-caption-l-weight); }
+.tui-runtime-state-cell > .tui-input, .tui-runtime-state-cell > .tui-search { min-width: 0; }
+.tui-runtime-state-cell > .tui-list-card { min-width: 0; }
+.tui-runtime-framework-shell { min-height: 100vh; padding: var(--space-7); color: var(--color-text); background: var(--color-bg-subtle); }
+.tui-runtime-framework-shell__head { width: min(1480px, 100%); margin: 0 auto var(--space-6); display: grid; gap: var(--space-3); }
+.tui-runtime-framework-shell__head h1 { margin: 0; font-size: var(--type-title-l-size); line-height: var(--type-title-l-leading); font-weight: var(--type-title-l-weight); }
+.tui-runtime-framework-shell__head p { max-width: 1080px; margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+.tui-runtime-framework-switch { display: inline-flex; width: fit-content; align-items: center; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-2); background: var(--color-bg-subtle); }
+.tui-runtime-framework-switch a { min-height: var(--height-button); display: inline-flex; align-items: center; padding-inline: var(--space-4); border-radius: var(--radius-2); color: var(--color-text-muted); text-decoration: none; font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+.tui-runtime-framework-switch a[aria-current="page"] { color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-1); }
+.tui-runtime-framework-switch button { min-height: var(--height-button); display: inline-flex; align-items: center; padding-inline: var(--space-4); border: 0; border-radius: var(--radius-2); color: var(--color-text-muted); background: transparent; cursor: pointer; font: inherit; font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+.tui-runtime-framework-switch button[aria-selected="true"] { color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-1); }
+.tui-runtime-framework-switch button:focus-visible { outline: 2px solid var(--color-brand-100); outline-offset: 2px; }
+.tui-runtime-framework-directory { width: min(1480px, 100%); margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.tui-runtime-framework-card { min-width: 0; display: grid; align-content: start; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); }
+.tui-runtime-framework-card--core { grid-column: 1 / -1; }
+.tui-runtime-framework-card__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: var(--space-2); }
+.tui-runtime-framework-card__head h2 { margin: 0; font-size: var(--type-subtitle-l-size); line-height: var(--type-subtitle-l-leading); font-weight: var(--type-subtitle-l-weight); }
+.tui-runtime-framework-card__head code { color: var(--color-text-subtle); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-caption-l-size); }
+.tui-runtime-framework-card__source { grid-column: 1 / -1; color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); }
+.tui-runtime-framework-card__preview { min-width: 0; display: grid; gap: var(--space-4); padding: var(--space-3); border-radius: var(--radius-2); background: transparent; }
+.tui-runtime-framework-card__states { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.tui-runtime-framework-card__states span { padding: 2px var(--space-2); border-radius: var(--radius-full); color: var(--color-text-muted); background: var(--color-bg-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); }
+.tui-runtime-framework-card__state-note { margin: 0; color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); }
+.tui-runtime-framework-missing { margin: 0; padding: var(--space-4); color: var(--color-danger); background: var(--color-danger-subtle); border-radius: var(--radius-2); font-size: var(--type-body-m-size); }
+.tui-runtime-directory-grid { width: 100%; display: grid; gap: var(--space-6); }
+.tui-runtime-category { display: grid; gap: var(--space-3); }
+.tui-runtime-category__title { margin: 0; color: var(--color-text); font-size: var(--type-subtitle-s-size); line-height: var(--type-subtitle-s-leading); font-weight: var(--type-subtitle-s-weight); }
+.tui-runtime-category__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+.tui-runtime-card { min-width: 0; display: grid; align-content: start; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); }
+.tui-runtime-card--wide { grid-column: 1 / -1; }
+.tui-runtime-card__head { min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); }
+.tui-runtime-card__head > div { min-width: 0; display: grid; gap: var(--space-1); }
+.tui-runtime-card__head h3 { margin: 0; font-size: var(--type-subtitle-l-size); line-height: var(--type-subtitle-l-leading); font-weight: var(--type-subtitle-l-weight); }
+.tui-runtime-card__head code { overflow: hidden; color: var(--color-text-subtle); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); text-overflow: ellipsis; white-space: nowrap; }
+.tui-runtime-card__source { display: none; }
+.tui-runtime-card__description { margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+.tui-runtime-card__preview { min-width: 0; min-height: 64px; display: grid; align-content: start; justify-items: start; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-2); background: transparent; }
+.tui-runtime-card__preview > .tui-button, .tui-runtime-card__preview > .tui-input, .tui-runtime-card__preview > .tui-search, .tui-runtime-card__preview > .tui-sidebar, .tui-runtime-card__preview > .tui-list-card { max-width: 100%; }
+.tui-runtime-card--fill .tui-runtime-card__preview > * { width: 100%; }
+.tui-runtime-card--fill .tui-runtime-card__preview .tui-runtime-surface-pair > div { width: 100%; }
+.tui-runtime-card--intrinsic .tui-runtime-card__preview > * { width: max-content; max-width: 100%; }
+.tui-runtime-surface-pair { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.tui-runtime-surface-pair > div { min-width: 0; display: grid; align-content: start; gap: var(--space-2); padding: var(--space-4); border-radius: var(--radius-card); }
+.tui-runtime-surface-pair > [data-surface-context="white"] { background: var(--color-surface); }
+.tui-runtime-surface-pair > [data-surface-context="gray"] { background: var(--color-bg-subtle); }
+.tui-runtime-titlebar-gallery { display: grid; gap: var(--space-3); }
+.tui-runtime-titlebar-row { min-width: 0; display: grid; grid-template-columns: 80px repeat(2, minmax(0, 1fr)); align-items: center; gap: var(--space-3); border-bottom: var(--layout-navigation-divider-width) solid var(--color-neutral-dark-20); }
+.tui-runtime-titlebar-row:last-child { border-bottom: 0; }
+.tui-runtime-titlebar-row > .tui-runtime-surface-label { align-self: center; }
+.tui-runtime-surface-label { color: var(--color-text-subtle); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); font-weight: var(--type-caption-l-weight); }
+.tui-feedback-specimens { min-width: 0; width: 100%; display: grid; gap: var(--space-3); }
+.tui-feedback-specimen { min-width: 0; display: grid; gap: var(--space-1); }
+.tui-runtime-card--intrinsic .tui-runtime-card__preview > .tui-feedback-specimens { width: 100%; max-width: 100%; }
+.tui-runtime-avatar-pair { display: flex; align-items: end; gap: var(--space-4); }
+.tui-runtime-avatar-pair > div { display: grid; justify-items: center; gap: var(--space-2); }
+.tui-runtime-structural-grid { min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: var(--space-3); }
+.tui-runtime-structural-cell { min-width: 0; display: grid; justify-items: start; align-content: start; gap: var(--space-2); }
+.tui-runtime-structural-cell > .tui-button:not(.tui-button--icon) { width: max-content; max-width: 100%; }
+.tui-runtime-structural-cell > .tui-button.tui-button--icon { width: var(--size-icon-button); min-width: var(--size-icon-button); max-width: var(--size-icon-button); height: var(--size-icon-button); }
+.tui-runtime-structural-cell > .tui-button-dropdown, .tui-runtime-structural-cell > .tui-split-button { width: max-content; max-width: 100%; }
+.tui-runtime-card__preview .tui-generated__menu, .tui-runtime-card__preview .tui-generated__panel, .tui-runtime-card__preview .tui-generated__floating-panel { display: none; }
+.tui-runtime-card__preview .tui-generated__menu.is-open, .tui-runtime-card__preview .tui-generated__panel.is-open, .tui-runtime-card__preview .tui-generated--floating:hover .tui-generated__floating-panel, .tui-runtime-card__preview .tui-generated--floating:focus-within .tui-generated__floating-panel { display: grid; }
+.tui-runtime-card__preview .tui-generated--menu, .tui-runtime-card__preview .tui-generated--picker { position: relative; }
+.tui-runtime-card__preview .tui-generated--floating { width: fit-content; }
+.tui-runtime-card__preview .tui-runtime-framework-missing { margin: 0; }
+@media (max-width: 980px) { .tui-runtime-category__grid, .tui-runtime-surface-pair, .tui-runtime-structural-grid { grid-template-columns: 1fr; } }
+@media (max-width: 980px) { .tui-runtime-state-grid, .tui-runtime-state-grid--single, .tui-runtime-surface-grid, .tui-runtime-framework-directory { grid-template-columns: 1fr; } .tui-runtime-framework-shell { padding: var(--space-5); } }

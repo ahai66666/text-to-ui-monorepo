@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "aliasRegistry": "assets/icons/icon-aliases.json",
+  "sourceArtboard": 24,
+  "rendering": {
+    "lucide": {"strokeWidth": 1.5, "strokeWidthByDisplaySize": {"16": 1, "20": 1.25, "24": 1.5}, "strokeScaleRule": "Keep stroke-width 1.5 on the 24x24 source artboard and scale the SVG root and internal vectors together.", "strokeLinecap": "round", "strokeLinejoin": "round"},
+    "color": "currentColor",
+    "resizeRule": "Resize the SVG root and every internal vector together to the target display size; never resize only its outer Frame."
+  },
+  "displayContracts": [
+    {"name":"compact-control","aliases":["field/search","field/date","field/time","navigation/back","navigation/chevron-down","navigation/chevron-right"],"displaySize":16,"displaySizeToken":"size/16"},
+    {"name":"standard-control","aliases":["action/add","action/archive","action/close","action/delete","action/download","action/filter","action/forward","action/mark-important","action/mark-unread","action/more","action/multi-select","action/refresh","action/reply","action/reply-all","action/save","action/sort-ascending","navigation/panel-left","object/attachment","object/file","object/avatar","status/error","status/info","status/loading","status/neutral","status/success","status/warning"],"displaySize":20,"displaySizeToken":"size/20"},
+    {"name":"primary-level-filled-exception","aliases":["primary-level/overview","primary-level/calendar","primary-level/contacts","primary-level/mail","primary-level/settings"],"displaySize":20,"displaySizeToken":"size/20","sourceRequirement":"harmonyos","rule":"Allowed only for the bottom first-level menu inside the two-level Primary Navigation Shell."},
+    {"name":"titlebar-control","aliases":["window/minimize","window/maximize","window/close"],"displaySize":16,"displaySizeToken":"size/16","sourceRequirement":"asset"}
+  ],
+  "exceptions": {
+    "displaySize24":"Only when a component specification explicitly declares iconSize: 24.",
+    "nativeSourceComponents":"Existing HarmonyOS-native component sets may retain icon fonts as source evidence, but are not eligible for Text to UI page generation."
+  },
+  "pixsoAudit": {
+    "forbidForGeneratedTextToUiNodes":["HM Symbol","icon_font"],
+    "require":["semanticAlias","sourceProvenance","displaySizeToken","rootAndVectorGeometryMatch"],
+    "allowedDisplaySizes":[16,20,24]
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.text-to-ui/pixso-binding-audit.schema.json",
+  "title": "Pixso live binding audit",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "frameId",
+    "availableVariables",
+    "bindings",
+    "coverageSummary",
+    "componentInstances",
+    "literalStyleFindings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "frameId": {
+      "type": "string",
+      "pattern": "^[0-9]+:[0-9]+$"
+    },
+    "availableVariables": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "property",
+          "variable"
+        ],
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "property": {
+            "type": "string"
+          },
+          "variable": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "coverageSummary": {
+      "type": "object",
+      "required": [
+        "uniqueNodes",
+        "colorBearingNodes",
+        "variableBoundColorNodes",
+        "literalPaintNodes",
+        "layerOpacityLiteralNodes",
+        "intrinsicAlphaPaints"
+      ],
+      "properties": {
+        "uniqueNodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "colorBearingNodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "variableBoundColorNodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "literalPaintNodes": {
+          "const": 0
+        },
+        "layerOpacityLiteralNodes": {
+          "const": 0
+        },
+        "intrinsicAlphaPaints": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "componentInstances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "logicalName",
+          "instanceId"
+        ],
+        "properties": {
+          "logicalName": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "literalStyleFindings": {
+      "type": "array",
+      "maxItems": 0
+    }
+  }
+}

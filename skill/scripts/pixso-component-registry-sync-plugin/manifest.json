@@ -1,0 +1,13 @@
+{
+  "name": "Text-to-UI Component Registry Sync v4 Safe",
+  "id": "text-to-ui-component-registry-sync-v4-safe",
+  "editorType": ["pixso"],
+  "main": "./main.js",
+  "menu": [
+    { "name": "自检 Pixso 连接（只读）", "command": "health" },
+    { "name": "审计 Coremail 注册组件（由 MCP 只读）", "command": "audit" },
+    { "name": "补齐 NewComponents 文字槽位", "command": "slots" },
+    { "name": "图标槽位诊断（只读）", "command": "icons" },
+    { "name": "执行安全修复（仅文字槽位）", "command": "repair" }
+  ]
+}

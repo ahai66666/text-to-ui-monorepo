@@ -1,0 +1,907 @@
+{
+  "schemaVersion": 2,
+  "policy": {
+    "resolveGuidsAtRuntime": true,
+    "guidIsNotAStableSource": true,
+    "libraryPage": "NewComponents",
+    "requireLinkedInstance": true,
+    "requireVariableReadback": true
+  },
+  "components": {
+    "Button/Primary/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "size",
+        "type",
+        "mode",
+        "state"
+      ],
+      "slots": [
+        "icon",
+        "label",
+        "trigger",
+        "menu"
+      ],
+      "colorVariables": [
+        "brand/100",
+        "neutral-light/100",
+        "neutral-dark/05",
+        "function/danger/100"
+      ]
+    },
+    "Input/White Surface/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "surface",
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/90",
+        "neutral-dark/10"
+      ]
+    },
+    "Search/White Surface/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "surface",
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "value",
+        "clear"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/90",
+        "neutral-dark/60"
+      ]
+    },
+    "Sidebar Item/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state",
+        "collapsed"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "trailing"
+      ],
+      "colorVariables": [
+        "neutral-dark/05",
+        "brand/10",
+        "brand/100",
+        "neutral-dark/90"
+      ]
+    },
+    "List Item/White Surface/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "surface",
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "trailing"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "brand/10",
+        "neutral-dark/90",
+        "neutral-dark/60"
+      ]
+    },
+    "Accordion/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Alert/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "brand/10",
+        "function/success/10",
+        "function/warning/10",
+        "function/danger/10",
+        "neutral-dark/05"
+      ]
+    },
+    "Alert Dialog/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Attachment/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Avatar/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Badge/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Breadcrumb/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Calendar/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Card/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Carousel/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Chart/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Checkbox/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Collapsible/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Combobox/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Context Menu/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Data Table/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Date Picker/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Time Picker/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Dialog/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Dropdown Menu/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Empty/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Field/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Hover Card/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Input OTP/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Item/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Kbd/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Label/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Menubar/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Native Select/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Navigation Menu/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Pagination/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Popover/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Progress/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Radio Group/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Select/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Separator/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Slider/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Switch/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Table/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Tabs/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Textarea/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Toast/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Tooltip/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Semi-modal/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Titlebar/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "trailing",
+        "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_kind:
+        description: "skill, components, or tokens"
+        required: true
+        default: "components"
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm delivery:validate
+      - run: pnpm contracts:validate
+      - run: pnpm pixso:mapping:test
+      - name: Package selected release
+        run: |
+          mkdir -p release
+          case "${{ inputs.release_kind }}" in
+            skill) tar --exclude='skill/node_modules' --exclude='skill/outputs' -czf release/text-to-ui-skill-v1.4.0.tgz skill ;;
+            components) tar -czf release/text-to-ui-components-v0.1.0.tgz packages ;;
+            tokens) tar -czf release/text-to-ui-tokens-v0.1.0.tgz packages/tokens ;;
+            *) echo "Unknown release kind"; exit 1 ;;
+          esac
+      - uses: actions/upload-artifact@v4
+        with:
+          name: text-to-ui-${{ inputs.release_kind }}
+          path: release/

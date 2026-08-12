@@ -1,0 +1,14 @@
+{
+  "name": "HarmonyOS PC Core Tokens",
+  "id": "harmonyos-pc-core-tokens",
+  "editorType": [
+    "pixso"
+  ],
+  "main": "./main.js",
+  "menu": [
+    {
+      "name": "同步核心 Token（126）",
+      "command": "sync-core"
+    }
+  ]
+}

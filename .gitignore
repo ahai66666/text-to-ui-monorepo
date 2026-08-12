@@ -1,0 +1,15 @@
+.DS_Store
+node_modules/
+dist/
+coverage/
+.cache/
+.install-cache/
+.release-staging/
+outputs/
+text-to-ui-backup-before-cleanup-*/
+*.local.json
+*.tmp
+*.log
+*.zip
+*.tgz
+!docs/releases/*.zip
