@@ -12,6 +12,7 @@
     "pixso:mapping:test": "node tools/test-pixso-mapping.mjs",
     "tokens:validate": "node skill/scripts/build-pixso-token-manifest.mjs --check && node skill/scripts/build-token-runtime-map.mjs --check && node skill/scripts/build-dual-output-token-map.mjs --check",
     "frameworks:validate": "node skill/scripts/validate-framework-component-adapter-map.mjs && node skill/scripts/test-framework-component-contract.mjs && node skill/scripts/validate-framework-component-runtime.mjs && node tools/validate-runtime-parity.mjs",
+    "layout:contract:test": "node skill/scripts/test-validate-pc-framework-layout.mjs",
     "components:reuse:test": "node skill/scripts/test-validate-web-component-reuse.mjs",
     "runtime:evidence": "node tools/validate-runtime-evidence.mjs",
     "dialogs:validate": "node tools/validate-dialog-contract.mjs",
@@ -22,6 +23,6 @@
     "gallery:baseline:validate": "node tools/validate-legacy-baseline.mjs",
     "gallery:build": "pnpm gallery:sync-legacy && pnpm --filter @text-to-ui/component-gallery build && node tools/validate-gallery-dist.mjs",
     "delivery:validate": "node tools/validate-repository-delivery.mjs",
-    "test": "pnpm delivery:validate && pnpm contracts:validate && pnpm styles:validate && pnpm pixso:mapping:test && pnpm frameworks:validate && pnpm components:reuse:test && pnpm runtime:evidence && pnpm dialogs:validate && pnpm gallery:baseline:validate && pnpm tokens:validate"
+    "test": "pnpm delivery:validate && pnpm contracts:validate && pnpm styles:validate && pnpm pixso:mapping:test && pnpm frameworks:validate && pnpm layout:contract:test && pnpm components:reuse:test && pnpm runtime:evidence && pnpm dialogs:validate && pnpm gallery:baseline:validate && pnpm tokens:validate"
   }
 }

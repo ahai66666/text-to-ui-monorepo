@@ -3,21 +3,26 @@
 Use this gate for every generated HTML, React, or Vue page. Pixso fidelity and
 Web component reuse are independent decisions: `fast visual import` may relax
 Pixso instance requirements, but it never permits handwritten Web lookalikes.
+This gate runs only after `pc-framework-layout-gate.md` passes. Components fill
+the validated framework slots; they cannot alter pane order, title layers,
+action slots, scrolling ownership, or resize behavior.
 
 ## Required order
 
-1. Locate the Monorepo root containing `pnpm-workspace.yaml`,
+1. Confirm that `layout-contract.json` exists and passes
+   `validate-pc-framework-layout.mjs`.
+2. Locate the Monorepo root containing `pnpm-workspace.yaml`,
    `packages/component-contracts`, and the three framework component packages.
-2. Run `pnpm delivery:validate` from that root.
-3. Read `packages/component-contracts/src/components.json` before writing page
+3. Run `pnpm delivery:validate` from that root.
+4. Read `packages/component-contracts/src/components.json` before writing page
    code. Search by task, behavior, logical name, Variant, slots, and states.
-4. Select exactly one Web renderer for the product page: HTML, React, or Vue.
-5. Write `component-usage.json` next to the page specification. Classify every
+5. Select exactly one Web renderer for the product page: HTML, React, or Vue.
+6. Write `component-usage.json` next to the page specification. Classify every
    reusable UI region as `registered`, `contractBased`, or `custom`.
-6. Import the selected production package and its shared styles/Tokens in page
+7. Import the selected production package and its shared styles/Tokens in page
    source. Compose registered exports or factories; do not copy component DOM
    or CSS into the page.
-7. Run `validate-web-component-reuse.mjs` before browser QA and delivery.
+8. Run `validate-web-component-reuse.mjs` before browser QA and delivery.
 
 ## Framework imports
 

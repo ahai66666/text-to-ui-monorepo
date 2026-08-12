@@ -39,6 +39,7 @@
 
 ## 生成规则
 
+- PC 页面必须先通过 `references/pc-framework-layout-gate.md`：先选择并验证 Pattern、分栏顺序、全局标题层、全局主操作位、末级窗格起始位、滚动归属、缩放行为和布局 Token，再进入组件检索。组件只填充框架槽位，不得反向改写应用框架。
 - Web 页面无论采用 HTML-first、visual-first、direct HTML，还是 Pixso fast/strict，都必须先通过 `references/web-component-reuse-gate.md`。Pixso 快速通道不等于 Web 组件可以手写。
 - 先按 `logicalName` 命中组件，再选 Variant 和 state；禁止从视觉相似的 DOM 或同名 Frame 推断组件。
 - HTML、React、Vue 分别调用各自适配器，但必须输出同一组 `data-component`、`data-logical-component`、`data-variant`、`data-state` 契约属性。

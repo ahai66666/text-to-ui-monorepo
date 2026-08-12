@@ -1,6 +1,6 @@
 ---
 name: text-to-ui
-description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Before writing HTML, React, or Vue page code, locate the Text-to-UI Monorepo and inspect the component library and canonical contracts. Apply a mandatory source order: import real target-framework components when available; otherwise implement from matching contract component rules; only when both are absent create a custom component using shared Tokens, semantic icons, and HarmonyOS PC rules. Record and validate every source decision. Data attributes, copied DOM/CSS, old generated pages, and visual lookalikes do not count as library reuse. Use for text to ui, design-system reuse, page generation, Pixso/HTML conversion, dashboards, workbenches, settings, content tools, editors, and analysis screens.'
+description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Before selecting components or writing page code, choose and validate a canonical PC framework layout contract. Then locate the Text-to-UI Monorepo and apply the mandatory source order: import real target-framework components when available; otherwise implement from matching contract rules; only when both are absent create a custom component using shared Tokens, semantic icons, and HarmonyOS PC rules. Record and validate layout and component-source decisions. Lookalikes do not count as reuse. Use for text to ui, design-system reuse, page generation, Pixso/HTML conversion, dashboards, workbenches, settings, content tools, editors, and analysis screens.'
 ---
 
 # text to ui
@@ -24,10 +24,35 @@ In HTML-first refinement and visual-first modes, Pixso and HTML are two renderer
 Read `references/pixso-visual-parity.md` and `references/pixso-fidelity-routing.md` for every task that produces both HTML and Pixso. The first reference is the required contract for same-state screenshots, CSS-versus-physical viewport calibration, fixed desktop geometry, static import snapshots, and content-only comparison. The second selects exactly one Pixso path and defines the ZIP package gate, native component/Variable requirements, and the all-colors-use-Variables rule. `1728 × 1152` always means CSS pixels; verify `innerWidth`/`innerHeight` after applying the browser tool's physical viewport.
 For every page-generation task, read `references/web-component-reuse-gate.md` and `references/component-package-integration.md`, locate the Monorepo root, and load `packages/component-contracts/src/components.json` before writing page code. The Skill is an orchestrator and registry reader, not a replacement for the production React/Vue/HTML component source. Resolve component packages relative to the detected repository root (the root containing `pnpm-workspace.yaml`); do not assume the installed `$CODEX_HOME/skills/text-to-ui` directory contains them. If the Skill-only installation cannot discover that root or a required framework package, stop Web generation and report the missing path instead of silently substituting a screenshot, legacy preview, copied DOM/CSS, or visual lookalike.
 
+## Mandatory PC Framework Layout Gate
+
+This is the first implementation gate for every HarmonyOS PC page. It runs
+before component selection, `component-usage.json`, Pixso composition, or page
+code. A component may fill a declared framework slot, but it must not invent,
+replace, or reshape the application shell.
+
+1. Read `references/pc-framework-layout-gate.md`,
+   `references/harmonyos-layout-patterns.md`, and
+   `references/layout-system.md` after requirements are confirmed.
+2. Classify the primary workflow and select the simplest approved Pattern A,
+   B, C, or D. Do not begin from cards, individual controls, or a generic Web
+   page template.
+3. Create `layout-contract.json` before `page-spec.json` and
+   `component-usage.json`. Declare pane order, Global Title Layer, Primary
+   action slot, Final Pane Leading Slot, content mode, pane inset owners,
+   scroll owners, resize behavior, minimum window, and shared layout Tokens.
+4. Run `node text-to-ui/scripts/validate-pc-framework-layout.mjs --contract ...`.
+   Any failure blocks component selection and page implementation.
+5. Copy the validated decisions into `page-spec.json.constraintContract` and
+   keep HTML, React, Vue, and Pixso on that same framework contract.
+6. If no approved Pattern supports the confirmed workflow, stop and propose a
+   new reusable Pattern contract. Do not silently improvise a page shell.
+
 ## Mandatory Web Component Reuse Gate
 
 This gate applies to HTML-first, visual-first, and direct-HTML workflows and to
-all Pixso fidelity modes. It is a blocking gate, not a preference.
+all Pixso fidelity modes. It begins only after the PC Framework Layout Gate
+passes. It is a blocking gate, not a preference.
 
 1. Before page implementation, run `pnpm delivery:validate`, select one target
    framework, inspect the canonical component registry, and create
@@ -292,7 +317,7 @@ must be opened and reported as a visible checkpoint before Pixso starts.
    - Before designing, establish the user, work object, primary job, start and success states, action scopes, information priority, failure/recovery behavior, and state that must be preserved.
    - Apply the type baseline and module overrides from `references/tool-design-intelligence.md`. Do not give the entire page one global “expressive” or “strict” treatment.
    - Keep shell, navigation, filters, tables, permissions, publishing, logs, and dangerous actions operational even when preview, media, content, or empty-state modules use stronger expression.
-   - Derive the simplest suitable page structure from the workflow before selecting HarmonyOS panes, visual tokens, or components.
+   - Derive the simplest suitable page structure from the workflow, write `layout-contract.json`, and pass the PC Framework Layout Gate before selecting visual components.
    - For existing projects, inspect current product code, assets, routes, screenshots, and brand files before inventing a new visual language. Do not inspect or copy previous generated outputs unless the user explicitly asks to continue that exact artifact.
    - For new projects, infer a coherent tool context and state assumptions briefly.
 
@@ -305,8 +330,7 @@ must be opened and reported as a visible checkpoint before Pixso starts.
    - Read `references/icon-selection.md` before selecting, replacing, or adding component and page icons. Reusable components bind semantic aliases, never an unreviewed raw library filename. Resolve Lucide icons through `assets/icons/icon-aliases.json` and generate their exact source geometry with `scripts/export-icon-sprite.mjs`; never hand-author or approximate a Lucide path that exists in the installed package. For Pixso, also read `assets/design-system/pixso-icon-map.json` and pass `node scripts/validate-pixso-icon-map.mjs`; new Text to UI nodes must use the same exact SVG source and target-size mapping as HTML, never `HM Symbol` or `icon_font`.
    - Treat 24×24 as the icon source artboard, not the default display size. The page specification must declare `displaySizeToken` and the resolved 16px, 20px, or explicitly approved 24px display size. In Pixso, resize the SVG root and its internal vector geometry together; shrinking only the outer Frame fails QA.
    - Apply the outline icon stroke rule by resolved display size: 24px uses 1.5px, 20px uses 1.25px, and 16px uses 1px. Keep 1.5px as the source stroke on the 24×24 artboard and obtain smaller effective widths by uniform scaling; do not set a page-level stroke override. Filled HarmonyOS glyphs retain source geometry and do not receive a stroke.
-   - Read `references/layout-system.md` before composing application shells, page grids, sidebars, titlebars, or resize behavior.
-   - Read `references/harmonyos-layout-patterns.md` to select the simplest native desktop shell that supports the workflow, including the approved secondary-page pattern when a task drills into child settings or detail flows.
+   - Read `references/pc-framework-layout-gate.md`, `references/layout-system.md`, and `references/harmonyos-layout-patterns.md` before composing application shells, page grids, sidebars, titlebars, or resize behavior. The chosen shell must match the validated `layout-contract.json`, including the approved secondary-page pattern when a task drills into child settings or detail flows.
    - Inspect `assets/harmonyos-layout-references/reference-manifest.md` and only the relevant screenshots when native layout evidence is needed. Use them as structural references, not reusable visual assets.
    - Always start from `assets/design-system/`; override it only with higher-authority project sources.
    - For baseline color work, use only the 56 core variables in `assets/design-system/core-color-token-table.md`: Brand, Neutral Dark, Neutral Light, Function, and Multi. Bind Pixso layers directly to these variables; do not create additional semantic color variables. The only approved duplicate values are `multi/09–11`, which intentionally repeat the opaque success, danger, and warning colors for categorical use.
@@ -342,7 +366,7 @@ Use these steps for the preferred `html-first` mode.
 4. **Create and check the HTML draft**
    - Enter this step only after the Requirement Confirmation Gate is confirmed.
    - Choose the implementation strategy needed to render the agreed page structure, but keep this pass easy to revise.
-   - Generate the draft from the validated `page-spec.json`, canonical CSS Tokens, registered logical component IDs, `component-usage.json`, and the requirement contract.
+   - Generate the draft from the validated `layout-contract.json`, validated `page-spec.json`, canonical CSS Tokens, registered logical component IDs, `component-usage.json`, and the requirement contract.
    - Import and render the real selected-framework component package. Page code may compose Patterns, domain data, and page-owned content, but it must not reproduce registered component internals.
    - Run `validate-web-component-reuse.mjs` before opening the browser checkpoint. A single-file HTML draft must be a bundle of component-backed editable source, never an independently handwritten implementation.
    - Implement enough real behavior to verify navigation, information hierarchy, the primary workflow, overlays, and critical states. Do not spend time polishing details that Pixso is meant to refine.
@@ -518,6 +542,8 @@ Do not report completion until the shared checks and the checks for the selected
 Shared checks:
 
 - The workflow is recorded as `html-first`, `visual-first`, or `direct-html`; an unqualified request defaults to `html-first`.
+- Every HarmonyOS PC page has a validated `layout-contract.json` created before component selection; its Pattern, pane order, Global Title Layer, action slots, scroll owners, resize behavior, and shared layout Tokens match the delivered page.
+- Browser QA verifies pane boundaries, the Global Title Layer, pane-level scrolling, minimum-window behavior, and resize behavior. Components fill framework slots without changing the approved shell.
 - Requirement contract exists, includes the Tool Task Brief, and matches the latest user request.
 - Primary tool type, work object, primary workflow, action scopes, failure/recovery behavior, and required state preservation are recorded.
 - Tool Design Reasoning QA has no blockers or structural issues and has a total score of 4 or lower.
