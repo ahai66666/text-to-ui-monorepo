@@ -39,8 +39,12 @@
 
 ## 生成规则
 
+- Web 页面无论采用 HTML-first、visual-first、direct HTML，还是 Pixso fast/strict，都必须先通过 `references/web-component-reuse-gate.md`。Pixso 快速通道不等于 Web 组件可以手写。
 - 先按 `logicalName` 命中组件，再选 Variant 和 state；禁止从视觉相似的 DOM 或同名 Frame 推断组件。
 - HTML、React、Vue 分别调用各自适配器，但必须输出同一组 `data-component`、`data-logical-component`、`data-variant`、`data-state` 契约属性。
+- `data-component` 只是适配器输出标记，不能替代源码中的真实组件包 import。交付前必须用 `validate-web-component-reuse.mjs` 校验 `component-usage.json` 和可编辑源码。
+- `partial` 组件在 `sourceReady` 且目标框架实现存在时仍应引用真实源码，并披露未通过的验收维度；禁止以 partial 为理由手写替代。只有源码或目标框架实现缺失时才记录阻塞缺口。
+- 组件库确实没有目标能力时，才允许页面自有实现；必须记录检索词、候选组件、拒绝原因及是否应晋升共享组件。已有 Button、Input、Search、Select、Picker、Alert、Tooltip、Dialog、导航项等基础能力不得在页面内重写。
 - 页面颜色、间距、尺寸、字体和效果从 Token 包消费；组件源码禁止硬编码可见颜色。
 - Pixso 严格通道先聚焦 `NewComponents`，使用 `packages/pixso-mapping/resolve.js` 生成运行时解析计划，插入 linked instance 后读回 `mainComponent`、槽位和 `$variable`。
 - 快速视觉通道可以使用页面自有 Frame，但必须如实报告未绑定的组件和变量。

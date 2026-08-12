@@ -1,6 +1,6 @@
 ---
 name: text-to-ui
-description: 'Turn a short text request into a task-informed HarmonyOS PC desktop tool through three workflows: (1) analyze and confirm a proposed solution, create and browser-check an HTML draft, import it into Pixso for fast visual import or strict Token/component-bound refinement, then regenerate and test the final interactive demo; (2) analyze and confirm, create and approve an editable Pixso visual, then generate interactive HTML; or (3) analyze and confirm, then generate interactive HTML directly. Reuse registered Tokens, components, variants, and Patterns across React, Vue, static HTML, and Pixso when an approved library exists. Prefer HTML-first unless the user requests Pixso-first or HTML-only. Use for text to ui, text-to-ui, design-system reuse, component registry reuse, page generation, Pixso/HTML conversion, dashboards, admin or operations workbenches, settings, file/content tools, editors, and monitoring/analysis screens.'
+description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Before writing any HTML, React, or Vue page code, locate the Text-to-UI Monorepo, inspect the canonical component registry, and import the real target-framework component package plus shared Tokens and styles. Component reuse is mandatory in every workflow and Pixso mode; data attributes, copied DOM/CSS, old generated pages, and visual lookalikes do not count. Create page-owned components only after documented registry discovery proves the capability is missing. Use for text to ui, design-system and component-registry reuse, page generation, Pixso/HTML conversion, dashboards, admin or operations workbenches, settings, file/content tools, editors, and monitoring or analysis screens.'
 ---
 
 # text to ui
@@ -22,7 +22,38 @@ Use this skill to turn a brief UI idea into a polished HarmonyOS PC desktop appl
 In HTML-first refinement and visual-first modes, Pixso and HTML are two renderers of one rule system. They must share source-of-truth tokens, component variants, interaction states, layout rules, and content hierarchy. The initial HTML in HTML-first mode is a disposable structural draft, not the final source of visual truth; after Pixso approval, the latest Pixso state and synchronized `page-spec.json` govern the final demo. In direct-HTML mode, the requirement contract, design system, and browser-verified implementation are the source of truth. In every mode, treat HTML as a desktop application prototype, not as a generic responsive website.
 
 Read `references/pixso-visual-parity.md` and `references/pixso-fidelity-routing.md` for every task that produces both HTML and Pixso. The first reference is the required contract for same-state screenshots, CSS-versus-physical viewport calibration, fixed desktop geometry, static import snapshots, and content-only comparison. The second selects exactly one Pixso path and defines the ZIP package gate, native component/Variable requirements, and the all-colors-use-Variables rule. `1728 × 1152` always means CSS pixels; verify `innerWidth`/`innerHeight` after applying the browser tool's physical viewport.
-When the Monorepo is available, also read `references/component-package-integration.md` and load `packages/component-contracts/src/components.json`; the Skill is an orchestrator and registry reader, not a replacement for the production React/Vue/HTML component source. Resolve the component packages relative to the detected repository root (the root containing `pnpm-workspace.yaml`); do not assume the installed `$CODEX_HOME/skills/text-to-ui` directory contains them. If the Skill-only installation cannot discover that root or any required framework package, report component reuse as unavailable or partial instead of silently substituting a screenshot, legacy preview, or visual lookalike.
+For every page-generation task, read `references/web-component-reuse-gate.md` and `references/component-package-integration.md`, locate the Monorepo root, and load `packages/component-contracts/src/components.json` before writing page code. The Skill is an orchestrator and registry reader, not a replacement for the production React/Vue/HTML component source. Resolve component packages relative to the detected repository root (the root containing `pnpm-workspace.yaml`); do not assume the installed `$CODEX_HOME/skills/text-to-ui` directory contains them. If the Skill-only installation cannot discover that root or a required framework package, stop Web generation and report the missing path instead of silently substituting a screenshot, legacy preview, copied DOM/CSS, or visual lookalike.
+
+## Mandatory Web Component Reuse Gate
+
+This gate applies to HTML-first, visual-first, and direct-HTML workflows and to
+all Pixso fidelity modes. It is a blocking gate, not a preference.
+
+1. Before page implementation, run `pnpm delivery:validate`, select one target
+   framework, inspect the canonical component registry, and create
+   `component-usage.json` using the format in
+   `references/web-component-reuse-gate.md`.
+2. Match every required control or reusable content structure to an exact
+   registered `logicalName`, Variant, state, and slots before creating local
+   markup. Use the real target-framework implementation even when its status is
+   `partial`; disclose missing readiness dimensions instead of replacing it.
+3. Import `@text-to-ui/components-html`, `@text-to-ui/components-react`, or
+   `@text-to-ui/components-vue` in editable page source and compose the page
+   from those exports or factories. Load canonical Tokens and shared styles.
+4. Treat `data-component`, copied component DOM/CSS, matching class names,
+   screenshots, historical outputs, and visual similarity as non-evidence.
+   HTML-first means production HTML adapters first, not handwritten static HTML.
+5. Create a page-owned component only after registry discovery proves the
+   capability is missing. Record queries, reviewed candidates, rejection
+   reasons, and promotion disposition. If the capability is generally
+   reusable, add it to the shared contracts and component package first.
+6. Before browser QA and delivery, run
+   `node text-to-ui/scripts/validate-web-component-reuse.mjs --manifest ... --project-root ...`.
+   A failure blocks delivery. Keep editable source and `component-usage.json`
+   even when the final artifact is bundled into one HTML file.
+
+Web reuse and Pixso reuse are separate. Fast Pixso import may use page-owned
+Frames, but it never relaxes the Web component-package import requirement.
 
 For HTML-first and visual-first tasks, record a Pixso fidelity target. Use
 **fast visual import** by default when the goal is a quick editable visual
@@ -261,7 +292,7 @@ must be opened and reported as a visible checkpoint before Pixso starts.
    - Apply the type baseline and module overrides from `references/tool-design-intelligence.md`. Do not give the entire page one global “expressive” or “strict” treatment.
    - Keep shell, navigation, filters, tables, permissions, publishing, logs, and dangerous actions operational even when preview, media, content, or empty-state modules use stronger expression.
    - Derive the simplest suitable page structure from the workflow before selecting HarmonyOS panes, visual tokens, or components.
-   - For existing projects, inspect available code, assets, routes, screenshots, brand files, and previous outputs before inventing a new visual language.
+   - For existing projects, inspect current product code, assets, routes, screenshots, and brand files before inventing a new visual language. Do not inspect or copy previous generated outputs unless the user explicitly asks to continue that exact artifact.
    - For new projects, infer a coherent tool context and state assumptions briefly.
 
 3. **Establish the design system**
@@ -283,7 +314,7 @@ must be opened and reported as a visible checkpoint before Pixso starts.
    - React, Vue, Tailwind, and compiled single-file bundles must still consume the canonical Web CSS variables. Framework palette classes are implementation residue, not Tokens. Map them at the component selector/state boundary, record each selector/property/variable in `tokenContract.webCoverage`, and keep icons on `currentColor`. Never remap an entire framework palette globally when the same shade is used for different semantic roles. For React or compiled React/Tailwind output, read `references/react-token-mapping.md`; for Vue, read `references/vue-token-mapping.md`.
    - For Tailwind-like HTML output, use the generated `assets/design-system/tokens.utility.css` and `token-utility-map.json`. Utility Classes use the `u-` prefix (`u-bg-*`, `u-text-*`, `u-gap-*`, `u-p-*`, `u-type-*`) and resolve only to canonical CSS variables; arbitrary values, hex colors, and framework palette guesses are forbidden. Keep Pixso mapping on a separate `data-px-key="..."` semantic marker. A Class controls HTML rendering; the semantic key controls Pixso binding.
    - When a page or fixture spans React, Vue, or static HTML, read `references/framework-component-mapping.md`. Give all renderers one logical component contract and one shared Tokenized component stylesheet; in the user-facing gallery, place HTML / React / Vue as first-level tabs that replace the renderer inside the same catalog, not as links to nested pages. Every tab must read the canonical registry order and render the complete registered catalog from its real source. Runtime cards show one default component only; do not pre-render a second state matrix, and rely on real pointer/keyboard interaction for Hover, Focus, Pressed, Selected, open, commit, cancel, and disabled behavior. A selector shown for the catalog promises that every visible component family has a real adapter for every offered framework; if coverage is partial, hide unsupported tabs or scope the selector. A registered module adapter may reuse one canonical matrix source, but React, Vue, and HTML must each load it through their real renderer and declare every included logical component. The component package may also expose explicit `framework-html.html`, `framework-react.html`, and `framework-vue.html` entries for developer-only single-framework debugging; these entries must read the same registry and must not become a second user-facing catalog. After changing an adapter, rebuild and publish the served preview artifact, then verify the loaded frame's logical contract, card order, and default rendering; a `ready` label or a cached fallback shell is not proof of coverage. Run the gallery's actual interaction audit across all loaded framework renderers: source handler checks alone do not prove open, keyboard, commit, cancel, Escape, external-close, disabled, state-persistence, or post-mount behavior. Never add three hand-drawn lookalikes or claim a framework from sample content alone.
-   - Read `packages/component-contracts/src/components.json` before selecting a reusable component. `status: ready` means independent HTML/React/Vue source, states, editable slots, canonical Token consumption, and visual QA are all verified. `status: partial` is discoverable for planning and old-Skill visual regression only; it must not be rendered as a production adapter or claimed as Pixso strict parity. Respect each contract's `sourceStrategy`: reuse canonical Skill structure for simple components, use shadcn/shadcn-vue only as behavior foundations for complex interaction, and always apply `@text-to-ui/component-styles` over the library defaults.
+   - Read `packages/component-contracts/src/components.json` before selecting a reusable component. `status: ready` means independent HTML/React/Vue source, states, editable slots, canonical Token consumption, and visual QA are all verified. `status: partial` still requires the real source adapter when `sourceReady` and the selected framework implementation exist; disclose the unverified readiness dimensions and do not claim full parity. A partial status never authorizes a handwritten replacement. If source or the selected implementation is missing, record a blocked component gap. Respect each contract's `sourceStrategy`: reuse canonical Skill structure for simple components, use shadcn/shadcn-vue only as behavior foundations for complex interaction, and always apply `@text-to-ui/component-styles` over the library defaults.
    - For strict structured reuse, run `plan-registered-reuse.mjs --strict` after page-spec validation and before either renderer. Treat `verified` as directly reusable, `mapped-pending-verification` as a live-library task, `mapped-needs-rebuild` as a shared-library repair, and `missing-target` as a component gap. For fast visual import, do not defer the HTML/Pixso import behind this audit; optionally run the planner without `--strict` after the visual Frame exists to identify safe replacements.
 
 ### Canonical Pixso Frame and Pattern/Component Gate
@@ -310,7 +341,9 @@ Use these steps for the preferred `html-first` mode.
 4. **Create and check the HTML draft**
    - Enter this step only after the Requirement Confirmation Gate is confirmed.
    - Choose the implementation strategy needed to render the agreed page structure, but keep this pass easy to revise.
-   - Generate the draft from the validated `page-spec.json`, canonical CSS Tokens, registered logical component IDs, and the requirement contract.
+   - Generate the draft from the validated `page-spec.json`, canonical CSS Tokens, registered logical component IDs, `component-usage.json`, and the requirement contract.
+   - Import and render the real selected-framework component package. Page code may compose Patterns, domain data, and page-owned content, but it must not reproduce registered component internals.
+   - Run `validate-web-component-reuse.mjs` before opening the browser checkpoint. A single-file HTML draft must be a bundle of component-backed editable source, never an independently handwritten implementation.
    - Implement enough real behavior to verify navigation, information hierarchy, the primary workflow, overlays, and critical states. Do not spend time polishing details that Pixso is meant to refine.
    - Read `references/pixso-visual-parity.md`, calibrate the browser's physical viewport to a verified `1728 × 1152 CSS px`, then open the actual draft at that CSS viewport. Exercise the primary path, inspect a screenshot, and fix structural defects before import.
    - Run `scripts/verify-html-artifact.mjs` and `scripts/validate-visual-parity.mjs` against the delivery file and its manifest, open that exact HTML at the verified CSS viewport, and capture the draft screenshot. The manifest must record the state ID and the calibration result.

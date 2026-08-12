@@ -1,4 +1,4 @@
 interface:
   display_name: "Text to UI"
-  short_description: "Reuse registered HarmonyOS components across HTML and Pixso"
-  default_prompt: "Use $text-to-ui to build my HarmonyOS PC tool from one page contract, reusing registered Tokens, components, variants, and Patterns across HTML and Pixso before verification."
+  short_description: "Build HarmonyOS PC pages from registered native components"
+  default_prompt: "Use $text-to-ui to build my HarmonyOS PC tool. Before writing page code, locate the component Monorepo, inventory exact registered components, and import the real HTML, React, or Vue component package. Create page-owned components only for proven registry gaps, then validate component reuse before browser and Pixso QA."
