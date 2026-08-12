@@ -12,9 +12,8 @@ Pixso instance requirements, but it never permits handwritten Web lookalikes.
 3. Read `packages/component-contracts/src/components.json` before writing page
    code. Search by task, behavior, logical name, Variant, slots, and states.
 4. Select exactly one Web renderer for the product page: HTML, React, or Vue.
-5. Write `component-usage.json` next to the page specification. List every
-   registered component used, its exact `logicalName`, and every page-owned
-   exception.
+5. Write `component-usage.json` next to the page specification. Classify every
+   reusable UI region as `registered`, `contractBased`, or `custom`.
 6. Import the selected production package and its shared styles/Tokens in page
    source. Compose registered exports or factories; do not copy component DOM
    or CSS into the page.
@@ -52,30 +51,54 @@ The following are markers only and never prove reuse by themselves:
 - A Pixso Frame with the same component name.
 - A historical generated page that already looks correct.
 
-## Page-owned exception
+## Three-level source priority
 
-Create a page-owned component only when the registry has no component capable
-of the required job after searching names, categories, behaviors, slots, and
-Variants. Record each exception in `component-usage.json` with:
+Apply these levels in order for every UI region:
+
+1. **Registered component:** when the target-framework implementation exists,
+   import and render the production package. This is the only level that may be
+   reported as component-library reuse.
+2. **Contract-based implementation:** when no production implementation can do
+   the job but a canonical contract specimen or rule exists, implement from
+   that contract's exact structure, Variant, state, behavior, accessibility,
+   icon, and Token rules. Record the contract source and why the library
+   implementation is unavailable or insufficient. Report this as contract
+   adaptation, not component-library reuse.
+3. **Custom implementation:** only when neither a production component nor a
+   relevant canonical contract exists. Draw it from the current requirement
+   and HarmonyOS PC design rules, using shared Tokens, semantic icons, and
+   accessibility conventions. Report it as custom.
+
+For each `contractBased` or `custom` item, record:
 
 - a stable page-owned ID;
 - the capability that is missing;
 - the registry queries used;
 - reviewed candidate logical names and why each is insufficient;
-- whether the new implementation should remain page-owned or be promoted into
-  the shared component library.
+- the shared Token roles used;
+- whether it should remain page-owned or be promoted into the shared library.
 
-If the capability is reusable across products, add it to component contracts
-and the selected framework package first, then consume it as a registered
-component. Do not create local Button, Input, Search, Select, Picker, Alert,
-Tooltip, Dialog, navigation item, or other registered primitive.
+Each `contractBased` item additionally records `contractLogicalName` and exact
+contract evidence such as `canonicalSelector`, specimen, reference section, or
+contract notes. Each `custom` item records `contractQueries` proving that no
+relevant contract exists.
+
+If a second- or third-level capability is reusable across products, promote it
+into contracts and framework packages in follow-up work. Do not locally redraw
+a Button, Input, Search, Select, Picker, Alert, Tooltip, Dialog, navigation item,
+or other capability already available at a higher level.
 
 `partial` does not mean “ignore the component.” When `sourceReady` is true and
-the selected framework implementation exists, use the real source and disclose
-the unverified readiness dimensions. `partial` blocks claims of full parity; it
-does not authorize a handwritten replacement. If the source or selected
-framework implementation is genuinely missing, record a blocked gap and stop
-rather than silently substituting a lookalike.
+the selected framework implementation exists and supports the required job,
+use the real source and disclose the unverified readiness dimensions. If source
+is absent or cannot satisfy required slots/behavior, continue at level 2 using
+the canonical contract evidence. Do not jump directly from a partial component
+to unrestricted custom drawing.
+
+Contract-based and custom source must import shared Tokens and canonical
+component styles. All visible color, typography, spacing, size, radius, shadow,
+opacity, and icon choices must resolve through shared Tokens or semantic icon
+aliases; literal values require an explicit intrinsic-content exception.
 
 ## Freshness rule
 
@@ -99,7 +122,8 @@ production adapters.
       "usage": "primary action"
     }
   ],
-  "pageOwned": [],
+  "contractBased": [],
+  "custom": [],
   "previousOutputReuse": false
 }
 ```

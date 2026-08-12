@@ -40,7 +40,6 @@ if (fs.existsSync(registryPath)) {
 const registryByLogicalName = new Map(registry.map((item) => [item.logicalName, item]));
 
 const registered = Array.isArray(manifest.registered) ? manifest.registered : [];
-if (registered.length === 0) failures.push("registered must list at least one production component");
 for (const [index, usage] of registered.entries()) {
   if (!usage.logicalName) {
     failures.push(`registered[${index}].logicalName is required`);
@@ -59,21 +58,36 @@ for (const [index, usage] of registered.entries()) {
   if (unverified.length > 0) warnings.push(`${usage.logicalName} remains partial: ${unverified.join(", ")}`);
 }
 
-const pageOwned = Array.isArray(manifest.pageOwned) ? manifest.pageOwned : [];
-for (const [index, usage] of pageOwned.entries()) {
-  if (!usage.id) failures.push(`pageOwned[${index}].id is required`);
-  if (!usage.missingCapability) failures.push(`pageOwned[${index}].missingCapability is required`);
-  if (!Array.isArray(usage.registryQueries) || usage.registryQueries.length === 0) failures.push(`pageOwned[${index}].registryQueries must document registry discovery`);
+const validatePageOwnedBase = (usage, label, index) => {
+  if (!usage.id) failures.push(`${label}[${index}].id is required`);
+  if (!usage.missingCapability) failures.push(`${label}[${index}].missingCapability is required`);
+  if (!Array.isArray(usage.registryQueries) || usage.registryQueries.length === 0) failures.push(`${label}[${index}].registryQueries must document registry discovery`);
+  if (!Array.isArray(usage.tokenRoles) || usage.tokenRoles.length === 0) failures.push(`${label}[${index}].tokenRoles must list shared Token roles`);
   if (!Array.isArray(usage.reviewedCandidates)) {
-    failures.push(`pageOwned[${index}].reviewedCandidates must be an array`);
+    failures.push(`${label}[${index}].reviewedCandidates must be an array`);
   } else {
     for (const [candidateIndex, candidate] of usage.reviewedCandidates.entries()) {
-      if (!candidate.logicalName || !registryByLogicalName.has(candidate.logicalName)) failures.push(`pageOwned[${index}].reviewedCandidates[${candidateIndex}] must name a registered logicalName`);
-      if (!candidate.rejectionReason) failures.push(`pageOwned[${index}].reviewedCandidates[${candidateIndex}].rejectionReason is required`);
+      if (!candidate.logicalName || !registryByLogicalName.has(candidate.logicalName)) failures.push(`${label}[${index}].reviewedCandidates[${candidateIndex}] must name a registered logicalName`);
+      if (!candidate.rejectionReason) failures.push(`${label}[${index}].reviewedCandidates[${candidateIndex}].rejectionReason is required`);
     }
   }
-  if (!["page-owned", "promote-to-library"].includes(usage.disposition)) failures.push(`pageOwned[${index}].disposition must be page-owned or promote-to-library`);
+  if (!["page-owned", "promote-to-library"].includes(usage.disposition)) failures.push(`${label}[${index}].disposition must be page-owned or promote-to-library`);
+};
+
+const contractBased = Array.isArray(manifest.contractBased) ? manifest.contractBased : [];
+for (const [index, usage] of contractBased.entries()) {
+  validatePageOwnedBase(usage, "contractBased", index);
+  if (!usage.contractLogicalName || !registryByLogicalName.has(usage.contractLogicalName)) failures.push(`contractBased[${index}].contractLogicalName must name a canonical contract`);
+  if (!usage.contractEvidence || typeof usage.contractEvidence !== "string") failures.push(`contractBased[${index}].contractEvidence is required`);
 }
+
+const custom = Array.isArray(manifest.custom) ? manifest.custom : [];
+for (const [index, usage] of custom.entries()) {
+  validatePageOwnedBase(usage, "custom", index);
+  if (!Array.isArray(usage.contractQueries) || usage.contractQueries.length === 0) failures.push(`custom[${index}].contractQueries must prove no matching contract exists`);
+}
+
+if (registered.length + contractBased.length + custom.length === 0) failures.push("component-usage must declare at least one registered, contractBased, or custom UI region");
 
 const sourceRoots = Array.isArray(manifest.sourceRoots) ? manifest.sourceRoots : [];
 if (sourceRoots.length === 0) failures.push("sourceRoots must contain at least one editable source directory or file");
@@ -97,12 +111,17 @@ const collect = (candidate) => {
 for (const root of sourceRoots) collect(path.resolve(projectRoot, root));
 const source = sourceFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n");
 const expectedPackage = packageByFramework[manifest.targetFramework];
-const escapedPackage = expectedPackage?.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const hasProductionImport = escapedPackage
-  ? new RegExp(`(?:import\\s+[\\s\\S]*?\\s+from\\s*|import\\s*\\(|require\\s*\\()\\s*["']${escapedPackage}(?:\\/[^"']*)?["']`).test(source)
-  : false;
-if (expectedPackage && !hasProductionImport) failures.push(`editable page source must import ${expectedPackage}; contract markers, comments, or copied markup are not reuse evidence`);
+const hasImport = (packageName) => {
+  const escapedPackage = packageName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?:import\\s+(?:["']|[\\s\\S]*?\\s+from\\s*["']|\\(\\s*["'])|require\\s*\\(\\s*["']|@import\\s+["'])${escapedPackage}(?:\\/[^"']*)?["']`).test(source);
+};
+const hasProductionImport = expectedPackage ? hasImport(expectedPackage) : false;
+if (registered.length > 0 && expectedPackage && !hasProductionImport) failures.push(`editable page source must import ${expectedPackage}; contract markers, comments, or copied markup are not reuse evidence`);
 if (registered.length > 0 && /data-(?:logical-)?component\s*=/.test(source) && !hasProductionImport) failures.push("data-component markers exist without a production component-package import");
+if (contractBased.length + custom.length > 0) {
+  if (!hasImport("@text-to-ui/tokens")) failures.push("contractBased and custom source must import @text-to-ui/tokens");
+  if (!hasImport("@text-to-ui/component-styles")) failures.push("contractBased and custom source must import @text-to-ui/component-styles");
+}
 
 if (failures.length > 0) {
   console.error("Web component reuse validation failed");
@@ -110,4 +129,4 @@ if (failures.length > 0) {
   warnings.forEach((warning) => console.error(`warning: ${warning}`));
   process.exit(1);
 }
-console.log(JSON.stringify({ ok: true, targetFramework: manifest.targetFramework, componentPackage: expectedPackage, registeredCount: registered.length, pageOwnedCount: pageOwned.length, sourceFileCount: sourceFiles.length, warnings }, null, 2));
+console.log(JSON.stringify({ ok: true, targetFramework: manifest.targetFramework, componentPackage: expectedPackage, registeredCount: registered.length, contractBasedCount: contractBased.length, customCount: custom.length, sourceFileCount: sourceFiles.length, warnings }, null, 2));

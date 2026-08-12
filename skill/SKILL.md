@@ -1,6 +1,6 @@
 ---
 name: text-to-ui
-description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Before writing any HTML, React, or Vue page code, locate the Text-to-UI Monorepo, inspect the canonical component registry, and import the real target-framework component package plus shared Tokens and styles. Component reuse is mandatory in every workflow and Pixso mode; data attributes, copied DOM/CSS, old generated pages, and visual lookalikes do not count. Create page-owned components only after documented registry discovery proves the capability is missing. Use for text to ui, design-system and component-registry reuse, page generation, Pixso/HTML conversion, dashboards, admin or operations workbenches, settings, file/content tools, editors, and monitoring or analysis screens.'
+description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Before writing HTML, React, or Vue page code, locate the Text-to-UI Monorepo and inspect the component library and canonical contracts. Apply a mandatory source order: import real target-framework components when available; otherwise implement from matching contract component rules; only when both are absent create a custom component using shared Tokens, semantic icons, and HarmonyOS PC rules. Record and validate every source decision. Data attributes, copied DOM/CSS, old generated pages, and visual lookalikes do not count as library reuse. Use for text to ui, design-system reuse, page generation, Pixso/HTML conversion, dashboards, workbenches, settings, content tools, editors, and analysis screens.'
 ---
 
 # text to ui
@@ -33,20 +33,21 @@ all Pixso fidelity modes. It is a blocking gate, not a preference.
    framework, inspect the canonical component registry, and create
    `component-usage.json` using the format in
    `references/web-component-reuse-gate.md`.
-2. Match every required control or reusable content structure to an exact
-   registered `logicalName`, Variant, state, and slots before creating local
-   markup. Use the real target-framework implementation even when its status is
-   `partial`; disclose missing readiness dimensions instead of replacing it.
+2. Apply the mandatory source order to every UI region: real framework
+   component first; matching canonical contract implementation second; custom
+   drawing third only when both are absent. Record the selected level and
+   evidence in `component-usage.json`.
 3. Import `@text-to-ui/components-html`, `@text-to-ui/components-react`, or
    `@text-to-ui/components-vue` in editable page source and compose the page
    from those exports or factories. Load canonical Tokens and shared styles.
 4. Treat `data-component`, copied component DOM/CSS, matching class names,
    screenshots, historical outputs, and visual similarity as non-evidence.
    HTML-first means production HTML adapters first, not handwritten static HTML.
-5. Create a page-owned component only after registry discovery proves the
-   capability is missing. Record queries, reviewed candidates, rejection
-   reasons, and promotion disposition. If the capability is generally
-   reusable, add it to the shared contracts and component package first.
+5. For contract-based implementation, follow the exact contract structure,
+   states, behavior, accessibility, icons, and Token roles without claiming
+   component-library reuse. For custom implementation, prove that both library
+   and contract searches missed, then follow HarmonyOS PC rules and consume
+   shared Tokens for every visible design property.
 6. Before browser QA and delivery, run
    `node text-to-ui/scripts/validate-web-component-reuse.mjs --manifest ... --project-root ...`.
    A failure blocks delivery. Keep editable source and `component-usage.json`
@@ -314,7 +315,7 @@ must be opened and reported as a visible checkpoint before Pixso starts.
    - React, Vue, Tailwind, and compiled single-file bundles must still consume the canonical Web CSS variables. Framework palette classes are implementation residue, not Tokens. Map them at the component selector/state boundary, record each selector/property/variable in `tokenContract.webCoverage`, and keep icons on `currentColor`. Never remap an entire framework palette globally when the same shade is used for different semantic roles. For React or compiled React/Tailwind output, read `references/react-token-mapping.md`; for Vue, read `references/vue-token-mapping.md`.
    - For Tailwind-like HTML output, use the generated `assets/design-system/tokens.utility.css` and `token-utility-map.json`. Utility Classes use the `u-` prefix (`u-bg-*`, `u-text-*`, `u-gap-*`, `u-p-*`, `u-type-*`) and resolve only to canonical CSS variables; arbitrary values, hex colors, and framework palette guesses are forbidden. Keep Pixso mapping on a separate `data-px-key="..."` semantic marker. A Class controls HTML rendering; the semantic key controls Pixso binding.
    - When a page or fixture spans React, Vue, or static HTML, read `references/framework-component-mapping.md`. Give all renderers one logical component contract and one shared Tokenized component stylesheet; in the user-facing gallery, place HTML / React / Vue as first-level tabs that replace the renderer inside the same catalog, not as links to nested pages. Every tab must read the canonical registry order and render the complete registered catalog from its real source. Runtime cards show one default component only; do not pre-render a second state matrix, and rely on real pointer/keyboard interaction for Hover, Focus, Pressed, Selected, open, commit, cancel, and disabled behavior. A selector shown for the catalog promises that every visible component family has a real adapter for every offered framework; if coverage is partial, hide unsupported tabs or scope the selector. A registered module adapter may reuse one canonical matrix source, but React, Vue, and HTML must each load it through their real renderer and declare every included logical component. The component package may also expose explicit `framework-html.html`, `framework-react.html`, and `framework-vue.html` entries for developer-only single-framework debugging; these entries must read the same registry and must not become a second user-facing catalog. After changing an adapter, rebuild and publish the served preview artifact, then verify the loaded frame's logical contract, card order, and default rendering; a `ready` label or a cached fallback shell is not proof of coverage. Run the gallery's actual interaction audit across all loaded framework renderers: source handler checks alone do not prove open, keyboard, commit, cancel, Escape, external-close, disabled, state-persistence, or post-mount behavior. Never add three hand-drawn lookalikes or claim a framework from sample content alone.
-   - Read `packages/component-contracts/src/components.json` before selecting a reusable component. `status: ready` means independent HTML/React/Vue source, states, editable slots, canonical Token consumption, and visual QA are all verified. `status: partial` still requires the real source adapter when `sourceReady` and the selected framework implementation exist; disclose the unverified readiness dimensions and do not claim full parity. A partial status never authorizes a handwritten replacement. If source or the selected implementation is missing, record a blocked component gap. Respect each contract's `sourceStrategy`: reuse canonical Skill structure for simple components, use shadcn/shadcn-vue only as behavior foundations for complex interaction, and always apply `@text-to-ui/component-styles` over the library defaults.
+   - Read `packages/component-contracts/src/components.json` before selecting a reusable component. `status: ready` means independent HTML/React/Vue source, states, editable slots, canonical Token consumption, and visual QA are verified. For `partial`, use real source when `sourceReady` and the selected implementation satisfy the required job, while disclosing unverified dimensions. If the implementation is absent or insufficient, implement from the matching canonical contract as level 2. Only when neither implementation nor relevant contract exists may level 3 custom drawing proceed. Levels 2 and 3 must consume shared Tokens and must not claim component-library reuse. Respect `sourceStrategy` and apply `@text-to-ui/component-styles` over behavior foundations.
    - For strict structured reuse, run `plan-registered-reuse.mjs --strict` after page-spec validation and before either renderer. Treat `verified` as directly reusable, `mapped-pending-verification` as a live-library task, `mapped-needs-rebuild` as a shared-library repair, and `missing-target` as a component gap. For fast visual import, do not defer the HTML/Pixso import behind this audit; optionally run the planner without `--strict` after the visual Frame exists to identify safe replacements.
 
 ### Canonical Pixso Frame and Pattern/Component Gate
