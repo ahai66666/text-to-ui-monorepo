@@ -1,106 +1,226 @@
-# text-to-ui Monorepo
+# Text-to-UI：HarmonyOS PC 设计开发协同系统
 
-`text-to-ui` 是一个面向 HarmonyOS PC 客户端的设计到代码工作台：Skill 负责需求分析、页面结构、Token/组件搜索、Pixso 流程和验证；组件包负责提供真实的 HTML、React、Vue 实现；Pixso 映射包负责把逻辑组件解析为当前 `NewComponents` 中的原生实例和变量。
+`text-to-ui` 不是一个只把文字生成成页面的工具，也不是单独的一套组件库。它是连接需求分析、设计系统、跨框架原生组件、Pixso 设计稿、组件验收和页面生成流程的协同桥梁。
 
-## 架构
+它让设计师不再只交付一张静态效果图，也让开发者不再针对每个页面重复还原基础组件。双方围绕同一套组件契约、Tokens、图标、状态和交互规则工作，并通过真实的 HTML、React、Vue 运行时验证结果。
 
-```text
-需求 → page-spec.json → 逻辑组件注册表
-                         ├── HTML renderer
-                         ├── React renderer
-                         ├── Vue renderer
-                         └── Pixso NewComponents resolver
-```
+> 项目定位：一个面向 HarmonyOS PC 的 Text-to-UI 设计开发协同系统，包含需求分析 Skill、跨框架原生组件库、设计系统、Pixso 映射、组件画廊和自动验证流程。
 
-同一个逻辑组件共享 Variant、状态、Slots、Token 和交互契约。框架实现分别维护，不能把 HTML 视觉相似物冒充 React/Vue 源组件，也不能把 Pixso 普通图层冒充原生实例。
-
-## 完整代码仓交付边界（推荐）
-
-本仓库按“规范源、Skill 交付镜像、生产组件包”三层交付。上传或克隆时应保留整个仓库；只复制 `skill/` 或只安装 Skill，都不会自动携带生产组件库，也不会让 Codex 自动注册这个 Skill。
+## 系统如何工作
 
 ```text
-text-to-ui/                 # Skill 规范源，只在这里修改 Skill 规则
-skill/                      # Skill 交付镜像，用于独立安装/发布
-packages/                   # 生产组件包、Token、契约和 Pixso 映射
-apps/component-gallery/     # 唯一正式组件画廊
-tools/                      # 仓库级生成器与校验器
-fixtures/                   # 最小契约测试输入说明
-docs/                       # 架构、接入和发布文档
-pnpm-workspace.yaml         # workspace 边界
-pnpm-lock.yaml              # 根仓依赖锁定
-README.md                   # 仓库入口和安装说明
+Text-to-UI Skill
+    ↓
+组件契约、Tokens、图标、视觉规范
+    ↓
+HTML 原生组件
+React 原生组件
+Vue 原生组件
+    ↓
+Pixso 映射、组件画廊、浏览器验证
 ```
 
-使用完整仓库时，从仓库根目录执行：
+其中有一条必须保持清晰的边界：
+
+> Skill 负责分析需求、选择组件、组织页面和调用规范；原生组件库负责真正的 HTML、React、Vue 实现。
+
+Skill 不用视觉相似的临时代码冒充生产组件。页面生成时，它会优先读取组件注册表和设计系统，选择已有组件、Variant 和 Pattern；组件包则提供可在真实工程中使用的结构、状态、行为和样式源码。
+
+## 它解决设计师的什么问题
+
+传统页面交付中，设计师经常遇到这些问题：
+
+- 设计稿只能表达一个静态瞬间，悬停、聚焦、禁用、错误、加载、空状态和弹层行为需要额外口头说明。
+- 同一个 Button、Select、Picker、Alert 或 Tooltip 在不同页面被重复设计，尺寸、间距和交互逐渐失去一致性。
+- 设计稿中的颜色、字号和间距没有明确对应 Token，开发只能靠目测还原。
+- 组件名称、用途、插槽、状态和行为没有统一契约，设计师和开发者对“同一个组件”的理解不一致。
+- Pixso 中的组件与代码组件彼此独立，设计系统更新后容易出现两套规范。
+- 设计完成后才能看到真实浏览器效果，跨框架差异和交互问题发现得太晚。
+- 后台、工作台、设置页等复杂工具需要大量重复布局，设计师把时间消耗在基础拼装而不是关键任务体验上。
+
+Text-to-UI 将这些问题转化为可复用、可实现、可验证的系统能力：
+
+- 直接查看真实组件，而不是只看静态效果图。
+- 在组件画廊中检查默认、悬停、聚焦、禁用、错误、加载和弹层等完整状态。
+- 设计时复用已有 Tokens、组件、图标和交互规则，减少重复决策。
+- 使用组件契约明确组件名称、用途、Variant、状态、插槽、尺寸和行为。
+- 让 Pixso 设计与代码组件基于同一套逻辑映射和视觉规范。
+- 用文字描述工作目标后，由 Skill 组合已有能力，快速生成工作台、后台、设置页或内容工具的结构草案。
+- 通过 HTML、React、Vue 三种运行时预览，提前发现视觉与行为差异。
+- 将交付物从“一张需要解释的图”升级为“设计稿 + 组件规则 + 交互状态 + 可运行验证”。
+
+对设计师最核心的价值是：
+
+> 从“设计页面”升级为“设计可复用、可实现、可验证的组件系统”。
+
+## 它如何帮助开发实现
+
+- 开发者获得的不是一次性生成的 HTML，而是真实的框架组件源码。
+- 同一个逻辑组件分别提供 HTML、React 和 Vue 实现，并共享组件身份和行为契约。
+- 三种框架复用 Tokens、语义图标和 canonical 视觉样式，减少重复实现。
+- 组件结构、状态、交互和可访问性要求在开发前已经定义。
+- Skill 生成页面时优先组合已有组件，避免每个项目重新实现基础能力。
+- 设计决策可以直接对应 Token 和组件属性，降低目测还原和反复沟通成本。
+- 组件画廊同时承担开发参考、运行时调试和交付验收环境的职责。
+- 契约、样式、框架运行时和 Token 校验可以提前发现跨框架偏差。
+- 修改共享 Token 或组件样式后，可以同步影响多个框架和后续生成页面。
+
+对开发者最核心的价值是：
+
+> 从“照着设计稿重复还原”升级为“直接调用统一契约下的原生组件”。
+
+## 设计与开发协作流程
+
+默认采用 HTML-first 闭环：
+
+```text
+文字需求
+  ↓
+需求分析与方案确认
+  ↓
+读取设计系统和组件契约
+  ↓
+生成 HTML 结构初稿并进行浏览器检查
+  ↓
+导入 Pixso，进行视觉调整和设计确认
+  ↓
+基于确认结果生成最终页面
+  ↓
+HTML / React / Vue 运行时与自动校验
+```
+
+根据任务也可以选择 Pixso-first 或 Direct HTML。无论采用哪种流程，页面结构、组件选择、状态和 Token 都应来自同一份规则系统；不能把 Pixso 普通图层宣称为原生组件实例，也不能把 HTML 外观相似物冒充 React 或 Vue 源组件。
+
+## 核心模块
+
+| 模块 | 职责 |
+| --- | --- |
+| `text-to-ui/` | Skill 规范源；定义需求分析、页面组织、设计系统复用和验证流程 |
+| `skill/` | 可独立安装和发布的 Skill 交付镜像 |
+| `packages/tokens/` | 跨设计与代码使用的 canonical Tokens |
+| `packages/icons/` | HTML、React、Vue 共用的语义图标 |
+| `packages/component-contracts/` | 统一组件身份、Variant、状态、插槽和适配规则 |
+| `packages/component-styles/` | 三种框架共用的 canonical 视觉实现 |
+| `packages/components-html/` | 语义化 HTML 组件与交互控制器 |
+| `packages/components-react/` | 真实 React 组件源码 |
+| `packages/components-vue/` | 真实 Vue 组件源码 |
+| `packages/pixso-mapping/` | 逻辑组件到 Pixso 组件和变量的运行时映射 |
+| `apps/component-gallery/` | 唯一正式的组件预览、对照和验收环境 |
+| `tools/` | 契约、样式、运行时、Token 和交付校验工具 |
+
+## 组件契约为什么重要
+
+组件契约是设计和开发之间的共同语言。它不只记录组件叫什么，还定义：
+
+- 组件用于解决什么任务，以及不应该在哪些场景使用。
+- 支持哪些 Variant、尺寸、状态和内容插槽。
+- 键盘、鼠标、焦点、弹层和错误恢复应该如何工作。
+- HTML、React、Vue 分别使用哪个真实源码入口。
+- 视觉样式引用哪些 Tokens、图标和共享规则。
+- Pixso 中如何解析对应组件，而不把文件内 GUID 固化进仓库。
+- 达到 `Ready` 前必须具备哪些可重复运行的验证证据。
+
+这让设计师可以明确表达组件意图，让开发者可以按同一个身份和状态模型实现，也让 Skill 能够可靠选择组件而不是根据外观猜测。
+
+## 组件画廊
+
+`apps/component-gallery/` 是唯一正式组件画廊，用于：
+
+- 设计师查看真实视觉、完整状态和交互表现。
+- HTML、React、Vue 在相同位置逐项对照。
+- 开发者调试组件结构和行为。
+- 验收 Token、样式和框架适配是否一致。
+- 为 Skill 和 Pixso 映射提供可检查的组件目录。
+
+开发服务器启动后，可在浏览器中切换 HTML、React、Vue 运行时。推荐通过 HTTP 访问；`file://` 只支持静态 HTML fallback，不能验证真实 React/Vue 入口。
+
+## 当前覆盖与成熟度
+
+| 组件范围 | HTML | React | Vue | Pixso 映射 |
+| --- | --- | --- | --- | --- |
+| 50 个登记组件 | Partial | Partial | Partial | Logical mapping |
+
+目前 50 个组件已经具有独立的 HTML、React、Vue 源码入口，并使用 canonical CSS Variables，但仍统一标记为 `Partial`。只有以下六项都具有可重复运行的证据后，组件才会恢复为 `Ready`：
+
+- `sourceReady`
+- `contractReady`
+- `visualParity`
+- `behaviorParity`
+- `accessibilityParity`
+- `tokenParity`
+
+当前质量门是 `0 Ready / 50 Partial`。这是一项有意保留的诚实成熟度标记：Skill 和 Pixso 严格通道不能把尚未完成六维验收的组件宣称为完整复用。
+
+## 完整代码仓交付边界
+
+```text
+text-to-ui-monorepo/
+├── text-to-ui/                 # Skill 唯一规范源
+├── skill/                      # Skill 可安装交付镜像
+├── packages/                   # 生产组件、Tokens、契约、图标和 Pixso 映射
+├── apps/component-gallery/     # 正式组件画廊
+├── fixtures/                   # 最小契约与回归测试输入
+├── tools/                      # 生成器和自动校验器
+├── docs/                       # 架构、接入和发布文档
+├── pnpm-workspace.yaml
+├── pnpm-lock.yaml
+└── README.md
+```
+
+完整仓库、独立 Skill 和生产组件包是三个不同概念：
+
+- `text-to-ui/` 是 Skill 唯一规范源。规则修改应先发生在这里，再同步到 `skill/`。
+- `skill/` 是可独立安装的规则包，但它本身不是生产组件库。
+- `packages/` 才包含 HTML、React、Vue 的真实实现和共享设计系统能力。
+- 只安装 Skill 而没有组件包时，Skill 必须明确报告组件库不可用，不能静默生成视觉相似替代品。
+- 克隆仓库不会自动把 Skill 注册到 Codex；仍需安装 `skill/`，并为组件复用提供完整仓库或已发布包。
+
+## 本地运行
+
+环境要求：Node.js 22、pnpm 10。
 
 ```bash
+git clone https://github.com/ahai66666/text-to-ui-monorepo.git
+cd text-to-ui-monorepo
 pnpm install
-pnpm delivery:validate
 pnpm test
 ```
 
-`delivery:validate` 会检查目录边界、根 workspace、组件注册表、HTML/React/Vue 三套源码入口、正式画廊，以及 `text-to-ui/` → `skill/` 的关键镜像文件是否同步。通过后，Skill 才能在同一份代码仓中读取生产组件契约和适配器。
+组件画廊开发与构建：
 
-### Skill 安装与组件库复用
+```bash
+pnpm gallery:sync-legacy
+pnpm --filter @text-to-ui/component-gallery dev
 
-- `text-to-ui/` 是唯一规范源；修改 Skill 规则时先改它，再同步到 `skill/`。
-- `skill/` 是可独立安装的规则包，包含 Skill 入口、参考文档、Token/图标工具和预览资源；它不是生产组件包。
-- `packages/` 才是 HTML、React、Vue 真实组件、共享样式、Token、契约和 Pixso 映射的来源。需要复用原生组件时，必须让这些目录与 Skill 一起存在，或按发布文档分别安装组件包。
-- 从仓库克隆到本地不会自动把 Skill 注册到 Codex。需要在 Codex 的 Skills 目录安装 `skill/`（或 Release 中的 Skill 包），并在使用组件库时从本仓库根目录运行/提供组件包路径。
-
-独立 Skill 安装与完整仓库开发是两个不同场景：前者能调用 `text-to-ui` 的规则，但如果没有 `packages/`，Skill 必须报告组件包不可用，不能用视觉相似物静默替代。
-
-## 当前覆盖
-
-| 组件 | HTML | React | Vue | Pixso 映射 |
-| --- | --- | --- | --- | --- |
-| 50 个登记组件（HTML / React / Vue 均有独立源码入口） | partial* | partial* | partial* | logical mapping |
-
-`*` 当前 50 个组件已从通用生成适配器切换为独立的 HTML、React、Vue 源码入口，但全量一致性修复会先把所有组件保持为 `Partial`；只有 `sourceReady`、`contractReady`、`visualParity`、`behaviorParity`、`accessibilityParity`、`tokenParity` 六项均有可复跑证据后才恢复 `Ready`。当前质量门显示 `0 verified / 50 partial`，不能被 Skill 或 Pixso 严格通道宣称为已完成复用。全部组件都使用 canonical CSS Variables，并直接继承旧 Skill 的 HarmonyOS PC 组件规则。预览入口只有一份契约视觉基线：旧 Skill 的完整视觉画廊直接作为唯一视觉来源；运行时入口在同一个一级目录中用 HTML / React / Vue Tab 切换真实适配器，不再跳转二级运行时页面。严格 Pixso 通道仍需要在当前文件的 `NewComponents` 页面实时解析 Component Key/Variant，并读回 `$variable`。
-
-旧三框架运行时对照是迁移期间的回归区；覆盖矩阵按六维判定展示真实 Ready/Partial 数量，新画廊直接加载组件包实现。完整视觉原稿在“契约组件 · 看样子”中统一展示；工程回归区只保留覆盖矩阵和维护入口，不再重复渲染第二套契约样例。原生组件预览严格跟随契约视觉章节和组件顺序，而业务 `category/order` 只负责代码组织；因此 HTML、React、Vue 都能在相同位置与契约基线逐项对比。运行时只显示结构性 Variant，状态通过真实交互查看。
-
-组件实现的来源顺序是：既有 Skill/产品组件 → 组件契约适配器 → （确实缺失时）shadcn 结构起点。契约中的 `sourceStrategy` 会记录这次选择：`canonical-custom`、`shadcn-behavior-canonical-style` 或 `canonical-static`。引入 shadcn 时只复用结构和交互骨架，颜色、字号、间距、圆角、状态和图标必须重新映射到 canonical Token；不能把 shadcn 默认主题当成本项目样式。
-
-## 目录
-
-```text
-skill/                    # Codex Skill，可独立安装
-packages/tokens/          # Token CSS/JSON
-packages/component-contracts/  # 跨框架组件契约
-packages/component-styles/    # HTML/React/Vue 共享的 canonical CSS 入口
-packages/components-html/ # 静态 HTML 组件
-packages/components-react/# React 组件
-packages/components-vue/  # Vue 组件
-packages/pixso-mapping/    # Pixso 逻辑映射，不缓存 GUID
-apps/component-gallery/    # HTML 组件画廊与覆盖矩阵
-fixtures/                 # 最小测试输入
-tools/                    # 仓库级校验
-docs/                     # 架构、接入和发布文档
+# 或生成正式构建
+pnpm gallery:build
 ```
 
-组件源码补齐与后续视觉精化规则见 [`docs/component-migration-plan.md`](docs/component-migration-plan.md)。
+## 自动验证
+
+```bash
+pnpm delivery:validate       # 仓库目录、交付镜像和组件入口
+pnpm contracts:validate      # 组件契约完整性
+pnpm styles:validate         # 共享视觉规则一致性
+pnpm frameworks:validate     # HTML / React / Vue 适配和运行时
+pnpm tokens:validate         # Token 源与生成映射
+pnpm pixso:mapping:test      # Pixso 逻辑组件解析
+pnpm runtime:evidence        # 运行时验收证据
+pnpm dialogs:validate        # 弹层组件契约
+pnpm gallery:baseline:validate
+pnpm test                    # 完整质量门
+```
+
+GitHub Actions 会在 push 和 pull request 时运行核心交付、契约、框架、Token 与 Pixso 映射校验。
 
 ## 版本与发布
 
-组件包和 Skill 独立版本：`skill-v1.4.0`、`components-v0.1.0`、`tokens-v0.1.0`。GitHub Release 发布 Skill ZIP 与组件包构建产物；需要工程依赖时再发布 React/Vue npm 包。仓库不保存运行时 Pixso GUID，GUID 在目标文件当前页面中重新解析。
+Skill、组件包和 Tokens 使用独立版本，例如：
 
-## 本地验证
+- `skill-v1.4.0`
+- `components-v0.1.0`
+- `tokens-v0.1.0`
 
-```bash
-pnpm install
-pnpm delivery:validate
-pnpm contracts:validate
-pnpm frameworks:validate
-pnpm tokens:validate
-pnpm styles:validate
-pnpm pixso:mapping:test
-pnpm runtime:evidence
-pnpm runtime:http          # Vite 已启动时，验证三个真实入口
-pnpm gallery:baseline:validate
-pnpm skill:preview:check
-```
+GitHub Release 可以发布 Skill ZIP 与组件包构建产物；需要作为工程依赖使用时，再发布 React/Vue 等 npm 包。仓库不保存目标 Pixso 文件的运行时 GUID，组件和变量应在当前文件中动态解析。
 
-组件画廊可直接打开 `apps/component-gallery/index.html`；运行 `pnpm gallery:sync-legacy` 会把旧 Skill 完整视觉基线同步到画廊的稳定本地资源，再访问 `http://127.0.0.1:4175/apps/component-gallery/index.html`。开发服务器推荐使用 Vite，以确保契约视觉基线不会被路径 fallback 替换。`file://` 仅用于 HTML 静态 fallback，React/Vue 入口会明确禁用；要切换真实三框架，请使用 HTTP。
-
-Skill 默认流程为：需求分析 → 方案确认 → HTML 初稿 → 浏览器检查 → Pixso 细化 → 人工确认 → 最终 Demo。Pixso 导入分为视觉快速通道和 Token/组件精化通道；严格通道必须同时通过真实组件实例和变量读回。
+组件迁移与六维验收规则见 [`docs/component-migration-plan.md`](docs/component-migration-plan.md)。
