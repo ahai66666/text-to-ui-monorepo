@@ -1,9 +1,41 @@
 {
-  "name": "text-to-ui-monorepo",
-  "private": true,
-  "version": "0.1.0",
-  "packageManager": "pnpm@10.0.0",
-  "scripts": {
+  "schemaVersion": 1,
+  "generatedFrom": [
+    {
+      "path": "package.json",
+      "sha256": "39a1d50fc4d07dfd17e3fa24d851dc6135dc4767ac1677db582bb2cc9e00c73e"
+    }
+  ],
+  "modes": {
+    "fast-preview": {
+      "purpose": "Reach the first browser-visible interactive page after blocking checks only.",
+      "commands": [
+        "pnpm index:check",
+        "pnpm layout:contract:test",
+        "pnpm components:reuse:test"
+      ],
+      "requiredEvidence": [
+        "layout-contract.json",
+        "component-usage.json",
+        "build-or-open-success",
+        "target-viewport",
+        "primary-path-operable"
+      ]
+    },
+    "release-validation": {
+      "purpose": "Run complete repository and delivery validation after visible direction approval.",
+      "commands": [
+        "pnpm test",
+        "pnpm gallery:build"
+      ],
+      "requiredEvidence": [
+        "direction-approval",
+        "full-validation-report",
+        "final-browser-review"
+      ]
+    }
+  },
+  "availablePackageScripts": {
     "index:build": "node text-to-ui/scripts/build-navigation-index.mjs --repo . --skill-root text-to-ui",
     "index:check": "node text-to-ui/scripts/validate-navigation-index.mjs --repo . --skill-root text-to-ui",
     "context:resolve": "node text-to-ui/scripts/resolve-context.mjs",

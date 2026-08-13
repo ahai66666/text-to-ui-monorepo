@@ -137,6 +137,22 @@ const mirroredFiles = [
   "README.md",
   "package.json",
   "references/component-package-integration.md",
+  "references/components/source-resolution.md",
+  "references/layouts/framework-layout-routing.md",
+  "references/workflows/fast-preview.md",
+  "references/workflows/release-validation.md",
+  "references/index/generated/task-router.json",
+  "references/index/generated/layout-index.json",
+  "references/index/generated/component-index.json",
+  "references/index/generated/token-index.json",
+  "references/index/generated/validation-index.json",
+  "scripts/locate-monorepo.mjs",
+  "scripts/query-layouts.mjs",
+  "scripts/query-components.mjs",
+  "scripts/query-tokens.mjs",
+  "scripts/resolve-context.mjs",
+  "scripts/validate-navigation-index.mjs",
+  "scripts/verify-fast-preview.mjs",
 ];
 for (const relativePath of mirroredFiles) {
   const canonicalPath = path.join("text-to-ui", relativePath);

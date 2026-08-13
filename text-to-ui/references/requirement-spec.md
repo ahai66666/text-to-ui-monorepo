@@ -245,11 +245,15 @@ Create a compact internal or project-level requirement contract before HTML or P
 - Selected workflow:
 - Workflow selection source: explicit / preferred default
 - Initial HTML draft and structural checkpoint, if `html-first`:
+- First visible HTML review status: pending / changes-requested / direction-approved
+- Direction approval evidence:
 - Design strategy file, if required:
 - Pixso top-level Frames:
 - Pixso approval checkpoint, if required:
 - Final frontend views:
 - Verification scope:
+- Release validation status: blocked-until-direction-approval / in-progress / passed
+- Final visible review:
 - Primary acceptance flow:
 ```
 
