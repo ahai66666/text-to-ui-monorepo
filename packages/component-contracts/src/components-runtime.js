@@ -984,6 +984,7 @@ export default {
       "tokenRoles": [
         "color.primary",
         "color.primary-text",
+        "color.text",
         "size.button-height",
         "radius.button",
         "spacing.padding-button-x",

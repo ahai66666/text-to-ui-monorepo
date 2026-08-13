@@ -33,6 +33,7 @@ for (const token of [
   "--color-sidebar-selected",
   "--state-layer-pressed"
 ]) requireText(canonicalCss, token, "canonical Skill CSS");
+requireText(canonicalCss, ".btn-icon-text-ghost { color: var(--color-text);", "canonical Skill Button CSS");
 
 for (const selector of [
   ".tui-button",
@@ -45,6 +46,7 @@ for (const selector of [
   ".tui-titlebar[data-size=\"large\"]",
   ".tui-titlebar[data-size=\"xlarge\"]",
   ".tui-button--icon[data-variant=\"ghost\"]",
+  ".tui-button[data-mode=\"icon-text\"][data-variant=\"ghost\"] { color: var(--color-text); }",
   ".tui-split-button__control > .tui-button[data-variant=\"ghost\"]"
 ]) requireText(packageCss, selector, "component contract CSS");
 for (const token of ["--height-button", "--padding-button-x", "--type-body-l-size", "--height-input", "--height-titlebar-sm", "--height-titlebar-md", "--height-titlebar-lg", "--height-titlebar-xl", "--size-icon-button", "--color-sidebar-selected", "--state-layer-pressed"]) requireText(packageCss, token, "component contract CSS");

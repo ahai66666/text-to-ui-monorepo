@@ -327,7 +327,7 @@ html[data-embedded="contract"] .section:first-child { margin-top: 0; }
 .btn[disabled] { opacity: var(--state-disabled-opacity); cursor: not-allowed; }
 .btn-icon-text { height: var(--height-icon-text-button); padding-inline: var(--padding-button-x); }
 .btn-icon-text svg { width: var(--icon-size-md); height: var(--icon-size-md); flex: 0 0 var(--icon-size-md); fill: currentColor; stroke: none; }
-.btn-icon-text-ghost { color: var(--color-icon-text-button-ghost-content); background: var(--color-icon-text-button-ghost-bg); }
+.btn-icon-text-ghost { color: var(--color-text); background: var(--color-icon-text-button-ghost-bg); }
 .btn-icon-text-ghost:hover { background: var(--color-icon-text-button-ghost-hover-bg); }
 .btn-icon-text-ghost:active { background: var(--state-layer-pressed); }
 .button-matrix { display: grid; gap: 24px; }
