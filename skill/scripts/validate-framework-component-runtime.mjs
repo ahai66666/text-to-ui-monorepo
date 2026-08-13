@@ -270,6 +270,12 @@ function galleryLayoutFailures(runtimeSource, cssSource, htmlSource) {
   if (!/@media\s*\(max-width:\s*560px\)\s*\{\s*\.field-grid\s*\{[^}]*grid-template-columns:\s*1fr/s.test(cssSource)) {
     layoutFailures.push("field surface contexts are missing their narrow-width one-column fallback");
   }
+  if (!/\.primary-navigation-shell-pattern\[data-navigation-levels="two"\]\s+\.pattern-primary-level-icons\s*\{[^}]*margin-block-start:\s*auto/s.test(cssSource)) {
+    layoutFailures.push("expanded first-level navigation is not anchored to the bottom of Primary Navigation");
+  }
+  if (!/\.primary-navigation-shell-pattern\[data-navigation-collapsed="true"\]\[data-navigation-levels="two"\]\s+\.pattern-primary-level-icons\s*\{[^}]*margin-block-start:\s*auto[^}]*flex-direction:\s*column[^}]*justify-content:\s*flex-end/s.test(cssSource)) {
+    layoutFailures.push("collapsed first-level navigation is not stacked from the bottom upward");
+  }
   if (!/<div class="panel button-matrix">\s*<div class="framework-adapter-slot" data-framework-component="button"><\/div>\s*<div class="framework-native-surface">/s.test(htmlSource)) {
     layoutFailures.push("Button framework selector is not inside the original Button module card");
   }
@@ -322,6 +328,13 @@ if (process.argv.includes("--negative-layout-test")) {
   const fieldLayoutFailures = galleryLayoutFailures(galleryRuntime, invalidFieldLayoutCss, gallery);
   if (!fieldLayoutFailures.some((failure) => failure.includes("desktop two-column layout"))) {
     failures.push("layout guard failed to reject an intentional collapsed field-surface layout");
+  }
+  const invalidPrimaryNavigationCss = galleryCss
+    .replaceAll("margin-block-start: auto", "margin-block-start: 0")
+    .replaceAll("justify-content: flex-end", "justify-content: flex-start");
+  const primaryNavigationFailures = galleryLayoutFailures(galleryRuntime, invalidPrimaryNavigationCss, gallery);
+  if (!primaryNavigationFailures.some((failure) => failure.includes("first-level navigation"))) {
+    failures.push("layout guard failed to reject first-level navigation that is not bottom-aligned");
   }
   const missingEscapeSelectFailures = catalogSelectFailures(
     catalogLoader.replaceAll('event.key === "Escape"', 'event.key === "Cancelled"')
