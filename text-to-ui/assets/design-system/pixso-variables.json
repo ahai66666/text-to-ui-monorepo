@@ -940,7 +940,7 @@
     "component/spacing/padding/tooltip": "space.3",
     "component/spacing/padding/alert": "space.3",
     "component/spacing/padding/alert-left": "space.3",
-    "component/spacing/padding/alert-right": "space.4",
+    "component/spacing/padding/alert-right": "space.2",
     "component/spacing/padding/selection-option": "space.3",
     "component/spacing/padding/tab-x": "space.4",
     "component/spacing/padding/tab-panel": "space.5",

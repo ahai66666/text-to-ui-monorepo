@@ -10,14 +10,14 @@ const buttonLogicalName = ({ variant, mode }) => {
   return `Button/${variant[0].toUpperCase()}${variant.slice(1)}/Default`;
 };
 
-export function Button({ label, children, variant = "primary", size = "standard", mode = "text", state = "default", disabled = false, icon, onClick, menuOpen = false, ...props }) {
+export function Button({ label, children, variant = "primary", size = "standard", mode = "text", state = "default", disabled = false, icon, onClick, menuOpen = false, className = "", ...props }) {
   const resolvedState = disabled ? "disabled" : state;
   const logicalName = buttonLogicalName({ variant, mode });
   const modeClass = mode === "icon" ? " tui-button--icon" : mode === "selection-dropdown" ? " tui-button--selection" : "";
   const labelContent = children ?? label;
-  return <button type="button" className={`tui-component tui-button${modeClass}`} {...props} {...contract("button", logicalName, variant, resolvedState, { "data-mode": mode, "data-size": size, "aria-expanded": mode === "selection-dropdown" ? menuOpen : undefined })} disabled={disabled} onClick={onClick}>
+  return <button type="button" className={`tui-component tui-button${modeClass}${className ? ` ${className}` : ""}`} {...props} {...contract("button", logicalName, variant, resolvedState, { "data-mode": mode, "data-size": size, "aria-expanded": mode === "selection-dropdown" ? menuOpen : undefined })} disabled={disabled} onClick={onClick}>
     {icon && <span data-slot="icon"><Icon name={icon} /></span>}
-    {mode !== "icon" && <span data-slot="label" data-typography-role="body-l">{labelContent}</span>}
+    {mode !== "icon" && <span data-slot="label" data-typography-role={size === "small" ? "body-m" : "body-l"}>{labelContent}</span>}
     {mode === "selection-dropdown" && <span data-slot="trigger"><Icon name="navigation/chevron-down" size={16} /></span>}
   </button>;
 }
@@ -30,14 +30,15 @@ export function Input({ value, defaultValue, placeholder = "请输入内容", di
   </label>;
 }
 
-export function Search({ value, defaultValue, placeholder = "搜索", disabled = false, state = "default", surface = "white", onChange, onClear, ...props }) {
+export function Search({ value, defaultValue, placeholder = "搜索", disabled = false, state = "default", surface = "white", advancedSearch = false, advancedSearchLabel = "高级搜索", onAdvancedSearch, onChange, onClear, ...props }) {
   const hasValue = value !== undefined ? Boolean(value) : Boolean(defaultValue);
   const [focused, setFocused] = React.useState(false);
   const resolvedState = disabled ? "disabled" : state === "default" && focused ? "focus" : state;
-  return <label className="tui-component tui-search" data-surface={surface} {...contract("search", "Search/White Surface/Default", hasValue ? "with-value" : "default", resolvedState)}>
+  return <label className="tui-component tui-search" data-surface={surface} {...contract("search", "Search/White Surface/Default", advancedSearch ? "advanced-search" : hasValue ? "with-value" : "default", resolvedState)}>
     <span data-slot="leading"><Icon name="field/search" /></span>
     <input {...props} type="search" value={value} defaultValue={defaultValue} placeholder={placeholder} disabled={disabled} onChange={onChange} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }} data-slot="value" data-typography-role="body-l" />
     {hasValue && <button className="tui-icon-button" type="button" aria-label="清除" onClick={onClear} data-slot="clear"><Icon name="action/close" /></button>}
+    {advancedSearch && <Button className="tui-search__advanced" label={advancedSearchLabel} variant="ghost" size="small" mode="text" type="button" aria-label={advancedSearchLabel} aria-haspopup="dialog" disabled={disabled} onClick={onAdvancedSearch} data-slot="advanced-search" data-typography-role="body-m" />}
   </label>;
 }
 
@@ -67,17 +68,18 @@ export function ListCard({ title = "项目设置", description = "", supporting 
   </div>;
 }
 
-export function Titlebar({ label = "项目空间", size = "large", state = "default", disabled = false, mainDetailActions = [], onMainDetailAction, onAction, children, ...props }) {
+export function Titlebar({ label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout = "standalone", paneRole = "global", mainDetailActions = [], onMainDetailAction, onAction, children, ...props }) {
   const actions = [
     ["minimize", "最小化"],
     ["maximize", "最大化"],
     ["close", "关闭"]
   ];
   const controlIconSize = size === "small" ? 16 : 24;
-  return <header className="tui-component tui-titlebar" {...contract("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state, { "data-size": size })} {...props}>
-    <span className="tui-titlebar__brand" data-slot="leading"><Icon name="navigation/grid" size={24} /><span data-slot="label" data-typography-role="subtitle-m">{label}</span></span>
-    {children ?? (mainDetailActions.length > 0 && <div className="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" aria-label="Main Detail 栏级操作">{mainDetailActions.map((action) => <button className="tui-icon-button tui-titlebar__pane-action" type="button" data-slot="main-detail-action" data-action={action.id} aria-label={action.label} disabled={disabled || action.disabled} key={action.id} onClick={() => onMainDetailAction?.(action.id)}><Icon name={action.icon ?? "action/more"} size={20} /></button>)}</div>)}
-    <div className="tui-titlebar__actions" data-slot="actions">{actions.map(([action, text]) => <button className="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action={action} aria-label={text} disabled={disabled} key={action} onClick={() => onAction?.(action)}><Icon name={`window/${action}`} size={controlIconSize} /></button>)}</div>
+  const isFinalPane = paneRole === "final-pane";
+  return <header className="tui-component tui-titlebar" {...contract("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state, { "data-size": size, "data-layout": layout, "data-pane-role": paneRole })} {...props}>
+    {(paneRole === "global" || paneRole === "primary-navigation") && <span className="tui-titlebar__brand" data-slot="leading"><Icon name="navigation/grid" size={24} /><span data-slot="label" data-typography-role="subtitle-m">{label}</span></span>}
+    {children ?? <>{layout === "two-column" && isFinalPane && <strong className="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">{paneTitle}</strong>}{layout === "three-column" && isFinalPane && mainDetailActions.length > 0 && <div className="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" aria-label="Main Detail 栏级操作">{mainDetailActions.map((action) => <button className={`tui-icon-button tui-titlebar__pane-action${action.showLabel ? " tui-titlebar__pane-action--text" : ""}`} type="button" data-slot="main-detail-action" data-action={action.id} aria-label={action.label} disabled={disabled || action.disabled} key={action.id} onClick={() => onMainDetailAction?.(action.id)}><Icon name={action.icon ?? "action/more"} size={20} />{action.showLabel && <span data-slot="label" data-typography-role="body-m">{action.label}</span>}</button>)}</div>}</>}
+    {(paneRole === "global" || isFinalPane) && <div className="tui-titlebar__actions" data-slot="actions">{actions.map(([action, text]) => <button className="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action={action} aria-label={text} disabled={disabled} key={action} onClick={() => onAction?.(action)}><Icon name={`window/${action}`} size={controlIconSize} /></button>)}</div>}
   </header>;
 }
 

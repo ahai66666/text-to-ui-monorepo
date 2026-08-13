@@ -94,7 +94,7 @@
   .tui-button-gallery__grid--four, .tui-button-gallery__grid--three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.tui-input, .tui-search { position: relative; width: 100%; height: var(--height-input); display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--padding-search-x); color: var(--color-text); border: 1px solid transparent; border-radius: var(--radius-input); background: var(--color-input-bg-on-default); font-family: var(--font-sans); font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); font-weight: var(--type-body-l-weight); }
+.tui-input, .tui-search { position: relative; width: 100%; min-width: 0; height: var(--height-input); display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--padding-search-x); color: var(--color-text); border: 1px solid transparent; border-radius: var(--radius-input); background: var(--color-input-bg-on-default); font-family: var(--font-sans); font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); font-weight: var(--type-body-l-weight); }
 /* Surface is a context contract, not a second component. White content uses
    the default gray input surface; gray content uses the subtle white input
    surface. All three adapters set the same data-surface attribute. */
@@ -113,6 +113,10 @@
 .tui-input input::placeholder, .tui-search input::placeholder { color: var(--color-text-subtle); }
 .tui-search [data-slot="leading"] { width: var(--icon-size-sm); height: var(--icon-size-sm); display: inline-grid; place-items: center; flex: 0 0 var(--icon-size-sm); color: var(--color-icon-muted); }
 .tui-search [data-slot="leading"] svg { width: 100%; height: 100%; display: block; }
+.tui-search [data-slot="clear"] { flex: 0 0 var(--size-icon-button); }
+.tui-search__advanced { flex: 0 0 auto; min-width: max-content; }
+.tui-search:has([data-slot="advanced-search"]) { padding-right: var(--space-2); }
+.tui-search[data-surface="gray"]:hover:has([data-slot="advanced-search"]), .tui-search[data-surface="gray"][data-state="hover"]:has([data-slot="advanced-search"]) { padding-right: var(--space-2); }
 .tui-icon-button svg { width: var(--icon-size-sm); height: var(--icon-size-sm); display: block; }
 .tui-icon-button { width: var(--size-icon-button); height: var(--size-icon-button); padding: 0; display: inline-grid; place-items: center; border: 0; border-radius: var(--radius-icon-button); color: var(--color-icon-muted); background: transparent; cursor: pointer; }
 .tui-icon-button:hover { color: var(--color-text); background: var(--state-layer-hover); }
@@ -155,7 +159,7 @@
 /* Batch 2 canonical components.  These are independent primitives rather
    than generated Card/Menu wrappers, but they intentionally reuse the same
    Token values as the legacy Skill baseline. */
-.tui-titlebar { width: 100%; height: var(--height-titlebar-lg); display: flex; align-items: center; gap: var(--gap-titlebar-brand); padding-left: var(--padding-titlebar-leading); padding-right: var(--padding-titlebar-trailing-l); color: var(--color-text); background: var(--color-titlebar-normal-bg); }
+.tui-titlebar { width: 100%; height: var(--height-titlebar-lg); display: flex; align-items: center; gap: var(--gap-titlebar-brand); padding-left: var(--padding-titlebar-leading); padding-right: var(--padding-titlebar-trailing-l); border-bottom: 0; color: var(--color-text); background: var(--color-titlebar-normal-bg); }
 .tui-titlebar[data-size="small"] { height: var(--height-titlebar-sm); padding-right: var(--padding-titlebar-trailing-s); }
 .tui-titlebar[data-size="medium"] { height: var(--height-titlebar-md); padding-right: var(--padding-titlebar-trailing-m); }
 .tui-titlebar[data-size="large"] { height: var(--height-titlebar-lg); padding-right: var(--padding-titlebar-trailing-l); }
@@ -163,8 +167,12 @@
 .tui-titlebar__brand { min-width: 0; width: 192px; height: 24px; display: inline-flex; align-items: center; gap: var(--gap-titlebar-brand); }
 .tui-titlebar__brand > .tui-icon { width: var(--icon-size-lg); height: var(--icon-size-lg); flex: 0 0 var(--icon-size-lg); }
 .tui-titlebar__brand [data-slot="label"] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
+.tui-titlebar__pane-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--type-title-s-size); line-height: var(--type-title-s-leading); font-weight: var(--type-title-s-weight); }
+.tui-titlebar[data-layout="two-column"][data-pane-role="final-pane"] { border-bottom: 0; padding-left: var(--layout-main-title-leading-padding); }
+.tui-titlebar[data-layout="three-column"][data-pane-role="final-pane"] { border-bottom: var(--layout-navigation-divider-width) solid var(--color-border); padding-left: var(--layout-main-detail-action-leading-padding); }
 .tui-titlebar__pane-actions { min-width: 0; height: 40px; display: inline-flex; align-items: center; gap: var(--gap-button-group); }
 .tui-titlebar__pane-action { width: 40px; height: 40px; color: var(--color-icon); background: transparent; }
+.tui-titlebar__pane-action--text { width: auto; min-width: 40px; padding-inline: var(--space-3); gap: var(--gap-button-icon-label); }
 .tui-titlebar__pane-action svg { width: var(--icon-size-md); height: var(--icon-size-md); }
 .tui-titlebar__actions { width: 120px; height: 40px; margin-inline-start: auto; display: grid; grid-template-columns: repeat(3, 40px); align-items: center; }
 .tui-titlebar__action { width: 40px; height: 40px; color: var(--color-icon); }
@@ -492,11 +500,12 @@
 .tui-generated * { box-sizing: border-box; }
 .tui-generated { color: var(--color-text); font-family: var(--font-sans); font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); }
 .tui-icon { display: inline-block; flex: 0 0 auto; color: currentColor; overflow: visible; }
-.tui-icon--filled { fill: currentColor; stroke: none; }
-.tui-icon--outline { fill: none; stroke: currentColor; }
-.tui-icon--outline[data-icon-size="16"], .tui-icon--outline[data-icon-size="16"] [stroke] { stroke-width: 1; }
-.tui-icon--outline[data-icon-size="20"], .tui-icon--outline[data-icon-size="20"] [stroke] { stroke-width: 1.25; }
-.tui-icon--outline[data-icon-size="24"], .tui-icon--outline[data-icon-size="24"] [stroke] { stroke-width: 1.5; }
+.tui-icon--regular { fill: currentColor; }
+.tui-icon--regular [fill="none"] { fill: none; }
+.tui-icon--regular [stroke] { stroke: currentColor; }
+.tui-icon--regular[data-icon-size="16"] [stroke] { stroke-width: 1; }
+.tui-icon--regular[data-icon-size="20"] [stroke] { stroke-width: 1.25; }
+.tui-icon--regular[data-icon-size="24"] [stroke] { stroke-width: 1.5; }
 .tui-generated [data-typography-role="body-l"], [data-typography-role="body-l"] { font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); font-weight: var(--type-body-l-weight); }
 .tui-generated [data-typography-role="body-m"], [data-typography-role="body-m"] { font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); font-weight: var(--type-body-m-weight); }
 .tui-generated [data-typography-role="subtitle-m"], [data-typography-role="subtitle-m"] { font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }

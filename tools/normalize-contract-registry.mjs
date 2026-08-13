@@ -17,7 +17,7 @@ const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
 
 const readyIds = new Set();
 const customIds = new Set([
-  "button", "input", "search", "field", "textarea", "select", "combobox", "native-select", "checkbox", "radio-group", "switch", "tabs", "accordion", "collapsible", "sidebar", "list-card", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast",
+  "button", "input", "search", "titlebar", "field", "textarea", "select", "combobox", "native-select", "checkbox", "radio-group", "switch", "tabs", "accordion", "collapsible", "sidebar", "list-card", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast",
   "dialog", "alert-dialog", "semi-modal", "navigation-menu", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment", "carousel"
 ]);
 const shadcnIds = new Set([
@@ -36,7 +36,7 @@ const sourceStrategy = (id) => {
 const implementationPaths = {
   button: { html: "packages/components-html/src/button.html", react: "packages/components-react/src/index.jsx#Button", vue: "packages/components-vue/src/Button.vue" },
   input: { html: "packages/components-html/src/input.html", react: "packages/components-react/src/index.jsx#Input", vue: "packages/components-vue/src/Input.vue" },
-  search: { html: "packages/components-html/src/search.html", react: "packages/components-react/src/index.jsx#Search", vue: "packages/components-vue/src/Search.vue" },
+  search: { html: "packages/components-html/src/index.js#search", react: "packages/components-react/src/index.jsx#Search", vue: "packages/components-vue/src/Search.vue" },
   titlebar: { html: "packages/components-html/src/index.js#titlebar", react: "packages/components-react/src/index.jsx#Titlebar", vue: "packages/components-vue/src/Titlebar.vue" },
   textarea: { html: "packages/components-html/src/index.js#textarea", react: "packages/components-react/src/index.jsx#Textarea", vue: "packages/components-vue/src/Textarea.vue" },
   field: { html: "packages/components-html/src/index.js#field", react: "packages/components-react/src/index.jsx#Field", vue: "packages/components-vue/src/Field.vue" },

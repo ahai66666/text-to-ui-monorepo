@@ -1,6 +1,16 @@
 {
   "schemaVersion": 1,
   "library": "鸿蒙客户端设计规范",
+  "pixso": {
+    "componentLibraryPage": "NewComponents",
+    "activePageMatch": "exact-name",
+    "activePagePolicy": "resolve-and-repair-on-library-page-then-instantiate-on-target-page",
+    "targetPageMayDiffer": true,
+    "reuseRequiredFor": [
+      "html-first",
+      "visual-first"
+    ]
+  },
   "lookup": {
     "strategy": "exact-name",
     "idPolicy": "Resolve the current Pixso component GUID by exact name at runtime; never persist document GUIDs.",
@@ -120,13 +130,13 @@
     "Sidebar Group Header/Collapsed": "navigation/chevron-down",
     "Primary Level Icon/Default": "primary-level/overview",
     "Breadcrumb/Default": "navigation/chevron-right",
-    "Accordion/Collapsed": "navigation/chevron-down",
+    "Accordion/Collapsed": "navigation/chevron-right",
     "Collapsible/Collapsed": "navigation/chevron-down",
     "Avatar/*/Image": "object/avatar",
     "Spinner/Default": "status/loading",
     "Alert/Info": ["status/info", "action/close"],
     "Alert/Success": ["status/success", "action/close"],
-    "Alert/Error": ["status/error", "action/close"],
+    "Alert/Error": ["status/danger", "action/close"],
     "Alert/Warning": ["status/warning", "action/close"],
     "Alert/Neutral": ["status/neutral", "action/close"]
   }

@@ -316,4 +316,3 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `typography/caption-l/font-size` | `--type-caption-l-size` | `font/size/12` | `12px` |
 | `typography/caption-l/line-height` | `--type-caption-l-leading` | `font/line-height/16` | `16px` |
 | `typography/caption-l/font-weight` | `--type-caption-l-weight` | `font/weight/500` | `500` |
-

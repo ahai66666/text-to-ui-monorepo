@@ -51,15 +51,20 @@ const RuntimeStructuralButton = (props) => h("div", { class: "tui-runtime-struct
 ])));
 
 const RuntimeTitlebarGallery = (props) => h("div", { class: "tui-runtime-titlebar-gallery", "data-runtime-component": "titlebar" }, [
+  h("div", { class: "tui-runtime-titlebar-layouts", key: "layouts" }, [
+    h("div", { key: "two-column" }, [h("span", { class: "tui-runtime-surface-label" }, "两栏 · 左侧品牌 / 右侧标题与窗口控制"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two" }, [h(Titlebar, { key: "brand", layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "final", layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large", onAction: (action) => props.setStatus?.(`Titlebar · 两栏 · ${action}`) })])]),
+    h("div", { key: "three-column" }, [h("span", { class: "tui-runtime-surface-label" }, "三栏 · 第三栏操作槽位与分割线"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }], onMainDetailAction: (action) => props.setStatus?.(`Titlebar · Main Detail · ${action}`), onAction: (action) => props.setStatus?.(`Titlebar · 三栏 · ${action}`) })])])
+  ]),
+  ...[
   ["small", "S · 40px"],
   ["medium", "M · 56px"],
   ["large", "L · 64px"],
   ["xlarge", "XL · 72px"]
 ].map(([size, label]) => h("div", { class: "tui-runtime-titlebar-row", key: size }, [
   h("span", { class: "tui-runtime-surface-label", key: "label" }, label),
-  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", mainDetailActions: size === "large" ? [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }] : [], onMainDetailAction: (action) => props.setStatus?.(`Titlebar · Main Detail · ${action}`), onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) }),
+  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) }),
   h(Titlebar, { key: "unfocus", label: "项目空间", size, state: "unfocus", onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) })
-])));
+]))]);
 
 const RuntimeSemiModal = {
   props: { setStatus: Function },
@@ -84,8 +89,8 @@ const runtimeCore = (id, setStatus, component) => {
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色输入面"), h(Input, { key: "input", placeholder: "项目名称", surface: "gray" })])
   ]);
   if (id === "search") return h("div", { class: "tui-runtime-surface-pair" }, [
-    h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white" })]),
-    h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray" })])
+    h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })]),
+    h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })])
   ]);
   if (id === "sidebar") return h(Sidebar, { items: [
     { id: "projects", label: "项目", icon: "navigation/grid", count: 24, state: "selected" },

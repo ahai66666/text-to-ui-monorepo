@@ -177,6 +177,8 @@
   --color-badge-success-bg: var(--color-function-success-10);
   --color-badge-warning-text: var(--color-function-warning-100);
   --color-badge-warning-bg: var(--color-function-warning-10);
+  --color-badge-danger-text: var(--color-function-danger-100);
+  --color-badge-danger-bg: var(--color-function-danger-10);
 
   --color-chart-1: var(--color-multi-01);
   --color-chart-2: var(--color-multi-02);

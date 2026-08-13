@@ -719,7 +719,7 @@
       "autoLayout": true,
       "textRoles": {},
       "iconSize": 20,
-      "exactAssetIcons": [
+      "iconAliases": [
         "primary-level/overview"
       ],
       "transparent": true
@@ -1066,7 +1066,8 @@
       "textRoles": {
         "Initials": "Caption_L"
       },
-      "iconSize": 20
+      "iconSize": 20,
+      "radiusToken": "radius/avatar"
     },
     "Avatar/32/Fallback": {
       "family": "Avatar",
@@ -1080,7 +1081,8 @@
       "textRoles": {
         "Initials": "Caption_L"
       },
-      "iconSize": 20
+      "iconSize": 20,
+      "radiusToken": "radius/avatar"
     },
     "Avatar/40/Image": {
       "family": "Avatar",
@@ -1094,7 +1096,8 @@
       "textRoles": {
         "Initials": "Caption_L"
       },
-      "iconSize": 24
+      "iconSize": 24,
+      "radiusToken": "radius/avatar"
     },
     "Avatar/40/Fallback": {
       "family": "Avatar",
@@ -1108,7 +1111,8 @@
       "textRoles": {
         "Initials": "Caption_L"
       },
-      "iconSize": 24
+      "iconSize": 24,
+      "radiusToken": "radius/avatar"
     },
     "Progress/Default": {
       "family": "Progress",

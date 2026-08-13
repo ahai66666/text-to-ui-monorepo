@@ -7,7 +7,7 @@
     "index:build": "node text-to-ui/scripts/build-navigation-index.mjs --repo . --skill-root text-to-ui",
     "index:check": "node text-to-ui/scripts/validate-navigation-index.mjs --repo . --skill-root text-to-ui",
     "context:resolve": "node text-to-ui/scripts/resolve-context.mjs",
-    "icons:build": "node tools/build-inline-icon-map.mjs && node tools/sync-core-html-fixtures.mjs",
+    "icons:build": "node tools/build-component-icon-sprite.mjs && node tools/build-inline-icon-map.mjs && node tools/sync-core-html-fixtures.mjs && node tools/sync-generated-inline-icons.mjs && node tools/sync-legacy-primary-icons.mjs",
     "contracts:normalize": "node tools/normalize-contract-registry.mjs && node tools/enrich-contract-registry.mjs && node tools/build-parity-manifest.mjs && pnpm icons:build && node tools/build-component-runtime-module.mjs && node tools/build-file-runtime-fallback.mjs",
     "components:generate": "node tools/generate-full-component-adapters.mjs && node tools/normalize-contract-registry.mjs && node tools/enrich-contract-registry.mjs && node tools/build-parity-manifest.mjs && pnpm icons:build && node tools/build-component-runtime-module.mjs && node tools/build-file-runtime-fallback.mjs",
     "contracts:validate": "node tools/validate-components.mjs",

@@ -63,7 +63,7 @@ the approved disabled opacity token. Colors such as `brand/10`,
 Resolve component icons through `assets/icons/icon-aliases.json`.
 
 - Common controls use exact Lucide package geometry.
-- HarmonyOS primary-level icons use the approved filled HarmonyOS SVG.
+- Primary-level icons use the approved pinned Lucide Regular aliases.
 - Titlebar controls use the exact titlebar SVG assets.
 - Status icons use their approved circle assets.
 
@@ -73,7 +73,7 @@ Run `node scripts/validate-pixso-icon-map.mjs` before releasing a Pixso componen
 
 For the primary-level/settings repair, use the exact
 primary-level/settings alias from assets/icons/icon-aliases.json
-(gearshape.svg), replace the component-library slot in NewComponents, and
+(`lucide/settings`), replace the component-library slot in NewComponents, and
 verify the 24 × 24 viewBox, root/vector geometry, visible overflow, and
 currentColor binding on a temporary linked instance. Regenerate the HTML sprite
 from the same alias and run the strict icon audit. Do not fix only the page

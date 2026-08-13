@@ -119,9 +119,9 @@ assets/
 - Lucide source geometry is generated only through `scripts/export-icon-sprite.mjs` from `assets/icons/icon-aliases.json`. Never hand-author or approximate a Lucide path that exists in the pinned package; every HTML output containing icons must pass `scripts/audit-icons.mjs --strict`.
 - HarmonyOS Symbol remains the source for HarmonyOS-specific concepts and already-approved HarmonyOS glyphs. It is vendored under `assets/icons/harmonyos/`; the official 433 category entries resolve to 404 unique SVG files in `catalog/regular/`.
 - Source artboard: 24 × 24.
-- Lucide rendering: use outline geometry with project stroke width `1.5px`, `stroke-linecap: round`, and `stroke-linejoin: round`. Do not synthesize a filled variant from an outline icon.
-- HarmonyOS rendering: use Monochrome Regular (`400`) and the exact official filled-path geometry. Do not apply CSS `stroke-width`, line cap, or line join to exported HarmonyOS Symbol paths.
-- Filled or outline: use the exact approved source glyph. Only use a source-provided filled glyph; never manufacture an alternate style.
+- Lucide is the single general-purpose icon library. Use the pinned package geometry with project stroke width `1.5px`, `stroke-linecap: round`, and `stroke-linejoin: round`.
+- HarmonyOS Filled is not part of the Text-to-UI icon system. Do not generate, map, or select Filled variants.
+- Special assets such as Titlebar controls and the Checkbox mark remain exact vendored SVGs and are resolved only through semantic aliases.
 - Installation: `lucide@1.24.0` is project-managed through `package.json` and `pnpm-lock.yaml`. HarmonyOS Symbol remains project-vendored SVG.
 - Selection: define the action/object/state meaning first, search Lucide using canonical English concepts, shortlist 2–3 candidates, render them at the actual 16/20/24px usage size, visually compare, then bind the chosen asset to a semantic alias. Never select solely from a Chinese label or the first filename match.
 - Manual fallback: draw a 1.5px icon only when no approved source has a suitable glyph. Mark the asset as a fallback and keep it outside official library folders.
@@ -427,7 +427,7 @@ All styles use `--font-sans` and `--letter-spacing-normal`. Source names such as
 | `subtitle-m` | 16px | 22px | 500 | 次标题 | 标题辅助文本、列表文本、气泡提示主标题 |
 | `subtitle-s` | 14px | 20px | 500 | 次标题 | 列表子标题、普通副标题 |
 | `body-l` | 16px | 22px | 400 | 主文本 | 客户端默认正文、Sidebar、表格单元格、列表主文本、40px 菜单与操作控件 |
-| `body-m` | 14px | 20px | 400 | 副文本与紧凑标签 | 列表摘要与时间、普通描述、Toast、表格表头、Checkbox / Radio / Switch 标签、Tabs 与 28px Small Button |
+| `body-m` | 14px | 20px | 400 | 副文本与紧凑标签 | 列表摘要与时间、普通描述、Toast、Label、表格表头、Checkbox / Radio / Switch 标签、Tabs 与 28px Small Button |
 | `body-s` | 12px | 16px | 400 | 兼容文本 | 仅兼容既有引用；新的可见客户端文本改用 `caption-l` |
 | `caption-l` | 12px | 16px | 500 | 引用与特殊提示 | 字段帮助与错误、状态标签、组件注释、辅助标签与特殊提示 |
 | `caption-m` | 10px | 14px | 500 | 兼容文本 | 保留 Token 兼容性；不得用于新的可见客户端 UI |
@@ -590,7 +590,7 @@ Container tokens apply on all sides. Tokens ending in `-x` are horizontal paddin
 | `--padding-tooltip` | `--space-3` | 8px | 气泡提示 |
 | `--padding-alert` | `--space-3` | 8px | 公告提示旧版兼容值；新实现使用左右独立 Token |
 | `--padding-alert-left` | `--space-3` | 8px | 40px 公告提示左内边距 |
-| `--padding-alert-right` | `--space-4` | 12px | 40px 公告提示右内边距 |
+| `--padding-alert-right` | `--space-2` | 4px | 40px 公告提示右内边距 |
 | `--padding-selection-option` | `--space-3` | 8px | 单选块中的单选项 |
 | `--padding-tab-x` | `--space-4` | 12px | Tabs Trigger 水平内边距 |
 | `--padding-tab-panel` | `--space-5` | 16px | Tabs Panel 内容内边距 |
@@ -627,7 +627,7 @@ Container tokens apply on all sides. Tokens ending in `-x` are horizontal paddin
 --padding-tooltip: var(--space-3);
 --padding-alert: var(--space-3);
 --padding-alert-left: var(--space-3);
---padding-alert-right: var(--space-4);
+--padding-alert-right: var(--space-2);
 --padding-selection-option: var(--space-3);
 --padding-tab-x: var(--space-4);
 --padding-tab-panel: var(--space-5);
@@ -724,7 +724,9 @@ Values that must remain unchanged: primitive space scale and semantic horizontal
 Page to section relationship: use --gap-page-section
 Section title to content relationship: define when section-title patterns are specified
 Parent padding vs child gap rule: parent owns padding and gap; children do not duplicate the same spacing with margin
-Form Field / 表单字段: title and control stack vertically. The title uses the complete body-m style and --color-text; title-to-control uses --gap-field-label (8px). Adjacent fields use --gap-form-field (16px). Selection-control labels (Checkbox, Radio, Switch) use body-m.
+Form Field / 表单字段: title and control stack vertically. The title uses the complete body-m style and --color-text; title-to-control uses --gap-field-label (8px). Adjacent fields use --gap-form-field (16px). Selection-control labels (Checkbox, Radio, Switch) use body-m. The standalone Label uses body-m, exact --height-tag (28px), --padding-tag-x (12px) on both horizontal sides, flex alignment so its text is vertically centered, --radius-tag (8px), and --color-neutral-dark-05 (neutral-dark.5) as its background.
+
+Native Select / 原生选择器: use a real HTML `select` whose interactive box covers the complete visible control. Clicking the value, internal empty space, or trailing chevron region opens the browser or operating-system native option menu. The chevron is visual-only with `pointer-events: none`; do not replace Native Select with a custom menu, button, or partial-width hit target.
 Card internal rhythm: outer inset uses --padding-card; internal content gaps remain component-specific
 List and table row rhythm: standalone List containers use --padding-list. In Secondary List Pane, the scroll wrapper owns the 16px surface inset, the standalone Search frame and List Card state background fill that width, and each row uses the approved 8px horizontal padding. The resulting 24px content axis aligns title, toolbar/meta copy, states, and row content. Row height and vertical padding remain component-specific.
 
@@ -791,7 +793,7 @@ Margin rule: do not create a parallel margin scale; use margin only for exceptio
 | `--radius-list-item` | `--radius-3` | 8px | List 子项 |
 | `--radius-badge` | `--radius-full` | 999px | Badge |
 | `--radius-progress` | `--radius-full` | 999px | Progress 轨道与指示条 |
-| `--radius-avatar` | `--radius-3` | 8px | Avatar |
+| `--radius-avatar` | `--radius-full` | 999px | Avatar |
 | `--radius-card` | `--radius-4` | 12px | Card 与 Metric Card |
 | `--radius-table` | `--radius-4` | 12px | Table 外框 |
 | `--radius-pagination-item` | `--radius-3` | 8px | Pagination 项 |
@@ -823,7 +825,7 @@ Margin rule: do not create a parallel margin scale; use margin only for exceptio
 --radius-list-item: var(--radius-3);
 --radius-badge: var(--radius-full);
 --radius-progress: var(--radius-full);
---radius-avatar: var(--radius-3);
+--radius-avatar: var(--radius-full);
 --radius-card: var(--radius-4);
 --radius-table: var(--radius-4);
 --radius-pagination-item: var(--radius-3);
@@ -1038,6 +1040,8 @@ Selected or raised control: shadow-1
 Dropdown, Select listbox, Popover, Hover Card: shadow-2
 Context Menu: shadow-3
 Snackbar / Toast: white Surface with shadow-1 for compact, low-elevation feedback
+
+Context Menu / 上下文菜单: every menu item uses a horizontal semantic icon + text structure. The leading icon is exactly 24×24px (`--icon-size-lg`) and the icon-to-text gap uses `--gap-menu-item-content` (8px). Do not render Context Menu commands as text-only rows.
 
 ### Date Picker · 日期选择器
 
@@ -1296,9 +1300,9 @@ Metric Cards use the same shell and show one `title-s` Card title, one primary v
 
 Breadcrumb separators between every hierarchy level use the secondary icon color `--color-icon-muted` (`--color-neutral-dark-60`). Separator color does not inherit from the adjacent link or current-page text.
 
-Accordion triggers use `body-l` (16px / 22px / Regular 400). They use one `--icon-size-sm` (16px) SVG Chevron for both collapsed and expanded states. Keep the SVG geometry and fixed icon box unchanged; express state only by rotating the same icon 180 degrees from its collapsed orientation. Do not swap character glyphs or use different assets between states.
+Accordion triggers use `body-l` (16px / 22px / Regular 400). The default trigger is a transparent Ghost row with no outer border, uses 8px horizontal padding, 8px button radius, and fills its available frame. Put one 20px SVG `navigation/chevron-right` before the title with an 8px token gap; collapsed points right and expanded rotates 90 degrees to point down. Keep the label/icon order, SVG geometry, and fixed icon box unchanged across states.
 
-Collapsible triggers vertically center the label and one fixed `--icon-size-sm` (16px) SVG Chevron with Flex alignment. Do not use a text character as the disclosure icon. Collapsed and expanded states reuse the same SVG and differ only by a 180-degree rotation.
+Collapsible triggers vertically center the label and one fixed 20px SVG `navigation/chevron-down` on the right. The trigger fills its available frame, uses 8px horizontal padding and 8px button radius, keeps the label on the left and the icon on the right, and has no outer border on the default transparent Ghost surface. The label and icon positions never change when content opens. Collapsed rotates the same icon 180 degrees to point up; expanded leaves it pointing down. Do not use a text character as the disclosure icon.
 
 Tabs switch between peer panels inside one page. Use them for content views at the same hierarchy level; do not use Tabs for primary application navigation, sequential steps, filters that do not replace a panel, or independent toggle actions.
 
@@ -1328,6 +1332,15 @@ Do not use a gray List container on a white canvas. Row Hover uses `--state-laye
 
 List primary labels use `body-l`; timestamps, summaries, and secondary copy use `body-m`. Do not use `caption-m` for visible list metadata.
 
+List Item trailing text and chevrons use the secondary text color `--color-text-muted`; unselected leading and trailing icons use the secondary icon color `--color-icon-muted`. Semantic notification dots keep their status color and are not recolored as neutral icons. A multi-item group draws a `--layout-navigation-divider-width` (0.5px) divider in `--color-neutral-dark-20` (the `neutral-dark.20` token) only before each subsequent item, inset by `--space-3` (8px) on both sides so the line aligns with the row content; a single item and the final item have no divider.
+
+### List Item row contract
+
+- List Item content rows use `--height-list-item-single-line` (48px), `--height-list-item-double-line` (56px), and `--height-list-item-triple-line` (80px). Do not stretch a one-line row merely because the List container is taller.
+- Every row uses horizontal padding `--space-3` (8px). The leading icon box is `--icon-size-lg` (24px), and the icon-to-content gap is `--gap-menu-item-content` (8px).
+- Approved trailing slots are: text plus right chevron, icon, radio, checkbox, switch, and notification dot plus right chevron. The leading 24px icon remains present unless a named variant explicitly omits it.
+- A multi-row List Item group places a divider only before each subsequent child. The last child and a single Item have no bottom divider.
+
 ## 5.5 Data Display
 
 ### Classes
@@ -1350,13 +1363,13 @@ List primary labels use `body-l`; timestamps, summaries, and secondary copy use 
 
 Table uses `--color-surface`, `--radius-table` (12px), and a 1px `--color-border` outer stroke. The outer Table container owns `--padding-table` (`--space-6`, 24px) on all four sides, so its toolbar, row backgrounds, dividers, and pagination never touch the outer stroke. Header rows are 40px and data rows are 48px; the first header cell and every first-column body cell add `--space-5` (16px) from the inner Table edge. Internal columns may retain `--space-5` spacing. When the first-column name includes a leading Avatar, icon, thumbnail, or file-type visual, the gap between that visual and the name also uses `--space-5` (16px). Headers use muted `body-m` (14px / 20px / Regular 400); cells use `body-l` (16px / 22px / Regular 400); numeric values align right, and the first column owns the row label. Hover applies `--state-layer-hover`; selected rows use `--color-sidebar-selected`. Sortable headers are buttons with `aria-sort`, not clickable text containers.
 
-Badge is 24px high, uses `--radius-badge`, `caption-l`, and 8px horizontal padding. Approved variants are neutral, info, success, and warning. Each uses a readable foreground color with a background from the same core family at 10% opacity. Warning uses `function/warning/100` and `function/warning/10`; destructive or error treatment uses the Danger Button or Alert rather than inventing a Badge color. Badge/status labels and Alert backgrounds both use the approved 10% family surface; their component anatomy, height, typography, and actions provide the distinction. Every status label includes text; do not use a colored dot alone.
+Badge is 24px high, uses `--radius-badge`, `caption-l`, and 8px horizontal padding. Approved variants are neutral (gray), info (blue), success (green), warning (orange), and danger (red). Each uses a readable foreground color with a background from the same core family at 10% opacity. Badge/status labels and Alert backgrounds both use the approved 10% family surface; their component anatomy, height, typography, and actions provide the distinction. Every status label includes text; do not use a colored dot alone.
 
 Progress uses an 8px neutral track with a brand indicator. Determinate progress exposes `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`; visible percentage text is required when precise completion matters.
 
-Pagination items are 32px square. Current page uses `aria-current="page"`; previous/next controls are icon-only 40px Ghost Icon Buttons with the `navigation/back` and `navigation/forward` SVG aliases (20px nested icons), carry explicit accessible labels, and never render visible “上一页/下一页” text. Unavailable controls are disabled. Keyboard order follows visual order and changing page preserves focus on the activated item.
+Pagination items are 32px square. Current page uses `aria-current="page"`; previous/next buttons carry explicit accessible labels; unavailable controls are disabled. Keyboard order follows visual order and changing page preserves focus on the activated item.
 
-Avatar sizes are 32px and 40px with `--radius-avatar`. Initials and fallback icons remain readable and use deterministic semantic surfaces. Adjacent text owns the person's full name; Avatar alone is not the only identity affordance.
+Avatar sizes are 32px and 40px with `--radius-avatar` (`--radius-full`, 999px) so both sizes render as circles. Initials and fallback icons remain readable and use deterministic semantic surfaces. Adjacent text owns the person's full name; Avatar alone is not the only identity affordance.
 
 Empty State centers one short explanation and one recovery action inside the data region. It must describe what is missing and the next useful step, not only display an illustration.
 
@@ -1389,7 +1402,7 @@ Use `--radius-dialog` / `--radius-modal` and `--shadow-4`; constrain width to th
 
 Alert is a single-line, fixed-height announcement bar. Its anatomy is `Status Icon + Detail + Text Action + Close` and its complete height uses `--height-alert` (`--size-11`, 40px). The left group contains the status icon and detail; the right group contains the text action and close button. Both groups are vertically centered, the detail expands and truncates before the action group, and the right controls never wrap.
 
-- The container uses `--padding-alert-left` (`--space-3`, 8px) and `--padding-alert-right` (`--space-4`, 12px). The status icon and detail use `--gap-alert-content` (`--space-3`, 8px).
+- The container uses `--padding-alert-left` (`--space-3`, 8px) and `--padding-alert-right` (`--space-2`, 4px). The status icon and detail use `--gap-alert-content` (`--space-3`, 8px).
 
 - The status icon is 20px (`--icon-size-md`) and uses a circle plus a centered semantic mark: information, check, exclamation, cross, or neutral minus. Bind the reusable aliases `status/info`, `status/success`, `status/warning`, `status/danger`, and `status/neutral`; do not use text characters as icons.
 - Detail text uses the complete `subtitle-s` style (14px / 20px / Medium 500) and always uses the primary text color `--color-text`. The 20px status icon alone uses the current semantic status color. The text action reuses the approved Small Ghost Button component (`.btn.btn-ghost.btn-sm`) including its typography, foreground, Hover, Pressed, Focus, and Disabled behavior; do not recolor it with the Alert status. The close control uses the primary icon color `--color-icon` with a 20px close glyph inside a 32px hit area.
@@ -1399,7 +1412,7 @@ Alert is a single-line, fixed-height announcement bar. Its anatomy is `Status Ic
 
 ## 5.7 Tooltip
 
-Tooltip (Tips) is supporting text for an unfamiliar control, never the only place for essential information. It shares the Snackbar visual surface: white `--color-tooltip-bg` / `--color-surface`, primary `--color-tooltip-text` / `--color-text`, a 1px `--color-border` outline, and small `--shadow-1` elevation. The outline matches the List Selection dropdown menu. Keep `--radius-tooltip` (6px) and `--padding-tooltip` (8px), keep copy concise, and place it at least 4px from its trigger. Tooltip is a rounded floating surface with a centered directional caret; the caret reuses the tooltip background and border tokens and is not interactive.
+Tooltip (Tips) is supporting text for an unfamiliar control, never the only place for essential information. It shares the Snackbar visual surface: white `--color-tooltip-bg` / `--color-surface`, primary `--color-tooltip-text` / `--color-text`, a 1px `--color-border` outline, and small `--shadow-1` elevation. The outline matches the List Selection dropdown menu. Keep `--radius-tooltip` (6px) and `--padding-tooltip` (8px), keep copy concise, and place it at least 4px from its trigger. Tooltip is one complete rounded rectangular floating surface and does not use a directional caret or arrow.
 
 Show Tooltip on pointer hover and keyboard focus after a short delay. The trigger references the tooltip through `aria-describedby`. Hide it when pointer and focus leave, on `Escape`, or when the trigger is disabled. Tooltip itself is non-interactive and must not receive focus.
 
@@ -1432,11 +1445,11 @@ All four sizes expose `状态=Normal` and `状态=unfocus`, producing eight vari
 
 ## 5.9 Multi-Pane Title Layer Placement
 
-Primary Navigation Shell defaults Main Content to the White surface (`--color-surface`); Gray (`--color-bg-subtle`) remains an approved optional variant. The shell supports two navigation-hierarchy variants. Its Brand Anchor and Primary Navigation share a continuous right divider using `--layout-navigation-divider-width` (0.5px) and `--color-border`; Primary Navigation keeps `--space-4` (12px) bottom margin from the shell edge. Expanded navigation uses `--layout-sidebar-width` (240px). A 40px collapse button sits at the Brand Anchor's right edge. Activating it reduces the navigation column to `--layout-sidebar-width-collapsed` (64px), hides the application Logo and name, hides route labels, and preserves the current selection. In the collapsed Brand Anchor, a 40px expand button occupies the former Logo position. Both controls use semantic Lucide aliases, expose `aria-expanded` and `aria-controls`, support native button keyboard activation, and transfer focus to the newly visible counterpart. A single-level shell uses the Sidebar directly for its route list. In a two-level shell, first-level functional-space entries appear as icon-only controls at the bottom-left of the navigation region, while the second-level routes continue to use the Sidebar component above. This is the client system's only approved first-level menu, and every entry uses a source-provided filled/solid glyph; ordinary navigation and component actions retain their normal icon style. Unselected first-level icons use the tertiary icon color through `--color-primary-level-unselected`, which resolves to `--color-icon-subtle` (`--color-neutral-dark-40`); Selected uses the brand foreground on a transparent background. Hover may add the Sidebar accent background but must preserve the current icon color. Expanded mode uses a fixed `--size-11` (40px) high horizontal group and distributes every first-level entry across the Sidebar content width. When the entire navigation is collapsed to 64px, every first-level entry remains visible as a 40×40 icon-only control and the group stacks them vertically at the bottom; never hide the unselected entries. Second-level navigation is organized into one or more independent collapsible menu groups. Each group heading is a button that toggles only its associated route list, preserves selection while collapsed, exposes `aria-expanded` and `aria-controls`, and uses `subtitle-s` (14px / 20px / Medium 500) with `--color-text-muted`. The gap between a group heading and its route list uses `--space-1` (2px). Reuse one 16px Chevron for both states and animate it through a 180-degree rotation; do not swap icon assets. Keep independent Selected states for both navigation levels; changing the first level updates the second-level Sidebar context.
+Primary Navigation Shell defaults Main Content to the White surface (`--color-surface`); Gray (`--color-bg-subtle`) remains an approved optional variant. The shell supports two navigation-hierarchy variants. Its Brand Anchor and Primary Navigation share a continuous right divider using `--layout-navigation-divider-width` (0.5px) and `--color-border`; Primary Navigation keeps `--space-4` (12px) bottom margin from the shell edge. Expanded navigation uses `--layout-sidebar-width` (240px). A 40px collapse button sits at the Brand Anchor's right edge. Activating it reduces the navigation column to `--layout-sidebar-width-collapsed` (64px), hides the application Logo and name, hides route labels, and preserves the current selection. In the collapsed Brand Anchor, a 40px expand button occupies the former Logo position. Both controls use semantic Lucide aliases, expose `aria-expanded` and `aria-controls`, support native button keyboard activation, and transfer focus to the newly visible counterpart. A single-level shell uses the Sidebar directly for its route list. In a two-level shell, first-level functional-space entries appear as icon-only controls at the bottom-left of the navigation region, while the second-level routes continue to use the Sidebar component above. The complete first-level group is always anchored to the bottom edge of Primary Navigation; it must never be placed directly after the second-level menu at the top or middle. This is the client system's only approved first-level menu, and every entry uses the same pinned Lucide Regular semantic-alias rule as ordinary navigation and component actions; HarmonyOS Filled icons are prohibited. Unselected first-level icons use the tertiary icon color through `--color-primary-level-unselected`, which resolves to `--color-icon-subtle` (`--color-neutral-dark-40`); Selected uses the brand foreground on a transparent background. Hover may add the Sidebar accent background but must preserve the current icon color. Expanded mode uses a fixed `--size-11` (40px) high horizontal group anchored at the bottom and distributes every first-level entry across the Sidebar content width. When the entire navigation is collapsed to 64px, every first-level entry remains visible as a 40×40 icon-only control and the group stacks them vertically from the bottom upward; never hide the unselected entries. Second-level navigation is organized into one or more independent collapsible menu groups. Each group heading is a button that toggles only its associated route list, preserves selection while collapsed, exposes `aria-expanded` and `aria-controls`, support native button keyboard activation, and uses `subtitle-s` (14px / 20px / Medium 500) with `--color-text-muted`. The gap between a group heading and its route list uses `--space-1` (2px). Reuse one 16px Chevron for both states and animate it through a 180-degree rotation; do not swap icon assets. Keep independent Selected states for both navigation levels; changing the first level updates the second-level Sidebar context.
 
 The component-gallery preview for Primary Navigation Shell must keep only the shell-defining content real: Brand Anchor, Global Primary Action Slot, navigation hierarchy, selection, and collapse controls. Represent the non-focused adjacent Main Content title and body with neutral static skeletons and no business copy or data. Keep window controls visible because they communicate the shell boundary. This is a documentation-preview focus rule, not a runtime loading-state requirement for generated product pages.
 
-Titlebar rendering and page-action ownership add these mandatory shell rules: keep the Titlebar component transparent; host each segment on the same surface as its pane below; omit horizontal dividers below Primary Navigation and Secondary Pane title segments; keep vertical pane dividers continuous. Add a Global Primary Action Slot inside Primary Navigation Shell between Brand Anchor and Sidebar navigation. Every page-global Primary Button must use this slot, with exactly one such CTA per page. Expanded mode uses a 40px-high icon + text Primary Button that fills the available width inside the Sidebar's 16px horizontal inset. The slot keeps 8px below Brand Anchor / Titlebar through `--layout-primary-action-slot-gap-top` and 12px before the first Sidebar navigation component through `--layout-primary-action-slot-gap-bottom`; these values belong only to the action slot and must not be reused as whole-navigation padding, generic component gaps, or menu-row spacing. Collapsed 64px mode uses a 40px icon-only Primary Button with an accessible name and Tooltip. Secondary, Ghost, Icon, and local buttons may appear elsewhere according to scope.
+Titlebar rendering and page-action ownership add these mandatory shell rules: keep the Titlebar component transparent with no bottom divider by default; host each segment on the same surface as its pane below; in a two-column shell keep both the branded left segment and the final title/window-control segment divider-free; in a three-column shell keep the branded Primary Navigation and Secondary Pane segments divider-free and add the only bottom divider to the final Main Detail segment, which owns the operation slot. Keep vertical pane dividers continuous. Add a Global Primary Action Slot inside Primary Navigation Shell between Brand Anchor and Sidebar navigation. Every page-global Primary Button must use this slot, with exactly one such CTA per page. The slot itself uses `--space-3` (8px) horizontal inner padding; its layout compensates for the parent navigation inset so the contained control remains aligned to the approved Sidebar content axis. Expanded mode uses a 40px-high icon + text Primary Button that fills the available width inside the Sidebar's 16px horizontal inset. The slot keeps 8px below Brand Anchor / Titlebar through `--layout-primary-action-slot-gap-top` and 12px before the first Sidebar navigation component through `--layout-primary-action-slot-gap-bottom`; these values belong only to the action slot and must not be reused as whole-navigation padding, generic component gaps, or menu-row spacing. Collapsed 64px mode uses a 40px icon-only Primary Button with an accessible name and Tooltip. Secondary, Ghost, Icon, and local buttons may appear elsewhere according to scope.
 
 The Global Title Layer must share the Workspace column boundaries. Treat the top-left of the final pane as `final-pane-leading-slot`:
 

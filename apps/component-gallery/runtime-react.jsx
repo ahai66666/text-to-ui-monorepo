@@ -48,15 +48,20 @@ const RuntimeStructuralButton = ({ setStatus }) => h("div", { className: "tui-ru
 ])));
 
 const RuntimeTitlebarGallery = ({ setStatus }) => h("div", { className: "tui-runtime-titlebar-gallery", "data-runtime-component": "titlebar" }, [
+  h("div", { className: "tui-runtime-titlebar-layouts", key: "layouts" }, [
+    h("div", { key: "two-column" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "两栏 · 左侧品牌 / 右侧标题与窗口控制"), h("div", { className: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two", key: "shell" }, [h(Titlebar, { key: "brand", layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "final", layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large", onAction: (action) => setStatus(`Titlebar · 两栏 · ${action}`) })])]),
+    h("div", { key: "three-column" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "三栏 · 第三栏操作槽位与分割线"), h("div", { className: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three", key: "shell" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }], onMainDetailAction: (action) => setStatus(`Titlebar · Main Detail · ${action}`), onAction: (action) => setStatus(`Titlebar · 三栏 · ${action}`) })])])
+  ]),
+  ...[
   ["small", "S · 40px"],
   ["medium", "M · 56px"],
   ["large", "L · 64px"],
   ["xlarge", "XL · 72px"]
 ].map(([size, label]) => h("div", { className: "tui-runtime-titlebar-row", key: size }, [
   h("span", { className: "tui-runtime-surface-label", key: "label" }, label),
-  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", mainDetailActions: size === "large" ? [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }] : [], onMainDetailAction: (action) => setStatus(`Titlebar · Main Detail · ${action}`), onAction: (action) => setStatus(`Titlebar · ${size} · ${action}`) }),
+  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", onAction: (action) => setStatus(`Titlebar · ${size} · ${action}`) }),
   h(Titlebar, { key: "unfocus", label: "项目空间", size, state: "unfocus", onAction: (action) => setStatus(`Titlebar · ${size} · ${action}`) })
-])));
+]))]);
 
 function RuntimeSemiModal({ setStatus }) {
   const [size, setSize] = React.useState("m");
@@ -80,8 +85,8 @@ const runtimeCore = (id, setStatus, component) => {
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色输入面"), h(Input, { key: "input", placeholder: "项目名称", surface: "gray" })])
   ]);
   if (id === "search") return h("div", { className: "tui-runtime-surface-pair" }, [
-    h("div", { key: "white", "data-surface-context": "white" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white" })]),
-    h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray" })])
+    h("div", { key: "white", "data-surface-context": "white" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })]),
+    h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })])
   ]);
   if (id === "sidebar") return h(Sidebar, { items: [
     { id: "projects", label: "项目", icon: "navigation/grid", count: 24, state: "selected" },
@@ -115,8 +120,8 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "accordion") return h(Accordion, { onOpenChange: (open) => setStatus(`Accordion · ${open ? "展开" : "收起"}`) });
   if (id === "collapsible") return h(Collapsible, { onOpenChange: (open) => setStatus(`Collapsible · ${open ? "展开" : "收起"}`) });
   if (id === "avatar") return h("div", { className: "tui-runtime-avatar-pair" }, [
-    h("div", { key: "32" }, [h("span", { className: "tui-runtime-surface-label" }, "32 × 32"), h(Avatar, { initials: "H", name: "HarmonyOS 32", size: 32 })]),
-    h("div", { key: "40" }, [h("span", { className: "tui-runtime-surface-label" }, "40 × 40"), h(Avatar, { initials: "H", name: "HarmonyOS 40", size: 40 })])
+    h("div", { key: "32" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "32 × 32"), h(Avatar, { key: "avatar", initials: "H", name: "HarmonyOS 32", size: 32 })]),
+    h("div", { key: "40" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "40 × 40"), h(Avatar, { key: "avatar", initials: "H", name: "HarmonyOS 40", size: 40 })])
   ]);
   if (id === "badge") return h("div", { className: "tui-badge-group", "aria-label": "Badge 颜色示例" }, [
     h(Badge, { key: "info", label: "进行中", tone: "info" }),
@@ -142,7 +147,7 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "empty") return h(Empty, { onCreate: () => setStatus("Empty · 新建项目") });
   if (id === "separator") return h(Separator);
   if (id === "label") return h(Label, { children: "项目名称", htmlFor: "runtime-project-name" });
-  if (id === "alert") return h("div", { className: "tui-feedback-specimens", "data-runtime-component": "alert" }, feedbackSpecimensFor(component).map((specimen) => h("div", { className: "tui-feedback-specimen", "data-specimen": specimen.id, key: specimen.id }, [h("span", { className: "tui-runtime-surface-label" }, specimen.label), h(Alert, { tone: specimen.variant, message: specimen.message, action: specimen.action, onAction: () => setStatus(`Alert · ${specimen.variant}`) })])));
+  if (id === "alert") return h("div", { className: "tui-feedback-specimens", "data-runtime-component": "alert" }, feedbackSpecimensFor(component).map((specimen) => h("div", { className: "tui-feedback-specimen", "data-specimen": specimen.id, key: specimen.id }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, specimen.label), h(Alert, { key: "alert", tone: specimen.variant, message: specimen.message, action: specimen.action, onAction: () => setStatus(`Alert · ${specimen.variant}`) })])));
   if (id === "tooltip") return h(Tooltip);
   if (id === "toast") return h(Toast);
   if (id === "dialog") return h("div", { className: "tui-overlay-specimens" }, [h(Dialog, { key: "single", actionLayout: "single", onConfirm: () => setStatus("Dialog · 已确认") }), h(Dialog, { key: "double", actionLayout: "double", onConfirm: () => setStatus("Dialog · 已确认"), onCancel: () => setStatus("Dialog · 已取消") })]);
@@ -172,6 +177,10 @@ function RuntimeCard({ component, setStatus }) {
   const preview = coreIds.has(component.id)
     ? runtimeCore(component.id, setStatus, component)
     : (Component ? h(Component, { state: "default", fixtureId: component.fixtureId }) : h("p", { className: "tui-runtime-framework-missing" }, `React 适配器缺失：${component.id}`));
+  const previewContent = Array.isArray(preview)
+    ? preview.map((child, index) => h(React.Fragment, { key: index }, child))
+    : preview;
+  const previewChildren = Array.isArray(previewContent) ? previewContent : [previewContent];
   return h("article", {
     className: cardClass(component),
     "data-component-card": component.id,
@@ -186,7 +195,7 @@ function RuntimeCard({ component, setStatus }) {
     "aria-labelledby": `runtime-react-${component.id}-title`
   }, [
     h("header", { className: "tui-runtime-card__head", key: "head" }, h("div", null, h("h3", { id: `runtime-react-${component.id}-title` }, componentTitle(component)))),
-    h("div", { className: "tui-runtime-card__preview", key: "preview", "data-fixture-id": component.fixtureId }, preview)
+    h("div", { className: "tui-runtime-card__preview", key: "preview", "data-fixture-id": component.fixtureId }, ...previewChildren)
   ]);
 }
 

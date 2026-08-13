@@ -3,11 +3,11 @@
   "generatedFrom": [
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "607d59796d2abab339bb2f25fb594771b21363e909a9cdbee8760792fbb7d2ec"
+      "sha256": "0792ef3355a6c3bc649f46f4af1da5ee7ae80e9b3f7807f40747b031dc72d4fe"
     },
     {
       "path": "packages/component-contracts/src/parity-manifest.json",
-      "sha256": "2eeee6cf779c30034a5106f363092e50ccb3fa8cd18e52b378c261c318a174dc"
+      "sha256": "bb17a5517bcf97be3507cac7a82db920b351f832735f22fd0fe33f8f79023161"
     },
     {
       "path": "text-to-ui/references/index/capability-aliases.source.json",
@@ -1143,9 +1143,7 @@
         "radius.card"
       ],
       "iconAliases": [
-        "action/copy",
-        "action/rename",
-        "action/delete"
+        "action/more"
       ],
       "contractPointer": "packages/component-contracts/src/components.json#context-menu",
       "canonicalSelector": "section#overlays [data-component=\"Context Menu/Default\"]",
@@ -2609,7 +2607,8 @@
       "variants": [
         "default",
         "focused",
-        "with-value"
+        "with-value",
+        "advanced-search"
       ],
       "states": [
         "default",
@@ -2619,17 +2618,27 @@
       ],
       "props": [
         "value",
+        "defaultValue",
         "placeholder",
-        "disabled"
+        "disabled",
+        "state",
+        "surface",
+        "advancedSearch",
+        "advancedSearchLabel",
+        "onAdvancedSearch",
+        "onChange",
+        "onClear"
       ],
       "slots": [
         "leading",
         "value",
-        "clear"
+        "clear",
+        "advanced-search"
       ],
       "behaviors": [
         "input",
         "clear",
+        "advanced-search",
         "focus",
         "disabled"
       ],
@@ -2651,7 +2660,7 @@
       "frameworks": {
         "html": {
           "package": "@text-to-ui/components-html",
-          "source": "packages/components-html/src/search.html",
+          "source": "packages/components-html/src/index.js#search",
           "exists": true,
           "status": "partial"
         },
@@ -3404,7 +3413,7 @@
       ],
       "category": "titlebars",
       "status": "partial",
-      "sourceStrategy": "canonical-static",
+      "sourceStrategy": "canonical-custom",
       "variants": [
         "small",
         "medium",
@@ -3418,24 +3427,27 @@
       ],
       "props": [
         "label",
+        "paneTitle",
         "size",
+        "layout",
+        "paneRole",
         "disabled",
         "state",
         "mainDetailActions",
         "onMainDetailAction",
+        "onAction",
         "className"
       ],
       "slots": [
         "leading",
         "label",
-        "trailing",
+        "main-content-title",
         "main-detail-actions",
         "actions"
       ],
       "behaviors": [
         "focus",
-        "disabled",
-        "multiple-main-detail-actions"
+        "disabled"
       ],
       "tokenRoles": [
         "color.text",

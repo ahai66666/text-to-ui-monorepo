@@ -2379,10 +2379,10 @@
     },
     "spacing/padding/alert-right": {
       "cssVariable": "--padding-alert-right",
-      "pixsoVariable": "space/4",
+      "pixsoVariable": "space/2",
       "sourceToken": "tokens.spacing.json:padding.alert-right",
-      "resolvedCssValue": "12px",
-      "pixsoValue": 12,
+      "resolvedCssValue": "4px",
+      "pixsoValue": 4,
       "valueTransform": "identity"
     },
     "spacing/padding/selection-option": {

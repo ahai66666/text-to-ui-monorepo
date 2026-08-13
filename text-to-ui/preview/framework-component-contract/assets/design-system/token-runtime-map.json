@@ -2097,6 +2097,22 @@
       "pixsoValue": "#ED6F2119",
       "valueTransform": "identity"
     },
+    "color/badge-danger-text": {
+      "cssVariable": "--color-badge-danger-text",
+      "pixsoVariable": "function/danger/100",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-text",
+      "resolvedCssValue": "#E84026FF",
+      "pixsoValue": "#E84026FF",
+      "valueTransform": "identity"
+    },
+    "color/badge-danger-bg": {
+      "cssVariable": "--color-badge-danger-bg",
+      "pixsoVariable": "function/danger/10",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-bg",
+      "resolvedCssValue": "#E8402619",
+      "pixsoValue": "#E8402619",
+      "valueTransform": "identity"
+    },
     "color/chart-1": {
       "cssVariable": "--color-chart-1",
       "pixsoVariable": "multi/01",
@@ -2363,10 +2379,10 @@
     },
     "spacing/padding/alert-right": {
       "cssVariable": "--padding-alert-right",
-      "pixsoVariable": "space/4",
+      "pixsoVariable": "space/2",
       "sourceToken": "tokens.spacing.json:padding.alert-right",
-      "resolvedCssValue": "12px",
-      "pixsoValue": 12,
+      "resolvedCssValue": "4px",
+      "pixsoValue": 4,
       "valueTransform": "identity"
     },
     "spacing/padding/selection-option": {
@@ -2801,6 +2817,30 @@
       "pixsoValue": 40,
       "valueTransform": "identity"
     },
+    "size/component/list-item-single-line-height": {
+      "cssVariable": "--height-list-item-single-line",
+      "pixsoVariable": "size/48",
+      "sourceToken": "tokens.size.json:component.list-item-single-line-height",
+      "resolvedCssValue": "48px",
+      "pixsoValue": 48,
+      "valueTransform": "identity"
+    },
+    "size/component/list-item-double-line-height": {
+      "cssVariable": "--height-list-item-double-line",
+      "pixsoVariable": "size/56",
+      "sourceToken": "tokens.size.json:component.list-item-double-line-height",
+      "resolvedCssValue": "56px",
+      "pixsoValue": 56,
+      "valueTransform": "identity"
+    },
+    "size/component/list-item-triple-line-height": {
+      "cssVariable": "--height-list-item-triple-line",
+      "pixsoVariable": "size/80",
+      "sourceToken": "tokens.size.json:component.list-item-triple-line-height",
+      "resolvedCssValue": "80px",
+      "pixsoValue": 80,
+      "valueTransform": "identity"
+    },
     "size/component/list-heading-height": {
       "cssVariable": "--height-list-heading",
       "pixsoVariable": "size/40",
@@ -3219,10 +3259,10 @@
     },
     "radius/avatar": {
       "cssVariable": "--radius-avatar",
-      "pixsoVariable": "radius/08",
+      "pixsoVariable": "radius/full",
       "sourceToken": "tokens.radius.json:semantic.avatar",
-      "resolvedCssValue": "8px",
-      "pixsoValue": 8,
+      "resolvedCssValue": "999px",
+      "pixsoValue": 999,
       "valueTransform": "identity"
     },
     "radius/table": {

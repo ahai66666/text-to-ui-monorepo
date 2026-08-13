@@ -78,8 +78,7 @@
       ],
       "behaviorChecks": [
         "focus",
-        "disabled",
-        "multiple-main-detail-actions"
+        "disabled"
       ],
       "textRoles": [
         "title:title-s",
@@ -95,7 +94,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/maximize",
@@ -104,7 +103,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -113,7 +112,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -125,17 +124,21 @@
       ],
       "props": [
         "label",
+        "paneTitle",
         "size",
+        "layout",
+        "paneRole",
         "disabled",
         "state",
         "mainDetailActions",
         "onMainDetailAction",
+        "onAction",
         "className"
       ],
       "slots": [
         "leading",
         "label",
-        "trailing",
+        "main-content-title",
         "main-detail-actions",
         "actions"
       ],
@@ -157,7 +160,21 @@
             "section-action",
             "selection-action",
             "inline-action"
-          ]
+          ],
+          "activeWhen": {
+            "layout": "three-column",
+            "paneRole": "final-pane"
+          }
+        },
+        "main-content-title": {
+          "cardinality": "0..1",
+          "scope": "main-content-pane-global",
+          "activeWhen": {
+            "layout": "two-column",
+            "paneRole": "final-pane"
+          },
+          "defaultPlacement": "final-pane-leading-slot",
+          "leadingInsetToken": "layout/main-title-leading-padding"
         }
       },
       "layoutRules": {
@@ -317,7 +334,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/download",
@@ -326,7 +343,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/settings",
@@ -335,7 +352,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -344,7 +361,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "navigation/chevron-down",
@@ -353,7 +370,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/refresh",
@@ -362,7 +379,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/more",
@@ -371,7 +388,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -538,6 +555,7 @@
       "behaviorChecks": [
         "input",
         "clear",
+        "advanced-search",
         "focus",
         "disabled"
       ],
@@ -553,7 +571,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -562,7 +580,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -576,18 +594,44 @@
       ],
       "props": [
         "value",
+        "defaultValue",
         "placeholder",
-        "disabled"
+        "disabled",
+        "state",
+        "surface",
+        "advancedSearch",
+        "advancedSearchLabel",
+        "onAdvancedSearch",
+        "onChange",
+        "onClear"
       ],
       "slots": [
         "leading",
         "value",
-        "clear"
+        "clear",
+        "advanced-search"
       ],
-      "slotContracts": {},
+      "slotContracts": {
+        "advanced-search": {
+          "cardinality": "0..1",
+          "scope": "search-query-builder",
+          "defaultPlacement": "trailing-after-clear",
+          "control": "small-text-button",
+          "variant": "ghost",
+          "size": "small",
+          "mode": "text",
+          "trailingInsetToken": "space/2",
+          "requiresAccessibleName": true,
+          "interaction": "open-advanced-search-layer",
+          "coexistenceOrder": [
+            "clear",
+            "advanced-search"
+          ]
+        }
+      },
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/search.html",
+        "html": "packages/components-html/src/index.js#search",
         "react": "packages/components-react/src/index.jsx#Search",
         "vue": "packages/components-vue/src/Search.vue"
       },
@@ -739,7 +783,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -897,7 +941,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -979,7 +1023,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1061,7 +1105,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1145,7 +1189,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "navigation/recent",
@@ -1154,7 +1198,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/more",
@@ -1163,7 +1207,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1285,7 +1329,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1370,7 +1414,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1439,7 +1483,10 @@
         "disabled"
       ],
       "textRoles": [
-        "content:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:caption-l"
       ],
       "iconSlots": [
         {
@@ -1449,7 +1496,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1531,7 +1578,7 @@
             20,
             24
           ],
-          "kind": "outline"
+          "kind": "regular"
         },
         {
           "slot": "next",
@@ -1541,7 +1588,7 @@
             20,
             24
           ],
-          "kind": "outline"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2103,7 +2150,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2185,7 +2232,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2254,6 +2301,7 @@
       ],
       "textRoles": [
         "title:title-s",
+        "content:body-l",
         "description:body-m",
         "help:caption-l"
       ],
@@ -2263,7 +2311,7 @@
           "displaySizes": [
             20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2344,7 +2392,7 @@
           "displaySizes": [
             20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2426,7 +2474,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2508,7 +2556,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2754,7 +2802,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2900,7 +2948,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2992,7 +3040,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3080,7 +3128,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3162,25 +3210,13 @@
       ],
       "iconSlots": [
         {
-          "alias": "action/copy",
+          "alias": "action/more",
           "displaySizes": [
+            16,
+            20,
             24
           ],
-          "kind": "auto"
-        },
-        {
-          "alias": "action/rename",
-          "displaySizes": [
-            24
-          ],
-          "kind": "auto"
-        },
-        {
-          "alias": "action/delete",
-          "displaySizes": [
-            24
-          ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3269,7 +3305,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3339,7 +3375,10 @@
         "disabled"
       ],
       "textRoles": [
-        "label:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:caption-l"
       ],
       "iconSlots": [
         {
@@ -3349,7 +3388,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3436,7 +3475,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3519,7 +3558,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3602,7 +3641,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3683,7 +3722,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3764,7 +3803,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3846,7 +3885,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3927,7 +3966,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4012,7 +4051,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4099,7 +4138,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4183,7 +4222,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4265,7 +4304,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4368,51 +4407,62 @@
         "disabled"
       ],
       "textRoles": [
-        "content:subtitle-s",
-        "action:body-m"
+        "content:subtitle-s"
       ],
       "iconSlots": [
         {
           "alias": "status/info",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/success",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/warning",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/danger",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/neutral",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
           "displaySizes": [
-            16
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4499,7 +4549,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4570,7 +4620,10 @@
         "disabled"
       ],
       "textRoles": [
-        "content:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:caption-l"
       ],
       "iconSlots": [
         {
@@ -4580,7 +4633,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -4589,7 +4642,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [

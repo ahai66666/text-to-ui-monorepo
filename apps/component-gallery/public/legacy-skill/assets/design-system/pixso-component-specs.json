@@ -719,7 +719,7 @@
       "autoLayout": true,
       "textRoles": {},
       "iconSize": 20,
-      "exactAssetIcons": [
+      "iconAliases": [
         "primary-level/overview"
       ],
       "transparent": true

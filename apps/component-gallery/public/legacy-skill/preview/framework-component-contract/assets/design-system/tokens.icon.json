@@ -1,18 +1,11 @@
 {
   "source": {
-    "library": "HarmonyOS Symbol",
-    "url": "https://developer.huawei.com/consumer/cn/design/harmonyos-symbol/",
-    "package": null,
-    "install-command": null,
-    "artboard": "24x24",
-    "delivery": "vendored-svg",
-    "local-path": "assets/icons/harmonyos/regular",
-    "catalog-path": "assets/icons/harmonyos/catalog/regular",
-    "catalog-count": 404,
-    "official-category-entry-count": 433,
-    "source-version": "1.0",
-    "font-version": "1.000; Glyphs 3.1.2 (3151)",
-    "supplemental-library": "Lucide"
+    "library": "Lucide",
+    "url": "https://lucide.dev/",
+    "package": "lucide",
+    "installed-version": "1.24.0",
+    "delivery": "pinned-package-plus-generated-svg",
+    "artboard": "24x24"
   },
   "lucide": {
     "library": "Lucide",
@@ -40,7 +33,7 @@
       "user-provided-exact-svg",
       "approved-project-semantic-alias",
       "lucide",
-      "harmonyos-symbol",
+      "approved-special-asset",
       "documented-manual-fallback"
     ],
     "workflow": [
@@ -54,11 +47,9 @@
     "reusable-components-require-semantic-alias": true
   },
   "rendering": {
-    "weight": 400,
-    "weight-name": "Regular",
-    "style": "monochrome",
-    "geometry": "official-filled-path",
-    "filled-policy": "use-official-fill-glyph-only",
+    "style": "regular-outline",
+    "geometry": "exact-pinned-lucide-nodes",
+    "filled-policy": "forbidden",
     "manual-fallback-stroke-width": 1.5,
     "outline-stroke-width-by-display-size": {"16": 1, "20": 1.25, "24": 1.5}
   },

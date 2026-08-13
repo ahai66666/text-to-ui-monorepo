@@ -102,6 +102,7 @@ export default {
       ],
       "textRoles": [
         "title:title-s",
+        "content:body-l",
         "description:body-m",
         "help:caption-l"
       ],
@@ -111,7 +112,7 @@ export default {
           "displaySizes": [
             20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -192,7 +193,7 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "Alert 关闭按钮使用 32×32px 热区，内部 action/close 图标使用 20×20px，并保持键盘可达与可访问名称。",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "feedback",
       "categoryLabel": "提示与反馈",
       "order": 120,
@@ -265,51 +266,62 @@ export default {
         "disabled"
       ],
       "textRoles": [
-        "content:subtitle-s",
-        "action:body-m"
+        "content:subtitle-s"
       ],
       "iconSlots": [
         {
           "alias": "status/info",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/success",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/warning",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/danger",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/neutral",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
           "displaySizes": [
-            16
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -442,7 +454,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -526,7 +538,7 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "Attachment 下载按钮内部使用 20×20px 的 action/download 图标，并保持按钮热区与键盘焦点行为不变。",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "specialized",
       "categoryLabel": "专用内容",
       "order": 110,
@@ -577,7 +589,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -908,7 +920,10 @@ export default {
         "disabled"
       ],
       "textRoles": [
-        "content:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:caption-l"
       ],
       "iconSlots": [
         {
@@ -918,7 +933,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -1147,7 +1162,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/download",
@@ -1156,7 +1171,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/settings",
@@ -1165,7 +1180,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -1174,7 +1189,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "navigation/chevron-down",
@@ -1183,7 +1198,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/refresh",
@@ -1192,7 +1207,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/more",
@@ -1201,7 +1216,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ]
     },
@@ -1318,7 +1333,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -1546,7 +1561,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -1667,7 +1682,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -1788,7 +1803,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -1908,7 +1923,7 @@ export default {
           "displaySizes": [
             20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -2035,7 +2050,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -2106,7 +2121,7 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "Context Menu 的每个菜单项使用语义图标加文本的水平结构，图标固定为 24×24px，图标与文本引用菜单项内容间距 Token。",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "overlays",
       "categoryLabel": "浮层与命令",
       "order": 85,
@@ -2155,31 +2170,17 @@ export default {
       ],
       "iconSlots": [
         {
-          "alias": "action/copy",
+          "alias": "action/more",
           "displaySizes": [
+            16,
+            20,
             24
           ],
-          "kind": "auto"
-        },
-        {
-          "alias": "action/rename",
-          "displaySizes": [
-            24
-          ],
-          "kind": "auto"
-        },
-        {
-          "alias": "action/delete",
-          "displaySizes": [
-            24
-          ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
-        "action/copy",
-        "action/rename",
-        "action/delete"
+        "action/more"
       ]
     },
     {
@@ -2412,7 +2413,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -2539,7 +2540,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -2806,7 +2807,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -2925,7 +2926,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -3163,7 +3164,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -3407,7 +3408,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -3673,7 +3674,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -3743,7 +3744,7 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "Label 背景引用 neutral-dark.5（--color-neutral-dark-05），使用 8px 圆角、28px 高度、左右各 12px 内边距，文本在组件内垂直居中。",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "form-plus",
       "categoryLabel": "复合表单",
       "order": 90,
@@ -3781,7 +3782,10 @@ export default {
         "disabled"
       ],
       "textRoles": [
-        "label:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:caption-l"
       ],
       "iconSlots": [
         {
@@ -3791,7 +3795,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -3912,7 +3916,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -3982,7 +3986,7 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "Native Select 必须使用真实 HTML select，select 热区完整覆盖整个可见下拉控件，点击文字、留白或箭头区域都由系统级原生下拉菜单处理；箭头仅作视觉层且不拦截指针事件。",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "form-plus",
       "categoryLabel": "复合表单",
       "order": 92,
@@ -4033,7 +4037,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -4154,7 +4158,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -4275,7 +4279,7 @@ export default {
             20,
             24
           ],
-          "kind": "outline"
+          "kind": "regular"
         },
         {
           "slot": "next",
@@ -4285,7 +4289,7 @@ export default {
             20,
             24
           ],
-          "kind": "outline"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -4413,7 +4417,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -4539,7 +4543,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -4660,7 +4664,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -4673,7 +4677,8 @@ export default {
       "variants": [
         "default",
         "focused",
-        "with-value"
+        "with-value",
+        "advanced-search"
       ],
       "states": [
         "default",
@@ -4683,13 +4688,22 @@ export default {
       ],
       "props": [
         "value",
+        "defaultValue",
         "placeholder",
-        "disabled"
+        "disabled",
+        "state",
+        "surface",
+        "advancedSearch",
+        "advancedSearchLabel",
+        "onAdvancedSearch",
+        "onChange",
+        "onClear"
       ],
       "slots": [
         "leading",
         "value",
-        "clear"
+        "clear",
+        "advanced-search"
       ],
       "tokenRoles": [
         "color.input-bg",
@@ -4707,7 +4721,7 @@ export default {
       "source": "canonical-custom",
       "status": "partial",
       "implementations": {
-        "html": "packages/components-html/src/search.html",
+        "html": "packages/components-html/src/index.js#search",
         "react": "packages/components-react/src/index.jsx#Search",
         "vue": "packages/components-vue/src/Search.vue"
       },
@@ -4716,7 +4730,7 @@ export default {
       "frameworks": {
         "html": {
           "status": "partial",
-          "source": "packages/components-html/src/search.html"
+          "source": "packages/components-html/src/index.js#search"
         },
         "react": {
           "status": "partial",
@@ -4763,6 +4777,7 @@ export default {
       "behaviors": [
         "input",
         "clear",
+        "advanced-search",
         "focus",
         "disabled"
       ],
@@ -4797,7 +4812,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -4806,9 +4821,27 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
-      ]
+      ],
+      "slotContracts": {
+        "advanced-search": {
+          "cardinality": "0..1",
+          "scope": "search-query-builder",
+          "defaultPlacement": "trailing-after-clear",
+          "control": "small-text-button",
+          "variant": "ghost",
+          "size": "small",
+          "mode": "text",
+          "trailingInsetToken": "space/2",
+          "requiresAccessibleName": true,
+          "interaction": "open-advanced-search-layer",
+          "coexistenceOrder": [
+            "clear",
+            "advanced-search"
+          ]
+        }
+      }
     },
     {
       "id": "select",
@@ -4935,7 +4968,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -5174,7 +5207,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "navigation/recent",
@@ -5183,7 +5216,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/more",
@@ -5192,7 +5225,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ]
     },
@@ -5308,7 +5341,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -5430,7 +5463,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -5660,7 +5693,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -5899,7 +5932,10 @@ export default {
         "loading"
       ],
       "textRoles": [
-        "content:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:caption-l"
       ],
       "iconSlots": [
         {
@@ -5909,7 +5945,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -5918,7 +5954,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -5989,7 +6025,7 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约；Tooltip 面板使用完整的圆角矩形浮层，不使用方向尖角；运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "feedback",
       "categoryLabel": "提示与反馈",
       "order": 121,
@@ -6037,7 +6073,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -6207,7 +6243,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ]
     },
@@ -6392,7 +6428,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
@@ -6434,17 +6470,76 @@ export default {
       ],
       "props": [
         "label",
+        "paneTitle",
         "size",
+        "layout",
+        "paneRole",
         "disabled",
         "state",
+        "mainDetailActions",
+        "onMainDetailAction",
+        "onAction",
         "className"
       ],
       "slots": [
         "leading",
         "label",
-        "trailing",
+        "main-content-title",
+        "main-detail-actions",
         "actions"
       ],
+      "slotContracts": {
+        "main-detail-actions": {
+          "cardinality": "0..n",
+          "scope": "main-detail-pane-global",
+          "defaultPlacement": "final-pane-leading-slot",
+          "layout": "compact-horizontal-group",
+          "leadingInsetToken": "layout/main-detail-action-leading-padding",
+          "allowedButtonVariants": [
+            "ghost",
+            "ghost-icon"
+          ],
+          "forbidden": [
+            "page-global-primary",
+            "card-action",
+            "field-action",
+            "section-action",
+            "selection-action",
+            "inline-action"
+          ],
+          "activeWhen": {
+            "layout": "three-column",
+            "paneRole": "final-pane"
+          }
+        },
+        "main-content-title": {
+          "cardinality": "0..1",
+          "scope": "main-content-pane-global",
+          "activeWhen": {
+            "layout": "two-column",
+            "paneRole": "final-pane"
+          },
+          "defaultPlacement": "final-pane-leading-slot",
+          "leadingInsetToken": "layout/main-title-leading-padding"
+        }
+      },
+      "layoutRules": {
+        "secondaryListPane": {
+          "surfaceInset": "16px",
+          "contentAxis": "24px",
+          "scrollWrapperPadding": "16px 16px"
+        },
+        "mainDetailPane": {
+          "paddingInline": "24px",
+          "paddingTop": "16px",
+          "paddingBottom": "0px",
+          "insetOwner": "direct-content-scroll-wrapper"
+        },
+        "mainDetailActions": {
+          "leadingInset": "16px",
+          "insetOwner": "titlebar-final-pane-segment"
+        }
+      },
       "tokenRoles": [
         "color.text",
         "color.surface",
@@ -6452,7 +6547,7 @@ export default {
         "typography.body-l",
         "spacing.component-gap"
       ],
-      "source": "canonical-static",
+      "source": "canonical-custom",
       "status": "partial",
       "implementations": {
         "html": "packages/components-html/src/index.js#titlebar",
@@ -6460,7 +6555,7 @@ export default {
         "vue": "packages/components-vue/src/Titlebar.vue"
       },
       "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-static",
+      "sourceStrategy": "canonical-custom",
       "frameworks": {
         "html": {
           "status": "partial",
@@ -6567,7 +6662,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/maximize",
@@ -6576,7 +6671,7 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -6585,14 +6680,47 @@ export default {
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "iconAliases": [
         "action/minimize",
         "action/maximize",
         "action/close"
-      ]
+      ],
+      "structuralAxes": {
+        "size": [
+          "small",
+          "medium",
+          "large",
+          "xlarge"
+        ],
+        "layout": [
+          "standalone",
+          "two-column",
+          "three-column"
+        ],
+        "paneRole": [
+          "global",
+          "primary-navigation",
+          "secondary-pane",
+          "final-pane"
+        ]
+      },
+      "dividerRules": {
+        "default": "no-horizontal-divider",
+        "standalone": "no-horizontal-divider",
+        "two-column": {
+          "primary-navigation": "no-horizontal-divider",
+          "final-pane": "no-horizontal-divider"
+        },
+        "three-column": {
+          "primary-navigation": "no-horizontal-divider",
+          "secondary-pane": "no-horizontal-divider",
+          "final-pane": "bottom-divider"
+        },
+        "verticalPaneDividers": "owned-by-layout-and-continuous"
+      }
     }
   ],
   "registryPolicy": {
