@@ -18,8 +18,8 @@
   "summary": {
     "mappedPixsoVariables": 127,
     "primitiveColors": 56,
-    "semanticColors": 97,
-    "semanticTokenMappings": 282
+    "semanticColors": 99,
+    "semanticTokenMappings": 287
   },
   "variableMappings": [
     {
@@ -2259,6 +2259,24 @@
       "valueTransform": "identity"
     },
     {
+      "role": "color/badge-danger-text",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-text",
+      "webCssVariable": "--color-badge-danger-text",
+      "pixsoVariable": "function/danger/100",
+      "resolvedCssValue": "#E84026FF",
+      "pixsoValue": "#E84026FF",
+      "valueTransform": "identity"
+    },
+    {
+      "role": "color/badge-danger-bg",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-bg",
+      "webCssVariable": "--color-badge-danger-bg",
+      "pixsoVariable": "function/danger/10",
+      "resolvedCssValue": "#E8402619",
+      "pixsoValue": "#E8402619",
+      "valueTransform": "identity"
+    },
+    {
       "role": "color/chart-1",
       "sourceToken": "tokens.colors.json:semantic.chart-1",
       "webCssVariable": "--color-chart-1",
@@ -2505,9 +2523,9 @@
       "role": "spacing/padding/alert-right",
       "sourceToken": "tokens.spacing.json:padding.alert-right",
       "webCssVariable": "--padding-alert-right",
-      "pixsoVariable": "space/4",
-      "resolvedCssValue": "12px",
-      "pixsoValue": 12,
+      "pixsoVariable": "space/2",
+      "resolvedCssValue": "4px",
+      "pixsoValue": 4,
       "valueTransform": "identity"
     },
     {
@@ -2940,6 +2958,33 @@
       "pixsoVariable": "size/40",
       "resolvedCssValue": "40px",
       "pixsoValue": 40,
+      "valueTransform": "identity"
+    },
+    {
+      "role": "size/component/list-item-single-line-height",
+      "sourceToken": "tokens.size.json:component.list-item-single-line-height",
+      "webCssVariable": "--height-list-item-single-line",
+      "pixsoVariable": "size/48",
+      "resolvedCssValue": "48px",
+      "pixsoValue": 48,
+      "valueTransform": "identity"
+    },
+    {
+      "role": "size/component/list-item-double-line-height",
+      "sourceToken": "tokens.size.json:component.list-item-double-line-height",
+      "webCssVariable": "--height-list-item-double-line",
+      "pixsoVariable": "size/56",
+      "resolvedCssValue": "56px",
+      "pixsoValue": 56,
+      "valueTransform": "identity"
+    },
+    {
+      "role": "size/component/list-item-triple-line-height",
+      "sourceToken": "tokens.size.json:component.list-item-triple-line-height",
+      "webCssVariable": "--height-list-item-triple-line",
+      "pixsoVariable": "size/80",
+      "resolvedCssValue": "80px",
+      "pixsoValue": 80,
       "valueTransform": "identity"
     },
     {
@@ -3396,9 +3441,9 @@
       "role": "radius/avatar",
       "sourceToken": "tokens.radius.json:semantic.avatar",
       "webCssVariable": "--radius-avatar",
-      "pixsoVariable": "radius/08",
-      "resolvedCssValue": "8px",
-      "pixsoValue": 8,
+      "pixsoVariable": "radius/full",
+      "resolvedCssValue": "999px",
+      "pixsoValue": 999,
       "valueTransform": "identity"
     },
     {
@@ -5192,6 +5237,34 @@
       ],
       "resolvedValues": [
         "#ED6F2119"
+      ]
+    },
+    {
+      "role": "badge-danger-text",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-text",
+      "composition": "single",
+      "webCssVariables": [
+        "--color-badge-danger-text"
+      ],
+      "pixsoVariables": [
+        "function/danger/100"
+      ],
+      "resolvedValues": [
+        "#E84026FF"
+      ]
+    },
+    {
+      "role": "badge-danger-bg",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-bg",
+      "composition": "single",
+      "webCssVariables": [
+        "--color-badge-danger-bg"
+      ],
+      "pixsoVariables": [
+        "function/danger/10"
+      ],
+      "resolvedValues": [
+        "#E8402619"
       ]
     },
     {

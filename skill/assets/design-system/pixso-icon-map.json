@@ -10,7 +10,7 @@
   "displayContracts": [
     {"name":"compact-control","aliases":["choice/check","field/search","field/date","field/time","navigation/back","navigation/chevron-down","navigation/chevron-right"],"displaySize":16,"displaySizeToken":"size/16"},
     {"name":"standard-control","aliases":["action/add","action/archive","action/close","action/delete","action/download","action/filter","action/forward","action/mark-important","action/mark-unread","action/more","action/multi-select","action/refresh","action/reply","action/reply-all","action/save","action/sort-ascending","navigation/panel-left","object/attachment","object/file","object/avatar","status/error","status/danger","status/info","status/loading","status/neutral","status/success","status/warning"],"displaySize":20,"displaySizeToken":"size/20"},
-    {"name":"primary-level-filled-exception","aliases":["primary-level/overview","primary-level/calendar","primary-level/contacts","primary-level/mail","primary-level/settings"],"displaySize":20,"displaySizeToken":"size/20","sourceRequirement":"harmonyos","rule":"Allowed only for the bottom first-level menu inside the two-level Primary Navigation Shell."},
+    {"name":"primary-level-navigation","aliases":["primary-level/overview","primary-level/calendar","primary-level/contacts","primary-level/mail","primary-level/settings"],"displaySize":20,"displaySizeToken":"size/20","sourceRequirement":"lucide","rule":"Use the same Lucide Regular rule as all other navigation icons."},
     {"name":"titlebar-control","aliases":["window/minimize","window/maximize","window/close"],"displaySize":16,"displaySizeToken":"size/16","sourceRequirement":"asset"}
   ],
   "exceptions": {

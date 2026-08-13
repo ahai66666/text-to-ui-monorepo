@@ -84,8 +84,12 @@ const bindRuntimeInteractions = (root, setStatus) => {
       setStatus(`已选择 ${target.textContent.trim()}`);
       return;
     }
-    if (target.matches(".tui-titlebar__action")) {
-      setStatus(`Titlebar · ${target.dataset.action ?? "action"}`);
+    if (target.matches(".tui-titlebar__action, .tui-titlebar__pane-action")) {
+      setStatus(`Titlebar · ${target.matches(".tui-titlebar__pane-action") ? "Main Detail · " : ""}${target.dataset.action ?? "action"}`);
+      return;
+    }
+    if (target.matches('.tui-search [data-slot="advanced-search"]')) {
+      setStatus("Search · 高级搜索");
       return;
     }
     if (target.matches(".tui-alert .tui-icon-button, .tui-toast .tui-icon-button")) {

@@ -290,11 +290,78 @@ for (const component of registry.components) {
   component.iconAliases = iconAliases[component.id] ?? [];
   component.iconSlots = component.id === "pagination"
     ? [
-        { slot: "previous", alias: "navigation/back", displaySizes: [16, 20, 24], kind: "outline" },
-        { slot: "next", alias: "navigation/forward", displaySizes: [16, 20, 24], kind: "outline" }
+        { slot: "previous", alias: "navigation/back", displaySizes: [16, 20, 24], kind: "regular" },
+        { slot: "next", alias: "navigation/forward", displaySizes: [16, 20, 24], kind: "regular" }
       ]
-    : component.iconAliases.map((alias) => ({ alias, displaySizes: ["accordion", "collapsible"].includes(component.id) ? [20] : [16, 20, 24], kind: "auto" }));
+    : component.iconAliases.map((alias) => ({ alias, displaySizes: ["accordion", "collapsible"].includes(component.id) ? [20] : [16, 20, 24], kind: "regular" }));
   component.iconSemantic = component.iconAliases[0] ?? null;
+  if (component.id === "search") {
+    component.variants = ["default", "focused", "with-value", "advanced-search"];
+    component.props = ["value", "defaultValue", "placeholder", "disabled", "state", "surface", "advancedSearch", "advancedSearchLabel", "onAdvancedSearch", "onChange", "onClear"];
+    component.slots = ["leading", "value", "clear", "advanced-search"];
+    component.slotContracts = {
+      ...component.slotContracts,
+      "advanced-search": {
+        cardinality: "0..1",
+        scope: "search-query-builder",
+        defaultPlacement: "trailing-after-clear",
+        control: "small-text-button",
+        variant: "ghost",
+        size: "small",
+        mode: "text",
+        trailingInsetToken: "space/2",
+        requiresAccessibleName: true,
+        interaction: "open-advanced-search-layer",
+        coexistenceOrder: ["clear", "advanced-search"]
+      }
+    };
+    component.behaviors = ["input", "clear", "advanced-search", "focus", "disabled"];
+  }
+  if (component.id === "titlebar") {
+    component.variants = ["small", "medium", "large", "xlarge"];
+    component.structuralAxes = {
+      size: ["small", "medium", "large", "xlarge"],
+      layout: ["standalone", "two-column", "three-column"],
+      paneRole: ["global", "primary-navigation", "secondary-pane", "final-pane"]
+    };
+    component.props = ["label", "paneTitle", "size", "layout", "paneRole", "disabled", "state", "mainDetailActions", "onMainDetailAction", "onAction", "className"];
+    component.slots = ["leading", "label", "main-content-title", "main-detail-actions", "actions"];
+    component.slotContracts = {
+      ...component.slotContracts,
+      "main-content-title": {
+        cardinality: "0..1",
+        scope: "main-content-pane-global",
+        activeWhen: { layout: "two-column", paneRole: "final-pane" },
+        defaultPlacement: "final-pane-leading-slot",
+        leadingInsetToken: "layout/main-title-leading-padding"
+      },
+      "main-detail-actions": {
+        ...component.slotContracts?.["main-detail-actions"],
+        cardinality: "0..n",
+        scope: "main-detail-pane-global",
+        activeWhen: { layout: "three-column", paneRole: "final-pane" },
+        defaultPlacement: "final-pane-leading-slot",
+        layout: "compact-horizontal-group",
+        leadingInsetToken: "layout/main-detail-action-leading-padding",
+        allowedButtonVariants: ["ghost", "ghost-icon"],
+        forbidden: ["page-global-primary", "card-action", "field-action", "section-action", "selection-action", "inline-action"]
+      }
+    };
+    component.dividerRules = {
+      default: "no-horizontal-divider",
+      standalone: "no-horizontal-divider",
+      "two-column": {
+        "primary-navigation": "no-horizontal-divider",
+        "final-pane": "no-horizontal-divider"
+      },
+      "three-column": {
+        "primary-navigation": "no-horizontal-divider",
+        "secondary-pane": "no-horizontal-divider",
+        "final-pane": "bottom-divider"
+      },
+      verticalPaneDividers: "owned-by-layout-and-continuous"
+    };
+  }
   if (component.id === "dialog") {
     component.variants = ["single", "double"];
     component.states = ["closed", "open"];

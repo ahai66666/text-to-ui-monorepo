@@ -23,6 +23,17 @@ The model supplies tool-task reasoning, information architecture, interaction co
 
 Do not read a fixed questionnaire aloud. Generate questions from the uncertainty of the current task.
 
+This file is an executable intake gate, not background documentation. For a new
+page, redesign, multi-view flow, framework conversion, or Pixso task, the agent
+must show the analysis and proposed solution in the conversation and wait for
+explicit approval before generating any renderer or page artifact. A direct
+request to build something is not approval of an inferred structure.
+
+The only shortcut is an exact micro revision to an already approved page or
+component that cannot change hierarchy, workflow, permissions, action scope, or
+layout Pattern. Restate that change contract, apply it, and return to the same
+preview review loop. If any of those boundaries change, restart this intake gate.
+
 ## 2. Three Decision Layers
 
 ### Hard Constraints
@@ -138,6 +149,17 @@ Rules:
 - “确认”, “可以”, or “按这个做” is explicit approval.
 - Any material correction sends the proposal back to `pending` until the user confirms again.
 - Do not start a renderer or create a page artifact while confirmation is `pending`.
+
+Before confirmation, the agent may inspect supplied materials, locate the
+Monorepo, query generated indexes, and read the minimum references. It may not
+write page HTML, React, Vue, CSS, Pixso Frames, images, `page-spec.json`,
+`layout-contract.json`, or `component-usage.json`. An internal Context Packet is
+planning data and may be generated outside the deliverable directory.
+
+The proposal must also expose the task model: primary user, work object, start
+state, success state, failure/recovery path, and state that must be preserved.
+This is the part that prevents the Skill from jumping directly from a one-line
+request to a generic page.
 
 ## 6. Generated Requirement Contract
 
@@ -275,7 +297,7 @@ Unless the current workflow requires otherwise:
 - Use a `64px` non-dialog Global Title Layer.
 - Keep the Titlebar component transparent and match each shell segment to the surface of the pane below it. Do not add a horizontal divider below the Primary Navigation or Secondary Pane title segment.
 - Put app icon and product name in the top-left Brand Anchor.
-- Put every page-global Primary action in the Primary Navigation Shell between Brand Anchor and Sidebar navigation. Use one 40px-high icon + text Primary Button that fills the available width inside the Sidebar's 16px horizontal inset. Keep 8px from Brand Anchor / Titlebar to the button and 12px from the button to the first Sidebar navigation component, using the dedicated action-slot tokens rather than changing whole-navigation or menu gaps. Do not add another page-global Primary elsewhere. In collapsed navigation, keep it as a 40px icon-only Primary Button with an accessible name and Tooltip. Place Secondary, Ghost, Icon, and local buttons elsewhere according to scope.
+- Put every page-global Primary action in the Primary Navigation Shell between Brand Anchor and Sidebar navigation. Use one 40px-high icon + text Primary Button. The Primary Navigation owns a 16px horizontal inset and the action slot adds `--space-3` (8px) horizontal inner padding, aligning the button with the Brand Anchor / Logo's 24px content axis. Keep 8px from Brand Anchor / Titlebar to the button and 12px from the button to the first Sidebar navigation component, using the dedicated action-slot tokens rather than changing whole-navigation or menu gaps. Do not add another page-global Primary elsewhere. In collapsed navigation, keep it as a 40px icon-only Primary Button with an accessible name and Tooltip, and preserve the dedicated compensation that centers it in the 64px rail. Place Secondary, Ghost, Icon, and local buttons elsewhere according to scope.
 - Put page title, search, tabs, or view actions in the title context area as the workflow requires.
 - Pin application actions and window controls to the top-right, preserving a draggable region.
 - Allow Primary Navigation, Secondary Pane, Main Content, and Inspector to scroll independently when needed.

@@ -166,6 +166,8 @@
     "badge-success-bg": "function.success.10",
     "badge-warning-text": "function.warning.100",
     "badge-warning-bg": "function.warning.10",
+    "badge-danger-text": "function.danger.100",
+    "badge-danger-bg": "function.danger.10",
     "chart-1": "multi.01",
     "chart-2": "multi.02",
     "chart-3": "multi.03",

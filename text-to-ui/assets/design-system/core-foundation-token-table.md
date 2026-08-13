@@ -139,7 +139,7 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `spacing/padding/tooltip` | `--padding-tooltip` | `space/3` | `8px` |
 | `spacing/padding/alert` | `--padding-alert` | `space/3` | `8px` |
 | `spacing/padding/alert-left` | `--padding-alert-left` | `space/3` | `8px` |
-| `spacing/padding/alert-right` | `--padding-alert-right` | `space/4` | `12px` |
+| `spacing/padding/alert-right` | `--padding-alert-right` | `space/2` | `4px` |
 | `spacing/padding/selection-option` | `--padding-selection-option` | `space/3` | `8px` |
 | `spacing/padding/tab-x` | `--padding-tab-x` | `space/4` | `12px` |
 | `spacing/padding/tab-panel` | `--padding-tab-panel` | `space/5` | `16px` |
@@ -316,4 +316,3 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `typography/caption-l/font-size` | `--type-caption-l-size` | `font/size/12` | `12px` |
 | `typography/caption-l/line-height` | `--type-caption-l-leading` | `font/line-height/16` | `16px` |
 | `typography/caption-l/font-weight` | `--type-caption-l-weight` | `font/weight/500` | `500` |
-

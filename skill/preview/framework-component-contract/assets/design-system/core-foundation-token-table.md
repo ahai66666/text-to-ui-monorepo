@@ -139,7 +139,7 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `spacing/padding/tooltip` | `--padding-tooltip` | `space/3` | `8px` |
 | `spacing/padding/alert` | `--padding-alert` | `space/3` | `8px` |
 | `spacing/padding/alert-left` | `--padding-alert-left` | `space/3` | `8px` |
-| `spacing/padding/alert-right` | `--padding-alert-right` | `space/4` | `12px` |
+| `spacing/padding/alert-right` | `--padding-alert-right` | `space/2` | `4px` |
 | `spacing/padding/selection-option` | `--padding-selection-option` | `space/3` | `8px` |
 | `spacing/padding/tab-x` | `--padding-tab-x` | `space/4` | `12px` |
 | `spacing/padding/tab-panel` | `--padding-tab-panel` | `space/5` | `16px` |
@@ -194,6 +194,9 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `size/component/tab-vertical-height` | `--height-tab-vertical` | `size/40` | `40px` |
 | `size/component/menu-item-height` | `--height-menu-item` | `size/40` | `40px` |
 | `size/component/list-item-height` | `--height-list-item` | `size/40` | `40px` |
+| `size/component/list-item-single-line-height` | `--height-list-item-single-line` | `size/48` | `48px` |
+| `size/component/list-item-double-line-height` | `--height-list-item-double-line` | `size/56` | `56px` |
+| `size/component/list-item-triple-line-height` | `--height-list-item-triple-line` | `size/80` | `80px` |
 | `size/component/list-heading-height` | `--height-list-heading` | `size/40` | `40px` |
 | `size/component/tree-item-height` | `--height-tree-item` | `size/40` | `40px` |
 | `size/component/button-height` | `--height-button` | `size/40` | `40px` |
@@ -246,7 +249,7 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `radius/list-item` | `--radius-list-item` | `radius/08` | `8px` |
 | `radius/badge` | `--radius-badge` | `radius/full` | `999px` |
 | `radius/progress` | `--radius-progress` | `radius/full` | `999px` |
-| `radius/avatar` | `--radius-avatar` | `radius/08` | `8px` |
+| `radius/avatar` | `--radius-avatar` | `radius/full` | `999px` |
 | `radius/table` | `--radius-table` | `radius/12` | `12px` |
 | `radius/pagination-item` | `--radius-pagination-item` | `radius/08` | `8px` |
 | `radius/dialog` | `--radius-dialog` | `radius/16` | `16px` |

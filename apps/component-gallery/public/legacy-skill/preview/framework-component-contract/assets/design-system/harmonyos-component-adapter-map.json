@@ -281,8 +281,8 @@
     },
     {
       "source": {
-        "componentSet": "TextInput-Box-2in1",
-        "variant": { "灰色场景": "OFF", "状态": "Normal" }
+        "componentSet": "TextInput",
+        "variant": { "surface": "white", "state": "Default" }
       },
       "target": "Input/White Surface/Default",
       "reuse": "structure",
@@ -297,8 +297,8 @@
     },
     {
       "source": {
-        "componentSet": "TextInput-Box-2in1",
-        "variant": { "灰色场景": "ON", "状态": "Normal" }
+        "componentSet": "TextInput",
+        "variant": { "surface": "dark", "state": "Default" }
       },
       "target": "Input/Gray Surface/Default",
       "reuse": "structure",

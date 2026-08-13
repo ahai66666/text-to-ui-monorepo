@@ -611,7 +611,7 @@ for (const [role, item] of Object.entries(semanticRoles)) {
   );
 }
 tableLines.push("");
-const tableSerialized = `${tableLines.join("\n")}\n`;
+const tableSerialized = `${tableLines.join("\n").trimEnd()}\n`;
 if (process.argv.includes("--check")) {
   if (
     !fs.existsSync(outputPath) ||

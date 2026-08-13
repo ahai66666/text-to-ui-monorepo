@@ -86,7 +86,7 @@ export async function buildIconSymbol(alias, registry) {
     ].join("\n");
   }
 
-  if (entry.source === "asset" || entry.source === "harmonyos") {
+  if (entry.source === "asset") {
     const absolutePath = normalizeSourcePath(entry.path);
     const { viewBox, geometry } = extractSvg(await readFile(absolutePath, "utf8"), entry.path);
     const indentedGeometry = geometry.split("\n").map(line => `    ${line.trim()}`).join("\n");

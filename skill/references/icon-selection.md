@@ -88,9 +88,8 @@ Strict audit treats unregistered `<symbol>` elements and unprovenanced inline SV
 - Outline icon stroke rule: keep a 1.5px source stroke on the 24 × 24 artboard. Uniformly scaling the SVG root and its internal vectors produces the required effective display widths: 24px → 1.5px, 20px → 1.25px, and 16px → 1px.
 - Lucide: outline, 1.5px source stroke, round line cap, round line join.
 - Lucide geometry must come from the pinned package through `scripts/export-icon-sprite.mjs`. Keep the 1.5px source stroke on the 24 × 24 geometry and scale the rendered `<svg>` root and internal vectors together; do not edit or independently redraw the exported nodes.
-- HarmonyOS Symbol: use the original official filled-path geometry; do not add stroke attributes.
-- Filled variants: use only source-provided filled glyphs.
-- Client exception: the bottom-left first-level menu inside the two-level Primary Navigation Shell is the system's only approved first-level menu and must use source-provided filled/solid glyphs for every entry. Do not extend this filled-icon treatment to ordinary navigation, second-level Sidebar routes, or component actions.
+- One icon style only: use the pinned Lucide Regular outline geometry through semantic aliases. HarmonyOS Filled variants are not part of the Text-to-UI icon system and must not be generated, mapped, or selected.
+- The bottom-left first-level menu inside the two-level Primary Navigation Shell follows the same Lucide rule as ordinary navigation and component actions; it has no Filled exception.
 - Color: inherit `currentColor` from the component state unless a component rule explicitly defines multiple colors.
 - Disabled: inherit the component-wide 40% opacity; do not separately fade the icon.
 - **Pixso parity:** use `assets/design-system/pixso-icon-map.json`. A Text to UI node must carry a semantic alias, exact SVG source provenance, and a 16px, 20px, or explicitly approved 24px display-size token. `HM Symbol` and `icon_font` are prohibited in newly generated Text to UI components or pages; they may remain only inside unmodified HarmonyOS-native source components.

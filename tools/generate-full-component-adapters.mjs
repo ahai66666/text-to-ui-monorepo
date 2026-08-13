@@ -14,11 +14,11 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const registryPath = path.join(root, "packages/component-contracts/src/components.json");
 const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
-const iconSprite = await fs.readFile(path.join(root, "packages/components-html/src/harmonyos-icons.svg"), "utf8");
-const iconDefinitions = Object.fromEntries([...iconSprite.matchAll(/<symbol\s+id="hmos-([^"]+)"\s+viewBox="([^"]+)">([\s\S]*?)<\/symbol>/g)].map((match) => {
+const iconSprite = await fs.readFile(path.join(root, "packages/components-html/src/component-icons.svg"), "utf8");
+const iconDefinitions = Object.fromEntries([...iconSprite.matchAll(/<symbol\s+id="tui-([^"]+)"\s+viewBox="([^"]+)">([\s\S]*?)<\/symbol>/g)].map((match) => {
   const [, id, viewBox, content] = match;
   const [group, ...parts] = id.split("-");
-  return [`${group}/${parts.join("-")}`, { viewBox, content: content.trim(), kind: /stroke=|fill="none"/.test(content) ? "outline" : "filled" }];
+  return [`${group}/${parts.join("-")}`, { viewBox, content: content.trim() }];
 }));
 const remaining = registry.components.filter((component) =>
   !new Set(["button", "input", "search", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio-group", "switch", "tabs", "accordion", "collapsible", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast", "dialog", "alert-dialog", "semi-modal", "navigation-menu", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment", "carousel"]).has(component.id),
@@ -127,7 +127,7 @@ const htmlIcon = (name, size = 20) => {
   if (!name) throw new Error("Missing icon semantic alias in generated adapter");
   const definition = iconDefinitions[name];
   if (!definition) throw new Error(`Unknown icon semantic alias in generated adapter: ${name}`);
-  return `<svg class="tui-icon tui-icon--${definition.kind}" viewBox="${definition.viewBox}" width="${size}" height="${size}" aria-hidden="true" data-icon-alias="${name}" data-icon-size="${size}" data-icon-kind="${definition.kind}">${definition.content}</svg>`;
+  return `<svg class="tui-icon tui-icon--regular" viewBox="${definition.viewBox}" width="${size}" height="${size}" aria-hidden="true" data-icon-alias="${name}" data-icon-size="${size}" data-icon-kind="regular">${definition.content}</svg>`;
 };
 
 function htmlMarkup(component) {

@@ -222,7 +222,7 @@ function componentSpec(name) {
   if (name === "Primary Level Icon/Default") {
     return spec("Primary Level Icon", ".pattern-primary-level-icon", 40, "fixed", 40, {}, {
       iconSize: 20,
-      exactAssetIcons: ["primary-level/overview"],
+      iconAliases: ["primary-level/overview"],
       transparent: true,
     });
   }

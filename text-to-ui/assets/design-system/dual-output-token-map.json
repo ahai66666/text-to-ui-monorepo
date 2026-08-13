@@ -2523,9 +2523,9 @@
       "role": "spacing/padding/alert-right",
       "sourceToken": "tokens.spacing.json:padding.alert-right",
       "webCssVariable": "--padding-alert-right",
-      "pixsoVariable": "space/4",
-      "resolvedCssValue": "12px",
-      "pixsoValue": 12,
+      "pixsoVariable": "space/2",
+      "resolvedCssValue": "4px",
+      "pixsoValue": 4,
       "valueTransform": "identity"
     },
     {
