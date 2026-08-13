@@ -23,6 +23,17 @@ The model supplies tool-task reasoning, information architecture, interaction co
 
 Do not read a fixed questionnaire aloud. Generate questions from the uncertainty of the current task.
 
+This file is an executable intake gate, not background documentation. For a new
+page, redesign, multi-view flow, framework conversion, or Pixso task, the agent
+must show the analysis and proposed solution in the conversation and wait for
+explicit approval before generating any renderer or page artifact. A direct
+request to build something is not approval of an inferred structure.
+
+The only shortcut is an exact micro revision to an already approved page or
+component that cannot change hierarchy, workflow, permissions, action scope, or
+layout Pattern. Restate that change contract, apply it, and return to the same
+preview review loop. If any of those boundaries change, restart this intake gate.
+
 ## 2. Three Decision Layers
 
 ### Hard Constraints
@@ -138,6 +149,17 @@ Rules:
 - “确认”, “可以”, or “按这个做” is explicit approval.
 - Any material correction sends the proposal back to `pending` until the user confirms again.
 - Do not start a renderer or create a page artifact while confirmation is `pending`.
+
+Before confirmation, the agent may inspect supplied materials, locate the
+Monorepo, query generated indexes, and read the minimum references. It may not
+write page HTML, React, Vue, CSS, Pixso Frames, images, `page-spec.json`,
+`layout-contract.json`, or `component-usage.json`. An internal Context Packet is
+planning data and may be generated outside the deliverable directory.
+
+The proposal must also expose the task model: primary user, work object, start
+state, success state, failure/recovery path, and state that must be preserved.
+This is the part that prevents the Skill from jumping directly from a one-line
+request to a generic page.
 
 ## 6. Generated Requirement Contract
 

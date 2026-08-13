@@ -7,6 +7,94 @@ description: 'Turn text requests into task-informed HarmonyOS PC desktop tools t
 
 Build HarmonyOS PC tools by connecting requirements, framework Patterns, Tokens, semantic icons, native HTML/React/Vue components, Pixso mapping, and browser validation. Treat the Skill as the orchestrator; the production components remain in the Monorepo packages.
 
+## Mandatory Gate 0: analyze, propose, confirm
+
+This is the first user-facing gate for every new page, redesign, multi-view
+flow, framework conversion, or Pixso task. A request to “make/build/generate”
+authorizes investigation; it does not approve an inferred page structure.
+
+### Classify the request
+
+- **New build / redesign / conversion:** run the full requirement-analysis gate below.
+- **Micro revision:** use the narrow revision shortcut only when the user names an
+  existing page/component and an exact visual or behavioral change that cannot
+  alter the page hierarchy, workflow, permissions, or action scope.
+- **Repository or component diagnosis:** report findings first; do not generate a
+  page unless the user separately asks for implementation.
+
+### Intake work allowed before confirmation
+
+Inspect the request, screenshots, Pixso references, current project, assets, and
+existing design sources. Locate the Monorepo, resolve the minimum Context Packet,
+query the task/layout/component indexes, and read `references/requirement-spec.md`
+plus the exact intake references it points to. These are planning operations only.
+
+Before confirmation, do **not** create or modify page HTML, React, Vue, CSS,
+Pixso Frames, images, `page-spec.json`, `layout-contract.json`,
+`component-usage.json`, or a browser preview. An internal context packet and
+read-only inspection output are allowed; they are not the deliverable.
+
+### Required analysis response
+
+Before any renderer or page artifact, present a concise **Requirement Analysis /
+Tool Task Brief** and mark `Confirmation: pending`. Include:
+
+1. Understanding of the product, user, work object, primary job, start state,
+   success state, failure/recovery behavior, and state that must be preserved.
+2. Hard constraints, soft preferences, model-inferred decisions, and the
+   assumptions that need user attention.
+3. A compact page or flow tree, proposed HarmonyOS PC Pattern, information
+   hierarchy, primary action scope, and required overlays/states.
+4. Proposed framework/output and workflow (`html-first` by default,
+   `visual-first`, or `direct-html`), plus Pixso fidelity when relevant.
+5. Likely component capabilities to resolve after approval, without claiming
+   that a component has been selected before its exact contract is checked.
+6. At most three high-impact questions whose answers would materially change
+   structure, behavior, risk, or delivery scope.
+
+Use this short visible format:
+
+~~~markdown
+## Requirement Analysis / Proposed Solution
+- Design goal:
+- Primary user and work object:
+- Task model and success/recovery:
+- Page structure:
+  ```text
+  ├── Primary Navigation
+  ├── Main Workspace
+  └── Detail / Overlay
+  ```
+- Proposed Pattern and action placement:
+- Required interactions and states:
+- Framework/output and workflow:
+- Assumptions:
+- Open questions:
+- Confirmation: pending
+~~~
+
+Ask the user to confirm this proposal. Treat only an explicit “确认”, “可以”,
+“按这个做”, or equivalent approval after the proposal as confirmation. If the
+user corrects a material decision, revise the proposal and return to `pending`.
+Do not silently infer confirmation from the original request.
+
+### After confirmation
+
+Record the confirmed proposal and Tool Task Brief in the compact requirement
+contract. Translate hard requirements into `page-spec.json.constraintContract`
+when a page spec is required. Only then enter the PC Framework Layout Gate,
+resolve components in library → contract → Token-based custom order, and build
+the first preview.
+
+### Narrow revision shortcut
+
+For an approved preview or existing component, an exact request such as “change
+this slot's right inset to 4px” may skip a new product interview. Restate a
+one-sentence change contract, verify that hierarchy/workflow/action scope do not
+change, apply the change, and return to the same browser review gate. If the
+request changes structure, content model, interaction, permissions, or layout
+Pattern, leave the shortcut and run Gate 0 again.
+
 ## Non-negotiable source order
 
 For every visible UI region:
@@ -19,7 +107,11 @@ Record the source level and evidence in `component-usage.json`. Lookalike markup
 
 ## Fast entry: locate, route, query
 
-Do this before broad reference reading or page code:
+Use this as the read-only discovery path during Gate 0 or immediately after
+confirmation. It never replaces the visible Requirement Analysis / Proposed
+Solution and explicit confirmation gate above. Before confirmation, write any
+Context Packet only to a temporary or internal planning location, not to the
+page deliverable.
 
 1. Locate the Monorepo:
 
@@ -50,15 +142,17 @@ Do this before broad reference reading or page code:
 
 ## Core execution flow
 
-### 1. Inspect and propose
+### 1. Execute Gate 0
 
-Inspect user materials, the current project stack, and reusable assets. Select one workflow:
+Use the intake rules above and `references/requirement-spec.md`. Select one
+workflow during analysis:
 
 - `html-first` by default: early HTML preview, user review, optional Pixso refinement, release validation.
 - `visual-first` when the user explicitly wants Pixso first.
 - `direct-html` when the user explicitly skips Pixso.
 
-Present one concise requirement proposal before creating page artifacts. Include the design goal, a compact page tree, chosen Pattern, key interactions/states, framework and workflow, Pixso fidelity when relevant, and only material assumptions. Use `references/requirement-spec.md`. Wait for explicit confirmation.
+Do not continue to layout contracts, component selection, or page generation
+while the confirmation status is `pending`.
 
 ### 2. Lock the PC framework layout
 

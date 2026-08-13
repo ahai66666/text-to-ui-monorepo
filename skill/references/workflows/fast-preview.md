@@ -4,7 +4,9 @@ Use this mode to reach the first real, interactive browser page quickly. It is a
 
 ## Required sequence
 
-1. Confirm the concise requirement proposal once.
+1. Complete Gate 0: show the requirement analysis, Tool Task Brief, page tree,
+   proposed Pattern, states, assumptions, and workflow; then receive explicit
+   user confirmation. Never treat the original build request as confirmation.
 2. Generate a `fast-preview` Context Packet with `resolve-context.mjs`.
 3. Create and validate `layout-contract.json` before component selection.
 4. Create `component-usage.json` from the packet and exact selected component contracts.
