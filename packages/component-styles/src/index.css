@@ -34,7 +34,7 @@
 .tui-button[data-variant="danger"] { color: var(--color-button-danger-text); background: var(--color-button-danger-bg); }
 .tui-button[data-variant="danger"]:hover:not(:disabled), .tui-button[data-variant="danger"][data-state="hover"] { background: var(--color-button-danger-hover-bg); }
 .tui-button[data-variant="ghost"] { color: var(--color-button-ghost-text); background: var(--color-button-ghost-bg); }
-.tui-button[data-mode="icon-text"][data-variant="ghost"] { color: var(--color-text); }
+.tui-button[data-mode="icon-text"][data-variant="ghost"] { color: var(--color-text); gap: var(--space-3); padding-inline: var(--space-3); }
 .tui-button[data-variant="ghost"]:hover:not(:disabled), .tui-button[data-variant="ghost"][data-state="hover"] { background: var(--color-button-ghost-hover-bg); }
 .tui-button[data-variant="ghost"]:active:not(:disabled), .tui-button[data-variant="ghost"][data-state="pressed"] { background: var(--state-layer-pressed); }
 .tui-button:focus-visible, .tui-sidebar-item:focus-visible, .tui-list-card:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
