@@ -6424,14 +6424,55 @@
         "size",
         "disabled",
         "state",
+        "mainDetailActions",
+        "onMainDetailAction",
         "className"
       ],
       "slots": [
         "leading",
         "label",
         "trailing",
+        "main-detail-actions",
         "actions"
       ],
+      "slotContracts": {
+        "main-detail-actions": {
+          "cardinality": "0..n",
+          "scope": "main-detail-pane-global",
+          "defaultPlacement": "final-pane-leading-slot",
+          "layout": "compact-horizontal-group",
+          "leadingInsetToken": "layout/main-detail-action-leading-padding",
+          "allowedButtonVariants": [
+            "ghost",
+            "ghost-icon"
+          ],
+          "forbidden": [
+            "page-global-primary",
+            "card-action",
+            "field-action",
+            "section-action",
+            "selection-action",
+            "inline-action"
+          ]
+        }
+      },
+      "layoutRules": {
+        "secondaryListPane": {
+          "surfaceInset": "16px",
+          "contentAxis": "24px",
+          "scrollWrapperPadding": "16px 16px"
+        },
+        "mainDetailPane": {
+          "paddingInline": "24px",
+          "paddingTop": "16px",
+          "paddingBottom": "0px",
+          "insetOwner": "direct-content-scroll-wrapper"
+        },
+        "mainDetailActions": {
+          "leadingInset": "16px",
+          "insetOwner": "titlebar-final-pane-segment"
+        }
+      },
       "tokenRoles": [
         "color.text",
         "color.surface",
@@ -6469,7 +6510,7 @@
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "contractNotes": "Titlebar 的 main-detail-actions 是可容纳 0..n 个按钮的第三栏栏级操作插槽。三栏布局中，默认把所有作用于完整 Main Detail / Editor 的按钮集中在该插槽并按任务优先级横向排列；页面唯一 Primary CTA 仍属于 Primary Navigation Shell，卡片、字段、分区、选中对象和行内操作仍靠近各自目标。运行时适配器必须保持这一插槽语义、16px 起始轴、Ghost 静止态和多按钮事件。",
       "category": "titlebars",
       "categoryLabel": "标题栏",
       "order": 10,
@@ -6522,7 +6563,8 @@
       "sizing": "intrinsic",
       "behaviors": [
         "focus",
-        "disabled"
+        "disabled",
+        "multiple-main-detail-actions"
       ],
       "iconSemantic": "action/minimize",
       "readiness": {

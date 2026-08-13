@@ -49,6 +49,10 @@ const manifest = {
       textRoles: component.textRoles ?? [],
       iconSlots: component.iconSlots ?? [],
       tokenRoles: component.tokenRoles ?? [],
+      props: component.props ?? [],
+      slots: component.slots ?? [],
+      slotContracts: component.slotContracts ?? {},
+      layoutRules: component.layoutRules ?? {},
       implementations: component.implementations,
       readiness: component.readiness ?? Object.fromEntries((registry.registryPolicy?.readinessDimensions ?? []).map((key) => [key, false]))
     }))

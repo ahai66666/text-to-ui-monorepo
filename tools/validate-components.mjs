@@ -67,6 +67,16 @@ for (const component of contracts.components) {
   if (!component.slots?.length) failures.push(`${component.logicalName}: slots must not be empty`);
 }
 
+const titlebar = contracts.components.find((component) => component.id === "titlebar");
+const mainDetailActions = titlebar?.slotContracts?.["main-detail-actions"];
+if (!titlebar?.slots?.includes("main-detail-actions")) failures.push("Titlebar/Default: main-detail-actions slot is required");
+if (!titlebar?.props?.includes("mainDetailActions") || !titlebar?.props?.includes("onMainDetailAction")) failures.push("Titlebar/Default: multi-action framework props are required");
+if (mainDetailActions?.cardinality !== "0..n" || mainDetailActions?.scope !== "main-detail-pane-global" || mainDetailActions?.defaultPlacement !== "final-pane-leading-slot") failures.push("Titlebar/Default: Main Detail action slot cardinality, scope, and placement are invalid");
+if (mainDetailActions?.leadingInsetToken !== "layout/main-detail-action-leading-padding") failures.push("Titlebar/Default: Main Detail action slot must use the canonical 16px leading inset Token");
+if (titlebar?.layoutRules?.secondaryListPane?.surfaceInset !== "16px" || titlebar?.layoutRules?.secondaryListPane?.contentAxis !== "24px") failures.push("Titlebar/Default: Secondary List Pane 16px surface inset and 24px content axis are required");
+if (titlebar?.layoutRules?.mainDetailPane?.paddingInline !== "24px" || titlebar?.layoutRules?.mainDetailPane?.paddingTop !== "16px" || titlebar?.layoutRules?.mainDetailPane?.paddingBottom !== "0px") failures.push("Titlebar/Default: Main Detail Pane must use 24px inline, 16px top, and 0px bottom insets");
+if (titlebar?.layoutRules?.mainDetailActions?.leadingInset !== "16px") failures.push("Titlebar/Default: Main Detail action slot must begin 16px after the pane divider");
+
 if (!(await exists("packages/tokens/src/index.css"))) failures.push("Token package entry is missing");
 if (!(await exists("apps/component-gallery/index.html"))) failures.push("Component gallery is missing");
 else {

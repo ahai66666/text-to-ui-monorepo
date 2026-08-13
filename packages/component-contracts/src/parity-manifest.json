@@ -78,7 +78,8 @@
       ],
       "behaviorChecks": [
         "focus",
-        "disabled"
+        "disabled",
+        "multiple-main-detail-actions"
       ],
       "textRoles": [
         "title:title-s",
@@ -122,6 +123,60 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "size",
+        "disabled",
+        "state",
+        "mainDetailActions",
+        "onMainDetailAction",
+        "className"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "trailing",
+        "main-detail-actions",
+        "actions"
+      ],
+      "slotContracts": {
+        "main-detail-actions": {
+          "cardinality": "0..n",
+          "scope": "main-detail-pane-global",
+          "defaultPlacement": "final-pane-leading-slot",
+          "layout": "compact-horizontal-group",
+          "leadingInsetToken": "layout/main-detail-action-leading-padding",
+          "allowedButtonVariants": [
+            "ghost",
+            "ghost-icon"
+          ],
+          "forbidden": [
+            "page-global-primary",
+            "card-action",
+            "field-action",
+            "section-action",
+            "selection-action",
+            "inline-action"
+          ]
+        }
+      },
+      "layoutRules": {
+        "secondaryListPane": {
+          "surfaceInset": "16px",
+          "contentAxis": "24px",
+          "scrollWrapperPadding": "16px 16px"
+        },
+        "mainDetailPane": {
+          "paddingInline": "24px",
+          "paddingTop": "16px",
+          "paddingBottom": "0px",
+          "insetOwner": "direct-content-scroll-wrapper"
+        },
+        "mainDetailActions": {
+          "leadingInset": "16px",
+          "insetOwner": "titlebar-final-pane-segment"
+        }
+      },
       "implementations": {
         "html": "packages/components-html/src/index.js#titlebar",
         "react": "packages/components-react/src/index.jsx#Titlebar",
@@ -327,6 +382,22 @@
         "spacing.padding-button-x",
         "typography.body-l"
       ],
+      "props": [
+        "label",
+        "variant",
+        "size",
+        "mode",
+        "disabled",
+        "menuItems"
+      ],
+      "slots": [
+        "icon",
+        "label",
+        "trigger",
+        "menu"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/button.html",
         "react": "packages/components-react/src/index.jsx#Button",
@@ -399,6 +470,20 @@
         "radius.input",
         "typography.body-l"
       ],
+      "props": [
+        "value",
+        "placeholder",
+        "disabled",
+        "error"
+      ],
+      "slots": [
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/input.html",
         "react": "packages/components-react/src/index.jsx#Input",
@@ -489,6 +574,18 @@
         "spacing.padding-search-x",
         "typography.body-l"
       ],
+      "props": [
+        "value",
+        "placeholder",
+        "disabled"
+      ],
+      "slots": [
+        "leading",
+        "value",
+        "clear"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/search.html",
         "react": "packages/components-react/src/index.jsx#Search",
@@ -560,6 +657,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#textarea",
         "react": "packages/components-react/src/index.jsx#Textarea",
@@ -636,6 +749,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#select",
         "react": "packages/components-react/src/index.jsx#Select",
@@ -694,6 +823,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#field",
         "react": "packages/components-react/src/index.jsx#Field",
@@ -762,6 +907,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#checkbox",
         "react": "packages/components-react/src/index.jsx#Checkbox",
@@ -830,6 +989,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#radioGroup",
         "react": "packages/components-react/src/index.jsx#RadioGroup",
@@ -899,6 +1072,20 @@
         "spacing.component-gap",
         "color.primary"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#switch",
         "react": "packages/components-react/src/index.jsx#Switch",
@@ -988,6 +1175,20 @@
         "radius.list-item",
         "typography.body-l"
       ],
+      "props": [
+        "label",
+        "icon",
+        "selected",
+        "collapsed",
+        "count"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/sidebar.html",
         "react": "packages/components-react/src/index.jsx#Sidebar",
@@ -1098,6 +1299,21 @@
         "typography.body-l",
         "typography.body-m"
       ],
+      "props": [
+        "title",
+        "description",
+        "meta",
+        "selected",
+        "unread"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/list-card.html",
         "react": "packages/components-react/src/index.jsx#ListCard",
@@ -1165,6 +1381,20 @@
         "spacing.component-gap",
         "color.primary"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#tabs",
         "react": "packages/components-react/src/index.jsx#Tabs",
@@ -1229,6 +1459,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#breadcrumb",
         "react": "packages/components-react/src/index.jsx#Breadcrumb",
@@ -1308,6 +1552,20 @@
         "spacing.component-gap",
         "spacing.content-inset"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#pagination",
         "react": "packages/components-react/src/index.jsx#Pagination",
@@ -1374,6 +1632,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#avatar",
         "react": "packages/components-react/src/index.jsx#Avatar",
@@ -1429,6 +1701,20 @@
         "spacing.component-gap",
         "color.primary"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#badge",
         "react": "packages/components-react/src/index.jsx#Badge",
@@ -1486,6 +1772,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#card",
         "react": "packages/components-react/src/index.jsx#Card",
@@ -1581,6 +1883,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#item",
         "react": "packages/components-react/src/index.jsx#Item",
@@ -1638,6 +1956,22 @@
         "spacing.component-gap",
         "spacing.content-inset"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#table",
         "react": "packages/components-react/src/index.jsx#Table",
@@ -1695,6 +2029,22 @@
         "spacing.component-gap",
         "spacing.content-inset"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#dataTable",
         "react": "packages/components-react/src/index.jsx#DataTable",
@@ -1764,6 +2114,20 @@
         "spacing.component-gap",
         "color.primary"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#progress",
         "react": "packages/components-react/src/index.jsx#Progress",
@@ -1831,6 +2195,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#empty",
         "react": "packages/components-react/src/index.jsx#Empty",
@@ -1895,6 +2273,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "size",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#accordion",
         "react": "packages/components-react/src/index.jsx#Accordion",
@@ -1962,6 +2354,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#collapsible",
         "react": "packages/components-react/src/index.jsx#Collapsible",
@@ -2030,6 +2436,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#navigation-menu",
         "react": "packages/components-react/src/advanced.jsx#NavigationMenu",
@@ -2098,6 +2518,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#menubar",
         "react": "packages/components-react/src/advanced.jsx#Menubar",
@@ -2155,6 +2589,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#separator",
         "react": "packages/components-react/src/index.jsx#Separator",
@@ -2225,6 +2673,26 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "open",
+        "title",
+        "description",
+        "intent",
+        "actionLayout",
+        "confirmLabel",
+        "cancelLabel",
+        "onConfirm",
+        "onCancel",
+        "onOpenChange"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#dialog",
         "react": "packages/components-react/src/advanced.jsx#Dialog",
@@ -2298,6 +2766,25 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "open",
+        "title",
+        "description",
+        "confirmLabel",
+        "cancelLabel",
+        "statusIcon",
+        "onConfirm",
+        "onCancel",
+        "onOpenChange"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#alert-dialog",
         "react": "packages/components-react/src/advanced.jsx#AlertDialog",
@@ -2425,6 +2912,25 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "open",
+        "size",
+        "surface",
+        "mode",
+        "title",
+        "onConfirm",
+        "onCancel",
+        "onClose",
+        "onOpenChange"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#semi-modal",
         "react": "packages/components-react/src/advanced.jsx#SemiModal",
@@ -2498,6 +3004,21 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#popover",
         "react": "packages/components-react/src/advanced.jsx#Popover",
@@ -2571,6 +3092,21 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#hover-card",
         "react": "packages/components-react/src/advanced.jsx#HoverCard",
@@ -2656,6 +3192,20 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#context-menu",
         "react": "packages/components-react/src/advanced.jsx#ContextMenu",
@@ -2731,6 +3281,20 @@
         "shadow.overlay",
         "radius.card"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#dropdown-menu",
         "react": "packages/components-react/src/advanced.jsx#DropdownMenu",
@@ -2797,6 +3361,20 @@
         "spacing.padding-tag-x",
         "size.tag-height"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#label",
         "react": "packages/components-react/src/index.jsx#Label",
@@ -2868,6 +3446,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#combobox",
         "react": "packages/components-react/src/index.jsx#Combobox",
@@ -2935,6 +3529,22 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#nativeSelect",
         "react": "packages/components-react/src/index.jsx#NativeSelect",
@@ -3002,6 +3612,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#slider",
         "react": "packages/components-react/src/advanced.jsx#Slider",
@@ -3069,6 +3693,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#input-otp",
         "react": "packages/components-react/src/advanced.jsx#InputOtp",
@@ -3136,6 +3774,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#kbd",
         "react": "packages/components-react/src/advanced.jsx#Kbd",
@@ -3204,6 +3856,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#chart",
         "react": "packages/components-react/src/advanced.jsx#Chart",
@@ -3272,6 +3938,20 @@
         "spacing.component-gap",
         "spacing.content-inset"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#calendar",
         "react": "packages/components-react/src/advanced.jsx#Calendar",
@@ -3343,6 +4023,22 @@
         "spacing.component-gap",
         "spacing.content-inset"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#date-picker",
         "react": "packages/components-react/src/advanced.jsx#DatePicker",
@@ -3414,6 +4110,22 @@
         "spacing.component-gap",
         "spacing.content-inset"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#time-picker",
         "react": "packages/components-react/src/advanced.jsx#TimePicker",
@@ -3482,6 +4194,20 @@
         "typography.body-s",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#attachment",
         "react": "packages/components-react/src/advanced.jsx#Attachment",
@@ -3549,6 +4275,20 @@
         "typography.body-l",
         "spacing.component-gap"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#carousel",
         "react": "packages/components-react/src/advanced.jsx#Carousel",
@@ -3691,6 +4431,20 @@
         "color.icon",
         "color.primary"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#alert",
         "react": "packages/components-react/src/index.jsx#Alert",
@@ -3757,6 +4511,20 @@
         "shadow.1",
         "radius.tooltip"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#tooltip",
         "react": "packages/components-react/src/index.jsx#Tooltip",
@@ -3834,6 +4602,20 @@
         "shadow.1",
         "radius.card"
       ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/index.js#toast",
         "react": "packages/components-react/src/index.jsx#Toast",

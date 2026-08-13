@@ -65,7 +65,7 @@ Do not require every titlebar to contain every element. Choose the composition f
 The last Workspace pane owns a leading slot in the Global Title Layer, aligned to the pane's left boundary:
 
 - Pattern A / two-pane shell: use the slot for the Main Content title.
-- Pattern B / three-pane shell: use the slot for Main Detail/Editor operations such as save, share, expand, open separately, layout, and mode; do not put page-global creation there and do not repeat the list title.
+- Pattern B / three-pane shell: `main-detail-actions` is the default Titlebar slot for every action scoped to the complete Main Detail/Editor. It accepts 0..n buttons such as save, share, expand, open separately, layout, and mode; do not put page-global creation there and do not repeat the list title.
 - In Pattern A, the Main Content title begins 24px (`--layout-main-title-leading-padding` / `--space-6`) after its divider. In Pattern B, the first Main Detail operation begins 16px (`--layout-main-detail-action-leading-padding` / `--space-5`) after the Main Detail divider.
 - Keep application-wide actions not owned by Main Detail and window controls at the far right. The leading slot is the required home for Main Detail pane-global actions, not a replacement for the application action/window area.
 

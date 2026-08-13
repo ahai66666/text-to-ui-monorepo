@@ -57,7 +57,7 @@ const RuntimeTitlebarGallery = (props) => h("div", { class: "tui-runtime-titleba
   ["xlarge", "XL · 72px"]
 ].map(([size, label]) => h("div", { class: "tui-runtime-titlebar-row", key: size }, [
   h("span", { class: "tui-runtime-surface-label", key: "label" }, label),
-  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) }),
+  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", mainDetailActions: size === "large" ? [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }] : [], onMainDetailAction: (action) => props.setStatus?.(`Titlebar · Main Detail · ${action}`), onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) }),
   h(Titlebar, { key: "unfocus", label: "项目空间", size, state: "unfocus", onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) })
 ])));
 

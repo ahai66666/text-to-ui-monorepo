@@ -4,7 +4,7 @@
   "files": {
     "assets/design-system/core-color-token-table.md": "8fbbac71c324bcb1845e3716ed1956b8425b979a676fc10754f484d74e0aeaac",
     "assets/design-system/core-foundation-token-table.md": "6662567de6fecd6458addf993f5a0e26449936db15b8d51f5850c18a2d49b7b9",
-    "assets/design-system/design.md": "2f7771268d8d6ee2a5f2b5b7f02f24393cfc0b72e2052f5e573ba04f0815b4b2",
+    "assets/design-system/design.md": "39b8e9da2db6e5e362a3337e5ce11c0375dbe6c8e8b233c7ddce92e0c1c8b52f",
     "assets/design-system/dual-output-token-map.json": "fb3262fd3d33aa8d2b80a8a1c648a437b06ba5c397d062222f3e63e61c85c14a",
     "assets/design-system/effect-style-map.json": "460db4604ea943e5d498493f915e2fa26101b415686ae5af8c893aa5d4ec36a8",
     "assets/design-system/framework-component-adapter-map.json": "2f52fc286d4b1301867fca179d0ca89ea4594f6201acdd3193bfa99b02bebb71",
@@ -46,8 +46,8 @@
     "assets/design-system/tokens.typography.json": "0b5ab58f2f051d771661e91adb4b20d6bfa3cf605b34858c52900cccb2b5b518",
     "assets/design-system/tokens.utility.css": "897eb2aa22a0e163da2a832435827629afab03e477d6d96c7a3f0b329dedfb93",
     "assets/design-system/typography-style-map.json": "518befb2563e8ddf46dce686d91c60d9b8fa74b6bc9e2dbd47fa94fb93001137",
-    "preview/component-gallery.css": "70b3a70e9706b842016a547e67d6c6e863f6c224df45c89959917ab52a68e49c",
-    "preview/component-gallery.html": "c1a6d566b9647c1bb3ddfce83542fca2417eb951ebee5ecfba778ee2dce67fbf",
+    "preview/component-gallery.css": "78e7c8079dc9aea024129b175016be3f753ed2c5e42e15c05683f8750e9d8282",
+    "preview/component-gallery.html": "ecd0ed1ce39a96aff0198e808c98dab422bd1130c41a52a344c39310bcac860d",
     "preview/component-gallery.js": "3ccc9ab78eebc4570025d15cf6908233c140a9b35c71088ba5b51bf58deffe54",
     "preview/framework-component-contract/assets/button-gallery-BRtu8uYD.css": "b3d19789a11d3274192d2fee42d9c150651c94cbe04872890974e5139d051def",
     "preview/framework-component-contract/assets/button-gallery-DvsV1mVU.js": "dedef06f66776111ef5c0ad94f03d4ac7a78573a75244a79ab676e39997460a8",
@@ -111,7 +111,7 @@
     "preview/framework-component-interaction-audit.js": "21069378a372b26c1e9ce170eaefd21f8ef4485960d914abec135c100ee6bd06",
     "preview/framework-component-manifest.js": "e8865942b280c49f01f6632b5af13617e4996484074e32b3decb9cbcf2065ec0",
     "preview/icon-gallery.html": "cbe394cdf79f26f098ab416714da9c711c8e4a3966b64bc4d2ce5862cffe6fa9",
-    "preview/layout-inset-test.html": "fe252ce5343bb48bb9a0e24a61f2d53f7fc4cde876d28d2d59e76f6867940bac",
+    "preview/layout-inset-test.html": "ff891262880904bebf05822a043f7b8ad0d799d5476d0dd119a5dd293d3a664c",
     "preview/lucide-source-test.html": "738f778505673dd85a46ee5f2f96bced6e67d05100d370dd02e2f9c28bb0892c"
   }
 }

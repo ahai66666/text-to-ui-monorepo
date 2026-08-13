@@ -41,6 +41,9 @@ replace, or reshape the application shell.
    `component-usage.json`. Declare pane order, Global Title Layer, Primary
    action slot, Final Pane Leading Slot, content mode, pane inset owners,
    scroll owners, resize behavior, minimum window, and shared layout Tokens.
+   For a three-pane Pattern, declare `main-detail-actions` as the default
+   `0..n` Titlebar slot for every action scoped to the complete third pane;
+   never distribute those pane-global actions into cards or body toolbars.
 4. Run `node text-to-ui/scripts/validate-pc-framework-layout.mjs --contract ...`.
    Any failure blocks component selection and page implementation.
 5. Copy the validated decisions into `page-spec.json.constraintContract` and

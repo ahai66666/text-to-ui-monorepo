@@ -61,14 +61,14 @@ Segment the Global Title Layer on the same vertical boundaries as the Workspace 
 | Workspace structure | Final pane leading slot |
 |---|---|
 | Two panes: Primary Navigation + Main Content | Current page or current section title |
-| Three panes: Primary Navigation + Secondary Pane + Main Detail | Main Detail pane-global operation button or compact operation group |
+| Three panes: Primary Navigation + Secondary Pane + Main Detail | `main-detail-actions` slot containing 0..n Main Detail pane-global operation buttons |
 | Secondary page inside the final pane | Ghost Back Icon Button + `Title_S` secondary-page title |
 
 - The slot container begins at the final pane boundary. In a two-pane shell, the title uses `--layout-main-title-leading-padding` (`--space-6`, 24px). In a three-pane shell, the Main Detail operation group uses `--layout-main-detail-action-leading-padding` (`--space-5`, 16px).
 - In a two-pane shell, the title identifies the final Main Content pane. Place view actions after the title or in the right action area according to available width.
 - On a secondary page, keep the two- or three-pane shell boundaries unchanged and replace the final-pane leading content with a 40px Ghost Back Icon Button followed by `Title_S`. The group uses the Main Content 24px leading axis; do not add another nested title inset.
 - In a three-pane shell, the Secondary Pane already supplies list context, so the final Main Detail pane uses its leading slot only for non-Primary actions whose scope is the complete current detail/editor workspace, such as save, share, expand, open separately, layout, or mode controls. The page-global Primary CTA stays in the Primary Shell Global Primary Slot. Do not repeat the page title in the final pane slot.
-- Keep all Main Detail pane-global actions together in one compact group, ordered by task priority. The first action begins 16px after the Main Detail divider; additional actions continue horizontally using the component spacing tokens.
+- `main-detail-actions` is the default and exclusive Titlebar slot for every action scoped to the complete third pane. It accepts 0..n buttons. Keep all Main Detail pane-global actions together in one compact group, ordered by task priority. The first action begins 16px after the Main Detail divider; additional actions continue horizontally using the component spacing tokens.
 - Actions scoped to a card, field, section, selected object, or inline content stay next to that target and do not enter the pane-global slot.
 - Application-wide actions that are not owned by Main Detail remain in the far-right application action area. Window controls remain at the far right and never move into the final pane leading slot.
 - When a three-pane shell collapses to two panes, replace the pane-global-action content with the final pane title. Do not merely hide the Secondary Pane while leaving the old slot semantics unchanged.

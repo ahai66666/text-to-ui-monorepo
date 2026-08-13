@@ -67,7 +67,7 @@ export function ListCard({ title = "项目设置", description = "", supporting 
   </div>;
 }
 
-export function Titlebar({ label = "项目空间", size = "large", state = "default", disabled = false, onAction, children, ...props }) {
+export function Titlebar({ label = "项目空间", size = "large", state = "default", disabled = false, mainDetailActions = [], onMainDetailAction, onAction, children, ...props }) {
   const actions = [
     ["minimize", "最小化"],
     ["maximize", "最大化"],
@@ -76,7 +76,8 @@ export function Titlebar({ label = "项目空间", size = "large", state = "defa
   const controlIconSize = size === "small" ? 16 : 24;
   return <header className="tui-component tui-titlebar" {...contract("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state, { "data-size": size })} {...props}>
     <span className="tui-titlebar__brand" data-slot="leading"><Icon name="navigation/grid" size={24} /><span data-slot="label" data-typography-role="subtitle-m">{label}</span></span>
-    {children ?? <div className="tui-titlebar__actions" data-slot="actions">{actions.map(([action, text]) => <button className="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action={action} aria-label={text} disabled={disabled} key={action} onClick={() => onAction?.(action)}><Icon name={`window/${action}`} size={controlIconSize} /></button>)}</div>}
+    {children ?? (mainDetailActions.length > 0 && <div className="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" aria-label="Main Detail 栏级操作">{mainDetailActions.map((action) => <button className="tui-icon-button tui-titlebar__pane-action" type="button" data-slot="main-detail-action" data-action={action.id} aria-label={action.label} disabled={disabled || action.disabled} key={action.id} onClick={() => onMainDetailAction?.(action.id)}><Icon name={action.icon ?? "action/more"} size={20} /></button>)}</div>)}
+    <div className="tui-titlebar__actions" data-slot="actions">{actions.map(([action, text]) => <button className="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action={action} aria-label={text} disabled={disabled} key={action} onClick={() => onAction?.(action)}><Icon name={`window/${action}`} size={controlIconSize} /></button>)}</div>
   </header>;
 }
 
