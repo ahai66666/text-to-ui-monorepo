@@ -353,17 +353,17 @@
 .u-font-size-38 { font-size: var(--font-size-38); }
 .u-font-size-48 { font-size: var(--font-size-48); }
 .u-font-size-56 { font-size: var(--font-size-56); }
+.u-leading-12 { line-height: var(--line-height-12); }
 .u-leading-14 { line-height: var(--line-height-14); }
 .u-leading-16 { line-height: var(--line-height-16); }
 .u-leading-20 { line-height: var(--line-height-20); }
 .u-leading-22 { line-height: var(--line-height-22); }
 .u-leading-24 { line-height: var(--line-height-24); }
 .u-leading-28 { line-height: var(--line-height-28); }
-.u-leading-32 { line-height: var(--line-height-32); }
-.u-leading-40 { line-height: var(--line-height-40); }
-.u-leading-52 { line-height: var(--line-height-52); }
-.u-leading-64 { line-height: var(--line-height-64); }
-.u-leading-76 { line-height: var(--line-height-76); }
+.u-leading-36 { line-height: var(--line-height-36); }
+.u-leading-44 { line-height: var(--line-height-44); }
+.u-leading-58 { line-height: var(--line-height-58); }
+.u-leading-66 { line-height: var(--line-height-66); }
 .u-font-weight-400 { font-weight: var(--font-weight-400); }
 .u-font-weight-500 { font-weight: var(--font-weight-500); }
 .u-font-weight-700 { font-weight: var(--font-weight-700); }
@@ -378,5 +378,6 @@
 .u-type-subtitle-s { font-family: var(--font-sans); font-size: var(--type-subtitle-s-size); line-height: var(--type-subtitle-s-leading); font-weight: var(--type-subtitle-s-weight); }
 .u-type-body-l { font-family: var(--font-sans); font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); font-weight: var(--type-body-l-weight); }
 .u-type-body-m { font-family: var(--font-sans); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); font-weight: var(--type-body-m-weight); }
-.u-type-caption-l { font-family: var(--font-sans); font-size: var(--type-caption-l-size); line-height: var(--type-caption-l-leading); font-weight: var(--type-caption-l-weight); }
+.u-type-body-s { font-family: var(--font-sans); font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); font-weight: var(--type-body-s-weight); }
+.u-type-caption-m { font-family: var(--font-sans); font-size: var(--type-caption-m-size); line-height: var(--type-caption-m-leading); font-weight: var(--type-caption-m-weight); }
 }

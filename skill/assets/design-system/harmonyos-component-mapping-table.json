@@ -65,7 +65,7 @@
       "category": "01 Actions",
       "target": "Icon Text Button/Primary/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Icon Text Button",
+      "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
@@ -80,7 +80,7 @@
       "category": "01 Actions",
       "target": "Icon Text Button/Secondary/Default",
       "status": "mapped-needs-rebuild",
-      "sourceComponentSet": "Icon Text Button",
+      "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
@@ -95,7 +95,7 @@
       "category": "01 Actions",
       "target": "Icon Text Button/Ghost/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Icon Text Button",
+      "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
@@ -227,7 +227,7 @@
       "category": "02 Forms",
       "target": "Input/White Surface/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput",
+      "sourceComponentSet": "Input",
       "sourceVariant": {
         "surface": "white",
         "state": "Default"
@@ -241,7 +241,7 @@
       "category": "02 Forms",
       "target": "Input/Gray Surface/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput",
+      "sourceComponentSet": "Input",
       "sourceVariant": {
         "surface": "dark",
         "state": "Default"
@@ -372,10 +372,10 @@
       "category": "02 Forms",
       "target": "Checkbox/Unchecked/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "CheckBox-2 in 1",
+      "sourceComponentSet": "CheckBox",
       "sourceVariant": {
-        "Selected": "OFF",
-        "状态": "Enabled"
+        "checked": "false",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "visual-reference",
@@ -386,10 +386,10 @@
       "category": "02 Forms",
       "target": "Radio/Unselected/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Radio-Phone",
+      "sourceComponentSet": "Radio",
       "sourceVariant": {
-        "Selected": "OFF",
-        "状态": "Enabled"
+        "checked": "false",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "visual-reference",
@@ -400,10 +400,10 @@
       "category": "02 Forms",
       "target": "Switch/Off/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Switch-Phone",
+      "sourceComponentSet": "Switch",
       "sourceVariant": {
-        "Selected": "OFF",
-        "状态": "Enabled"
+        "checked": "false",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "visual-reference",
@@ -947,8 +947,8 @@
       "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
     },
     {
-      "name": "Chips-2in1",
-      "reason": "No registered static target in the current component scope."
+      "name": "Chips",
+      "reason": "Pixso component exists, but the current HTML contract has no direct Chips identity."
     },
     {
       "name": "ScrollBar-Phone",
@@ -959,8 +959,8 @@
       "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
     },
     {
-      "name": "CheckboxGroup-Phone",
-      "reason": "Composite form group; current registry keeps Checkbox as the primitive."
+      "name": "CheckboxGroup",
+      "reason": "Pixso component exists, but the current HTML contract has no direct CheckboxGroup identity."
     },
     {
       "name": ".2in1 Container",
@@ -972,11 +972,11 @@
     },
     {
       "name": "Dialog-2in1",
-      "reason": "Dialogs are explicitly excluded from the current formal component registry."
+      "reason": "Pixso component exists, but Dialog-2in1 still needs an explicit HTML contract mapping."
     },
     {
       "name": "ColorPicker-Tablet",
-      "reason": "No registered static target in the current component scope."
+      "reason": "Pixso component exists, but the current HTML contract has no direct ColorPicker identity."
     },
     {
       "name": "Search-Second Page-2in1",

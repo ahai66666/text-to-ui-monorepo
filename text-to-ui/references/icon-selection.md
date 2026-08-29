@@ -88,12 +88,14 @@ Strict audit treats unregistered `<symbol>` elements and unprovenanced inline SV
 - Outline icon stroke rule: keep a 1.5px source stroke on the 24 × 24 artboard. Uniformly scaling the SVG root and its internal vectors produces the required effective display widths: 24px → 1.5px, 20px → 1.25px, and 16px → 1px.
 - Lucide: outline, 1.5px source stroke, round line cap, round line join.
 - Lucide geometry must come from the pinned package through `scripts/export-icon-sprite.mjs`. Keep the 1.5px source stroke on the 24 × 24 geometry and scale the rendered `<svg>` root and internal vectors together; do not edit or independently redraw the exported nodes.
-- One icon style only: use the pinned Lucide Regular outline geometry through semantic aliases. HarmonyOS Filled variants are not part of the Text-to-UI icon system and must not be generated, mapped, or selected.
-- The bottom-left first-level menu inside the two-level Primary Navigation Shell follows the same Lucide rule as ordinary navigation and component actions; it has no Filled exception.
+- The default global icon style is pinned Lucide Regular outline geometry through semantic aliases. HarmonyOS Filled variants are not a global Text-to-UI icon system and must not be generated or selected as a library.
+- `primary-navigation-item` first-level icons use the approved Lucide Regular semantic aliases at 24px. Keep them linear; do not use filled or solid geometry. Sidebar and second-level navigation follow the same Lucide Regular rule.
 - Color: inherit `currentColor` from the component state unless a component rule explicitly defines multiple colors.
 - Disabled: inherit the component-wide 40% opacity; do not separately fade the icon.
 - **Pixso parity:** use `assets/design-system/pixso-icon-map.json`. A Text to UI node must carry a semantic alias, exact SVG source provenance, and a 16px, 20px, or explicitly approved 24px display-size token. `HM Symbol` and `icon_font` are prohibited in newly generated Text to UI components or pages; they may remain only inside unmodified HarmonyOS-native source components.
 - Never reduce only a Pixso icon container. Resize the SVG root and its internal vectors together, then centre the resulting geometry in the icon slot.
+- **Hot-zone alignment:** the icon slot is a square hit area, separate from the visible vector bounds. Set both the horizontal and vertical alignment to `CENTER`; never inherit top/start alignment from the HTML wrapper or a component master. After hydration, centre the actual vector bounds inside the slot on both axes. This applies equally to page-owned SVGs, generated icon Components, and swapped icon Instances.
+- **Stroke verification:** use the design-system table as the authority: 16px = 1px, 20px = 1.25px, and 24px = 1.5px. For another explicitly approved size, use `1.5 × displaySize ÷ 24` after normalizing the source to the 24 × 24 / 1.5px contract. Do not copy an asset's raw stroke-width unchanged to smaller icons.
 - **Crop gate:** after code-to-design import, read each icon wrapper and vector
   bounds. The wrapper must use visible overflow, the root and internal vector
   must preserve the same 24 × 24 source geometry, and the display-size token

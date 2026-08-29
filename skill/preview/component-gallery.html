@@ -5,21 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Text to UI · 组件预览</title>
   <script>
-    if (new URLSearchParams(window.location.search).get("embedded") === "contract") {
-      document.documentElement.dataset.embedded = "contract";
+    const embeddedMode = new URLSearchParams(window.location.search).get("embedded");
+    if (embeddedMode === "contract" || embeddedMode === "pattern") {
+      document.documentElement.dataset.embedded = embeddedMode;
     }
   </script>
-  <link rel="stylesheet" href="component-gallery.css?v=daa2d56b429c">
+  <link rel="stylesheet" href="component-gallery.css?v=1449da9fac27">
 </head>
 <body data-surface="gray">
   <svg class="hmos-sprite" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
-  <symbol id="icon-primary-level-overview" viewBox="0 0 24 24" data-icon-alias="primary-level/overview" data-icon-source="lucide@1.24.0" data-icon-name="layout-dashboard">
-    <rect width="7" height="9" x="3" y="3" rx="1"/>
-    <rect width="7" height="5" x="14" y="3" rx="1"/>
-    <rect width="7" height="9" x="14" y="12" rx="1"/>
-    <rect width="7" height="5" x="3" y="16" rx="1"/>
+  <symbol id="icon-navigation-grid" viewBox="0 0 24 24" data-icon-alias="navigation/grid" data-icon-source="lucide@1.24.0" data-icon-name="layout-grid">
+    <rect width="7" height="7" x="3" y="3" rx="1"/>
+    <rect width="7" height="7" x="14" y="3" rx="1"/>
+    <rect width="7" height="7" x="14" y="14" rx="1"/>
+    <rect width="7" height="7" x="3" y="14" rx="1"/>
   </symbol>
-  <symbol id="icon-primary-level-calendar" viewBox="0 0 24 24" data-icon-alias="primary-level/calendar" data-icon-source="lucide@1.24.0" data-icon-name="calendar-days">
+  <symbol id="icon-field-calendar" viewBox="0 0 24 24" data-icon-alias="field/calendar" data-icon-source="lucide@1.24.0" data-icon-name="calendar-days">
     <path d="M8 2v4"/>
     <path d="M16 2v4"/>
     <rect width="18" height="18" x="3" y="4" rx="2"/>
@@ -31,15 +32,14 @@
     <path d="M12 18h.01"/>
     <path d="M16 18h.01"/>
   </symbol>
-  <symbol id="icon-primary-level-contacts" viewBox="0 0 24 24" data-icon-alias="primary-level/contacts" data-icon-source="lucide@1.24.0" data-icon-name="users">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-    <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
-    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-    <circle cx="9" cy="7" r="4"/>
+  <symbol id="icon-navigation-contacts" viewBox="0 0 24 24" data-icon-alias="navigation/contacts" data-icon-source="lucide@1.24.0" data-icon-name="users-round">
+    <path d="M18 21a8 8 0 0 0-16 0"/>
+    <circle cx="10" cy="8" r="5"/>
+    <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/>
   </symbol>
-  <symbol id="icon-primary-level-mail" viewBox="0 0 24 24" data-icon-alias="primary-level/mail" data-icon-source="lucide@1.24.0" data-icon-name="mail">
-    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>
-    <rect x="2" y="4" width="20" height="16" rx="2"/>
+  <symbol id="icon-navigation-mail-unread" viewBox="0 0 24 24" data-icon-alias="navigation/mail-unread" data-icon-source="lucide@1.24.0" data-icon-name="mail-open">
+    <path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6Z"/>
+    <path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"/>
   </symbol>
   <symbol id="icon-object-device" viewBox="0 0 24 24" data-icon-alias="object/device" data-icon-source="lucide@1.24.0" data-icon-name="smartphone">
     <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
@@ -177,7 +177,7 @@
                     </nav>
                   </section>
                 </div>
-                <nav class="pattern-primary-level-icons" aria-label="一级导航图标（Lucide Regular）"><button class="pattern-primary-level-icon" type="button" aria-label="工作台" aria-pressed="false" data-primary-section="工作台"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-primary-level-overview"/></svg></button><button class="pattern-primary-level-icon selected" type="button" aria-label="项目" aria-pressed="true" data-primary-section="项目"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-primary-level-calendar"/></svg></button><button class="pattern-primary-level-icon" type="button" aria-label="成员" aria-pressed="false" data-primary-section="成员"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-primary-level-contacts"/></svg></button><button class="pattern-primary-level-icon" type="button" aria-label="消息" aria-pressed="false" data-primary-section="消息"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-primary-level-mail"/></svg></button></nav>
+                <nav class="pattern-primary-level-icons" aria-label="一级导航图标（Lucide Regular 线性）"><button class="pattern-primary-level-icon" type="button" aria-label="工作台" aria-pressed="false" data-primary-section="工作台"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-navigation-grid"/></svg></button><button class="pattern-primary-level-icon selected" type="button" aria-label="项目" aria-pressed="true" data-primary-section="项目"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-field-calendar"/></svg></button><button class="pattern-primary-level-icon" type="button" aria-label="成员" aria-pressed="false" data-primary-section="成员"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-navigation-contacts"/></svg></button><button class="pattern-primary-level-icon" type="button" aria-label="消息" aria-pressed="false" data-primary-section="消息"><svg class="pattern-lucide-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-navigation-mail-unread"/></svg></button></nav>
                 <nav class="pattern-nav-list pattern-nav-footer pattern-single-footer" aria-label="辅助导航"><button class="pattern-nav-item" type="button" aria-label="设置" data-pattern-page="设置"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#hmos-settings"/></svg><span>设置</span></button></nav>
               </aside>
               <div class="pattern-main-content pattern-skeleton-context" role="main" aria-label="主内容语境（骨架）">

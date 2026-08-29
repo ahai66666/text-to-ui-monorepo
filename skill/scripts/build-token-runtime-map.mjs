@@ -29,6 +29,7 @@ const cssFiles = [
   "tokens.radius.css",
   "tokens.typography.css",
   "tokens.layout.css",
+  "tokens.icon.css",
 ].map((name) => path.join(root, "assets/design-system", name));
 const cssSource = cssFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n");
 const cssValues = new Map(
@@ -92,6 +93,9 @@ function defaultCssName(token) {
   }
   if (/^(space|gap|padding)\//.test(token)) {
     return `--${token.replaceAll("/", "-")}`;
+  }
+  if (token.startsWith("icon/stroke/")) {
+    return `--icon-outline-stroke-width-${token.split("/").at(-1)}`;
   }
   if (token === "font/family/sans") return "--font-sans";
   if (token.startsWith("font/size/")) return `--font-size-${token.split("/").at(-1)}`;
@@ -160,6 +164,9 @@ function sourceTokenFor(pixsoVariable) {
   }
   if (pixsoVariable.startsWith("space/")) {
     return `tokens.spacing.json:${pixsoVariable.replace("/", ".")}`;
+  }
+  if (pixsoVariable.startsWith("icon/stroke/")) {
+    return `tokens.icon.json:lucide.project-stroke-width-by-display-size.${pixsoVariable.split("/").at(-1)}`;
   }
   if (pixsoVariable.startsWith("size/")) {
     const value = Number.parseFloat(pixsoVariable.split("/").at(-1));
@@ -497,18 +504,19 @@ for (const name of Object.keys(layoutTokens.spacing)) {
 }
 
 const typographyStyleRoles = {
-  "display-l": ["56", "76", "400"],
-  "display-m": ["48", "64", "400"],
-  "display-s": ["38", "52", "400"],
-  "title-l": ["30", "40", "700"],
-  "title-m": ["24", "32", "700"],
-  "title-s": ["20", "28", "700"],
-  "subtitle-l": ["18", "24", "500"],
-  "subtitle-m": ["16", "22", "500"],
-  "subtitle-s": ["14", "20", "500"],
-  "body-l": ["16", "22", "400"],
-  "body-m": ["14", "20", "400"],
-  "caption-l": ["12", "16", "500"],
+  "display-l": ["56", "66", "400"],
+  "display-m": ["48", "58", "400"],
+  "display-s": ["38", "44", "400"],
+  "title-l": ["30", "36", "700"],
+  "title-m": ["24", "28", "700"],
+  "title-s": ["20", "24", "700"],
+  "subtitle-l": ["18", "22", "500"],
+  "subtitle-m": ["16", "20", "500"],
+  "subtitle-s": ["14", "16", "500"],
+  "body-l": ["16", "20", "400"],
+  "body-m": ["14", "16", "400"],
+  "body-s": ["12", "14", "400"],
+  "caption-m": ["10", "12", "400"],
 };
 for (const [style, [size, lineHeight, weight]] of Object.entries(typographyStyleRoles)) {
   semanticRoles[`typography/${style}/font-size`] = {

@@ -9,20 +9,24 @@ action slots, scrolling ownership, or resize behavior.
 
 ## Required order
 
-1. Confirm that `layout-contract.json` exists and passes
+1. Confirm that `context-packet.json` is explicitly confirmed, then confirm
+   that `layout-contract.json` exists and passes
    `validate-pc-framework-layout.mjs`.
-2. Locate the Monorepo root containing `pnpm-workspace.yaml`,
+2. Bind `page-spec.json.shell.pattern`, its pane order, and the strict HTML
+   manifest layout block to that exact contract. A free-text Pattern fails.
+3. Locate the Monorepo root containing `pnpm-workspace.yaml`,
    `packages/component-contracts`, and the three framework component packages.
-3. Run `pnpm delivery:validate` from that root.
-4. Read `packages/component-contracts/src/components.json` before writing page
+4. Run `pnpm delivery:validate` from that root.
+5. Read `packages/component-contracts/src/components.json` before writing page
    code. Search by task, behavior, logical name, Variant, slots, and states.
-5. Select exactly one Web renderer for the product page: HTML, React, or Vue.
-6. Write `component-usage.json` next to the page specification. Classify every
-   reusable UI region as `registered`, `contractBased`, or `custom`.
-7. Import the selected production package and its shared styles/Tokens in page
+6. Select exactly one Web renderer for the product page: HTML, React, or Vue.
+7. For HTML, generate the strict schemaVersion 2 `component-usage.json` and
+   component calling skeleton from the Context Packet. For React/Vue, keep the
+   schemaVersion 1 classification until strict generators are available.
+8. Import the selected production package and its shared styles/Tokens in page
    source. Compose registered exports or factories; do not copy component DOM
    or CSS into the page.
-8. Run `validate-web-component-reuse.mjs` before browser QA and delivery.
+9. Run `validate-web-component-reuse.mjs` before browser QA and delivery.
 
 ## Framework imports
 
@@ -48,6 +52,25 @@ Reuse is proven only when all of these are true:
 - The rendered component carries the canonical contract attributes emitted by
   that adapter.
 - Browser QA exercises the relevant state or interaction.
+
+Strict HTML additionally requires all of the following:
+
+- every registered entry names the resolved `rendererKey` and a real factory
+  call site;
+- business content enters through supported renderer props/slots;
+- rendered roots are not cleared with `replaceChildren` or `innerHTML`;
+- runtime evidence from `collectHtmlComponentEvidence(document)` contains the
+  expected logical name, count, region, state, and required slots;
+- page-owned CSS passes the Token audit.
+
+Run the generator before page code:
+
+```bash
+node text-to-ui/scripts/generate-html-component-skeleton.mjs \
+  --context context-packet.json --layout-contract layout-contract.json \
+  --bindings component-bindings.json \
+  --out src/component-skeleton.js --manifest component-usage.json
+```
 
 The following are markers only and never prove reuse by themselves:
 
@@ -132,6 +155,11 @@ production adapters.
   "previousOutputReuse": false
 }
 ```
+
+This schemaVersion 1 example remains the compatibility format for React/Vue.
+New HTML pages use schemaVersion 2 with `enforcement: "strict-source"`, a
+`renderer` contract, `rendererKey`, `requiredCallSites`,
+`expectedRuntimeCount`, and optional declared regions/runtime slots.
 
 Validate it from the Monorepo root:
 

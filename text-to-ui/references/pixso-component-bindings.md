@@ -1,17 +1,27 @@
 # Pixso Component Bindings
 
-Use this file with `assets/design-system/pixso-variables.json` before creating or updating Pixso components through MCP. The JSON defines the variable collections; this file defines which component properties must bind to them. Do not substitute literal values once an approved variable is available.
+Use this file with `assets/design-system/mapping-registry.json` and
+`assets/design-system/pixso-variables.json` before creating or updating Pixso
+components through MCP. The mapping registry defines the active HTML/Token →
+Pixso target relationship; the variable manifest defines the variable
+collections; this file defines which component properties must bind to them. Do
+not substitute literal values once an approved variable is available.
 
 ## Import Sequence
 
-1. Run `node scripts/build-pixso-token-manifest.mjs --check` and inspect the active Pixso file.
-2. Pass the Token Gate in `references/pixso-mcp.md`.
-3. Create or reconcile `Color`, `Dimension`, and `Typography` in that order. Color uses only the 53 direct core paths in `core-color-token-table.md`; non-color variables may carry `foundation/`, `semantic/`, `component/`, or `layout/` prefixes.
-4. Create text styles and effect styles from the generated manifest.
-5. Build or reconcile core components and variants.
-6. Assemble Patterns and pages only from those component instances.
+1. Read the active `profiles[]` entry in `assets/design-system/mapping-registry.json` and confirm its Pixso document and component library.
+2. Run `node scripts/validate-mapping-registry.mjs` and `node scripts/build-pixso-token-manifest.mjs --check`, then inspect the active Pixso file.
+3. Pass the Token Gate in `references/pixso-mcp.md`.
+4. Create or reconcile `Color`, `Dimension`, and `Typography` in that order. Color uses only the 53 direct core paths in `core-color-token-table.md`; non-color variables may carry `foundation/`, `semantic/`, `component/`, or `layout/` prefixes.
+5. Create text styles and effect styles from the generated manifest.
+6. Build or reconcile core components and variants.
+7. Assemble Patterns and pages only from those component instances.
 
-The current static library inventory and lookup contract live in `assets/design-system/pixso-component-registry.json`. Page generation must follow `references/pixso-component-usage.md`; component names are stable, while document GUIDs are resolved fresh at runtime.
+The current static library inventory and lookup contract live in
+`assets/design-system/pixso-component-registry.json`; the central registry
+selects which inventory belongs to the active profile. Page generation must
+follow `references/pixso-component-usage.md`; component names are stable, while
+document GUIDs are resolved fresh at runtime.
 
 ## Required Component Bindings
 
@@ -32,23 +42,23 @@ The current static library inventory and lookup contract live in `assets/design-
 | Button | height | `$size/control` | 40px standard button |
 | Button | horizontal padding | `$padding/button-x` | 16px |
 | Button, Split Button | icon-to-label gap | `$gap/button-icon-label` | 8px; no literal gap |
-| Button | label | `Typography/Body_L` style | 16 / 22 / 400 for standard 40px Button |
+| Button | label | `Typography/Body_L` style | 16 / 20 / 400 for standard 40px Button |
 | Icon Button | frame | `$size/control` | 40 × 40px, Ghost by default |
 | Icon Button | icon | `$size/icon/md` | 20px |
 | Input, Search, Select, Combobox, Date Picker, Time Picker | control height | `$size/control` | 40px standard field control |
-| Input, Search, Textarea | value / entered text | `Typography/Body_L` style | 16 / 22 / 400 |
+| Input, Search, Textarea | value / entered text | `Typography/Body_L` style | 16 / 20 / 400 |
 | Select, Combobox | trigger value | `Typography/Body_L` style | Field-like displayed value |
 | Date Picker, Time Picker | trigger value | `Typography/Body_L` style | Field-like displayed value |
 | Time Picker | selected hour/minute option | semantic brand foreground + transparent surface | Ghost: brand text, no resting fill |
-| Input OTP | digit | `Typography/Body_L` style | 16 / 22 / 400 |
+| Input OTP | digit | `Typography/Body_L` style | 16 / 20 / 400 |
 | Sidebar, Dropdown, Accordion | visible label | `Typography/Body_L` style | 40px standard interactive labels |
 | Checkbox, Radio, Switch | visible label | `Typography/Body_M` style | 14 / 20 / 400 compact selection-control exception |
 | Tabs, 28px Small Button | visible label | `Typography/Body_M` style | Compact-label cases alongside selection controls |
-| List / Item | primary label | `Typography/Body_L` style | 16 / 22 / 400 |
-| List / Item | time, summary, secondary copy | `Typography/Body_M` style | 14 / 20 / 400 |
-| Table | header | `Typography/Body_M` style | 14 / 20 / 400, muted and not bold |
-| Table | data cell | `Typography/Body_L` style | 16 / 22 / 400 |
-| Table | status, helper | `Typography/Caption_L` style | 12 / 16 / 500 |
+| List / Item | primary label | `Typography/Body_L` style | 16 / 20 / 400 |
+| List / Item | time, summary, secondary copy | `Typography/Body_M` style | 14 / 16 / 400 |
+| Table | header | `Typography/Body_M` style | 14 / 16 / 400, muted and not bold |
+| Table | data cell | `Typography/Body_L` style | 16 / 20 / 400 |
+| Table | status, helper | `Typography/Body_S` style | 12 / 14 / 400 |
 | Field | title / label | `Typography/Body_M` style | 14 / 20 / 400 |
 | Field | label-to-control gap | `$gap/field-label` | 8px |
 | Field | adjacent field and form-grid row/column gap | `$gap/form-field` | 16px |
@@ -72,7 +82,7 @@ Variable source: assets/design-system/pixso-variables.json
 Use variables and component instances; do not create literal color, spacing, typography, or control-size values.
 Main Content / Main Detail: X 24px, T 16px, B 0px on one direct scrolling wrapper.
 Global Primary action: only in the Primary Navigation Shell slot between Brand Anchor and Sidebar navigation.
-Default visible text: Body_L. Secondary copy: Body_M. Reference and special prompts: Caption_L.
+Default visible text: Body_L. Secondary copy: Body_M. Reference, helper, and status text: Body_S. Extremely small auxiliary notes: Caption_M.
 Checkbox, Radio, Switch, Tabs, and 28px Small Button labels use Body_M. Button icon + text: 8px token gap.
 ```
 

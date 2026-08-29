@@ -19,6 +19,7 @@ const cssFiles = [
   "tokens.radius.css",
   "tokens.layout.css",
   "tokens.typography.css",
+  "tokens.icon.css",
 ];
 
 const mode = process.argv.includes("--write")
@@ -183,6 +184,9 @@ function cssNameForSource(source) {
     const [group, ...rest] = segments;
     if (group === "font-family") return "--font-sans";
     return `--${group}-${rest.join("-")}`;
+  }
+  if (file === "tokens.icon.json" && segments[0] === "lucide" && segments[1] === "project-stroke-width-by-display-size") {
+    return `--icon-outline-stroke-width-${segments.at(-1)}`;
   }
   throw new Error(`No Web CSS mapping rule for ${source}`);
 }

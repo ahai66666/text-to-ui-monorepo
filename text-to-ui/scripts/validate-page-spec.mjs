@@ -95,6 +95,9 @@ for (const inputPath of inputPaths) {
     failures.push("viewport.width and viewport.height must be positive");
   }
   if (!spec.shell?.pattern) failures.push("shell.pattern is required");
+  if (!['pattern-a-two-pane', 'pattern-b-three-pane', 'pattern-c-tool-workspace', 'pattern-d-inspector'].includes(spec.shell?.pattern)) {
+    failures.push("shell.pattern must be one of the canonical Pattern IDs: pattern-a-two-pane, pattern-b-three-pane, pattern-c-tool-workspace, pattern-d-inspector");
+  }
 
   if (spec.schemaVersion === 2) {
     failures.push(...validateConstraintContract(spec.constraintContract));
@@ -120,12 +123,12 @@ for (const inputPath of inputPaths) {
       }
       if (
         componentContract.reuseStrategy !== undefined &&
-        !['registered-components', 'import-and-repair'].includes(
+        !['registered-components', 'import-and-repair', 'native-pixso-scene'].includes(
           componentContract.reuseStrategy,
         )
       ) {
         failures.push(
-          "componentContract.reuseStrategy must be registered-components or import-and-repair",
+          "componentContract.reuseStrategy must be registered-components, import-and-repair, or native-pixso-scene",
         );
       }
       if (typeof componentContract.strictComponentParity !== 'boolean') {

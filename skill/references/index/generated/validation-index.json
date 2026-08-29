@@ -3,7 +3,7 @@
   "generatedFrom": [
     {
       "path": "package.json",
-      "sha256": "e85fae9d3a6214836f81d912f53bb2c21f2f51b266d0989e7e4a3a961c58c1b2"
+      "sha256": "715d6a6aa72ee5388a0c4cddac3d604827637dc4d676bb31cf1a2dbfdc3c49ae"
     }
   ],
   "modes": {
@@ -12,10 +12,13 @@
       "commands": [
         "pnpm index:check",
         "pnpm layout:contract:test",
+        "pnpm layout:binding:test",
         "pnpm components:reuse:test"
       ],
       "requiredEvidence": [
+        "context-packet.json",
         "layout-contract.json",
+        "page-spec.json",
         "component-usage.json",
         "build-or-open-success",
         "target-viewport",
@@ -45,10 +48,36 @@
     "contracts:validate": "node tools/validate-components.mjs",
     "styles:validate": "node tools/validate-component-style-parity.mjs",
     "pixso:mapping:test": "node tools/test-pixso-mapping.mjs",
+    "pixso:scene:coremail": "node text-to-ui/scripts/generate-pixso-scene.mjs --page-spec apps/coremail-workbench/page-spec.json --layout-contract apps/coremail-workbench/pixso/layout-contract.json --page-data apps/coremail-workbench/pixso/page-data.json --component-map text-to-ui/assets/design-system/mapping-registry.json --out apps/coremail-workbench/pixso/pixso-scene.json --stats-out apps/coremail-workbench/pixso/scene-stats.json",
+    "pixso:operation-plan:coremail": "node text-to-ui/scripts/generate-pixso-operation-plan.mjs --scene apps/coremail-workbench/pixso/pixso-scene.json --component-map text-to-ui/assets/design-system/mapping-registry.json --out apps/coremail-workbench/pixso/pixso-operation-plan.json && node text-to-ui/scripts/prepare-pixso-operation-batches.mjs --plan apps/coremail-workbench/pixso/pixso-operation-plan.json --out apps/coremail-workbench/pixso/pixso-operation-batches.json",
+    "pixso:scene:test": "node text-to-ui/scripts/test-pixso-native-scene.mjs && node text-to-ui/scripts/test-pixso-two-phase-icons.mjs && node text-to-ui/scripts/test-pixso-image-runtime.mjs",
+    "components:business-props:test": "node text-to-ui/scripts/test-html-business-props.mjs",
+    "components:titlebar-actions:test": "node text-to-ui/scripts/test-titlebar-action-contract.mjs",
+    "pixso:mcp-plan:coremail": "node text-to-ui/scripts/prepare-pixso-mcp-batches.mjs --plan apps/coremail-workbench/pixso/pixso-operation-plan.json --out apps/coremail-workbench/pixso/pixso-mcp-call-plan.json",
+    "pixso:import-fast-path:test": "node text-to-ui/scripts/test-pixso-import-run.mjs && node text-to-ui/scripts/test-pixso-import-fast-path.mjs",
     "tokens:validate": "node skill/scripts/build-pixso-token-manifest.mjs --check && node skill/scripts/build-token-runtime-map.mjs --check && node skill/scripts/build-dual-output-token-map.mjs --check",
+    "mappings:validate": "node text-to-ui/scripts/validate-mapping-registry.mjs",
+    "mappings:check": "node text-to-ui/scripts/sync-mapping-registry.mjs --check && node text-to-ui/scripts/validate-mapping-registry.mjs --check-projections",
+    "mappings:sync": "node text-to-ui/scripts/sync-mapping-registry.mjs --write",
+    "mappings:doc": "node text-to-ui/scripts/build-mapping-registry-doc.mjs",
+    "mappings:test": "node text-to-ui/scripts/test-mapping-registry.mjs",
+    "mappings:obsidian:check": "node text-to-ui/scripts/sync-obsidian-mapping-edits.mjs --check",
+    "mappings:obsidian:apply": "node text-to-ui/scripts/sync-obsidian-mapping-edits.mjs --write",
+    "mappings:obsidian:build": "node text-to-ui/scripts/build-obsidian-mapping-workbook.mjs",
+    "mappings:obsidian:test": "node text-to-ui/scripts/test-obsidian-mapping-sync.mjs",
     "frameworks:validate": "node skill/scripts/validate-framework-component-adapter-map.mjs && node skill/scripts/test-framework-component-contract.mjs && node skill/scripts/validate-framework-component-runtime.mjs && node tools/validate-runtime-parity.mjs",
     "layout:contract:test": "node skill/scripts/test-validate-pc-framework-layout.mjs",
+    "layout:binding:test": "node skill/scripts/test-validate-page-layout-binding.mjs",
+    "layout:markers:test": "node skill/scripts/test-validate-layout-markers.mjs",
+    "layout:route:test": "node text-to-ui/scripts/test-resolve-context-pattern-gate.mjs",
+    "patterns:validate": "node text-to-ui/scripts/validate-pattern-contracts.mjs",
+    "patterns:resolution:test": "node text-to-ui/scripts/test-pattern-contract-resolution.mjs",
+    "patterns:scene-binding:test": "node text-to-ui/scripts/test-ui-scene-pattern-binding.mjs",
+    "frameworks:page-generation:test": "node text-to-ui/scripts/test-framework-page-generation.mjs",
     "components:reuse:test": "node skill/scripts/test-validate-web-component-reuse.mjs",
+    "components:resolution:test": "node text-to-ui/scripts/test-primary-navigation-resolution.mjs",
+    "components:strict-html:test": "node skill/scripts/test-html-strict-reuse-pipeline.mjs && node skill/scripts/test-validate-page-token-usage.mjs",
+    "components:strict-html:forward": "node tools/test-strict-html-forward-fixture.mjs",
     "runtime:evidence": "node tools/validate-runtime-evidence.mjs",
     "dialogs:validate": "node tools/validate-dialog-contract.mjs",
     "runtime:evidence:strict": "node tools/validate-runtime-evidence.mjs --strict",
@@ -57,7 +86,9 @@
     "gallery:sync-legacy": "node tools/sync-legacy-visual-baseline.mjs",
     "gallery:baseline:validate": "node tools/validate-legacy-baseline.mjs",
     "gallery:build": "pnpm gallery:sync-legacy && pnpm --filter @text-to-ui/component-gallery build && node tools/validate-gallery-dist.mjs",
+    "services:start": "node text-to-ui/scripts/start-text-to-ui-services.mjs start",
+    "services:status": "node text-to-ui/scripts/start-text-to-ui-services.mjs status",
     "delivery:validate": "node tools/validate-repository-delivery.mjs",
-    "test": "pnpm index:check && pnpm delivery:validate && pnpm contracts:validate && pnpm styles:validate && pnpm pixso:mapping:test && pnpm frameworks:validate && pnpm layout:contract:test && pnpm components:reuse:test && pnpm runtime:evidence && pnpm dialogs:validate && pnpm gallery:baseline:validate && pnpm tokens:validate"
+    "test": "pnpm index:check && pnpm patterns:validate && pnpm patterns:resolution:test && pnpm patterns:scene-binding:test && pnpm frameworks:page-generation:test && pnpm mappings:check && pnpm mappings:test && pnpm mappings:obsidian:test && pnpm components:resolution:test && pnpm delivery:validate && pnpm contracts:validate && pnpm styles:validate && pnpm pixso:mapping:test && pnpm frameworks:validate && pnpm layout:contract:test && pnpm layout:binding:test && pnpm layout:markers:test && pnpm layout:route:test && pnpm components:reuse:test && pnpm components:strict-html:test && pnpm components:strict-html:forward && pnpm runtime:evidence && pnpm dialogs:validate && pnpm gallery:baseline:validate && pnpm tokens:validate"
   }
 }

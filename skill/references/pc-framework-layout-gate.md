@@ -64,6 +64,7 @@ its slots; components do not invent or override the application shell.
   "titleSegments": ["primary-navigation", "secondary-list", "main-detail"],
   "primaryActionSlot": "primary-navigation-shell",
   "finalPaneLeadingSlot": "main-detail-operations",
+  "requiredSlots": ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"],
   "insetOwners": {
     "primary-navigation": "primary-navigation-shell",
     "secondary-list": "secondary-list-shell",

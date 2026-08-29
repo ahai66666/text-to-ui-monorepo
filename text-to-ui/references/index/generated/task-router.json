@@ -3,11 +3,11 @@
   "generatedFrom": [
     {
       "path": "text-to-ui/references/index/task-routes.source.json",
-      "sha256": "efb18c3dd018ddfc05e111f213383bc0d6b8e45d5693034f0621a71044b609ab"
+      "sha256": "869134949538bc20353cbb1d46ed18d2af2c1e5814bcabc254a9e90308f8d3ae"
     },
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "7ea64cb85beb1d2d455c50299f771d32b0aed603947574433819b63ed68ed7e4"
+      "sha256": "8480f5758724239ff9290b8efb0c0120ba220ed3deacb69221d2b8a59151ca7b"
     },
     {
       "path": "text-to-ui/references/index/layout-routes.source.json",
@@ -45,7 +45,7 @@
       "layout": "pattern-b-three-pane",
       "requiredCapabilities": [
         "titlebar",
-        "primary-navigation",
+        "primary-navigation-item",
         "search",
         "list-item",
         "checkbox",
@@ -82,7 +82,8 @@
       "layout": "pattern-b-three-pane",
       "requiredCapabilities": [
         "titlebar",
-        "primary-navigation",
+        "primary-navigation-item",
+        "sidebar",
         "search",
         "list-item",
         "button",
@@ -117,7 +118,7 @@
       "layout": "pattern-a-two-pane",
       "requiredCapabilities": [
         "titlebar",
-        "primary-navigation",
+        "primary-navigation-item",
         "button",
         "card"
       ],
@@ -150,7 +151,7 @@
       "layout": "pattern-c-tool-workspace",
       "requiredCapabilities": [
         "titlebar",
-        "primary-navigation",
+        "primary-navigation-item",
         "tabs",
         "search",
         "button",

@@ -25,7 +25,7 @@ const shared = {
       "Subtitle_M",
       "Body_L",
       "Body_M",
-      "Caption_L",
+      "Body_S",
       "Display_M",
     ],
   },
@@ -38,6 +38,9 @@ const shared = {
     titlebar: "exact-titlebar-svg",
     prohibitIconFontsForGeneratedNodes: true,
     resizeRootAndVectorsTogether: true,
+    strokeWeightFormula: iconMap.rendering?.lucide?.strokeWeightFormula ?? "supported display sizes use strokeWidthByDisplaySize[displaySize]; other approved sizes use 1.5 * displaySize / sourceArtboard",
+    strokeWeightByDisplaySize: iconMap.rendering?.lucide?.strokeWidthByDisplaySize ?? { "16": 1, "20": 1.25, "24": 1.5 },
+    hotZone: iconMap.rendering?.hotZone ?? { alignment: "CENTER", axes: "BOTH", overflow: "VISIBLE", verificationTolerance: 0.5 },
     forbidApproximation: true,
   },
   placementPolicy: {
@@ -221,8 +224,8 @@ function componentSpec(name) {
   }
   if (name === "Primary Level Icon/Default") {
     return spec("Primary Level Icon", ".pattern-primary-level-icon", 40, "fixed", 40, {}, {
-      iconSize: 20,
-      iconAliases: ["primary-level/overview"],
+      iconSize: 24,
+      iconAliases: ["navigation/grid"],
       transparent: true,
     });
   }
@@ -300,7 +303,7 @@ function componentSpec(name) {
     });
   }
   if (name.startsWith("Badge/")) {
-    return spec("Badge", ".badge", "hug", "hug", 24, { Label: "Caption_L" }, {
+    return spec("Badge", ".badge", "hug", "hug", 24, { Label: "Body_S" }, {
       direction: "horizontal",
       paddingX: 8,
       radiusToken: "radius/badge",
@@ -308,7 +311,7 @@ function componentSpec(name) {
   }
   if (name.startsWith("Avatar/")) {
     const size = Number(name.split("/")[1]);
-    return spec("Avatar", ".avatar", size, "fixed", size, { Initials: "Caption_L" }, {
+    return spec("Avatar", ".avatar", size, "fixed", size, { Initials: "Body_S" }, {
       iconSize: size === 32 ? 20 : 24,
       radiusToken: "radius/avatar",
     });
@@ -359,7 +362,7 @@ function componentSpec(name) {
     });
   }
   if (name === "Tooltip/Default") {
-    return spec("Tooltip", ".tooltip", "hug", "hug", "hug", { Message: "Caption_L" }, {
+    return spec("Tooltip", ".tooltip", "hug", "hug", "hug", { Message: "Body_S" }, {
       maxWidth: 240,
       paddingToken: "padding/tooltip",
       effectStyle: "Effect/Foundation/shadow-1",

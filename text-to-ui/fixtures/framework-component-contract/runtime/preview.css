@@ -11,11 +11,11 @@ body { min-height: 100vh; margin: var(--space-0); padding: var(--space-7); color
 .contract-preview__header { padding: var(--padding-card); }
 .contract-preview__header h1, .component-module h2 { margin: var(--space-0); font-size: var(--type-title-l-size); font-weight: var(--type-title-l-weight); line-height: var(--type-title-l-leading); }
 .contract-preview__header p { margin: var(--space-3) var(--space-0) var(--space-0); color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
-.contract-preview__header .contract-preview__eyebrow { margin: var(--space-0) var(--space-0) var(--space-2); color: var(--color-text-brand); font-weight: var(--type-caption-l-weight); }
+.contract-preview__header .contract-preview__eyebrow { margin: var(--space-0) var(--space-0) var(--space-2); color: var(--color-text-brand); font-weight: var(--type-body-s-weight); }
 .component-module { overflow: hidden; }
 .component-module > header { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-cross-group-control); padding: var(--padding-card); border-bottom: var(--space-1) solid var(--color-border); }
 .component-module h2 { font-size: var(--type-subtitle-l-size); font-weight: var(--type-subtitle-l-weight); line-height: var(--type-subtitle-l-leading); }
-.contract-preview__label { margin: var(--space-0) var(--space-0) var(--space-2); color: var(--color-text-muted); font-size: var(--type-caption-l-size); font-weight: var(--type-caption-l-weight); line-height: var(--type-caption-l-leading); }
+.contract-preview__label { margin: var(--space-0) var(--space-0) var(--space-2); color: var(--color-text-muted); font-size: var(--type-body-s-size); font-weight: var(--type-body-s-weight); line-height: var(--type-body-s-leading); }
 .component-module code { display: block; margin-top: var(--space-2); color: var(--color-text-brand); font-family: var(--font-sans); font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); }
 .framework-switch { display: flex; gap: var(--gap-button-group); margin: var(--space-0); padding: var(--space-0); border: var(--space-0); color: var(--color-text-muted); font-size: var(--type-body-s-size); }
 .framework-switch legend { position: absolute; overflow: hidden; width: var(--space-0); height: var(--space-0); clip-path: inset(50%); }

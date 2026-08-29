@@ -3,15 +3,15 @@
   "generatedFrom": [
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "7ea64cb85beb1d2d455c50299f771d32b0aed603947574433819b63ed68ed7e4"
+      "sha256": "8480f5758724239ff9290b8efb0c0120ba220ed3deacb69221d2b8a59151ca7b"
     },
     {
       "path": "packages/component-contracts/src/parity-manifest.json",
-      "sha256": "cfb42f5c34d305226a4d54fa687abb925cdeb8a8b0ff4af689318ac859afc085"
+      "sha256": "6f060a120dcf5e31327f67566615c4f21580ac6ba4b810985f44108fd663aad5"
     },
     {
       "path": "text-to-ui/references/index/capability-aliases.source.json",
-      "sha256": "ccabae5b1259057aea233dc3bd4a149df3a9f16ea0a4b61afa19f9e868fb076c"
+      "sha256": "0156fe607b6beccedd0cba8492daf022daa728f1c31d181d0698ffe27ba6e178"
     }
   ],
   "frameworkPackages": {
@@ -19,7 +19,7 @@
     "react": "@text-to-ui/components-react",
     "vue": "@text-to-ui/components-vue"
   },
-  "componentCount": 50,
+  "componentCount": 55,
   "components": [
     {
       "id": "accordion",
@@ -73,7 +73,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#accordion",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "accordion",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -159,7 +165,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#alert",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "alert",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -236,7 +248,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#alert-dialog",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "alert-dialog",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -253,15 +271,15 @@
       }
     },
     {
-      "id": "attachment",
-      "logicalName": "Attachment/Default",
+      "id": "aspect-ratio",
+      "logicalName": "Aspect Ratio/Default",
       "capabilities": [
-        "attachment",
+        "aspect-ratio",
         "specialized"
       ],
       "category": "specialized",
       "status": "partial",
-      "sourceStrategy": "canonical-custom",
+      "sourceStrategy": "canonical-static",
       "variants": [
         "default"
       ],
@@ -291,12 +309,132 @@
         "color.text",
         "color.surface",
         "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "iconAliases": [],
+      "contractPointer": "packages/component-contracts/src/components.json#aspect-ratio",
+      "canonicalSelector": "section#specialized [data-component=\"Aspect Ratio/Default\"]",
+      "frameworks": {
+        "html": {
+          "package": "@text-to-ui/components-html",
+          "source": "packages/components-html/src/generated/aspect-ratio.html",
+          "exists": true,
+          "status": "partial",
+          "rendererKey": "aspect-ratio",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
+        },
+        "react": {
+          "package": "@text-to-ui/components-react",
+          "source": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio",
+          "exists": true,
+          "status": "partial"
+        },
+        "vue": {
+          "package": "@text-to-ui/components-vue",
+          "source": "packages/components-vue/src/generated/AspectRatio.vue",
+          "exists": true,
+          "status": "partial"
+        }
+      }
+    },
+    {
+      "id": "attachment",
+      "logicalName": "Attachment/Default",
+      "capabilities": [
+        "attachment",
+        "specialized"
+      ],
+      "category": "specialized",
+      "status": "partial",
+      "sourceStrategy": "canonical-custom",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "type",
+        "name",
+        "meta",
+        "leading",
+        "content",
+        "actions",
+        "disabled",
+        "onAction",
+        "onPreview",
+        "onDownload"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "content",
+        "description",
+        "actions",
+        "menu-trigger",
+        "menu"
+      ],
+      "slotContracts": {
+        "actions": {
+          "cardinality": "0..1",
+          "scope": "attachment-surface",
+          "defaultPlacement": "trailing-end",
+          "control": "attachment-action-menu",
+          "interaction": "open-attachment-action-menu",
+          "menuItems": [
+            "preview",
+            "download"
+          ]
+        },
+        "menu-trigger": {
+          "cardinality": "0..1",
+          "scope": "attachment-action-menu",
+          "defaultVisibility": "visible",
+          "iconAlias": "navigation/chevron-down",
+          "iconSize": "20px",
+          "ariaHasPopup": "menu"
+        },
+        "menu": {
+          "cardinality": "0..1",
+          "scope": "attachment-action-menu",
+          "role": "menu",
+          "items": [
+            "preview",
+            "download"
+          ],
+          "closeOn": [
+            "escape",
+            "outside-click",
+            "select"
+          ]
+        }
+      },
+      "behaviors": [
+        "open",
+        "select",
+        "preview",
+        "download",
+        "escape",
+        "outside-click",
+        "disabled"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface-muted",
         "typography.subtitle-s",
         "typography.body-s",
         "spacing.component-gap"
       ],
       "iconAliases": [
-        "action/download"
+        "navigation/chevron-down"
       ],
       "contractPointer": "packages/component-contracts/src/components.json#attachment",
       "canonicalSelector": "section#specialized [data-component=\"Attachment/Default\"]",
@@ -305,7 +443,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#attachment",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "attachment",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -343,6 +487,10 @@
       "props": [
         "label",
         "value",
+        "description",
+        "checked",
+        "name",
+        "ariaLabel",
         "disabled",
         "state",
         "className"
@@ -371,7 +519,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#avatar",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "avatar",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -411,8 +565,20 @@
         "disabled"
       ],
       "props": [
-        "label",
-        "value",
+        "title",
+        "description",
+        "supporting",
+        "leadingIcon",
+        "leading",
+        "titleSlot",
+        "descriptionSlot",
+        "supportingSlot",
+        "content",
+        "trailing",
+        "trailingText",
+        "trailingSlot",
+        "actions",
+        "selected",
         "disabled",
         "state",
         "className"
@@ -442,7 +608,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#badge",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "badge",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -510,7 +682,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#breadcrumb",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "breadcrumb",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -521,6 +699,78 @@
         "vue": {
           "package": "@text-to-ui/components-vue",
           "source": "packages/components-vue/src/Breadcrumb.vue",
+          "exists": true,
+          "status": "partial"
+        }
+      }
+    },
+    {
+      "id": "bubble",
+      "logicalName": "Bubble/Default",
+      "capabilities": [
+        "bubble",
+        "specialized"
+      ],
+      "category": "specialized",
+      "status": "partial",
+      "sourceStrategy": "canonical-static",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "behaviors": [
+        "focus",
+        "disabled"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "iconAliases": [],
+      "contractPointer": "packages/component-contracts/src/components.json#bubble",
+      "canonicalSelector": "section#specialized [data-component=\"Bubble/Default\"]",
+      "frameworks": {
+        "html": {
+          "package": "@text-to-ui/components-html",
+          "source": "packages/components-html/src/generated/bubble.html",
+          "exists": true,
+          "status": "partial",
+          "rendererKey": "bubble",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
+        },
+        "react": {
+          "package": "@text-to-ui/components-react",
+          "source": "packages/components-react/src/generated/Bubble.jsx#Bubble",
+          "exists": true,
+          "status": "partial"
+        },
+        "vue": {
+          "package": "@text-to-ui/components-vue",
+          "source": "packages/components-vue/src/generated/Bubble.vue",
           "exists": true,
           "status": "partial"
         }
@@ -574,8 +824,11 @@
         "color.primary-text",
         "color.text",
         "size.button-height",
+        "size.button-sm-height",
         "radius.button",
         "spacing.padding-button-x",
+        "spacing.padding-button-sm-x",
+        "typography.body-m",
         "typography.body-l"
       ],
       "iconAliases": [
@@ -594,7 +847,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/button.html",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "button",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -663,7 +922,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#calendar",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "calendar",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -709,8 +974,10 @@
         "leading",
         "title",
         "description",
+        "supporting",
         "content",
-        "trailing"
+        "trailing",
+        "actions"
       ],
       "behaviors": [
         "focus",
@@ -731,7 +998,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#card",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "card",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -799,7 +1072,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#carousel",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "carousel",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -868,7 +1147,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#chart",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "chart",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -937,7 +1222,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#checkbox",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "checkbox",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1007,7 +1298,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#collapsible",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "collapsible",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1082,7 +1379,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#combobox",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "combobox",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1153,7 +1456,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#context-menu",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "context-menu",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1223,7 +1532,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#dataTable",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "data-table",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1297,7 +1612,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#date-picker",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "date-picker",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1374,7 +1695,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#dialog",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "dialog",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1447,7 +1774,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#dropdown-menu",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "dropdown-menu",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1516,7 +1849,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#empty",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "empty",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1585,7 +1924,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#field",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "field",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1657,7 +2002,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#hover-card",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "hover-card",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1729,7 +2080,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/input.html",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "input",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1797,7 +2154,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#input-otp",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "input-otp",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1867,7 +2230,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#item",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "item",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -1935,7 +2304,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#kbd",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "kbd",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2005,7 +2380,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#label",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "label",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2069,7 +2450,6 @@
         "color.sidebar-selected",
         "color.text",
         "color.text-muted",
-        "color.divider",
         "size.list-item-height",
         "radius.list-item",
         "typography.body-l",
@@ -2085,7 +2465,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/list-card.html",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "list-card",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2154,7 +2540,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#menubar",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "menubar",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2225,7 +2617,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#nativeSelect",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "native-select",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2294,7 +2692,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#navigation-menu",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "navigation-menu",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2364,7 +2768,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#pagination",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "pagination",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2436,7 +2846,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#popover",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "popover",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2447,6 +2863,101 @@
         "vue": {
           "package": "@text-to-ui/components-vue",
           "source": "packages/components-vue/src/advanced.js#Popover",
+          "exists": true,
+          "status": "partial"
+        }
+      }
+    },
+    {
+      "id": "primary-navigation-item",
+      "logicalName": "Primary Navigation Item/Level 1",
+      "capabilities": [
+        "navigation",
+        "primary-navigation",
+        "primary-navigation-item"
+      ],
+      "category": "navigation",
+      "status": "partial",
+      "sourceStrategy": "canonical-custom",
+      "variants": [
+        "default",
+        "selected"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "ariaLabel",
+        "icon",
+        "selected",
+        "disabled",
+        "state",
+        "onSelect",
+        "className"
+      ],
+      "slots": [
+        "icon",
+        "tooltip"
+      ],
+      "slotContracts": {
+        "icon": {
+          "cardinality": "1",
+          "scope": "primary-navigation-item",
+          "displaySize": "24px",
+          "kind": "regular",
+          "source": "lucide"
+        }
+      },
+      "behaviors": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "tokenRoles": [
+        "color.primary-level-unselected",
+        "color.sidebar-accent",
+        "color.sidebar-selected-text",
+        "color.focus-ring",
+        "size.icon-button",
+        "icon-size-lg",
+        "radius.icon-button"
+      ],
+      "iconAliases": [
+        "navigation/grid",
+        "field/calendar",
+        "navigation/mail-unread",
+        "action/settings"
+      ],
+      "contractPointer": "packages/component-contracts/src/components.json#primary-navigation-item",
+      "canonicalSelector": "section#navigation [data-component=\"Primary Navigation Item/Level 1\"]",
+      "frameworks": {
+        "html": {
+          "package": "@text-to-ui/components-html",
+          "source": "packages/components-html/src/primary-navigation-item.html",
+          "exists": true,
+          "status": "partial",
+          "rendererKey": "primary-navigation-item",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
+        },
+        "react": {
+          "package": "@text-to-ui/components-react",
+          "source": "packages/components-react/src/index.jsx#PrimaryNavigationItem",
+          "exists": true,
+          "status": "partial"
+        },
+        "vue": {
+          "package": "@text-to-ui/components-vue",
+          "source": "packages/components-vue/src/PrimaryNavigationItem.vue",
           "exists": true,
           "status": "partial"
         }
@@ -2510,7 +3021,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#progress",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "progress",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2521,6 +3038,87 @@
         "vue": {
           "package": "@text-to-ui/components-vue",
           "source": "packages/components-vue/src/Progress.vue",
+          "exists": true,
+          "status": "partial"
+        }
+      }
+    },
+    {
+      "id": "radio",
+      "logicalName": "Radio/Unselected/Default",
+      "capabilities": [
+        "choices",
+        "radio"
+      ],
+      "category": "choices",
+      "status": "partial",
+      "sourceStrategy": "canonical-custom",
+      "variants": [
+        "unselected",
+        "selected"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "props": [
+        "checked",
+        "defaultChecked",
+        "label",
+        "name",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "control",
+        "label"
+      ],
+      "behaviors": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "color.primary",
+        "color.primary-text",
+        "size.indicator.radio-size",
+        "radius.full",
+        "spacing.gap.choice-label",
+        "typography.body-m"
+      ],
+      "iconAliases": [],
+      "contractPointer": "packages/component-contracts/src/components.json#radio",
+      "canonicalSelector": "section#choices [data-component=\"Radio/Unselected/Default\"]",
+      "frameworks": {
+        "html": {
+          "package": "@text-to-ui/components-html",
+          "source": "packages/components-html/src/index.js#radio",
+          "exists": true,
+          "status": "partial",
+          "rendererKey": "radio",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
+        },
+        "react": {
+          "package": "@text-to-ui/components-react",
+          "source": "packages/components-react/src/index.jsx#Radio",
+          "exists": true,
+          "status": "partial"
+        },
+        "vue": {
+          "package": "@text-to-ui/components-vue",
+          "source": "packages/components-vue/src/Radio.vue",
           "exists": true,
           "status": "partial"
         }
@@ -2579,7 +3177,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#radioGroup",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "radio-group",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2636,6 +3240,25 @@
         "clear",
         "advanced-search"
       ],
+      "slotContracts": {
+        "advanced-search": {
+          "cardinality": "0..1",
+          "scope": "search-query-builder",
+          "defaultPlacement": "trailing-after-clear",
+          "control": "small-text-button",
+          "variant": "ghost",
+          "size": "small",
+          "mode": "text",
+          "textColorToken": "color.text-muted",
+          "trailingInsetToken": "space/2",
+          "requiresAccessibleName": true,
+          "interaction": "open-advanced-search-layer",
+          "coexistenceOrder": [
+            "clear",
+            "advanced-search"
+          ]
+        }
+      },
       "behaviors": [
         "input",
         "clear",
@@ -2663,7 +3286,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#search",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "search",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2735,7 +3364,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#select",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "select",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2789,8 +3424,20 @@
         "title",
         "description",
         "content",
-        "actions"
+        "actions",
+        "close"
       ],
+      "slotContracts": {
+        "close": {
+          "cardinality": "1",
+          "scope": "semi-modal-header",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "20px",
+          "trailingInsetToken": "space/5",
+          "trailingInset": "16px"
+        }
+      },
       "behaviors": [
         "open",
         "confirm",
@@ -2820,7 +3467,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#semi-modal",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "semi-modal",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2886,7 +3539,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#separator",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "separator",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -2907,7 +3566,6 @@
       "logicalName": "Sidebar Item/Default",
       "capabilities": [
         "navigation",
-        "primary-navigation",
         "sidebar",
         "sidebar-item"
       ],
@@ -2965,7 +3623,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/sidebar.html",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "sidebar",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3033,7 +3697,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#slider",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "slider",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3103,7 +3773,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#switch",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "switch",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3173,7 +3849,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#table",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "table",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3244,7 +3926,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#tabs",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "tabs",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3315,7 +4003,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#textarea",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "textarea",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3389,7 +4083,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/advanced.js#time-picker",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "time-picker",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3446,6 +4146,95 @@
         "main-detail-actions",
         "actions"
       ],
+      "slotContracts": {
+        "main-detail-actions": {
+          "cardinality": "0..n",
+          "scope": "main-detail-pane-global",
+          "defaultPlacement": "final-pane-leading-slot",
+          "layout": "compact-horizontal-group",
+          "leadingInsetToken": "layout/main-detail-action-leading-padding",
+          "overflow": {
+            "strategy": "collapse-to-more",
+            "triggerLogicalName": "Icon Button/Ghost/Default",
+            "triggerActionId": "more",
+            "triggerIconAlias": "action/more",
+            "triggerPosition": "last",
+            "eligibleButtonTypes": [
+              "icon",
+              "icon-text-ghost"
+            ],
+            "preserveMode": true,
+            "preserveOrder": true,
+            "fit": "available-width",
+            "staticBoard": {
+              "renderTrigger": true,
+              "renderMenu": false
+            }
+          },
+          "modePolicy": {
+            "type": "uniform-business-actions",
+            "allowedModes": [
+              "icon",
+              "icon-text"
+            ],
+            "mixedModes": "forbidden",
+            "overflowTriggerExcluded": true
+          },
+          "allowedButtonVariants": [
+            "ghost"
+          ],
+          "forbidden": [
+            "page-global-primary",
+            "card-action",
+            "field-action",
+            "section-action",
+            "selection-action",
+            "inline-action"
+          ],
+          "activeWhen": {
+            "layout": "three-column",
+            "paneRole": "final-pane"
+          },
+          "allowedButtonTypes": [
+            "icon",
+            "icon-text-ghost"
+          ],
+          "allowedButtonLogicalNames": [
+            "Icon Button/Ghost/Default",
+            "Icon Text Button/Ghost/Default"
+          ],
+          "buttonTypeContracts": {
+            "icon": {
+              "logicalName": "Icon Button/Ghost/Default",
+              "mode": "icon",
+              "requiredSlots": [
+                "icon"
+              ],
+              "forbiddenSlots": [
+                "label"
+              ]
+            },
+            "icon-text-ghost": {
+              "logicalName": "Icon Text Button/Ghost/Default",
+              "mode": "icon-text",
+              "requiredSlots": [
+                "icon",
+                "label"
+              ]
+            }
+          }
+        },
+        "main-content-title": {
+          "cardinality": "0..1",
+          "scope": "main-content-pane-global",
+          "activeWhen": {
+            "layout": "two-column",
+            "paneRole": "final-pane"
+          },
+          "defaultPlacement": "final-pane-leading-slot",
+          "leadingInsetToken": "layout/main-title-leading-padding"
+        }
+      },
       "behaviors": [
         "focus",
         "disabled"
@@ -3469,7 +4258,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#titlebar",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "titlebar",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3546,7 +4341,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#toast",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "toast",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3616,7 +4417,13 @@
           "package": "@text-to-ui/components-html",
           "source": "packages/components-html/src/index.js#tooltip",
           "exists": true,
-          "status": "partial"
+          "status": "partial",
+          "rendererKey": "tooltip",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
         },
         "react": {
           "package": "@text-to-ui/components-react",
@@ -3627,6 +4434,78 @@
         "vue": {
           "package": "@text-to-ui/components-vue",
           "source": "packages/components-vue/src/Tooltip.vue",
+          "exists": true,
+          "status": "partial"
+        }
+      }
+    },
+    {
+      "id": "typography",
+      "logicalName": "Typography/Default",
+      "capabilities": [
+        "specialized",
+        "typography"
+      ],
+      "category": "specialized",
+      "status": "partial",
+      "sourceStrategy": "canonical-static",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "behaviors": [
+        "focus",
+        "disabled"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "iconAliases": [],
+      "contractPointer": "packages/component-contracts/src/components.json#typography",
+      "canonicalSelector": "section#specialized [data-component=\"Typography/Default\"]",
+      "frameworks": {
+        "html": {
+          "package": "@text-to-ui/components-html",
+          "source": "packages/components-html/src/generated/typography.html",
+          "exists": true,
+          "status": "partial",
+          "rendererKey": "typography",
+          "factoryImport": "renderHtmlComponent",
+          "styleImports": [
+            "@text-to-ui/tokens",
+            "@text-to-ui/components-html/styles.css"
+          ]
+        },
+        "react": {
+          "package": "@text-to-ui/components-react",
+          "source": "packages/components-react/src/generated/Typography.jsx#Typography",
+          "exists": true,
+          "status": "partial"
+        },
+        "vue": {
+          "package": "@text-to-ui/components-vue",
+          "source": "packages/components-vue/src/generated/Typography.vue",
           "exists": true,
           "status": "partial"
         }

@@ -29,12 +29,18 @@
     {
       "source": {
         "componentSet": "Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Primary" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Primary"
+        }
       },
       "target": "Button/Primary/Default",
       "reuse": "component-set-variant-candidate",
       "takeoverStatus": "adapting",
-      "textStyles": { "Label": "Typography/Body_L" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
       "tokens": {
         "background": "brand/100",
         "content": "neutral-light/100",
@@ -46,12 +52,18 @@
     {
       "source": {
         "componentSet": "Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Secondary" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Secondary"
+        }
       },
       "target": "Button/Secondary/Default",
       "reuse": "component-set-variant-candidate",
       "takeoverStatus": "adapting",
-      "textStyles": { "Label": "Typography/Body_L" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
       "tokens": {
         "background": "neutral-dark/05",
         "content": "neutral-dark/90",
@@ -63,29 +75,50 @@
     {
       "source": {
         "componentSet": "Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Ghost"
+        }
       },
       "target": "Button/Ghost/Default",
       "reuse": "component-set-variant-candidate",
       "takeoverStatus": "adapting",
-      "textStyles": { "Label": "Typography/Body_L" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
       "tokens": {
         "content": "brand/100",
         "height": "size/40",
         "radius": "radius/08",
         "paddingX": "space/5"
       },
-      "notes": ["Keep the target background transparent."]
+      "notes": [
+        "Keep the target background transparent."
+      ]
     },
     {
       "source": {
-        "componentSet": "Icon Text Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Primary" }
+        "componentSet": "icon-text",
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Primary"
+        }
+      },
+      "pixsoVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "primary"
       },
       "target": "Icon Text Button/Primary/Default",
       "reuse": "structure",
-      "textStyles": { "Label": "Typography/Body_L" },
-      "icons": { "Leading": "action/add" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
+      "icons": {
+        "Leading": "action/add"
+      },
       "tokens": {
         "background": "brand/100",
         "content": "neutral-light/100",
@@ -98,14 +131,27 @@
     },
     {
       "source": {
-        "componentSet": "Icon Text Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+        "componentSet": "icon-text",
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Ghost"
+        }
+      },
+      "pixsoVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "ghost"
       },
       "target": "Icon Text Button/Ghost/Default",
       "reuse": "structure",
       "takeoverStatus": "adapting",
-      "textStyles": { "Label": "Typography/Body_L" },
-      "icons": { "Leading": "action/add" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
+      "icons": {
+        "Leading": "action/add"
+      },
       "tokens": {
         "content": "brand/100",
         "gap": "space/3",
@@ -115,20 +161,37 @@
         "paddingX": "space/5"
       },
       "sourceVariantAliases": [
-        { "componentSet": "Icon + Text", "variant": { "尺寸": "Medium", "类型": "Normal", "状态": "Enabled" } }
+        {
+          "componentSet": "Icon + Text",
+          "variant": {
+            "尺寸": "Medium",
+            "类型": "Normal",
+            "状态": "Enabled"
+          }
+        }
       ],
-      "notes": ["Exact live source match: Icon Text Button / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."]
+      "notes": [
+        "Exact live source match: icon-text / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."
+      ]
     },
     {
       "source": {
-        "componentSet": "Icon Text Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Primary" }
+        "componentSet": "icon-text",
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Primary"
+        }
       },
       "target": "Icon Text Button/Secondary/Default",
       "reuse": "structure",
       "takeoverStatus": "needs-rebuild",
-      "textStyles": { "Label": "Typography/Body_L" },
-      "icons": { "Leading": "action/add" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
+      "icons": {
+        "Leading": "action/add"
+      },
       "tokens": {
         "background": "neutral-dark/05",
         "content": "neutral-dark/90",
@@ -138,17 +201,25 @@
         "radius": "radius/08",
         "paddingX": "space/5"
       },
-      "notes": ["The live Icon Text Button set currently exposes Primary and Ghost only. Do not treat Primary as a Secondary match; add a Secondary variant before strict delivery."]
+      "notes": [
+        "The live icon-text set currently exposes Primary and Ghost only. Do not treat Primary as a Secondary match; add a Secondary variant before strict delivery."
+      ]
     },
     {
       "source": {
         "componentSet": "Icon Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Ghost"
+        }
       },
       "target": "Icon Button/Secondary/Default",
       "reuse": "structure",
       "takeoverStatus": "needs-rebuild",
-      "icons": { "Icon": "action/more" },
+      "icons": {
+        "Icon": "action/more"
+      },
       "tokens": {
         "background": "neutral-dark/05",
         "content": "neutral-dark/90",
@@ -157,17 +228,25 @@
         "iconSize": "size/20",
         "radius": "radius/08"
       },
-      "notes": ["The live Icon Button set currently exposes Ghost only. Add a Secondary variant before strict delivery."]
+      "notes": [
+        "The live Icon Button set currently exposes Ghost only. Add a Secondary variant before strict delivery."
+      ]
     },
     {
       "source": {
         "componentSet": "Icon Button",
-        "variant": { "size": "Medium", "state": "Default", "type": "Ghost" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default",
+          "type": "Ghost"
+        }
       },
       "target": "Icon Button/Ghost/Default",
       "reuse": "structure",
       "takeoverStatus": "adapting",
-      "icons": { "Icon": "action/more" },
+      "icons": {
+        "Icon": "action/more"
+      },
       "tokens": {
         "content": "neutral-dark/90",
         "height": "size/40",
@@ -176,20 +255,36 @@
         "radius": "radius/08"
       },
       "sourceVariantAliases": [
-        { "componentSet": "Iconbutton", "variant": { "尺寸": "Medium", "类型": "Normal", "状态": "Enabled" } }
+        {
+          "componentSet": "Iconbutton",
+          "variant": {
+            "尺寸": "Medium",
+            "类型": "Normal",
+            "状态": "Enabled"
+          }
+        }
       ],
-      "notes": ["Exact live source match: Icon Button / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Icon slot."]
+      "notes": [
+        "Exact live source match: Icon Button / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Icon slot."
+      ]
     },
     {
       "source": {
         "componentSet": "Selection Dropdown",
-        "variant": { "size": "Medium", "state": "Default" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default"
+        }
       },
       "target": "Selection Dropdown/Default",
       "reuse": "structure",
       "takeoverStatus": "adapting",
-      "textStyles": { "Label": "Typography/Body_L" },
-      "icons": { "Trailing": "navigation/chevron-down" },
+      "textStyles": {
+        "Label": "Typography/Body_L"
+      },
+      "icons": {
+        "Trailing": "navigation/chevron-down"
+      },
       "tokens": {
         "background": "neutral-dark/05",
         "content": "neutral-dark/90",
@@ -199,20 +294,32 @@
         "radius": "radius/08",
         "paddingX": "space/4"
       },
-      "notes": ["Expose the label as instance-safe content and replace the icon-font arrow with the registered semantic SVG."]
+      "notes": [
+        "Expose the label as instance-safe content and replace the icon-font arrow with the registered semantic SVG."
+      ]
     },
     {
       "source": {
         "componentSet": "Search",
-        "variant": { "surface": "white", "state": "Default" }
+        "variant": {
+          "surface": "white",
+          "state": "Default"
+        }
       },
       "target": "Search/White Surface/Default",
       "reuse": "structure",
-      "textStyles": { "Placeholder": "Typography/Body_L" },
-      "icons": { "Leading": "field/search" },
+      "textStyles": {
+        "Placeholder": "Typography/Body_L"
+      },
+      "icons": {
+        "Leading": "field/search"
+      },
       "tokens": {
         "background": "neutral-dark/05",
-        "content": "neutral-dark/60",
+        "content": "neutral-dark/90",
+        "placeholder": "neutral-dark/40",
+        "icon": "neutral-dark/60",
+        "advanced": "neutral-dark/60",
         "gap": "space/3",
         "height": "size/40",
         "iconSize": "size/16",
@@ -223,34 +330,53 @@
     {
       "source": {
         "componentSet": "Search",
-        "variant": { "surface": "dark", "state": "Default" }
+        "variant": {
+          "surface": "dark",
+          "state": "Default"
+        }
       },
       "target": "Search/Gray Surface/Default",
       "reuse": "structure",
       "takeoverStatus": "needs-rebuild",
-      "textStyles": { "Placeholder": "Typography/Body_L" },
-      "icons": { "Leading": "field/search" },
+      "textStyles": {
+        "Placeholder": "Typography/Body_L"
+      },
+      "icons": {
+        "Leading": "field/search"
+      },
       "tokens": {
         "background": "neutral-light/100",
-        "content": "neutral-dark/60",
+        "content": "neutral-dark/90",
+        "placeholder": "neutral-dark/40",
+        "icon": "neutral-dark/60",
+        "advanced": "neutral-dark/60",
         "gap": "space/3",
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
         "paddingX": "space/4"
       },
-      "notes": ["Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."]
+      "notes": [
+        "Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."
+      ]
     },
     {
       "source": {
         "componentSet": "Selection Dropdown",
-        "variant": { "size": "Medium", "state": "Default" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default"
+        }
       },
       "target": "Select/White Surface/Default",
       "reuse": "structure",
       "takeoverStatus": "needs-rebuild",
-      "textStyles": { "Value": "Typography/Body_L" },
-      "icons": { "Trailing": "navigation/chevron-down" },
+      "textStyles": {
+        "Value": "Typography/Body_L"
+      },
+      "icons": {
+        "Trailing": "navigation/chevron-down"
+      },
       "tokens": {
         "background": "neutral-dark/05",
         "content": "neutral-dark/90",
@@ -263,13 +389,20 @@
     {
       "source": {
         "componentSet": "Selection Dropdown",
-        "variant": { "size": "Medium", "state": "Default" }
+        "variant": {
+          "size": "Medium",
+          "state": "Default"
+        }
       },
       "target": "Select/Gray Surface/Default",
       "reuse": "structure",
       "takeoverStatus": "needs-rebuild",
-      "textStyles": { "Value": "Typography/Body_L" },
-      "icons": { "Trailing": "navigation/chevron-down" },
+      "textStyles": {
+        "Value": "Typography/Body_L"
+      },
+      "icons": {
+        "Trailing": "navigation/chevron-down"
+      },
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
@@ -281,15 +414,21 @@
     },
     {
       "source": {
-        "componentSet": "TextInput",
-        "variant": { "surface": "white", "state": "Default" }
+        "componentSet": "Input",
+        "variant": {
+          "surface": "white",
+          "state": "Default"
+        }
       },
       "target": "Input/White Surface/Default",
       "reuse": "structure",
-      "textStyles": { "Value": "Typography/Body_L" },
+      "textStyles": {
+        "Value": "Typography/Body_L"
+      },
       "tokens": {
         "background": "neutral-dark/05",
-        "content": "neutral-dark/60",
+        "content": "neutral-dark/90",
+        "placeholder": "neutral-dark/40",
         "height": "size/40",
         "radius": "radius/08",
         "paddingX": "space/4"
@@ -297,15 +436,21 @@
     },
     {
       "source": {
-        "componentSet": "TextInput",
-        "variant": { "surface": "dark", "state": "Default" }
+        "componentSet": "Input",
+        "variant": {
+          "surface": "dark",
+          "state": "Default"
+        }
       },
       "target": "Input/Gray Surface/Default",
       "reuse": "structure",
-      "textStyles": { "Value": "Typography/Body_L" },
+      "textStyles": {
+        "Value": "Typography/Body_L"
+      },
       "tokens": {
         "background": "neutral-light/100",
-        "content": "neutral-dark/60",
+        "content": "neutral-dark/90",
+        "placeholder": "neutral-dark/40",
         "height": "size/40",
         "radius": "radius/08",
         "paddingX": "space/4"
@@ -314,17 +459,22 @@
     {
       "source": {
         "componentSet": "TextInput-Muti-2in1",
-        "variant": { "灰色场景": "OFF", "状态": "Normal" }
+        "variant": {
+          "灰色场景": "OFF",
+          "状态": "Normal"
+        }
       },
       "target": "Textarea/White Surface/Default",
       "reuse": "structure",
       "textStyles": {
         "Placeholder": "Typography/Body_L",
-        "Counter": "Typography/Caption_L"
+        "Counter": "Typography/Body_S"
       },
       "tokens": {
         "background": "neutral-dark/05",
-        "content": "neutral-dark/60",
+        "content": "neutral-dark/90",
+        "placeholder": "neutral-dark/40",
+        "counter": "neutral-dark/60",
         "radius": "radius/08",
         "paddingX": "space/4",
         "paddingY": "space/3"
@@ -333,17 +483,22 @@
     {
       "source": {
         "componentSet": "TextInput-Muti-2in1",
-        "variant": { "灰色场景": "ON", "状态": "Normal" }
+        "variant": {
+          "灰色场景": "ON",
+          "状态": "Normal"
+        }
       },
       "target": "Textarea/Gray Surface/Default",
       "reuse": "structure",
       "textStyles": {
         "Placeholder": "Typography/Body_L",
-        "Counter": "Typography/Caption_L"
+        "Counter": "Typography/Body_S"
       },
       "tokens": {
         "background": "neutral-light/100",
-        "content": "neutral-dark/60",
+        "content": "neutral-dark/90",
+        "placeholder": "neutral-dark/40",
+        "counter": "neutral-dark/60",
         "radius": "radius/08",
         "paddingX": "space/4",
         "paddingY": "space/3"
@@ -351,58 +506,83 @@
     },
     {
       "source": {
-        "componentSet": "CheckBox-2 in 1",
-        "variant": { "Selected": "OFF", "状态": "Enabled" }
+        "componentSet": "CheckBox",
+        "variant": {
+          "Selected": "OFF",
+          "state": "Default"
+        }
       },
       "target": "Checkbox/Unchecked/Default",
       "reuse": "visual-reference",
-      "textStyles": { "Label": "Typography/Body_M" },
+      "textStyles": {
+        "Label": "Typography/Body_M"
+      },
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
         "gap": "space/3"
       },
-      "deltas": ["Native control is 24px; Text to UI desktop control remains 20px."]
+      "deltas": [
+        "Native control is 24px; Text to UI desktop control remains 20px."
+      ]
     },
     {
       "source": {
-        "componentSet": "Radio-Phone",
-        "variant": { "Selected": "OFF", "状态": "Enabled" }
+        "componentSet": "Radio",
+        "variant": {
+          "Selected": "OFF",
+          "state": "Default"
+        }
       },
       "target": "Radio/Unselected/Default",
       "reuse": "visual-reference",
-      "textStyles": { "Label": "Typography/Body_M" },
+      "textStyles": {
+        "Label": "Typography/Body_M"
+      },
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
         "gap": "space/3"
       },
-      "deltas": ["Native control is 24px; Text to UI desktop control remains 20px."]
+      "deltas": [
+        "Native control is 24px; Text to UI desktop control remains 20px."
+      ]
     },
     {
       "source": {
-        "componentSet": "Switch-Phone",
-        "variant": { "Selected": "OFF", "状态": "Enabled" }
+        "componentSet": "Switch",
+        "variant": {
+          "Selected": "OFF",
+          "state": "Default"
+        }
       },
       "target": "Switch/Off/Default",
       "reuse": "visual-reference",
-      "textStyles": { "Label": "Typography/Body_M" },
+      "textStyles": {
+        "Label": "Typography/Body_M"
+      },
       "tokens": {
         "track": "neutral-dark/05",
         "thumb": "neutral-light/100",
         "content": "neutral-dark/90",
         "gap": "space/3"
       },
-      "deltas": ["Native track is 36x20; Text to UI desktop track remains 44x24."]
+      "deltas": [
+        "Native track is 36x20; Text to UI desktop track remains 44x24."
+      ]
     },
     {
       "source": {
         "componentSet": "Snackbar",
-        "variant": { "左侧区域": "1" }
+        "variant": {
+          "左侧区域": "1"
+        }
       },
       "target": "Snackbar/Default",
       "reuse": "structure",
-      "textStyles": { "Message": "Typography/Body_L" },
+      "textStyles": {
+        "Message": "Typography/Body_L"
+      },
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
@@ -418,8 +598,8 @@
       "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
     },
     {
-      "name": "Chips-2in1",
-      "reason": "No registered static target in the current component scope."
+      "name": "Chips",
+      "reason": "Pixso component exists, but the current HTML contract has no direct Chips identity."
     },
     {
       "name": "ScrollBar-Phone",
@@ -430,8 +610,8 @@
       "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
     },
     {
-      "name": "CheckboxGroup-Phone",
-      "reason": "Composite form group; current registry keeps Checkbox as the primitive."
+      "name": "CheckboxGroup",
+      "reason": "Pixso component exists, but the current HTML contract has no direct CheckboxGroup identity."
     },
     {
       "name": ".2in1 Container",
@@ -443,11 +623,11 @@
     },
     {
       "name": "Dialog-2in1",
-      "reason": "Dialogs are explicitly excluded from the current formal component registry."
+      "reason": "Pixso component exists, but Dialog-2in1 still needs an explicit HTML contract mapping."
     },
     {
       "name": "ColorPicker-Tablet",
-      "reason": "No registered static target in the current component scope."
+      "reason": "Pixso component exists, but the current HTML contract has no direct ColorPicker identity."
     },
     {
       "name": "Search-Second Page-2in1",

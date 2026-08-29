@@ -13,9 +13,9 @@
 | 01 Actions | Button/Primary/Default | mapped-pending-verification | Button | size=Medium, state=Default, type=Primary | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 01 Actions | Button/Secondary/Default | mapped-pending-verification | Button | size=Medium, state=Default, type=Secondary | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 01 Actions | Button/Ghost/Default | mapped-pending-verification | Button | size=Medium, state=Default, type=Ghost | Finish the registered target and verify it live in Pixso before strict delivery. |
-| 01 Actions | Icon Text Button/Primary/Default | mapped-pending-verification | Icon Text Button | size=Medium, state=Default, type=Primary | Finish the registered target and verify it live in Pixso before strict delivery. |
-| 01 Actions | Icon Text Button/Secondary/Default | mapped-needs-rebuild | Icon Text Button | size=Medium, state=Default, type=Primary | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |
-| 01 Actions | Icon Text Button/Ghost/Default | mapped-pending-verification | Icon Text Button | size=Medium, state=Default, type=Ghost; alias Icon + Text: 尺寸=Medium, 类型=Normal, 状态=Enabled | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 01 Actions | Icon Text Button/Primary/Default | mapped-pending-verification | icon-text | size=Medium, state=Default, type=Primary | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 01 Actions | Icon Text Button/Secondary/Default | mapped-needs-rebuild | icon-text | size=Medium, state=Default, type=Primary | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |
+| 01 Actions | Icon Text Button/Ghost/Default | mapped-pending-verification | icon-text | size=Medium, state=Default, type=Ghost; alias Icon + Text: 尺寸=Medium, 类型=Normal, 状态=Enabled | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 01 Actions | Icon Button/Ghost/Default | mapped-pending-verification | Icon Button | size=Medium, state=Default, type=Ghost; alias Iconbutton: 尺寸=Medium, 类型=Normal, 状态=Enabled | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 01 Actions | Icon Button/Secondary/Default | mapped-needs-rebuild | Icon Button | size=Medium, state=Default, type=Ghost | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |
 | 01 Actions | Selection Dropdown/Default | mapped-pending-verification | Selection Dropdown | size=Medium, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
@@ -24,8 +24,8 @@
 | 01 Actions | Toggle/Off/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Field/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Field/With Description | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
-| 02 Forms | Input/White Surface/Default | mapped-pending-verification | TextInput | surface=white, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
-| 02 Forms | Input/Gray Surface/Default | mapped-pending-verification | TextInput | surface=dark, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 02 Forms | Input/White Surface/Default | mapped-pending-verification | Input | surface=white, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 02 Forms | Input/Gray Surface/Default | mapped-pending-verification | Input | surface=dark, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 02 Forms | Search/White Surface/Default | mapped-pending-verification | Search | surface=white, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 02 Forms | Search/Gray Surface/Default | mapped-needs-rebuild | Search | surface=dark, state=Default | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |
 | 02 Forms | Textarea/White Surface/Default | mapped-pending-verification | TextInput-Muti-2in1 | 灰色场景=OFF, 状态=Normal | Finish the registered target and verify it live in Pixso before strict delivery. |
@@ -35,9 +35,9 @@
 | 02 Forms | Combobox/White Surface/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Combobox/Gray Surface/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Input OTP/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
-| 02 Forms | Checkbox/Unchecked/Default | mapped-pending-verification | CheckBox-2 in 1 | Selected=OFF, 状态=Enabled | Finish the registered target and verify it live in Pixso before strict delivery. |
-| 02 Forms | Radio/Unselected/Default | mapped-pending-verification | Radio-Phone | Selected=OFF, 状态=Enabled | Finish the registered target and verify it live in Pixso before strict delivery. |
-| 02 Forms | Switch/Off/Default | mapped-pending-verification | Switch-Phone | Selected=OFF, 状态=Enabled | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 02 Forms | Checkbox/Unchecked/Default | mapped-pending-verification | CheckBox | checked=false, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 02 Forms | Radio/Unselected/Default | mapped-pending-verification | Radio | checked=false, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 02 Forms | Switch/Off/Default | mapped-pending-verification | Switch | checked=false, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 02 Forms | Slider/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Date Picker/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Time Picker/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
@@ -92,13 +92,13 @@
 | HarmonyOS 源组件 | 原因 |
 | --- | --- |
 | Toggle-状态按钮-2in1 | Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component. |
-| Chips-2in1 | No registered static target in the current component scope. |
+| Chips | Pixso component exists, but the current HTML contract has no direct Chips identity. |
 | ScrollBar-Phone | Platform utility, not a registered reusable component in the current scope. |
 | Menu-2in1 | Expanded menus are Open-state overlays and are outside the current static component scope. |
-| CheckboxGroup-Phone | Composite form group; current registry keeps Checkbox as the primitive. |
+| CheckboxGroup | Pixso component exists, but the current HTML contract has no direct CheckboxGroup identity. |
 | .2in1 Container | Dialog dependency only. |
 | .text | Dialog dependency only. |
-| Dialog-2in1 | Dialogs are explicitly excluded from the current formal component registry. |
-| ColorPicker-Tablet | No registered static target in the current component scope. |
+| Dialog-2in1 | Pixso component exists, but Dialog-2in1 still needs an explicit HTML contract mapping. |
+| ColorPicker-Tablet | Pixso component exists, but the current HTML contract has no direct ColorPicker identity. |
 | Search-Second Page-2in1 | Composite secondary-page pattern, not a primitive Search component. |
 

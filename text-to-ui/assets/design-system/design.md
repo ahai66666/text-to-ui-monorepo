@@ -380,17 +380,17 @@ Do not use `@font-face` or remote font services in the current project scope.
 Use exact pixel values for Pixso parity.
 
 ```css
+--line-height-12: 12px;
 --line-height-14: 14px;
 --line-height-16: 16px;
 --line-height-20: 20px;
 --line-height-22: 22px;
 --line-height-24: 24px;
 --line-height-28: 28px;
---line-height-32: 32px;
---line-height-40: 40px;
---line-height-52: 52px;
---line-height-64: 64px;
---line-height-76: 76px;
+--line-height-36: 36px;
+--line-height-44: 44px;
+--line-height-58: 58px;
+--line-height-66: 66px;
 ```
 
 ### Font Weight Tokens
@@ -417,30 +417,29 @@ All styles use `--font-sans` and `--letter-spacing-normal`. Source names such as
 
 | Token | Size | Line height | Weight | Description | Usage |
 |---|---:|---:|---:|---|---|
-| `display-l` | 56px | 76px | 400 | 展示类标题 | 具体场景待补充 |
-| `display-m` | 48px | 64px | 400 | 展示类标题 | 具体场景待补充 |
-| `display-s` | 38px | 52px | 400 | 展示类标题 | 具体场景待补充 |
-| `title-l` | 30px | 40px | 700 | 主标题 | 具体场景待补充 |
-| `title-m` | 24px | 32px | 700 | 主标题 | 标题栏文本 |
-| `title-s` | 20px | 28px | 700 | 主标题 | 卡片标题、半模态弹窗标题、弹窗标题 |
-| `subtitle-l` | 18px | 24px | 500 | 次标题 | 普通内容子标题、菜单标题 |
-| `subtitle-m` | 16px | 22px | 500 | 次标题 | 标题辅助文本、列表文本、气泡提示主标题 |
-| `subtitle-s` | 14px | 20px | 500 | 次标题 | 列表子标题、普通副标题 |
-| `body-l` | 16px | 22px | 400 | 主文本 | 客户端默认正文、Sidebar、表格单元格、列表主文本、40px 菜单与操作控件 |
-| `body-m` | 14px | 20px | 400 | 副文本与紧凑标签 | 列表摘要与时间、普通描述、Toast、Label、表格表头、Checkbox / Radio / Switch 标签、Tabs 与 28px Small Button |
-| `body-s` | 12px | 16px | 400 | 兼容文本 | 仅兼容既有引用；新的可见客户端文本改用 `caption-l` |
-| `caption-l` | 12px | 16px | 500 | 引用与特殊提示 | 字段帮助与错误、状态标签、组件注释、辅助标签与特殊提示 |
-| `caption-m` | 10px | 14px | 500 | 兼容文本 | 保留 Token 兼容性；不得用于新的可见客户端 UI |
+| `display-l` | 56px | 66px | 400 | 展示类标题 | 大号展示标题 |
+| `display-m` | 48px | 58px | 400 | 展示类标题 | 中号展示标题 |
+| `display-s` | 38px | 44px | 400 | 展示类标题 | 小号展示标题 |
+| `title-l` | 30px | 36px | 700 | 主标题 | 页面主标题 |
+| `title-m` | 24px | 28px | 700 | 主标题 | 标题栏文本 |
+| `title-s` | 20px | 24px | 700 | 主标题 | 卡片标题、半模态弹窗标题、弹窗标题 |
+| `subtitle-l` | 18px | 22px | 500 | 次标题 | 普通内容子标题、菜单标题 |
+| `subtitle-m` | 16px | 20px | 500 | 次标题 | 标题辅助文本、列表文本、气泡提示主标题 |
+| `subtitle-s` | 14px | 16px | 500 | 次标题 | 列表子标题、普通副标题 |
+| `body-l` | 16px | 20px | 400 | 主文本 | 客户端默认正文、Sidebar、表格单元格、列表主文本、40px 菜单与操作控件 |
+| `body-m` | 14px | 16px | 400 | 副文本 | 列表摘要与时间、普通描述、Toast、Label、表格表头、Checkbox / Radio / Switch 标签、Tabs 与 28px Small Button |
+| `body-s` | 12px | 14px | 400 | 小号正文 | 辅助文本、次要说明、字段帮助与错误、状态标签 |
+| `caption-m` | 10px | 12px | 400 | 小号说明 | 极小字号的辅助说明 |
 
 Use each semantic style as a complete combination. Machine-readable mappings are stored in `tokens.typography.css` and `tokens.typography.json`.
 
 ### HTML ↔ Pixso Typography Mapping
 
-Use `typography-style-map.json` as the single mapping table. New visible UI is limited to its 12 `formalStyles`: each HTML semantic role maps one-to-one to the identically sized Pixso shared Text Style under `Typography/*`.
+Use `typography-style-map.json` as the single mapping table. New visible UI is limited to its 13 `formalStyles`: each HTML semantic role maps one-to-one to the identically sized Pixso shared Text Style under `Typography/*`.
 
 - HTML always uses `--font-sans`, which is a browser fallback stack.
-- Pixso uses only `font/family/sans = HarmonyOS Sans` and the 12 formal Text Styles. A fallback family never becomes a separate Pixso Text Style.
-- `body-s` and `caption-m` remain code compatibility Tokens only; they have no formal Pixso counterpart and must not be used for new visible UI.
+- Pixso uses only `font/family/sans = HarmonyOS Sans` and the 13 formal Text Styles. A fallback family never becomes a separate Pixso Text Style.
+- `body-s` and `caption-m` are formal Pixso Text Style counterparts. The old `caption-l` token is deprecated: migrate 12px supporting text to `body-s` and 10px supporting text to `caption-m`; do not create `Typography/Caption_L`.
 - `Typography/Component/*` are imported native-component dependencies, not public Text to UI styles. Do not select them for new page content; audit component references before any deletion. The unused legacy `Body_YaHei14` and `Body_YaHei16` styles were removed from Pixso.
 
 ### HTML ↔ Pixso Effect Mapping
@@ -1361,9 +1360,9 @@ List Item trailing text and chevrons use the secondary text color `--color-text-
 
 ### Rules
 
-Table uses `--color-surface`, `--radius-table` (12px), and a 1px `--color-border` outer stroke. The outer Table container owns `--padding-table` (`--space-6`, 24px) on all four sides, so its toolbar, row backgrounds, dividers, and pagination never touch the outer stroke. Header rows are 40px and data rows are 48px; the first header cell and every first-column body cell add `--space-5` (16px) from the inner Table edge. Internal columns may retain `--space-5` spacing. When the first-column name includes a leading Avatar, icon, thumbnail, or file-type visual, the gap between that visual and the name also uses `--space-5` (16px). Headers use muted `body-m` (14px / 20px / Regular 400); cells use `body-l` (16px / 22px / Regular 400); numeric values align right, and the first column owns the row label. Hover applies `--state-layer-hover`; selected rows use `--color-sidebar-selected`. Sortable headers are buttons with `aria-sort`, not clickable text containers.
+Table uses `--color-surface`, `--radius-table` (12px), and a 1px `--color-border` outer stroke. The outer Table container owns `--padding-table` (`--space-6`, 24px) on all four sides, so its toolbar, row backgrounds, dividers, and pagination never touch the outer stroke. Header rows are 40px and data rows are 48px; the first header cell and every first-column body cell add `--space-5` (16px) from the inner Table edge. Internal columns may retain `--space-5` spacing. When the first-column name includes a leading Avatar, icon, thumbnail, or file-type visual, the gap between that visual and the name also uses `--space-5` (16px). Headers use muted `body-m` (14px / 16px / Regular 400); cells use `body-l` (16px / 20px / Regular 400); numeric values align right, and the first column owns the row label. Hover applies `--state-layer-hover`; selected rows use `--color-sidebar-selected`. Sortable headers are buttons with `aria-sort`, not clickable text containers.
 
-Badge is 24px high, uses `--radius-badge`, `caption-l`, and 8px horizontal padding. Approved variants are neutral (gray), info (blue), success (green), warning (orange), and danger (red). Each uses a readable foreground color with a background from the same core family at 10% opacity. Badge/status labels and Alert backgrounds both use the approved 10% family surface; their component anatomy, height, typography, and actions provide the distinction. Every status label includes text; do not use a colored dot alone.
+Badge is 24px high, uses `--radius-badge`, `body-s`, and 8px horizontal padding. Approved variants are neutral (gray), info (blue), success (green), warning (orange), and danger (red). Each uses a readable foreground color with a background from the same core family at 10% opacity. Badge/status labels and Alert backgrounds both use the approved 10% family surface; their component anatomy, height, typography, and actions provide the distinction. Every status label includes text; do not use a colored dot alone.
 
 Progress uses an 8px neutral track with a brand indicator. Determinate progress exposes `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`; visible percentage text is required when precise completion matters.
 

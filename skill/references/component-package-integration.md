@@ -22,10 +22,10 @@
 只有 HTML、React、Vue 三个实现都通过契约验证，组件才可以标记为跨框架 `ready`；否则标记为 `partial`，Skill 不能自动声称完整复用。
 组件预览必须按框架加载真实源码：HTML 使用静态适配器，React 使用 JSX 导出，Vue 使用 SFC；不能通过同一份 HTML、截图或手写 lookalike 伪造其它框架。示例文案可以作为源码默认 Props 的 fixture，但框架身份、Token、状态和事件必须来自对应实现。
 
-## 契约与原生组件一致性
+## 契约与框架运行时适配器一致性
 
 - `packages/component-contracts/src/components.json` 与 `parity-manifest.json` 是契约视图、HTML、React、Vue 的共同目录。四个视图必须使用相同 `category`、`order`、`fixtureId`、`specimens` 和结构 Variant；禁止各框架单独维护排序或省略结构样例。
-- 契约页展示完整视觉规则和状态矩阵；原生页在同一卡片中用 Props 切换尺寸、Surface、Mode、Error、Disabled 等结构轴。Hover、Pressed、Focus、Open 必须由真实鼠标或键盘触发。
+- 契约页展示完整视觉规则和状态矩阵；框架运行时页在同一卡片中用 Props 切换尺寸、Surface、Mode、Error、Disabled 等结构轴。Hover、Pressed、Focus、Open 必须由真实鼠标或键盘触发。
 - `sourceReady`、`contractReady`、`visualParity`、`behaviorParity`、`accessibilityParity`、`tokenParity` 六项全部有可复跑证据后才能标记 `ready`。文件存在、字段存在或源码包含 Token 名称都不能替代浏览器级证据。
 - `file://` 只允许 HTML 静态 fallback，并禁用 React/Vue。三框架数量、顺序、交互和视觉验收必须使用 HTTP 预览；发布目录必须内含 Token 与组件 CSS，不得引用目录外源码。
 - 所有图标通过中央内联 SVG Icon Primitive 输出。Outline 图标按 16px/1px、20px/1.25px、24px/1.5px 描边；Filled 图标只使用 fill。禁止外部 SVG `<use>`、`icon_font` 和未命中别名时的静默替代。
@@ -44,6 +44,11 @@
 - 先按 `logicalName` 命中组件，再选 Variant 和 state；禁止从视觉相似的 DOM 或同名 Frame 推断组件。
 - HTML、React、Vue 分别调用各自适配器，但必须输出同一组 `data-component`、`data-logical-component`、`data-variant`、`data-state` 契约属性。
 - `data-component` 只是适配器输出标记，不能替代源码中的真实组件包 import。交付前必须用 `validate-web-component-reuse.mjs` 校验 `component-usage.json` 和可编辑源码。
+- HTML 页面必须从 Context Packet 读取 `rendererKey`、`supportedProps`、
+  `supportedSlots` 和 `styleImports`。调用 `renderHtmlComponent(rendererKey,
+  options)`，通过 props/slots 填入业务内容；不得先渲染组件再清空内部 DOM。
+- HTML 适配器的无参数调用保留画廊默认内容；生产页面应显式传入业务
+  props。`collectHtmlComponentEvidence(document)` 是浏览器运行时复用证据入口。
 - 严格按三级来源处理：组件库有且满足需求时引用真实源码；组件库没有或实现不足但存在契约组件时，严格参考契约的结构、状态、行为、可访问性、图标和 Token 规则实现；两者都没有时才允许自定义绘制。
 - 第二级必须标记为“契约适配”，不能声称引用组件库；第三级必须记录组件库检索和契约检索均未命中。两级都必须使用共享 Token、语义图标和 HarmonyOS PC 规范。
 - `partial` 组件在 `sourceReady` 且目标框架实现满足当前用途时仍应引用真实源码，并披露未通过的验收维度；若实现确实缺少所需 Slot 或行为，则进入契约适配，不得直接跳到任意自定义。

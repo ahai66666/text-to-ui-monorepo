@@ -1,11 +1,11 @@
 # Pixso Performance and Failure Budget
 
-The Pixso MCP is a design-editing stage, not a reason to block the HTML
-checkpoint. Keep the operation set small, grouped, and observable.
+The Pixso plugin or MCP fallback is a design-editing stage, not a reason to block
+the HTML checkpoint. Keep the operation set small, grouped, and observable.
 
 ## Package gate before Pixso
 
-Select one fidelity channel before importing and run
+For diagnostic code-to-design only, select one fidelity channel before importing and run
 `scripts/validate-pixso-import-package.mjs` against the exact ZIP entry that
 will be submitted. This cheap local check catches the most expensive failures
 before a slow `code_to_design` call: wrong/duplicate HTML entry, missing local
@@ -25,8 +25,9 @@ for every Component instance and Color Variable.
   Pixso write. If the plan has registered regions, import only a low-complexity
   Pattern skeleton and page-owned content. Do not import the complete HTML
   composition as a second component renderer.
-- Call `code_to_design` at most once for the canonical Frame. It is additive;
-  re-importing creates another Frame and does not repair the first one.
+- Normal structured import must not call `code_to_design`. A separate diagnostic
+  run may call it at most once; the result is temporary evidence, never the
+  canonical Frame.
 - Group discovery reads (`fetch_context`, page list, variables, styles,
   components, and top-level frames) before writes. Do not repeat full-document
   discovery after every local edit.
@@ -40,8 +41,8 @@ for every Component instance and Color Variable.
 
 ## Required telemetry
 
-Record `pixsoCallCount`, `slowestCallMs`, `codeToDesignMs`,
-`canonicalNodeCount`, `retryCount`, and `abortedByBudget` in the Pixso
+Record `pixsoCallCount`, `slowestCallMs`, `codeToDesignCalls`, `codeToDesignMs`,
+`canonicalNodeCount`, `operationCount`, module timings, `retryCount`, and `abortedByBudget` in the Pixso
 audit. A large imported frame, serial per-node reads, repeated binding retries,
 or multiple failed calls must be reported as the performance cause rather than
 described as a generic slow connection.

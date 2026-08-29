@@ -27,6 +27,7 @@ const results = capabilities.map((capability) => {
     states: component.states,
     props: component.props,
     slots: component.slots,
+    slotContracts: component.slotContracts || {},
     tokenRoles: component.tokenRoles,
     iconAliases: component.iconAliases
   };

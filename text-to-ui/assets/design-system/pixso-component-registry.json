@@ -128,7 +128,7 @@
     "Titlebar/*": ["window/minimize", "window/maximize", "window/close"],
     "Sidebar Item/Default": "navigation/inbox",
     "Sidebar Group Header/Collapsed": "navigation/chevron-down",
-    "Primary Level Icon/Default": "primary-level/overview",
+    "Primary Level Icon/Default": "navigation/grid",
     "Breadcrumb/Default": "navigation/chevron-right",
     "Accordion/Collapsed": "navigation/chevron-right",
     "Collapsible/Collapsed": "navigation/chevron-down",

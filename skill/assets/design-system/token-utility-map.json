@@ -2819,6 +2819,14 @@
       "resolvedCssValue": "56px"
     },
     {
+      "className": "u-leading-12",
+      "property": "lineHeight",
+      "cssProperty": "line-height",
+      "pixsoVariable": "font/line-height/12",
+      "cssVariable": "--line-height-12",
+      "resolvedCssValue": "12px"
+    },
+    {
       "className": "u-leading-14",
       "property": "lineHeight",
       "cssProperty": "line-height",
@@ -2867,44 +2875,36 @@
       "resolvedCssValue": "28px"
     },
     {
-      "className": "u-leading-32",
+      "className": "u-leading-36",
       "property": "lineHeight",
       "cssProperty": "line-height",
-      "pixsoVariable": "font/line-height/32",
-      "cssVariable": "--line-height-32",
-      "resolvedCssValue": "32px"
+      "pixsoVariable": "font/line-height/36",
+      "cssVariable": "--line-height-36",
+      "resolvedCssValue": "36px"
     },
     {
-      "className": "u-leading-40",
+      "className": "u-leading-44",
       "property": "lineHeight",
       "cssProperty": "line-height",
-      "pixsoVariable": "font/line-height/40",
-      "cssVariable": "--line-height-40",
-      "resolvedCssValue": "40px"
+      "pixsoVariable": "font/line-height/44",
+      "cssVariable": "--line-height-44",
+      "resolvedCssValue": "44px"
     },
     {
-      "className": "u-leading-52",
+      "className": "u-leading-58",
       "property": "lineHeight",
       "cssProperty": "line-height",
-      "pixsoVariable": "font/line-height/52",
-      "cssVariable": "--line-height-52",
-      "resolvedCssValue": "52px"
+      "pixsoVariable": "font/line-height/58",
+      "cssVariable": "--line-height-58",
+      "resolvedCssValue": "58px"
     },
     {
-      "className": "u-leading-64",
+      "className": "u-leading-66",
       "property": "lineHeight",
       "cssProperty": "line-height",
-      "pixsoVariable": "font/line-height/64",
-      "cssVariable": "--line-height-64",
-      "resolvedCssValue": "64px"
-    },
-    {
-      "className": "u-leading-76",
-      "property": "lineHeight",
-      "cssProperty": "line-height",
-      "pixsoVariable": "font/line-height/76",
-      "cssVariable": "--line-height-76",
-      "resolvedCssValue": "76px"
+      "pixsoVariable": "font/line-height/66",
+      "cssVariable": "--line-height-66",
+      "resolvedCssValue": "66px"
     },
     {
       "className": "u-font-weight-400",
@@ -2938,7 +2938,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/56",
-        "font/line-height/76",
+        "font/line-height/66",
         "font/weight/400"
       ],
       "cssVariables": {
@@ -2953,7 +2953,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/48",
-        "font/line-height/64",
+        "font/line-height/58",
         "font/weight/400"
       ],
       "cssVariables": {
@@ -2968,7 +2968,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/38",
-        "font/line-height/52",
+        "font/line-height/44",
         "font/weight/400"
       ],
       "cssVariables": {
@@ -2983,7 +2983,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/30",
-        "font/line-height/40",
+        "font/line-height/36",
         "font/weight/700"
       ],
       "cssVariables": {
@@ -2998,7 +2998,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/24",
-        "font/line-height/32",
+        "font/line-height/28",
         "font/weight/700"
       ],
       "cssVariables": {
@@ -3013,7 +3013,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/20",
-        "font/line-height/28",
+        "font/line-height/24",
         "font/weight/700"
       ],
       "cssVariables": {
@@ -3028,7 +3028,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/18",
-        "font/line-height/24",
+        "font/line-height/22",
         "font/weight/500"
       ],
       "cssVariables": {
@@ -3043,7 +3043,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/16",
-        "font/line-height/22",
+        "font/line-height/20",
         "font/weight/500"
       ],
       "cssVariables": {
@@ -3058,7 +3058,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/14",
-        "font/line-height/20",
+        "font/line-height/16",
         "font/weight/500"
       ],
       "cssVariables": {
@@ -3073,7 +3073,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/16",
-        "font/line-height/22",
+        "font/line-height/20",
         "font/weight/400"
       ],
       "cssVariables": {
@@ -3088,7 +3088,7 @@
       "property": "typography",
       "pixsoVariables": [
         "font/size/14",
-        "font/line-height/20",
+        "font/line-height/16",
         "font/weight/400"
       ],
       "cssVariables": {
@@ -3098,18 +3098,33 @@
       }
     },
     {
-      "className": "u-type-caption-l",
-      "role": "typography/caption-l",
+      "className": "u-type-body-s",
+      "role": "typography/body-s",
       "property": "typography",
       "pixsoVariables": [
         "font/size/12",
-        "font/line-height/16",
-        "font/weight/500"
+        "font/line-height/14",
+        "font/weight/400"
       ],
       "cssVariables": {
-        "fontSize": "--type-caption-l-size",
-        "lineHeight": "--type-caption-l-leading",
-        "fontWeight": "--type-caption-l-weight"
+        "fontSize": "--type-body-s-size",
+        "lineHeight": "--type-body-s-leading",
+        "fontWeight": "--type-body-s-weight"
+      }
+    },
+    {
+      "className": "u-type-caption-m",
+      "role": "typography/caption-m",
+      "property": "typography",
+      "pixsoVariables": [
+        "font/size/10",
+        "font/line-height/12",
+        "font/weight/400"
+      ],
+      "cssVariables": {
+        "fontSize": "--type-caption-m-size",
+        "lineHeight": "--type-caption-m-leading",
+        "fontWeight": "--type-caption-m-weight"
       }
     }
   ]

@@ -15,7 +15,10 @@
     "resize": "fluid-desktop"
   },
   "shell": {
-    "pattern": "three-pane-list-detail",
+    "pattern": "pattern-b-three-pane",
+    "paneOrder": ["primary-navigation", "secondary-list", "main-detail"],
+    "finalPaneLeadingSlot": "main-detail-operations",
+    "requiredSlots": ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"],
     "titlebar": "L",
     "surface": "white"
   },

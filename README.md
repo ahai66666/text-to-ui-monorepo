@@ -175,6 +175,43 @@ text-to-ui-monorepo/
 - 只安装 Skill 而没有组件包时，Skill 必须明确报告组件库不可用，不能静默生成视觉相似替代品。
 - 克隆仓库不会自动把 Skill 注册到 Codex；仍需安装 `skill/`，并为组件复用提供完整仓库或已发布包。
 
+## Text-to-UI 与 Pixso 插件交付
+
+HTML 导入 Pixso 采用同一条可重复执行的链路：
+
+```text
+HTML / 浏览器最终计算样式
+  → Visual Manifest
+  → DOM Visual IR
+  → Operation Plan
+  → Text-to-UI Pixso Native Renderer
+  → Pixso 变量、文字样式和组件实例
+```
+
+仓库中的职责边界如下：
+
+| 路径 | 用途 | 是否包含运行缓存 |
+| --- | --- | --- |
+| `text-to-ui/` | Skill 唯一规范源、导入编译器、映射规则和测试 | 否 |
+| `skill/` | 可独立安装的 Skill 同步镜像 | 否；`.text-to-ui/` 运行状态不发布 |
+| `text-to-ui/scripts/pixso-native-renderer-plugin/` | 可在 Pixso 开发者模式加载的插件包 | 否 |
+| `packages/` | HTML、React、Vue 组件和共享设计系统源码 | 否 |
+
+插件包负责在已打开的 Pixso 文件中执行 Operation Plan，并持续监听本地桥接服务；Skill 负责采集 HTML、锁定几何、生成计划和提供规则。正常整页导入只使用插件执行，不与 MCP 整页绘制并行，也不读取旧计划、旧截图、旧 GUID 或旧画板作为新运行输入。插件代码/API 变更后需要重新加载插件包；规则、映射或页面内容变化只需要重新生成并发布新的 Operation Plan。
+
+导入中的关键不变量：普通文字默认内容自适应，只有 HTML 明确使用省略规则且文本超出盒宽时才使用 `TRUNCATE`；图标热区横纵居中，16/20/24px 图标描边分别为 1/1.25/1.5px，并优先绑定 Pixso `Size & Layout` 中的对应变量；几何锁定后才做 Token、文字样式和精确组件映射。缺少精确资源时保留原始 SVG 或普通图层，不用近似组件覆盖真实布局。
+
+插件的本地桥接服务可通过以下命令启动和检查：
+
+```bash
+pnpm services:start
+node text-to-ui/scripts/pixso-plugin-bridge.mjs status
+pnpm --dir text-to-ui pixso:plugin:build
+pnpm --dir text-to-ui pixso:delivery:check
+```
+
+`.text-to-ui/` 下的任务状态、归档计划、连接会话和临时结果只属于本机运行时，不应提交到 GitHub；审计截图和一次性回归输出也不属于 Skill 或插件发布包。
+
 ## 本地运行
 
 环境要求：Node.js 22、pnpm 10。

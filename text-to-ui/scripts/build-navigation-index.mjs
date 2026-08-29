@@ -21,6 +21,7 @@ const sources = {
   packages: path.join(repo, 'package.json'),
   tasks: path.join(indexRoot, 'task-routes.source.json'),
   layouts: path.join(indexRoot, 'layout-routes.source.json'),
+  patterns: path.join(skillRoot, 'assets', 'design-system', 'pattern-contracts.json'),
   aliases: path.join(indexRoot, 'capability-aliases.source.json')
 };
 const sourceEvidence = Object.fromEntries(Object.entries(sources).map(([key, file]) => [key, {
@@ -33,8 +34,10 @@ const tokenMap = readJson(sources.tokens);
 const packageJson = readJson(sources.packages);
 const taskSource = readJson(sources.tasks);
 const layoutSource = readJson(sources.layouts);
+const patternSource = readJson(sources.patterns);
 const aliasSource = readJson(sources.aliases);
 const parityById = new Map(parity.components.map((item) => [item.id, item]));
+const htmlRendererKey = (component) => component.id;
 
 function normalizedWords(value) {
   return String(value || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-').replace(/^-|-$/g, '');
@@ -56,7 +59,12 @@ const components = registry.components.map((component) => {
       package: `@text-to-ui/components-${framework}`,
       source,
       exists: Boolean(file && fs.existsSync(path.join(repo, file))),
-      status: component.frameworks?.[framework]?.status || component.status
+      status: component.frameworks?.[framework]?.status || component.status,
+      ...(framework === 'html' ? {
+        rendererKey: htmlRendererKey(component),
+        factoryImport: 'renderHtmlComponent',
+        styleImports: ['@text-to-ui/tokens', '@text-to-ui/components-html/styles.css']
+      } : {})
     }];
   }));
   const parityItem = parityById.get(component.id);
@@ -71,6 +79,7 @@ const components = registry.components.map((component) => {
     states: component.states || component.allowedStates || [],
     props: component.props || [],
     slots: component.slots || [],
+    slotContracts: component.slotContracts || undefined,
     behaviors: component.behaviors || parityItem?.behaviorChecks || [],
     tokenRoles: component.tokenRoles || parityItem?.tokenRoles || [],
     iconAliases: component.iconAliases || [],
@@ -92,8 +101,12 @@ const taskRouter = {
 };
 const layoutIndex = {
   schemaVersion: 1,
-  generatedFrom: [sourceEvidence.layouts, { path: 'text-to-ui/references/harmonyos-layout-patterns.md', sha256: sha256File(path.join(skillRoot, 'references/harmonyos-layout-patterns.md')) }],
-  layouts: layoutSource.layouts
+  generatedFrom: [sourceEvidence.patterns, sourceEvidence.layouts, { path: 'text-to-ui/references/harmonyos-layout-patterns.md', sha256: sha256File(path.join(skillRoot, 'references/harmonyos-layout-patterns.md')) }],
+  authority: 'assets/design-system/pattern-contracts.json',
+  layouts: layoutSource.layouts.map((layout) => ({
+    ...layout,
+    contract: patternSource.patterns.find((pattern) => pattern.id === layout.id)
+  }))
 };
 const componentIndex = {
   schemaVersion: 1,
@@ -126,8 +139,8 @@ const validationIndex = {
   modes: {
     'fast-preview': {
       purpose: 'Reach the first browser-visible interactive page after blocking checks only.',
-      commands: ['pnpm index:check', 'pnpm layout:contract:test', 'pnpm components:reuse:test'],
-      requiredEvidence: ['layout-contract.json', 'component-usage.json', 'build-or-open-success', 'target-viewport', 'primary-path-operable']
+      commands: ['pnpm index:check', 'pnpm layout:contract:test', 'pnpm layout:binding:test', 'pnpm components:reuse:test'],
+      requiredEvidence: ['context-packet.json', 'layout-contract.json', 'page-spec.json', 'component-usage.json', 'build-or-open-success', 'target-viewport', 'primary-path-operable']
     },
     'release-validation': {
       purpose: 'Run complete repository and delivery validation after visible direction approval.',

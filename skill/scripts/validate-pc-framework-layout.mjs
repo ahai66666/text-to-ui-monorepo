@@ -15,12 +15,18 @@ const patterns = {
   "pattern-a-two-pane": ["primary-navigation", "main-content"],
   "pattern-b-three-pane": ["primary-navigation", "secondary-list", "main-detail"],
   "pattern-c-tool-workspace": ["primary-navigation", "tool-workspace"],
-  "pattern-d-inspector": null,
+  "pattern-d-inspector": ["primary-navigation", "secondary-or-canvas", "main-content", "inspector"],
 };
 const finalSlots = {
   "pattern-a-two-pane": "main-content-title",
   "pattern-b-three-pane": "main-detail-operations",
   "pattern-c-tool-workspace": "main-content-title",
+};
+const requiredSlots = {
+  "pattern-a-two-pane": ["primary-navigation-shell", "global-title-layer", "global-primary-action"],
+  "pattern-b-three-pane": ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"],
+  "pattern-c-tool-workspace": ["primary-navigation-shell", "global-title-layer", "workspace-toolbar"],
+  "pattern-d-inspector": ["global-title-layer", "inspector-toggle"],
 };
 
 if (contract.schemaVersion !== 1) failures.push("schemaVersion must equal 1");
@@ -40,16 +46,14 @@ const panes = Array.isArray(contract.paneOrder) ? contract.paneOrder : [];
 const expected = patterns[contract.pattern];
 if (expected && JSON.stringify(panes) !== JSON.stringify(expected)) failures.push(`${contract.pattern} paneOrder must equal ${expected.join(" -> ")}`);
 if (contract.pattern === "pattern-d-inspector") {
-  if (!panes.includes("inspector")) failures.push("pattern-d-inspector must include inspector");
-  if (panes.at(-1) !== "inspector") failures.push("pattern-d-inspector must place inspector after the final main pane");
-  const base = panes.filter((pane) => pane !== "inspector");
-  const validBase = JSON.stringify(base) === JSON.stringify(patterns["pattern-b-three-pane"]) || JSON.stringify(base) === JSON.stringify(patterns["pattern-c-tool-workspace"]);
-  if (!validBase) failures.push("pattern-d-inspector must extend pattern B or C");
+  if (JSON.stringify(panes) !== JSON.stringify(patterns["pattern-d-inspector"])) failures.push(`pattern-d-inspector paneOrder must equal ${patterns["pattern-d-inspector"].join(" -> ")}`);
 }
 
 const expectedSlot = finalSlots[contract.pattern];
 if (expectedSlot && contract.finalPaneLeadingSlot !== expectedSlot) failures.push(`finalPaneLeadingSlot must equal ${expectedSlot}`);
 if (contract.pattern === "pattern-d-inspector" && !["main-detail-operations", "main-content-title"].includes(contract.finalPaneLeadingSlot)) failures.push("pattern-d-inspector finalPaneLeadingSlot must follow its B or C base");
+const expectedRequiredSlots = requiredSlots[contract.pattern] || [];
+if (!Array.isArray(contract.requiredSlots) || JSON.stringify(contract.requiredSlots) !== JSON.stringify(expectedRequiredSlots)) failures.push(`${contract.pattern} requiredSlots must equal ${expectedRequiredSlots.join(" -> ")}`);
 
 if (!Array.isArray(contract.titleSegments) || JSON.stringify(contract.titleSegments) !== JSON.stringify(panes)) failures.push("titleSegments must match paneOrder exactly");
 const insetOwners = contract.insetOwners && typeof contract.insetOwners === "object" && !Array.isArray(contract.insetOwners) ? contract.insetOwners : {};

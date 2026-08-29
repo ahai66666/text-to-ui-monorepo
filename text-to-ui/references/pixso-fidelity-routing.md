@@ -1,13 +1,13 @@
 # Pixso 视觉快速通道与 Token/组件精化通道
 
-HTML 与 Pixso 不是同一个步骤的两种写法。接到同时交付 HTML 和 Pixso 的任务时，先在需求确认阶段选择且只选择一条 Pixso 通道；不能在导入失败后悄悄从严格通道降级到快速通道，也不能把快速导入的结果描述成原生组件和变量都已绑定。
+HTML 与 Pixso 不是同一个步骤的两种写法。接到同时交付 HTML 和 Pixso 的任务时，先在需求确认阶段选择且只选择一条 Pixso 通道；不能在导入失败后悄悄从严格通道降级到快速通道，也不能把快速导入的结果描述成 Pixso 原生组件实例和变量都已绑定。
 
 ## 1. 通道选择
 
 | 通道 | 目标 | NewComponents | Token/变量 | 组件实例 | `code_to_design` |
 | --- | --- | --- | --- | --- | --- |
 | 视觉快速通道 (`fast visual import`) | 尽快得到与已验收 HTML 同状态、同几何的可编辑 Pixso Frame | 首次导入不要求 | 导入值先视为字面值；只记录实际读回成功的绑定 | 页面自有 Frame；只替换能准确验证的局部实例 | 浏览器验收后的静态快照只调用一次 |
-| Token/组件精化通道 (`strict structured reuse`) | 得到可复用的原生组件、完整变量绑定和可审计的设计稿 | 必须先在 `NewComponents` 阶段验证 | 所有使用到的颜色、间距、尺寸、字体和效果都必须绑定 Pixso 变量/样式 | 每个声称复用的区域必须是真实 `type: "instance"`，指向新鲜 Variant GUID | 只导入低复杂度 Pattern 骨架和页面自有内容；组件区域由实例装配 |
+| Token/组件精化通道 (`strict structured reuse`) | 得到可复用的 Pixso 原生组件实例、完整变量绑定和可审计的设计稿 | 必须先在 `NewComponents` 阶段验证 | 所有使用到的颜色、间距、尺寸、字体和效果都必须绑定 Pixso 变量/样式 | 每个声称复用的区域必须是真实 `type: "instance"`，指向新鲜 Variant GUID | 只导入低复杂度 Pattern 骨架和页面自有内容；组件区域由实例装配 |
 
 ### 视觉快速通道
 
@@ -23,7 +23,7 @@ HTML 与 Pixso 不是同一个步骤的两种写法。接到同时交付 HTML �
 
 ### Token/组件精化通道
 
-适用于用户要求“引用组件库、所有变量绑定、可复用原生组件”时：
+适用于用户要求“引用组件库、所有变量绑定、可复用 Pixso 原生组件实例”时：
 
 1. 先运行严格复用规划和 Token 映射检查，确认 `NewComponents` 页面、真实组件/Variant、可编辑文字槽位、精确 SVG 图标和变量集合均可用。
 2. 在 `NewComponents` 完成源组件阶段验证后，再切换到目标产品页并重新核对页面身份；任何 stale GUID、同名 Frame、`icon_font`、detached node 或找不到槽位都是硬阻塞。
@@ -67,4 +67,3 @@ node scripts/validate-pixso-import-package.mjs \
 ```
 
 包检查通过只代表“可以安全送入 Pixso”；严格通道的最终通过仍需要 Pixso 实时读回组件实例和 `$variable` 绑定。
-

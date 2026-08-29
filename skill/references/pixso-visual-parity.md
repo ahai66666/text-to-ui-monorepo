@@ -7,7 +7,7 @@ HTML 和 Pixso 是同一份页面规则的两个渲染器，不是两份可以�
 - HTML 截图与 Pixso 导入必须来自同一个 `page-spec.json`、同一个静态导入副本和同一个 `visual-parity.json`。
 - 在导入前固定可见状态：账号、路由、选中项、查询词、筛选、排序、展开状态、滚动位置、字体加载状态。把状态写成可读的 `data-visual-state-id`，不要依赖浏览器上一次点击留下的状态。
 - 视觉比较前先排除画布标尺、编辑器工具栏和浏览器外框；只比较页面内容区域。
-- `code_to_design` 只导入一次。后续修复必须作用在同一个已记录的 Frame，禁止用第二次导入掩盖来源不一致。
+- 正常结构化导入不调用 `code_to_design`，直接比较当前 HTML 截图与插件生成的同一个 canonical Frame。只有独立诊断运行可以调用一次 `code_to_design`，且其临时 Frame 不得成为后续输入。
 
 ## 2. 1728 × 1152 是 CSS 视口，不是浏览器 API 的盲填值
 
@@ -38,7 +38,7 @@ physicalHeight = round(targetCssHeight × devicePixelRatio)
 
 ## 4. 导入前和导入后各做一次同状态检查
 
-导入副本必须是静态可见快照：动态列表、详情卡片和状态标签不能只存在于运行时脚本。导入前检查每个关键区域的子节点数、可见文本长度和非零尺寸；导入后只截一张首屏图并读取每个关键区域的代表节点。若内容为空，记录为 `importSnapshotFailure`，修复导入副本后再重新确定唯一的 canonical Frame。
+浏览器证据必须是静态可见快照：动态列表、详情卡片和状态标签必须在采集时已经可见。导入前检查每个关键区域的子节点数、可见文本长度和非零尺寸；导入后只截一张首屏图并读取每个关键区域的代表节点。若内容为空，记录为 `importSnapshotFailure`，修复采集状态后创建新运行。
 
 导入副本还必须保留 `data-visual-state-id`、`data-canvas-size` 和语义 `data-px-key`。绑定副本用 `prepare-pixso-binding-html.mjs` 生成并记录 marker 数量；没有 marker 的普通快速导入可以是视觉稿，但不能宣称 Token/Component 已绑定。将 ZIP 送入 Pixso 前，使用 `validate-pixso-import-package.mjs` 按 `fast` 或 `strict` 通道做入口、静态内容、本地资源、状态标记和颜色写法检查；strict 的最终颜色一致性仍以 Pixso `$variable` 读回为准。
 
@@ -46,10 +46,10 @@ physicalHeight = round(targetCssHeight × devicePixelRatio)
 
 1. 校验页面契约和视觉一致性 manifest。
 2. 用校准后的 CSS 视口打开浏览器，截图并记录状态 ID。
-3. 用完全相同的静态副本导入 Pixso，记录 `codeToDesignMs`，读取 Frame 尺寸和三栏边界。
-4. 在相同内容状态下比较截图；先看边界、内边距、字体加载和选中态，再看颜色、图标和阴影。
-5. 最后才做 Token 绑定或已验证 Component 实例替换。快速视觉导入中的字面值和页面自有 Frame 必须如实列为已知限制。
+3. 从同一运行的 Operation Plan 单次生成 Pixso canonical Frame，记录执行器与模块耗时，读取 Frame 尺寸和三栏边界。
+4. 在相同内容状态下比较 HTML 与 Pixso 截图；先看边界、内边距、字体加载和选中态，再看颜色、图标和阴影。
+5. 同一次读回确认 Token 绑定和 Component Instance；禁止先生成视觉近似稿、再用第二套逻辑逐个替换。
 
 ## 6. 交付记录
 
-每个同时交付 HTML/Pixso 的页面都应保留：目标 CSS 视口、实际 DPR、校准后的物理视口、已验证的 CSS 尺寸、Pixso page/frame ID、状态 ID、关键几何、导入耗时和绑定 marker 数量。这样下一次不会把不同状态、不同裁切或不同视口误判成组件 CSS 不一致。
+每个同时交付 HTML/Pixso 的页面都应保留：目标 CSS 视口、实际 DPR、校准后的物理视口、已验证的 CSS 尺寸、Pixso page/frame ID、状态 ID、关键几何、各阶段耗时、操作数量、组件/变量读回和视觉差异。这样下一次不会把不同状态、不同裁切或不同视口误判成组件 CSS 不一致。

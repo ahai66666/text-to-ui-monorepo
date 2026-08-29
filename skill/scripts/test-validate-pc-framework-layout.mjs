@@ -18,6 +18,7 @@ const contract = {
   titleSegments: ["primary-navigation", "secondary-list", "main-detail"],
   primaryActionSlot: "primary-navigation-shell",
   finalPaneLeadingSlot: "main-detail-operations",
+  requiredSlots: ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"],
   insetOwners: {
     "primary-navigation": "primary-navigation-shell",
     "secondary-list": "secondary-list-shell",
@@ -33,6 +34,22 @@ const run = () => spawnSync(process.execPath, [validator, "--contract", contract
 fs.writeFileSync(contractPath, JSON.stringify(contract));
 const valid = run();
 assert.equal(valid.status, 0, valid.stderr);
+
+const variants = [
+  { pattern: "pattern-a-two-pane", panes: ["primary-navigation", "main-content"], finalSlot: "main-content-title", required: ["primary-navigation-shell", "global-title-layer", "global-primary-action"], inset: { "primary-navigation": "primary-navigation-shell", "main-content": "main-content-shell" }, scroll: ["main-content"] },
+  { pattern: "pattern-b-three-pane", panes: ["primary-navigation", "secondary-list", "main-detail"], finalSlot: "main-detail-operations", required: ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"], inset: { "primary-navigation": "primary-navigation-shell", "secondary-list": "secondary-list-shell", "main-detail": "main-detail-shell" }, scroll: ["secondary-list", "main-detail"] },
+  { pattern: "pattern-c-tool-workspace", panes: ["primary-navigation", "tool-workspace"], finalSlot: "main-content-title", required: ["primary-navigation-shell", "global-title-layer", "workspace-toolbar"], inset: { "primary-navigation": "primary-navigation-shell", "tool-workspace": "tool-workspace-shell" }, scroll: ["tool-workspace"] },
+  { pattern: "pattern-d-inspector", panes: ["primary-navigation", "secondary-or-canvas", "main-content", "inspector"], finalSlot: "main-content-title", required: ["global-title-layer", "inspector-toggle"], inset: { "primary-navigation": "primary-navigation-shell", "secondary-or-canvas": "workspace-shell", "main-content": "main-content-shell", "inspector": "inspector-shell" }, scroll: ["secondary-or-canvas", "main-content", "inspector"] }
+];
+const baseContract = JSON.parse(JSON.stringify(contract));
+for (const variant of variants) {
+  Object.assign(contract, baseContract, { pattern: variant.pattern, paneOrder: variant.panes, titleSegments: variant.panes, finalPaneLeadingSlot: variant.finalSlot, requiredSlots: variant.required, insetOwners: variant.inset, scrollOwners: variant.scroll });
+  fs.writeFileSync(contractPath, JSON.stringify(contract));
+  const variantResult = run();
+  assert.equal(variantResult.status, 0, `${variant.pattern}: ${variantResult.stderr}`);
+}
+Object.assign(contract, baseContract);
+fs.writeFileSync(contractPath, JSON.stringify(contract));
 
 contract.paneOrder = ["main-detail", "primary-navigation", "secondary-list"];
 fs.writeFileSync(contractPath, JSON.stringify(contract));

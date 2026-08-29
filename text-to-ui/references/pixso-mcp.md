@@ -2,12 +2,22 @@
 
 Use this reference before reading or writing a Pixso design.
 
+For Text-to-UI whole-page HTML imports, this is not the normal executor. The
+native Text-to-UI Pixso plugin is required because it provides the higher-
+fidelity single-transaction path. Use MCP whole-page execution only in an
+explicit converter diagnosis or after the user approves an emergency fallback;
+never switch automatically because the plugin is disconnected.
+
 ## Connection
 
 - MCP server name: `pixso`
 - Default endpoint: `http://127.0.0.1:3667/mcp`
 - Keep Pixso running with the target design file open and active.
 - Inspect the live tool schemas before the first operation. Treat them as authoritative because the desktop MCP may evolve.
+- The installed official Codex plugin may add workflow guidance, but it does
+  not replace this local Desktop MCP or add a second HTML renderer. Do not
+  register a remote STDIO proxy under the same `pixso` server name for this
+  local-file workflow.
 - If the server reports a missing session ID during a raw HTTP probe, complete the MCP `initialize` handshake and reuse the returned `mcp-session-id`. A normally configured Codex MCP connection handles this automatically.
 
 ## Target page and path preflight (failure-derived)
@@ -47,16 +57,20 @@ do not keep polling or create a replacement Frame on the wrong page.
 
 ## Creation Sequence
 
-1. Run `node scripts/build-pixso-token-manifest.mjs --check`,
+1. Read the active profile in `assets/design-system/mapping-registry.json`, then run
+   `node scripts/validate-mapping-registry.mjs` and
+   `node scripts/sync-mapping-registry.mjs --check`.
+2. Run `node scripts/build-pixso-token-manifest.mjs --check`,
    `node scripts/build-token-runtime-map.mjs --check`, and
    `node scripts/build-dual-output-token-map.mjs --check`. If any output is
    stale, regenerate the chain in that order, then rerun all three checks. Read
-   the generated `pixso-variables.json`, `token-runtime-map.json`,
+   the active mapping profile and the generated
+   `pixso-variables.json`, `token-runtime-map.json`,
    `dual-output-token-map.json`, and `references/pixso-component-bindings.md`.
-2. Call `fetch_context` with `include_schema: false`; use `include_map: false` for a new creation task.
-3. Load the relevant Pixso guideline topic, usually `web-app` and `design-system` for HarmonyOS PC application work.
-4. Read variables, shared styles, components, and top-level Frames in grouped calls. Reuse approved resources before creating one-off layers.
-5. Create the first editable direction:
+3. Call `fetch_context` with `include_schema: false`; use `include_map: false` for a new creation task.
+4. Load the relevant Pixso guideline topic, usually `web-app` and `design-system` for HarmonyOS PC application work.
+5. Read variables, shared styles, components, and top-level Frames in grouped calls. Reuse approved resources before creating one-off layers.
+6. Create the first editable direction:
    - In `html-first`, use the exact HTML draft already browser-checked at the
      approved viewport as the Web checkpoint.
    - In `visual-first`, generate a temporary static HTML renderer from the
@@ -83,10 +97,26 @@ do not keep polling or create a replacement Frame on the wrong page.
      call on it. In strict mode, the check must pass semantic markers and
      variable-color source usage, but only live Pixso read-back proves the
      component instances and `$variable` bindings.
+   - The call must receive exactly one final `htmlStr` or `htmlBufferBase64`.
+     A ZIP is required when CSS, fonts, SVGs, or images are external to the
+     entry HTML; never pass a URL, path, placeholder, or both input fields.
 6. Obtain the new top-level Frame ID with `get_top_level_frames` or the returned operation result.
 7. Run `check_layout` with `problemsOnly: true` on the affected Frame.
-8. Run `take_screenshot` on the affected Frame. Inspect content completeness, layout, typography, whitespace, sizing, clipping, and color consistency.
+8. Run `take_screenshot` on the affected Frame. Inspect content completeness,
+   page and pane dimensions, typography (font, size, weight, line-height and
+   wrapping), whitespace, sizing, color/opacity, border/radius/shadow,
+   responsive or minimum-window behavior, missing assets/icons, clipping, and
+   overlap. Report concrete node IDs or selectors for every finding.
 9. Fix every visible or reported issue, then repeat layout check and screenshot.
+
+10. Run a structural read-back in addition to `check_layout`. For the affected
+    Frame, compare every descendant's `absoluteBoundingBox` with the root
+    bounds and record the count and examples outside the root. Also inspect
+    the auto-layout direction of major shell containers. `check_layout: null`
+    is not visual proof: the HTML converter can produce a formally valid
+    horizontal stack in which the body starts at `x = root.width`, leaving
+    most of the page outside the frame. Repair that same container direction,
+    size, or child position before style or component work.
 
 ## Registered reuse, performance, and icon gates
 
@@ -110,9 +140,9 @@ library phase, compare the active page from fetch_context and each candidate
 component's containing page; after switching to the target product page,
 re-enumerate and compare again immediately before creating instances. The
 target page does not need to be NewComponents. A same-name Frame, stale GUID,
-detached node, icon_font, or component from another page is not component
-reuse. Fast visual import may keep a page-owned Frame instead of an instance
-and must report that distinction.
+detached node, icon_font, imported layer name, or component from another page is
+not component reuse. Fast visual import may keep a page-owned Frame instead of
+an instance and must report that distinction.
 
 After import, run an icon crop audit on every generated icon wrapper and
 linked icon slot. The wrapper must not clip content, the SVG root and
@@ -166,7 +196,7 @@ hex、图层可见名称或 CSS Class 猜测变量。
 4. 预检通过后运行“批量绑定当前页面 Token”，只绑定 manifest 声明的 `fills`/`strokes`，每个写入都必须 read-back 验证。
 5. 运行“审计当前页面绑定（只读）”，使用 `scripts/validate-page-binding-audit.mjs` 检查 `schemaVersion: 1`、一致的受管分母与零未验证绑定。
 
-这是页面 Token 的快速通道，不等于 strict registered reuse：它不创建或替换 NewComponents 实例，也不宣称整页所有文字、间距和组件都已绑定。需要原生组件时，仍回到 NewComponents 的严格两阶段解析，并使用新鲜的 Variant GUID。
+这是页面 Token 的快速通道，不等于 strict registered reuse：它不创建或替换 NewComponents 实例，也不宣称整页所有文字、间距和组件都已绑定。需要 Pixso 原生组件实例时，仍回到 NewComponents 的严格两阶段解析，并使用新鲜的 Variant GUID。
 
 ## Token Gate
 
@@ -277,6 +307,12 @@ Then load `scripts/pixso-token-sync-plugin/manifest.json` as a Pixso development
 - `activePageMismatch`: when `get_all_components` reports a component in a different Pixso page than the page returned by `fetch_context`, treat the component as read-only discovery evidence. Do not mutate it by guessed or colliding node ID. Ask the user to open/focus the component-library page, refresh `fetch_context`, and re-resolve the component GUID before any repair or linked-instance replacement.
 - A read returns nodes from an unexpected file: stop mutations, refresh context, confirm the active page/Frame, and never edit by a stale GUID.
 - `code_to_design` succeeds but native edits fail: report partial capability honestly; do not claim full structured-edit QA.
+- `code_to_design` succeeds but the Frame has major absolute-bounds overflow,
+  clipped regions, or an obviously wrong auto-layout direction: classify it as
+  an import-geometry failure. Repair the existing Frame when the cause is
+  deterministic; otherwise preserve the artifact and report the limitation.
+  Do not invoke a second whole-page renderer to mask the mismatch without
+  explicit user approval.
 - Do not fall back to Sketch or Figma unless the user explicitly requests that tool in the current task.
 
 ## Deliverable Reference

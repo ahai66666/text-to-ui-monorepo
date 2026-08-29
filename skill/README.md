@@ -47,7 +47,40 @@ Skill 先把需求拆成产品目标、目标用户、工作对象、主任务�
 | Pixso 设计稿 | 同源 Pixso Variables、文字样式、效果样式、组件实例和 Auto Layout | 导入 HTML 后把字面量绑定为变量/样式，并以组件注册表替换原子控件。 |
 | 最终 Demo | 确认后的 `page-spec.json`、Pixso 当前层级和同一运行时 Token | 重新读取 Pixso 确认稿再生成，不复用可能过期的初稿结构。 |
 
-这里的“一致”指同一个 Canonical Token Map 和同一个页面规格被全链路使用、校验并可追溯；Pixso 的原生变量命名和 CSS 的运行时语义名可以不同，但每一项都有映射关系，而不是靠人工目测复制颜色或尺寸。
+这里的“一致”指同一个 Canonical Token Map 和同一个页面规格被全链路使用、校验并可追溯；Pixso 的原生变量命名和 CSS 的运行时语义名可以不同，但每一项都有映射关系，而不是靠人工目测复制颜色或尺寸。Canonical Token 与 Semantic Token 是两层关系；Runtime Semantic Index 由 Semantic Token 和 Runtime-only Alias 自动生成，不需要再维护一份重复的完整表。
+
+### 跨源映射与 Obsidian 维护台
+
+HTML Token、Pixso Variable、HTML `logicalName`、Pixso 注册组件、HarmonyOS 源组件和 Variant 的对应关系统一维护在：
+
+```text
+assets/design-system/mapping-registry.json
+```
+
+它按 `profile` 隔离“一个 HTML 源 → 一个 Pixso 设计文件 → 一套组件库”的映射方案。现有的 `token-runtime-map.json`、`dual-output-token-map.json`、组件 registry、HarmonyOS adapter map 和覆盖率表都是运行时/审计所需的投影或细节文件，不作为跨源关系的第二个编辑入口。Obsidian 使用单独的映射维护台承接人工修改，修改区经脚本校验后回写中心 registry；详细字段边界和维护流程见 [`references/mapping-registry.md`](references/mapping-registry.md)。要对接新的组件库或 Pixso 文件，新增 source、library 和 profile，不覆盖已有 profile。
+
+修改中心 registry 后运行：
+
+```bash
+pnpm mappings:validate
+pnpm mappings:sync
+pnpm mappings:check
+node scripts/build-mapping-registry-doc.mjs --profile html-to-pixso-harmonyos-client
+```
+
+如果用户先在 Obsidian 映射维护台填写了 `state=pending`，先运行：
+
+```bash
+pnpm mappings:obsidian:check -- --note /absolute/path/to/Text-to-UI-映射维护台.md
+pnpm mappings:obsidian:apply -- --note /absolute/path/to/Text-to-UI-映射维护台.md
+```
+
+`mappings:obsidian:check` 只预览变更，`mappings:obsidian:apply` 才会写入中心
+registry 并把已处理行标记为 `applied`。HTML Component ↔ Pixso Component 的核心
+字段是 `profiles[].componentMappings[].pixsoTarget`；它必须是目标组件 registry
+中的 exact registered name。`htmlRendererKey` 只是 HTML 实现入口，不是 Pixso 组件名。
+
+Pixso GUID、node ID 和 file key 不进入这张关系表；执行时始终从当前目标文件重新解析。
 
 ### HTML、React、Vue 共用一套 Token 和组件契约
 
@@ -140,7 +173,7 @@ Pixso 并非直接把画面“导出”为不可维护的代码。确认设计�
 6. **人工确认**：用户在 Pixso 中检查或修改；Skill 回读同一文件的当前页面和顶层 Frame，并把确认后的结构、内容和状态同步回 `page-spec.json`。
 7. **最终 Demo**：基于最新回读的 Pixso 设计和同步后的规格重新生成 HTML/CSS/JavaScript、React 或 Vue，验证布局、交互、状态和 Token 映射。
 
-> 使用这一流程时，必须打开**对应的 Pixso 目标文件**并保持它为当前活动文档。没有目标文件或 MCP 服务时，Skill 会保留已验证的 HTML 初稿并报告阻塞，不会把设计写入错误文件或静默改用其他工具。
+> 使用这一流程时，必须打开**对应的 Pixso 目标文件**和已安装的 Permanent Agent。计划可在插件暂时断线时先排队；恢复连接后自动继续，不会改走低保真 MCP 整页导入。
 
 ### V2 · 视觉优先 → 最终 Demo
 
@@ -244,6 +277,11 @@ node scripts/build-pixso-token-manifest.mjs --check
 # 检查 Pixso Token 与 HTML 运行时 Token 的映射是否完整
 node scripts/build-dual-output-token-map.mjs --check
 
+# 检查中心映射 registry 及其运行时投影
+node scripts/validate-mapping-registry.mjs --check-projections
+node scripts/sync-mapping-registry.mjs --check
+node scripts/test-mapping-registry.mjs
+
 # 检查 HTML/Pixso 共用的页面规格
 node scripts/validate-page-spec.mjs assets/design-system/page-spec.example.json
 
@@ -286,8 +324,8 @@ Pixso 在“HTML 初稿 → Pixso 细化”和“视觉优先”工作流中是�
 
 1. 启动 Pixso。
 2. 打开目标设计文件。
-3. 启动 Pixso MCP 服务。
-4. 确认当前活动文档正确。
+3. 打开 Text-to-UI Pixso Permanent Agent，并确认 Kernel `5.0.0`、协议 `4` 已连接。
+4. 确认当前活动文档正确。正常整页导入只发布一次，成功后只保留一个托管画板。
 
 HTML 初稿导入 Pixso 后，代码中的字面量会先成为图层属性；需要再绑定到 Pixso 变量、样式和组件实例，才能保持 Token 可追溯。React 和 Vue 也必须消费同一份 Web CSS Variables 与组件契约；直接生成 HTML、React 或 Vue 时不需要 Pixso。
 
