@@ -17,12 +17,12 @@ const files = [
   "packages/components-html/src/sidebar.html",
   "packages/components-html/src/list-card.html"
 ];
-const externalIconPattern = /<svg\b[^>]*data-icon-alias="([^"]+)"[^>]*>\s*<use\b[^>]*><\/use>\s*<\/svg>/g;
+const inlineIconPattern = /<svg\b[^>]*data-icon-alias="([^"]+)"[^>]*>[\s\S]*?<\/svg>/g;
 
 for (const relative of files) {
   const file = path.join(root, relative);
   const source = await fs.readFile(file, "utf8");
-  const output = source.replace(externalIconPattern, (_, alias) => iconMarkup(alias, { size: 20 }));
+  const output = source.replace(inlineIconPattern, (_, alias) => iconMarkup(alias, { size: 20 }));
   if (output !== source) await fs.writeFile(file, output);
 }
 

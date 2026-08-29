@@ -7,10 +7,17 @@ required.
 ## Authority
 
 1. `assets/design-system/tokens.*.json` owns token meaning and value.
-2. `assets/design-system/dual-output-token-map.json` owns the renderer mapping.
-3. HTML consumes the mapped CSS custom property.
-4. Pixso consumes the mapped local Variable or shared Style.
-5. `page-spec.json` records only mappings used by the page.
+2. `assets/design-system/mapping-registry.json` owns the cross-source mapping
+   profile, including HTML CSS/Token ↔ Pixso Variable relationships.
+3. `assets/design-system/dual-output-token-map.json` is the generated renderer
+   projection of the active mapping profile.
+4. HTML consumes the mapped CSS custom property.
+5. Pixso consumes the mapped local Variable or shared Style.
+6. `page-spec.json` records only mappings used by the page.
+
+When a different Pixso document or component library is needed, add a new
+mapping profile in the central registry. Do not edit the dual-output projection
+to create a second source of truth.
 
 Never make HTML, imported computed CSS, or a Pixso layer literal the source of
 truth. In `html-first`, the first HTML file is an editable implementation draft

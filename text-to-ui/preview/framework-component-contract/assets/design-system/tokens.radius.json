@@ -33,7 +33,7 @@
     "list-item": "radius.3",
     "badge": "radius.full",
     "progress": "radius.full",
-    "avatar": "radius.3",
+    "avatar": "radius.full",
     "card": "radius.4",
     "table": "radius.4",
     "pagination-item": "radius.3",

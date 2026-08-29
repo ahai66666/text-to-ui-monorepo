@@ -7,7 +7,7 @@
   "main": "./main.js",
   "menu": [
     {
-      "name": "同步核心 Token（126）",
+      "name": "同步核心 Token（127）",
       "command": "sync-core"
     }
   ]

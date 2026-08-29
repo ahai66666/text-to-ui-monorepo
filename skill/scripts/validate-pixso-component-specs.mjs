@@ -56,6 +56,16 @@ if (specs.shared.alphaPolicy.rule !== "token-alpha-only") {
 if (specs.shared.alphaPolicy.layerOpacity !== 1) {
   errors.push("Default layer opacity must be 1.");
 }
+const iconPolicy = specs.shared.iconPolicy ?? {};
+const expectedIconStrokeWeights = { "16": 1, "20": 1.25, "24": 1.5 };
+for (const [size, weight] of Object.entries(expectedIconStrokeWeights)) {
+  if (Number(iconPolicy.strokeWeightByDisplaySize?.[size]) !== weight) {
+    errors.push(`Icon stroke weight for ${size}px must be ${weight}px.`);
+  }
+}
+if (iconPolicy.hotZone?.alignment !== "CENTER" || iconPolicy.hotZone?.axes !== "BOTH") {
+  errors.push("Icon hot zone must be centered on both axes.");
+}
 
 if (errors.length) {
   console.error(errors.join("\n"));

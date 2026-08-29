@@ -227,10 +227,10 @@
       "category": "02 Forms",
       "target": "Input/White Surface/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput-Box-2in1",
+      "sourceComponentSet": "TextInput",
       "sourceVariant": {
-        "灰色场景": "OFF",
-        "状态": "Normal"
+        "surface": "white",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "structure",
@@ -241,10 +241,10 @@
       "category": "02 Forms",
       "target": "Input/Gray Surface/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput-Box-2in1",
+      "sourceComponentSet": "TextInput",
       "sourceVariant": {
-        "灰色场景": "ON",
-        "状态": "Normal"
+        "surface": "dark",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "structure",

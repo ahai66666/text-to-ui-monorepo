@@ -32,37 +32,39 @@ const order = {
   titlebar: 10,
   button: 20,
   input: 30, search: 31, textarea: 32, select: 33, field: 34,
-  checkbox: 40, "radio-group": 41, switch: 42,
-  sidebar: 50, "list-card": 51, tabs: 52, breadcrumb: 53, pagination: 54,
+  checkbox: 40, radio: 41, "radio-group": 42, switch: 43,
+  "primary-navigation-item": 49, sidebar: 50, "list-card": 51, tabs: 52, breadcrumb: 53, pagination: 54,
   avatar: 60, badge: 61, card: 62, item: 63, table: 64, "data-table": 65, progress: 66, empty: 67,
   accordion: 70, collapsible: 71, "navigation-menu": 72, menubar: 73, separator: 74,
   dialog: 80, "alert-dialog": 81, "semi-modal": 82, popover: 83, "hover-card": 84, "context-menu": 85, "dropdown-menu": 86,
   label: 90, combobox: 91, "native-select": 92, slider: 93, "input-otp": 94, kbd: 95,
   chart: 102, calendar: 103, "date-picker": 104, "time-picker": 105,
-  attachment: 110, carousel: 111,
+  attachment: 110, carousel: 111, "aspect-ratio": 112, bubble: 113, typography: 114,
   alert: 120, tooltip: 121, toast: 122
 };
 const sectionFor = {
   titlebar: "titlebars", button: "buttons",
   input: "fields", search: "fields", textarea: "fields", select: "fields", field: "fields",
-  checkbox: "choices", "radio-group": "choices", switch: "choices",
-  sidebar: "navigation", "list-card": "navigation", tabs: "navigation", breadcrumb: "navigation", pagination: "navigation",
+  checkbox: "choices", radio: "choices", "radio-group": "choices", switch: "choices",
+  "primary-navigation-item": "navigation", sidebar: "navigation", "list-card": "navigation", tabs: "navigation", breadcrumb: "navigation", pagination: "navigation",
   avatar: "data-display", badge: "data-display", card: "data-display", item: "data-display", table: "data-display", "data-table": "data-display", progress: "data-display", empty: "data-display",
   accordion: "disclosure", collapsible: "disclosure", "navigation-menu": "disclosure", menubar: "disclosure", separator: "disclosure",
   dialog: "overlays", "alert-dialog": "overlays", "semi-modal": "overlays", popover: "overlays", "hover-card": "overlays", "context-menu": "overlays", "dropdown-menu": "overlays",
   label: "form-plus", combobox: "form-plus", "native-select": "form-plus", slider: "form-plus", "input-otp": "form-plus", kbd: "form-plus",
   chart: "loading-data", calendar: "loading-data", "date-picker": "loading-data", "time-picker": "loading-data",
-  attachment: "specialized", carousel: "specialized",
+  attachment: "specialized", carousel: "specialized", "aspect-ratio": "specialized", bubble: "specialized", typography: "specialized",
   alert: "feedback", tooltip: "feedback", toast: "feedback"
 };
-const coreIds = new Set(["button", "input", "search", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio-group", "switch", "tabs", "accordion", "collapsible", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast", "attachment", "carousel"]);
+const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "tabs", "accordion", "collapsible", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast", "attachment", "carousel"]);
 const fillIds = new Set(["input", "search", "textarea", "sidebar", "list-card", "table", "data-table", "accordion", "collapsible"]);
 const overlayIds = new Set(["dialog", "alert-dialog", "semi-modal", "popover", "hover-card", "context-menu", "dropdown-menu"]);
 const behaviorMap = {
   button: ["click", "keyboard-activation", "disabled"],
   input: ["input", "focus", "disabled", "error"],
   search: ["input", "clear", "focus", "disabled"],
+  radio: ["select", "keyboard-activation", "disabled"],
   textarea: ["input", "focus", "disabled", "error"],
+  "primary-navigation-item": ["select", "keyboard-activation", "disabled"],
   sidebar: ["select", "keyboard-activation", "disabled"],
   "list-card": ["select", "keyboard-activation", "disabled"],
   tabs: ["select", "arrow-keys", "focus"],
@@ -75,7 +77,8 @@ const behaviorMap = {
   "semi-modal": ["open", "confirm", "cancel", "close", "escape", "focus-return", "no-outside-dismiss", "modal-focus-trap"],
   calendar: ["select", "arrow-keys"],
   "date-picker": ["open", "select", "escape"],
-  "time-picker": ["open", "select", "escape"]
+  "time-picker": ["open", "select", "escape"],
+  attachment: ["open", "select", "preview", "download", "escape", "outside-click", "disabled"]
 };
 
 // The legacy gallery is the visual authority, but its section names do not
@@ -84,8 +87,8 @@ const behaviorMap = {
 const legacyVisualGroup = {
   titlebar: "titlebars", button: "buttons",
   input: "fields", search: "fields", textarea: "fields", select: "fields", field: "fields",
-  checkbox: "choices", "radio-group": "choices", switch: "choices",
-  sidebar: "navigation", "list-card": "navigation", tabs: "navigation", breadcrumb: "navigation", pagination: "navigation",
+  checkbox: "choices", radio: "choices", "radio-group": "choices", switch: "choices",
+  "primary-navigation-item": "navigation", sidebar: "navigation", "list-card": "navigation", tabs: "navigation", breadcrumb: "navigation", pagination: "navigation",
   avatar: "data-display", badge: "data-display", card: "data-display", item: "data-display", table: "data-display", "data-table": "data-display", progress: "data-display", empty: "data-display",
   accordion: "disclosure", collapsible: "disclosure", "navigation-menu": "disclosure", menubar: "disclosure", separator: "disclosure",
   dialog: "overlays", "alert-dialog": "overlays", "semi-modal": "overlays", popover: "overlays", "hover-card": "overlays", "context-menu": "overlays", "dropdown-menu": "overlays",
@@ -97,18 +100,20 @@ const legacyVisualGroup = {
 
 const typographyRoles = {
   button: ["label:body-l", "small-label:body-m"],
-  input: ["value:body-l", "placeholder:body-l", "label:body-m", "help:caption-l"],
+  input: ["value:body-l", "placeholder:body-l", "label:body-m", "help:body-s"],
   search: ["value:body-l", "placeholder:body-l"],
-  textarea: ["value:body-l", "placeholder:body-l", "label:body-m", "help:caption-l"],
+  radio: ["label:body-m"],
+  textarea: ["value:body-l", "placeholder:body-l", "label:body-m", "help:body-s"],
+  "primary-navigation-item": [],
   sidebar: ["label:body-l", "count:body-m"],
   "list-card": ["title:title-s", "description:body-m", "meta:body-m"],
   table: ["header:body-m", "cell:body-l"],
   "data-table": ["header:body-m", "cell:body-l"],
   tabs: ["label:body-m"],
-  attachment: ["title:subtitle-s", "content:body-m", "description:body-s", "help:caption-l"],
+  attachment: ["title:subtitle-s", "content:body-m", "description:body-s", "help:body-s"],
   alert: ["content:subtitle-s"],
   tooltip: ["content:body-l"],
-  badge: ["label:caption-l"]
+  badge: ["label:body-s"]
 };
 
 const explicitStates = {
@@ -130,8 +135,10 @@ const iconAliases = {
   select: ["navigation/chevron-down"],
   field: [],
   checkbox: ["choice/check"],
+  radio: [],
   "radio-group": ["action/check"],
   switch: ["action/check"],
+  "primary-navigation-item": ["navigation/grid", "field/calendar", "navigation/mail-unread", "action/settings"],
   sidebar: ["navigation/grid", "navigation/recent", "action/more"],
   "list-card": ["navigation/list"],
   tabs: ["navigation/list"],
@@ -167,7 +174,7 @@ const iconAliases = {
   calendar: ["field/calendar"],
   "date-picker": ["field/calendar"],
   "time-picker": ["field/clock"],
-  attachment: ["action/download"],
+  attachment: ["navigation/chevron-down"],
   carousel: ["navigation/chevron-down"],
   alert: ["status/info", "status/success", "status/warning", "status/danger", "status/neutral", "action/close"],
   tooltip: ["status/info"],
@@ -217,6 +224,10 @@ const coreSpecimens = {
     { id: "white-surface", variant: "default", state: "default", surface: "white" },
     { id: "gray-surface", variant: "default", state: "default", surface: "gray" }
   ],
+  radio: [
+    { id: "unselected", variant: "unselected", state: "default", checked: false },
+    { id: "selected", variant: "selected", state: "selected", checked: true }
+  ],
   item: [
     { id: "single-text-arrow", variant: "single-line", state: "default", lines: 1, trailing: "text-arrow" },
     { id: "double-icon", variant: "double-line", state: "default", lines: 2, trailing: "icon" },
@@ -225,6 +236,7 @@ const coreSpecimens = {
     { id: "single-switch", variant: "single-line", state: "default", lines: 1, trailing: "switch" },
     { id: "single-notification-arrow", variant: "single-line", state: "default", lines: 1, trailing: "notification-arrow" }
   ],
+  "primary-navigation-item": [{ id: "default", variant: "default", state: "default", surface: "white" }],
   sidebar: [{ id: "default", variant: "default", state: "default", surface: "white" }],
   "list-card": [
     { id: "single-text-arrow", variant: "single-line", state: "default", lines: 1, trailing: "text-arrow" },
@@ -286,15 +298,139 @@ for (const component of registry.components) {
   component.sizing = overlayIds.has(component.id) ? "overlay" : fillIds.has(component.id) ? "fill" : "intrinsic";
   component.allowedStates = explicitStates[component.id] ?? component.states ?? ["default", "hover", "focus", "disabled"];
   component.behaviors = behaviorMap[component.id] ?? ["focus", "disabled"];
-  component.textRoles = typographyRoles[component.id] ?? ["title:title-s", "content:body-l", "description:body-m", "help:caption-l"];
-  component.iconAliases = iconAliases[component.id] ?? [];
-  component.iconSlots = component.id === "pagination"
-    ? [
-        { slot: "previous", alias: "navigation/back", displaySizes: [16, 20, 24], kind: "outline" },
-        { slot: "next", alias: "navigation/forward", displaySizes: [16, 20, 24], kind: "outline" }
-      ]
-    : component.iconAliases.map((alias) => ({ alias, displaySizes: ["accordion", "collapsible"].includes(component.id) ? [20] : [16, 20, 24], kind: "auto" }));
-  component.iconSemantic = component.iconAliases[0] ?? null;
+  component.textRoles = typographyRoles[component.id] ?? ["title:title-s", "content:body-l", "description:body-m", "help:body-s"];
+  if (component.id === "primary-navigation-item") {
+    component.tokenRoles = (component.tokenRoles ?? []).map((role) => role === "icon-size-md" ? "icon-size-lg" : role);
+  }
+ component.iconAliases = iconAliases[component.id] ?? [];
+  const iconKind = "regular";
+ component.iconSlots = component.id === "pagination"
+   ? [
+       { slot: "previous", alias: "navigation/back", displaySizes: [16, 20, 24], kind: "regular" },
+       { slot: "next", alias: "navigation/forward", displaySizes: [16, 20, 24], kind: "regular" }
+     ]
+      : component.iconAliases.map((alias) => ({ alias, displaySizes: component.id === "primary-navigation-item" ? [24] : ["accordion", "collapsible"].includes(component.id) ? [20] : [16, 20, 24], kind: iconKind }));
+ component.iconSemantic = component.iconAliases[0] ?? null;
+  if (component.id === "primary-navigation-item") {
+    component.slots = ["icon", "tooltip"];
+    component.structuralAxes = {
+      placement: ["primary-navigation-shell"],
+      alignment: ["bottom"],
+      presentation: ["icon-only"],
+    };
+    component.slotContracts = {
+      ...component.slotContracts,
+      icon: { ...component.slotContracts?.icon, cardinality: "1", scope: "primary-navigation-item", displaySize: "24px", kind: "regular", source: "lucide" }
+    };
+  }
+  if (component.id === "semi-modal") {
+    component.slots = ["title", "description", "content", "actions", "close"];
+    component.iconAliases = ["action/close"];
+    component.iconSlots = [{ slot: "close", alias: "action/close", displaySizes: [20], kind: "regular" }];
+    component.slotContracts = {
+      ...component.slotContracts,
+      close: { cardinality: "1", scope: "semi-modal-header", control: "icon-button", iconAlias: "action/close", iconSize: "20px", trailingInsetToken: "space/5", trailingInset: "16px" }
+    };
+  }
+ if (component.id === "search") {
+    component.variants = ["default", "focused", "with-value", "advanced-search"];
+    component.props = ["value", "defaultValue", "placeholder", "disabled", "state", "surface", "advancedSearch", "advancedSearchLabel", "onAdvancedSearch", "onChange", "onClear"];
+    component.slots = ["leading", "value", "clear", "advanced-search"];
+    component.slotContracts = {
+      ...component.slotContracts,
+      "advanced-search": {
+        cardinality: "0..1",
+        scope: "search-query-builder",
+        defaultPlacement: "trailing-after-clear",
+        control: "small-text-button",
+        variant: "ghost",
+        size: "small",
+        mode: "text",
+        textColorToken: "color.text-muted",
+        trailingInsetToken: "space/2",
+        requiresAccessibleName: true,
+        interaction: "open-advanced-search-layer",
+        coexistenceOrder: ["clear", "advanced-search"]
+      }
+    };
+    component.behaviors = ["input", "clear", "advanced-search", "focus", "disabled"];
+  }
+  if (component.id === "attachment") {
+    component.iconSlots = [{ slot: "menu-trigger", alias: "navigation/chevron-down", displaySizes: [20], kind: "regular" }];
+    component.props = ["type", "name", "meta", "leading", "content", "actions", "disabled", "onAction", "onPreview", "onDownload"];
+    component.slots = ["leading", "title", "content", "description", "actions", "menu-trigger", "menu"];
+    component.slotContracts = {
+      actions: {
+        cardinality: "0..1",
+        scope: "attachment-surface",
+        defaultPlacement: "trailing-end",
+        control: "attachment-action-menu",
+        interaction: "open-attachment-action-menu",
+        menuItems: ["preview", "download"]
+      },
+      "menu-trigger": {
+        cardinality: "0..1",
+        scope: "attachment-action-menu",
+        defaultVisibility: "visible",
+        iconAlias: "navigation/chevron-down",
+        iconSize: "20px",
+        ariaHasPopup: "menu"
+      },
+      menu: {
+        cardinality: "0..1",
+        scope: "attachment-action-menu",
+        role: "menu",
+        items: ["preview", "download"],
+        closeOn: ["escape", "outside-click", "select"]
+      }
+    };
+  }
+  if (component.id === "titlebar") {
+    component.variants = ["small", "medium", "large", "xlarge"];
+    component.structuralAxes = {
+      size: ["small", "medium", "large", "xlarge"],
+      layout: ["standalone", "two-column", "three-column"],
+      paneRole: ["global", "primary-navigation", "secondary-pane", "final-pane"]
+    };
+    component.props = ["label", "paneTitle", "size", "layout", "paneRole", "disabled", "state", "mainDetailActions", "onMainDetailAction", "onAction", "className"];
+    component.slots = ["leading", "label", "main-content-title", "main-detail-actions", "actions"];
+    component.slotContracts = {
+      ...component.slotContracts,
+      "main-content-title": {
+        cardinality: "0..1",
+        scope: "main-content-pane-global",
+        activeWhen: { layout: "two-column", paneRole: "final-pane" },
+        defaultPlacement: "final-pane-leading-slot",
+        leadingInsetToken: "layout/main-title-leading-padding"
+      },
+      "main-detail-actions": {
+        ...component.slotContracts?.["main-detail-actions"],
+        cardinality: "0..n",
+        scope: "main-detail-pane-global",
+        activeWhen: { layout: "three-column", paneRole: "final-pane" },
+        defaultPlacement: "final-pane-leading-slot",
+        layout: "compact-horizontal-group",
+        leadingInsetToken: "layout/main-detail-action-leading-padding",
+        allowedButtonVariants: ["ghost"],
+        allowedButtonTypes: ["icon", "icon-text-ghost"],
+        forbidden: ["page-global-primary", "card-action", "field-action", "section-action", "selection-action", "inline-action"]
+      }
+    };
+    component.dividerRules = {
+      default: "no-horizontal-divider",
+      standalone: "no-horizontal-divider",
+      "two-column": {
+        "primary-navigation": "no-horizontal-divider",
+        "final-pane": "no-horizontal-divider"
+      },
+      "three-column": {
+        "primary-navigation": "no-horizontal-divider",
+        "secondary-pane": "no-horizontal-divider",
+        "final-pane": "bottom-divider"
+      },
+      verticalPaneDividers: "owned-by-layout-and-continuous"
+    };
+  }
   if (component.id === "dialog") {
     component.variants = ["single", "double"];
     component.states = ["closed", "open"];
@@ -337,6 +473,41 @@ for (const component of registry.components) {
     : "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。";
 }
 
+const comparisonGroups = (registry.registryPolicy?.comparisonGroups ?? []).map((group) => ({
+  ...group,
+  componentIds: [...(group.componentIds ?? [])]
+}));
+const comparisonGroupById = new Map(comparisonGroups.map((group) => [group.id, group]));
+for (const [id, label] of sections) {
+  if (!comparisonGroupById.has(id)) {
+    const group = { id, label, componentIds: [] };
+    comparisonGroups.push(group);
+    comparisonGroupById.set(id, group);
+  }
+}
+const registeredIds = new Set(registry.components.map((component) => component.id));
+for (const group of comparisonGroups) group.componentIds = group.componentIds.filter((componentId) => registeredIds.has(componentId));
+for (const component of registry.components) {
+  if (!comparisonGroups.some((group) => group.componentIds.includes(component.id))) {
+    comparisonGroupById.get(component.category)?.componentIds.push(component.id);
+  }
+}
+const preferredComparisonOrder = {
+  navigation: ["primary-navigation-item", "tabs", "list-card"],
+  disclosure: ["breadcrumb", "accordion", "collapsible", "navigation-menu", "menubar", "separator", "sidebar", "item"],
+  fields: ["input", "search", "textarea", "select"],
+  "form-plus": ["field", "label", "combobox", "native-select", "slider", "input-otp", "kbd"]
+};
+for (const [groupId, preferredIds] of Object.entries(preferredComparisonOrder)) {
+  const group = comparisonGroupById.get(groupId);
+  if (!group) continue;
+  const current = new Set(group.componentIds);
+  group.componentIds = [
+    ...preferredIds.filter((componentId) => current.has(componentId)),
+    ...group.componentIds.filter((componentId) => !preferredIds.includes(componentId))
+  ];
+}
+
 registry.registryPolicy = {
   ...(registry.registryPolicy ?? {}),
   visualAuthority: "skill-canonical",
@@ -344,6 +515,7 @@ registry.registryPolicy = {
   readyWhen: "all readinessDimensions are true",
   runtimeRule: "只显示结构性 specimens；hover/pressed/focus/open/close 由真实组件交互触发",
   categoryOrder: sections.map(([id]) => id),
+  comparisonGroups,
   partialMustNotBeUsedFor: ["strict-pixso-component-parity", "cross-framework-component-claim"]
 };
 

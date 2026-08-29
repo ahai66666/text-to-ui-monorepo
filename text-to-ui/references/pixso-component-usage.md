@@ -4,14 +4,15 @@ Use this reference whenever a visual-first task creates a page from the “鸿�
 
 ## Runtime Contract
 
-1. Read `assets/design-system/pixso-component-registry.json`.
-2. Read `assets/design-system/pixso-component-specs.json`.
-3. Read Pixso’s current reusable components once.
-4. Match components by exact registered name and resolve the current document GUID at runtime.
-5. Create instances from the resolved component GUIDs. Never persist GUIDs in the Skill because rebuilding a component can change its GUID.
-6. Apply the registered `placementWidth` rule (`fill`, `hug`, or `fixed`) to the instance. Do not copy the source component's review width blindly.
-7. Change only instance-safe content and dimensions required by the page. Do not detach an instance or redraw its internal icon, label, fill, padding, gap, radius, or standard height.
-8. If a registered component is missing, stop that component path and report the missing exact name. Do not silently create a visually similar local frame.
+1. Read the active profile in `assets/design-system/mapping-registry.json`.
+2. Read the profile's `assets/design-system/pixso-component-registry.json` projection.
+3. Read the profile's `assets/design-system/pixso-component-specs.json` projection.
+4. Read Pixso’s current reusable components once.
+5. Match components by exact registered name and resolve the current document GUID at runtime.
+6. Create instances from the resolved component GUIDs. Never persist GUIDs in the Skill because rebuilding a component can change its GUID.
+7. Apply the registered `placementWidth` rule (`fill`, `hug`, or `fixed`) to the instance. Do not copy the source component's review width blindly.
+8. Change only instance-safe content and dimensions required by the page. Do not detach an instance or redraw its internal icon, label, fill, padding, gap, radius, or standard height.
+9. If a registered component or a declared HTML slot is missing, stop that component path and report the missing exact name/slot. Run the HTML contract → Pixso component-library plan against the profile's target page (normally `NewComponents`); do not silently create a visually similar local frame or append a neighboring control to imitate the slot.
 
 Component resolution uses two page phases:
 
@@ -178,3 +179,17 @@ successful read-back remains a literal-style finding, not parity.
 ## Missing Component Rule
 
 A missing registered component is a library defect, not permission to improvise. Record the exact name, continue only with unaffected regions, and repair the library through the component-maintenance workflow before claiming reusable parity.
+### Titlebar `main-detail-actions`：两种按钮模式必须分开
+
+第三栏标题栏的 `main-detail-actions` 是一个紧凑的横向操作槽位，可以同时出现两类动作，但不能把它们登记成同一个 Button：
+
+- 仅图标：`buttonType: "icon"` → `mode: "icon"` → `Icon Button/Ghost/Default`，只允许 `icon` slot。
+- 图标加文字：`buttonType: "icon-text-ghost"` → `mode: "icon-text"` → `Icon Text Button/Ghost/Default`，必须同时提供 `icon` 与 `label` slot。
+
+窗口最小化、最大化、关闭也属于 icon-only，但它们在 Titlebar 的 `actions` 槽位，不应混入 `main-detail-actions`。HTML、React、Vue 和 Pixso Scene 都必须输出上述逻辑名；只写 `Button/Icon/Default` 或只看 CSS 类名不能作为 Pixso 组件映射依据。
+
+#### 业务操作溢出规则
+
+当第三栏标题栏包含一组可见业务操作时，先为整组选择一种模式：要么所有业务操作都是 `Icon Button/Ghost/Default`，要么所有业务操作都是 `Icon Text Button/Ghost/Default`；同一组不能混用纯图标和图标加文字。若选择图标加文字，每个实例都必须同时提供 `icon` 与 `label` 两个命名 slot。操作组末尾必须保留一个 `Icon Button/Ghost/Default` 作为 `more` 溢出触发器，图标语义为 `action/more`；它是唯一允许的模式例外和固定末尾锚点。
+
+空间不足时使用 `actionOverflow: { strategy: "collapse-to-more", fit: "available-width" }`：仅将前面的业务操作按原顺序折叠进更多菜单，不改变数据顺序、不删除操作，并保持这组业务操作原先选择的模式；`more` 本身永不折叠。归入 `actions` 槽位的归档、删除、标记未读、信息和窗口控制等系统操作不参与这条业务溢出规则。静态 Pixso 画板只显示当前可见按钮和 `more` 触发器，不额外生成打开后的菜单状态。

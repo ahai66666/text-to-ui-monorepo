@@ -6,7 +6,7 @@ temporary file that can remain hidden while Pixso is being generated.
 ## Required order
 
 1. Write the draft to the approved delivery directory, normally
-   `/Users/zhaobohai/Desktop/资源管理/我的代码仓/生成产品html/<slug>/index.html`.
+   `<workspace>/outputs/<slug>/index.html` (or the user-configured output root).
    Keep local CSS, SVG, and image references relative to that directory.
 2. Run `node scripts/verify-html-artifact.mjs <absolute-html-path>` and fix
    every missing local asset before browser verification.

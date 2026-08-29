@@ -1,6 +1,6 @@
 # shadcn Adapter
 
-Use this reference for new reusable projects or when adapting shadcn/ui / shadcn-vue components to the project design system. In this repository shadcn is an optional behavior source, never the visual source of truth.
+Use this reference for new reusable Next.js projects or when adapting shadcn/ui components to the project design system.
 
 ## Component Baseline
 
@@ -15,17 +15,6 @@ Initialize a new Next.js project with:
 ```bash
 npx shadcn@latest init --preset b7ClMfrGK --template next
 ```
-
-For a React Vite adapter, use the approved project command:
-
-```bash
-pnpm dlx shadcn@latest init --preset b1aIcEaeG --base aria --template vite
-```
-
-Vue is initialized separately with the shadcn-vue CLI; do not apply the React
-preset or generated React files to the Vue package. Both adapters must consume
-`@text-to-ui/component-styles` and the canonical Token package before they can
-be registered as `ready`.
 
 Use this command only for a new project. For an existing project, inspect `components.json`, global CSS, installed components, dependencies, and local edits before deciding whether to add components or apply a preset.
 
@@ -84,7 +73,7 @@ Define missing project semantics before overriding `secondary`, `secondary-foreg
 - Keep state behavior and accessibility attributes from the shadcn component source.
 - Add components on demand and preserve local edits when checking registry updates.
 - Adapt Button at component-variant level: standard is 40px, small is 28px, and no Large variant is defined. Both approved sizes expose Primary, Secondary, Ghost, and Danger. Danger uses the Secondary background with `function/danger/100` text, while Ghost uses brand-colored text on a transparent background. Every variant supports Disabled by applying `--state-disabled-opacity` (40%) once to the whole control.
-- Adapt Icon + Text Button separately: it is 40px only and exposes Primary, Secondary, and Ghost. Reuse Primary and Secondary Button colors; override Ghost content to `--color-icon-text-button-ghost-content`. Use the vendored HarmonyOS Symbol SVG assets, set the nested icon box to `--icon-size-md`, preserve the 24 × 24 source viewBox, and render the official Regular filled path with `currentColor`. Do not apply Lucide geometry or a CSS stroke width.
+- Adapt Icon + Text Button separately: it is 40px only and exposes Primary, Secondary, and Ghost. Reuse Primary and Secondary Button colors; override Ghost content to `--color-icon-text-button-ghost-content`. Resolve the icon through the pinned Lucide semantic alias, set the nested icon box to `--icon-size-md`, preserve the 24 × 24 source viewBox, and keep the project Regular stroke rule.
 - Adapt Icon Button as a 40px square control whose default variant is Ghost. The unspecified/default variant uses a transparent resting background and `--color-icon`; map Secondary only when explicitly requested. All nested HarmonyOS icon library assets use `--icon-size-md`. Do not install or substitute Lucide unless the user explicitly approves it.
 - Adapt Dialog and AlertDialog as the fixed 400px Dialog family: 56px centered Title_S header with the shared 8px Semi-modal top inset, no top-right close control, 24px content padding, and one full-width or two equal-width 40px actions. Preserve the Radix focus and announcement foundations, but do not keep shadcn's default max-width, close placement, padding, or action alignment.
 - Implement Semi-modal as a product composition with exact 480px, 640px, and 800px sizes; White and Gray surface variants; a 56px left-title header with the existing Ghost Icon Button close control; content padding of X 24px and Y 0px; and an 80px right-aligned action footer. Compose its body only from existing Input, Search, Select, Textarea, Button, and Icon Button components; apply White/Gray through their existing surface context rather than creating modal-local styles. Treat `modal` versus `non-modal` as behavior passed to the underlying primitive, never as a color or size token. Non-modal is the default.

@@ -1,0 +1,24 @@
+:root {
+  --task-list-width: var(--layout-secondary-pane-width);
+  --minimum-window-width: var(--layout-window-min-width);
+}
+
+.task-workbench {
+  display: grid;
+  grid-template-columns: var(--layout-sidebar-width) var(--task-list-width) 1fr;
+  min-width: var(--minimum-window-width);
+  min-height: var(--layout-frame-height);
+  color: var(--color-text);
+  background: var(--color-bg-subtle);
+  font-family: var(--font-sans);
+}
+
+[data-ui-region] {
+  padding: var(--space-5);
+  border-inline-end: var(--space-1) solid var(--color-border);
+}
+
+.task-list {
+  display: grid;
+  gap: var(--space-3);
+}

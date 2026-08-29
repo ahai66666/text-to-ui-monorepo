@@ -46,6 +46,9 @@
   --height-tab-vertical: var(--size-11);
   --height-menu-item: var(--size-11);
   --height-list-item: var(--size-11);
+  --height-list-item-single-line: var(--size-13);
+  --height-list-item-double-line: var(--size-14);
+  --height-list-item-triple-line: var(--size-17);
   --height-list-heading: var(--size-11);
   --height-tree-item: var(--size-11);
   --height-button: var(--size-11);

@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "aliases": {
-    "primary-navigation": ["sidebar", "navigation", "nav-item"],
+    "primary-navigation": ["primary-navigation-item", "primary-nav-item", "level-one-navigation"],
+    "primary-navigation-item": ["primary-navigation", "primary-nav-item", "level-one-navigation"],
     "list-item": ["list-card", "list", "item"],
     "icon-button": ["button"],
     "card": ["card", "list-card"],

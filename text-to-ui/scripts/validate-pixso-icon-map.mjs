@@ -15,6 +15,8 @@ const failures = [];
 if (map.sourceArtboard !== 24) failures.push("sourceArtboard must be 24");
 const expectedStrokeWidths = {"16": 1, "20": 1.25, "24": 1.5};
 if (map.rendering?.lucide?.strokeWidth !== 1.5) failures.push("lucide strokeWidth must be 1.5 on the 24x24 source artboard");
+if (map.rendering?.lucide?.strokeWeightFormula !== "supported display sizes use strokeWidthByDisplaySize[displaySize]; other approved sizes use 1.5 * displaySize / sourceArtboard") failures.push("strokeWeightFormula must use the authoritative display-size table");
+if (map.rendering?.hotZone?.alignment !== "CENTER" || map.rendering?.hotZone?.axes !== "BOTH") failures.push("icon hotZone must be centered on both axes");
 for (const [size, width] of Object.entries(expectedStrokeWidths)) {
   if (Number(map.rendering?.lucide?.strokeWidthByDisplaySize?.[size]) !== width) {
     failures.push(`lucide strokeWidthByDisplaySize.${size} must be ${width}`);

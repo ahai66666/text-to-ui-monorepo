@@ -1,0 +1,97 @@
+{
+  "$schema": "./pattern-contracts.schema.json",
+  "schemaVersion": 1,
+  "kind": "text-to-ui-pattern-contracts",
+  "authority": "pattern-contract",
+  "patterns": [
+    {
+      "id": "pattern-a-two-pane",
+      "label": "Pattern A: Two-Pane Navigation + Content",
+      "workflow": "navigation-to-content",
+      "compositionOnly": true,
+      "paneOrder": ["primary-navigation", "main-content"],
+      "minimumWindow": { "width": 960, "height": 640 },
+      "titleLayer": { "global": true, "heightToken": "layout/titlebar-height", "segments": ["primary-navigation", "main-content"] },
+      "regions": [
+        { "id": "primary-navigation", "width": { "mode": "fixed", "token": "layout/sidebar-expanded" }, "height": { "mode": "fill" }, "insetOwner": "primary-navigation-shell", "scrollOwner": "primary-navigation", "surface": "subtle", "dividerEdges": ["right"] },
+        { "id": "main-content", "width": { "mode": "fill" }, "height": { "mode": "fill" }, "insetOwner": "main-content-shell", "scrollOwner": "main-content", "surface": "surface", "dividerEdges": [] }
+      ],
+      "slots": [
+        { "id": "primary-navigation-shell", "owner": "primary-navigation", "cardinality": "1" },
+        { "id": "global-title-layer", "owner": "page", "cardinality": "1" },
+        { "id": "global-primary-action", "owner": "primary-navigation", "cardinality": "0..1" },
+        { "id": "main-content-title", "owner": "main-content", "cardinality": "0..1" }
+      ],
+      "resizeBehavior": "fixed-navigation-flexible-content",
+      "rendererPolicy": { "web": "shared-resolved-pattern", "pixso": "native-frame-composition" },
+      "references": ["references/harmonyos-layout-patterns.md#pattern-a-two-pane-navigation--content", "references/layout-system.md", "references/pc-framework-layout-gate.md"]
+    },
+    {
+      "id": "pattern-b-three-pane",
+      "label": "Pattern B: Three-Pane Navigation + List + Detail",
+      "workflow": "repeated-list-to-detail",
+      "compositionOnly": true,
+      "paneOrder": ["primary-navigation", "secondary-list", "main-detail"],
+      "minimumWindow": { "width": 1100, "height": 720 },
+      "titleLayer": { "global": true, "heightToken": "layout/titlebar-height", "segments": ["primary-navigation", "secondary-list", "main-detail"] },
+      "regions": [
+        { "id": "primary-navigation", "width": { "mode": "fixed", "token": "layout/sidebar-expanded" }, "height": { "mode": "fill" }, "insetOwner": "primary-navigation-shell", "scrollOwner": "primary-navigation", "surface": "subtle", "dividerEdges": ["right"] },
+        { "id": "secondary-list", "width": { "mode": "fixed", "token": "layout/secondary-pane" }, "height": { "mode": "fill" }, "insetOwner": "secondary-list-shell", "scrollOwner": "secondary-list", "surface": "surface", "dividerEdges": ["left", "right"] },
+        { "id": "main-detail", "width": { "mode": "fill", "min": 500 }, "height": { "mode": "fill" }, "insetOwner": "main-detail-shell", "scrollOwner": "main-detail", "surface": "surface", "dividerEdges": [] }
+      ],
+      "slots": [
+        { "id": "primary-navigation-shell", "owner": "primary-navigation", "cardinality": "1" },
+        { "id": "global-title-layer", "owner": "page", "cardinality": "1" },
+        { "id": "global-primary-action", "owner": "primary-navigation", "cardinality": "0..1" },
+        { "id": "main-detail-actions", "owner": "main-detail", "cardinality": "0..n", "allowedComponentModes": ["icon", "icon-text-ghost"], "overflow": "more-menu" }
+      ],
+      "resizeBehavior": "fixed-panes-flexible-final-pane",
+      "rendererPolicy": { "web": "shared-resolved-pattern", "pixso": "native-frame-composition" },
+      "references": ["references/harmonyos-layout-patterns.md#pattern-b-three-pane-navigation--list--detail", "references/layout-system.md", "references/pc-framework-layout-gate.md"]
+    },
+    {
+      "id": "pattern-c-tool-workspace",
+      "label": "Pattern C: Navigation + Tool Workspace",
+      "workflow": "navigation-to-tool-canvas",
+      "compositionOnly": true,
+      "paneOrder": ["primary-navigation", "tool-workspace"],
+      "minimumWindow": { "width": 1024, "height": 720 },
+      "titleLayer": { "global": true, "heightToken": "layout/titlebar-height", "segments": ["primary-navigation", "tool-workspace"] },
+      "regions": [
+        { "id": "primary-navigation", "width": { "mode": "fixed", "token": "layout/sidebar-expanded" }, "height": { "mode": "fill" }, "insetOwner": "primary-navigation-shell", "scrollOwner": "primary-navigation", "surface": "subtle", "dividerEdges": ["right"] },
+        { "id": "tool-workspace", "width": { "mode": "fill" }, "height": { "mode": "fill" }, "insetOwner": "tool-workspace-shell", "scrollOwner": "tool-workspace", "surface": "surface", "dividerEdges": [] }
+      ],
+      "slots": [
+        { "id": "primary-navigation-shell", "owner": "primary-navigation", "cardinality": "1" },
+        { "id": "global-title-layer", "owner": "page", "cardinality": "1" },
+        { "id": "workspace-toolbar", "owner": "tool-workspace", "cardinality": "1" }
+      ],
+      "resizeBehavior": "fixed-navigation-flexible-workspace",
+      "rendererPolicy": { "web": "shared-resolved-pattern", "pixso": "native-frame-composition" },
+      "references": ["references/harmonyos-layout-patterns.md#pattern-c-navigation--tool-workspace", "references/layout-system.md", "references/pc-framework-layout-gate.md"]
+    },
+    {
+      "id": "pattern-d-inspector",
+      "label": "Pattern D: Optional Inspector",
+      "workflow": "contextual-inspection",
+      "compositionOnly": true,
+      "extends": ["pattern-b-three-pane", "pattern-c-tool-workspace"],
+      "paneOrder": ["primary-navigation", "secondary-or-canvas", "main-content", "inspector"],
+      "minimumWindow": { "width": 1280, "height": 720 },
+      "titleLayer": { "global": true, "heightToken": "layout/titlebar-height", "segments": ["primary-navigation", "secondary-or-canvas", "main-content", "inspector"] },
+      "regions": [
+        { "id": "primary-navigation", "width": { "mode": "fixed", "token": "layout/sidebar-expanded" }, "height": { "mode": "fill" }, "insetOwner": "primary-navigation-shell", "scrollOwner": "primary-navigation", "surface": "subtle", "dividerEdges": ["right"] },
+        { "id": "secondary-or-canvas", "width": { "mode": "fill" }, "height": { "mode": "fill" }, "insetOwner": "base-pattern", "scrollOwner": "base-pattern", "surface": "inherit", "dividerEdges": [] },
+        { "id": "main-content", "width": { "mode": "fill" }, "height": { "mode": "fill" }, "insetOwner": "main-content-shell", "scrollOwner": "main-content", "surface": "surface", "dividerEdges": ["right"] },
+        { "id": "inspector", "width": { "mode": "fixed", "token": "layout/sidebar-wide" }, "height": { "mode": "fill" }, "insetOwner": "inspector-shell", "scrollOwner": "inspector", "surface": "surface", "dividerEdges": ["left"] }
+      ],
+      "slots": [
+        { "id": "global-title-layer", "owner": "page", "cardinality": "1" },
+        { "id": "inspector-toggle", "owner": "main-content", "cardinality": "1", "allowedComponentModes": ["icon", "icon-text-ghost"], "overflow": "none" }
+      ],
+      "resizeBehavior": "base-pattern-plus-collapsible-inspector",
+      "rendererPolicy": { "web": "shared-resolved-pattern", "pixso": "native-frame-composition" },
+      "references": ["references/harmonyos-layout-patterns.md#pattern-d-optional-inspector", "references/layout-system.md", "references/pc-framework-layout-gate.md"]
+    }
+  ]
+}

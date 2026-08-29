@@ -1,166 +1,294 @@
 ---
 name: text-to-ui
-description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Use for text to ui, design-system reuse, page generation, Pixso/HTML conversion, dashboards, workbenches, settings, content tools, editors, and analysis screens. Always choose a canonical PC framework layout first, then resolve every UI region in this strict order: real target-framework component, matching canonical contract, and only then Token-based custom work. Produce an early interactive browser preview before release validation.'
+description: 'Turn text requests into task-informed HarmonyOS PC desktop tools through HTML-first, Pixso-first, or direct-HTML workflows. Use for page generation, design-system reuse, Pixso/HTML conversion, dashboards, workbenches, settings, editors, and analysis screens.'
 ---
 
 # Text to UI
 
-Build HarmonyOS PC tools by connecting requirements, framework Patterns, Tokens, semantic icons, native HTML/React/Vue components, Pixso mapping, and browser validation. Treat the Skill as the orchestrator; the production components remain in the Monorepo packages.
+Build HarmonyOS PC interfaces by routing each request to one small workflow,
+then loading only the references named by that workflow. Production components
+and Tokens live in the Monorepo; this Skill orchestrates them.
 
-## Non-negotiable source order
+## 1. Choose exactly one route
 
-For every visible UI region:
+Classify before reading detailed references. Run the route resolver when useful:
 
-1. Import the real target-framework component when it exists.
-2. Otherwise implement the matching canonical component contract.
-3. Only when both searches miss, create page-owned UI with shared Tokens, semantic icons, and HarmonyOS PC rules.
+```bash
+node scripts/resolve-workflow-route.mjs --route <route-id>
+```
 
-Record the source level and evidence in `component-usage.json`. Lookalike markup, copied DOM/CSS, screenshots, matching class names, and `data-component` do not count as reuse. Components fill framework slots; they never invent or reshape the shell.
+| Request | Route ID | Read next |
+| --- | --- | --- |
+| Import an already approved/rendered HTML page into Pixso | `existing-html-to-pixso` | `references/routes/existing-html-to-pixso.md` |
+| Create or materially redesign a page/flow | `new-page` | `references/routes/new-page.md` |
+| Exact change to an approved artifact | `micro-revision` | `references/routes/micro-revision.md` |
+| Build, repair, or synchronize Pixso components | `pixso-component-library` | `references/routes/pixso-component-library.md` |
+| Diagnose a failed converter/import run | `converter-diagnosis` | `references/routes/converter-diagnosis.md` |
 
-## Fast entry: locate, route, query
+Do not read another route or a broad Pixso reference unless the chosen route
+explicitly sends you there. `references/routes/index.json` is the maintained
+machine-readable directory.
 
-Do this before broad reference reading or page code:
+### Existing-output shortcut
 
-1. Locate the Monorepo:
+An explicit request to import a named existing HTML URL as a static Pixso board
+is already structurally determined. Restate the URL, viewport/state, fidelity
+target, and “no redesign” in one sentence, then execute the
+`existing-html-to-pixso` route. Do not run a product interview or load new-page
+requirements unless the user asks to change the page structure or behavior.
+If prose appears to be appended to a static HTML directory URL, do not browse
+or import that malformed path. Let the route's URL resolver validate it against
+the supplied HTML root and record any deterministic correction.
 
-   ```bash
-   node text-to-ui/scripts/locate-monorepo.mjs --start "$PWD"
-   ```
+## Mandatory Gate 0: analyze, propose, confirm
 
-   The root must contain `pnpm-workspace.yaml`, the component registry, and the Token runtime map. Respect `--repo` or `TEXT_TO_UI_MONOREPO`. If no root is found, report the attempted locations and request the root; do not silently draw lookalikes.
+A request to make or generate a page authorizes investigation; it does not
+approve an inferred page structure. For a new page, redesign, multi-view flow,
+or materially changed information architecture, complete the analysis below
+before any renderer or page artifact.
 
-2. Resolve the minimum task context:
+### Gate 0 for new builds and redesigns
 
-   ```bash
-   node text-to-ui/scripts/resolve-context.mjs \
-     --task mail-workbench --framework react --mode fast-preview \
-     --out /absolute/path/context-packet.json
-   ```
+For a new page, redesign, multi-view flow, or materially changed information
+architecture, inspect first and present a concise proposal containing:
 
-3. Read only the packet's `exactReferencesToRead`. Then read the exact selected component entries in `packages/component-contracts/src/components.json`; do not load the complete registry unless the generated index is missing or stale.
-4. Query further only when needed:
+- user, work object, primary job, success and recovery;
+- hard constraints and assumptions;
+- page/flow tree and canonical HarmonyOS PC Pattern;
+- actions, states, target framework, workflow, and Pixso fidelity;
+- at most three decisions that would materially change the result.
 
-   ```bash
-   node text-to-ui/scripts/query-layouts.mjs --workflow repeated-list-to-detail
-   node text-to-ui/scripts/query-components.mjs --framework react --capabilities search,checkbox,list-item
-   node text-to-ui/scripts/query-tokens.mjs --roles content/primary,surface/default
-   ```
+Mark `Confirmation: pending`. Ask the user to confirm the proposal and build
+only after explicit confirmation. Do not silently infer confirmation from the
+original request or from an ambiguous acknowledgement.
 
-5. If indexes drift, run `pnpm index:build`; never hand-edit files under `references/index/generated/`.
+Before confirmation, do **not** create or modify page HTML, React, Vue, CSS,
+Pixso Frames, images, `page-spec.json`, `layout-contract.json`,
+`component-usage.json`, or a browser preview. Read-only inspection and a
+temporary context packet are allowed.
+Repository diagnosis is read-only unless the user separately authorizes a fix.
 
-## Core execution flow
+## 2. Universal source and layout rules
 
-### 1. Inspect and propose
+Treat `assets/design-system/pattern-contracts.json` as the machine-readable
+truth layer for application composition. Resolve it before selecting
+components or compiling `ui-scene.json`. HTML, React, Vue, and Pixso must
+consume the same resolved Pattern Contract; a framework adapter may implement
+component internals, but it must not restate pane order, width policy, inset or
+scroll ownership, surfaces, dividers, minimum window, or action-slot rules.
+Patterns are compositions, never component registry entries or Pixso base
+components.
 
-Inspect user materials, the current project stack, and reusable assets. Select one workflow:
+Resolve every visible region in this order:
 
-- `html-first` by default: early HTML preview, user review, optional Pixso refinement, release validation.
-- `visual-first` when the user explicitly wants Pixso first.
-- `direct-html` when the user explicitly skips Pixso.
+1. real target-framework component;
+2. matching canonical component contract;
+3. Token-based page-owned composition.
 
-Present one concise requirement proposal before creating page artifacts. Include the design goal, a compact page tree, chosen Pattern, key interactions/states, framework and workflow, Pixso fidelity when relevant, and only material assumptions. Use `references/requirement-spec.md`. Wait for explicit confirmation.
+Lookalike markup, copied CSS, screenshots, matching class names, and
+`data-component` do not prove component reuse. Components fill Pattern slots;
+they do not reshape the shell. Record source evidence in `component-usage.json`
+when a generated page requires it.
 
-### 2. Lock the PC framework layout
+For a new page, choose and validate one canonical PC Pattern before component
+selection. Preserve the Global Title Layer, pane order, inset owner, scroll
+owner, resize behavior, minimum window, and action slots. Use the exact layout
+and component references returned by the Context Packet; never load the whole
+registry merely for convenience.
 
-After confirmation and before component selection:
+Bind `page-spec.json.shell.patternContract` and
+`ui-scene.json.page.patternContract` to
+`assets/design-system/pattern-contracts.json` schema version 1. Use
+`scripts/resolve-pattern-contract.mjs`; do not implement Pattern decisions
+independently inside HTML, React, Vue, or Pixso renderers.
 
-1. Read the Context Packet's exact layout sections plus `references/layouts/framework-layout-routing.md`.
-2. Choose the simplest approved Pattern A, B, C, or D. Do not start from cards or individual controls.
-3. Create `layout-contract.json` with pane order, Global Title Layer, action slots, inset owners, scroll owners, resize behavior, minimum window, and shared layout Tokens.
-4. For Pattern B, declare `main-detail-actions` as the `0..n` Titlebar slot for every action scoped to the complete third pane.
-5. Run:
+Compile new HTML, React, and Vue pages through
+`scripts/generate-framework-page.mjs`. The Context Packet must expose a
+non-null renderer contract for the selected framework. Every framework output
+and Pixso Operation Plan must carry the same `patternDigest` and
+`structureDigest`; a digest mismatch, invented region, or undeclared Pattern
+slot is a blocking error. `ui-scene.json` is the shared page intermediate, not
+a Pixso-only document.
 
-   ```bash
-   node text-to-ui/scripts/validate-pc-framework-layout.mjs --contract /absolute/path/layout-contract.json
-   ```
+`primary-navigation-item` is the icon-first primary rail item; `sidebar` is the
+labeled secondary navigation row. They are not aliases.
 
-6. If no approved Pattern fits, propose a reusable Pattern contract instead of improvising a shell.
+### HTML text sizing and truncation
 
-### 3. Resolve and record components
+For HTML-to-Pixso conversion, use the browser's final computed style and text
+metrics as the authority. Do not infer fixed sizing merely because an element
+has a CSS width or defensive overflow rules:
 
-Read `references/components/source-resolution.md` and `references/web-component-reuse-gate.md`.
+- A normal single-line label defaults to `WIDTH_AND_HEIGHT` so its width hugs
+  its content.
+- A wrapping text block keeps the captured width and uses `HEIGHT` so its
+  height can grow.
+- Use fixed-width, single-line truncation only when the HTML has
+  `white-space: nowrap`, `overflow: hidden` or `clip`, and
+  `text-overflow: ellipsis`, and the measured inline text width is greater
+  than the captured box width. Preserve the captured width and height and set
+  `maxLines: 1`.
+- For a truncation operation, first write Pixso's native
+  `TextNode.textAutoResize = "TRUNCATE"` after loading the font. If the
+  connected runtime rejects that enum, use the versioned compatibility
+  renderer: measure the loaded text, write an actual ending `…` that fits the
+  fixed captured box, retain `NONE`, and store the source/rendered strings in
+  plugin metadata. Readback must accept this only when all of those markers,
+  the ellipsis, and fixed bounds are present; never silently clip the full
+  string or invent a separate `textTruncation` property. If the text fits,
+  keep the intrinsic mode even when the CSS contains defensive ellipsis rules.
 
-1. Select one target framework and resolve required capabilities from the generated component index.
-2. Confirm the real source path and exact registry contract for each selected component.
-3. Create `component-usage.json` before page implementation.
-4. Import `@text-to-ui/components-html`, `@text-to-ui/components-react`, or `@text-to-ui/components-vue`, plus canonical Tokens and shared styles.
-5. Keep Patterns, domain compositions, and business content page-owned, but never reproduce registered component internals.
-6. Validate reuse before a browser checkpoint:
+The detailed import contract is in
+`references/pixso-fidelity-import-pipeline.md`; read it for existing HTML
+imports and converter diagnosis.
 
-   ```bash
-   node text-to-ui/scripts/validate-web-component-reuse.mjs \
-     --manifest /absolute/path/component-usage.json \
-     --project-root /absolute/path/project
-   ```
+### Icon sizing, stroke, and hot-zone contract
 
-### 4. Produce Fast Preview
+For every semantic SVG icon, keep the 24 × 24 source geometry and treat the
+Pixso icon slot as a separate square hot zone:
 
-Read `references/workflows/fast-preview.md`.
+- Use the design-system stroke table as the authority: 16px → 1px, 20px →
+  1.25px, and 24px → 1.5px. For another explicitly approved size, use the
+  normalized 24px source rule `1.5 × displaySize ÷ 24`; never copy an asset's
+  raw stroke-width unchanged into every display size.
+- Set both horizontal and vertical hot-zone alignment to `CENTER`. Centre the
+  actual vector bounds inside the slot after hydration; do not use the
+  requested icon size as a proxy for the vector bounds and do not inherit top
+  alignment from a component or HTML wrapper.
+- Use the Pixso `Size & Layout` number variables `icon/stroke/16`,
+  `icon/stroke/20`, and `icon/stroke/24` for the three supported weights. The
+  Operation Plan must carry these variable references; a literal weight is
+  only a diagnostic fallback when the target Pixso file has not synced the
+  variables yet.
+- Apply the same contract to page SVGs, generated icon Components, and icon
+  Instances. A missing exact icon can remain as the original SVG, but an
+  approximate glyph or a top-aligned placeholder is not an acceptable
+  fallback.
+- The operation plan must carry `hotZone: { alignment: "CENTER", axes:
+  "BOTH" }`; Pixso readback must verify both alignment properties, vector x/y
+  centring, and the effective stroke weight.
 
-1. Build the real interactive page from the validated layout and component sources.
-2. Run only blocking preview checks: layout, component source record, successful build/open, target desktop viewport, primary path, critical overlay, and keyboard recovery.
-3. Use `verify-fast-preview.mjs` for deterministic checks.
-4. Open the real page, show it to the user, and pause for browser comments.
-5. Iterate on the same preview until the user explicitly marks the direction approved.
+### Cross-source mapping registry
 
-Do not delay the first visible page with exhaustive release, mirror, packaging, or Pixso parity checks.
+Before mapping any HTML Token, Component, Pixso Variable, Pixso Component, or
+HarmonyOS native source, read and use
+`assets/design-system/mapping-registry.json`. It is the machine-readable
+relationship source for the Skill. A user may propose changes in the controlled
+Obsidian mapping-workbook edit queue, but never treat a generated report table
+as an editable source:
 
-### 5. Refine in Pixso when selected
+- `tokenMappings`, `semanticTokenMappings`, `runtimeSemanticAliases`,
+  `semanticColorMappings`, and `styleMappings` own Token/Style relationships.
+- The runtime semantic index is generated from `semanticTokenMappings` plus
+  `runtimeSemanticAliases`; do not maintain a duplicated full
+  `runtimeSemanticMappings` table.
+- `componentMappings` owns HTML `logicalName` → current Pixso exact
+  Component Set/COMPONENT relationships and runtime bindings. Validate
+  `pixsoTarget` against `assets/design-system/pixso-component-facts.json`;
+  keep `pixsoSpecKey` as the separate Text-to-UI specification key and keep
+  Variant selection in `runtimeBinding.variant`.
+- `nativeSourceMappings` and `sourceOnly` own HarmonyOS source reuse and
+  candidate/reference relationships.
+- `profiles` isolate different HTML sources, Pixso design files, and component
+  libraries. Add a profile for a new target; do not overwrite an existing one.
 
-For tasks producing Pixso, read these only after the direction and fidelity target are known:
+### Typography mapping policy
 
-- `references/pixso-fidelity-routing.md` for `fast visual import` versus `strict structured reuse`.
-- `references/pixso-visual-parity.md` for CSS viewport calibration and same-state comparison.
-- `references/pixso-mcp.md` for live tool behavior.
-- `references/registered-reuse-mode.md` only for strict linked-instance reuse.
-- `references/dual-output-contract.md` for shared `page-spec.json` and provenance.
+Typography has two related but distinct layers:
 
-Use `1728 × 1152` as CSS pixels and verify browser `innerWidth`/`innerHeight`. Treat HTML and Pixso as renderers of one rule system. Never claim native Pixso Component or Variable parity without read-back proof. Dynamic regions must be materialized in the exact import snapshot before `code_to_design`.
+- `tokenMappings` records the atomic foundation relationships, such as
+  `--font-size-16` → `font/size/16`, `--line-height-22` →
+  `font/line-height/22`, and `--font-weight-400` → `font/weight/400`.
+- `styleMappings` and `assets/design-system/typography-style-map.json` record
+  the composite HTML typography role → exact Pixso Text Style relationship,
+  such as `body-l` → `Typography/Body_L` (16px / 20px / 400). The current
+  formal set is `display-l/m/s`, `title-l/m/s`, `subtitle-l/m/s`,
+  `body-l/m/s`, and `caption-m`; `caption-l` is deprecated.
 
-### 6. Run Release Validation
+For standard typography roles, the HTML → Pixso scene must carry
+`style.textStyle.ref`, for example `$style/Typography/Body_L`. The Pixso
+runtime resolves the existing local Text Style and assigns its `textStyleId` to
+the text node. Do not replace an available Text Style with separate
+`fontSize`, `lineHeight`, and `fontWeight` assignments. Computed HTML typography
+is still captured for geometry and diagnosis; only a non-standard value with
+no matching formal Text Style may use the property-level fallback, binding
+`fontSize`, `lineHeight`, or `letterSpacing` variables when possible.
 
-Enter only after explicit direction approval. Read `references/workflows/release-validation.md` and the Context Packet's release commands.
+A direct Text Style mapping is valid only when the exact Text Style exists in
+the current Pixso file and live readback confirms the binding. The variable
+names listed in the registry describe the foundation values; they do not by
+themselves prove that the Pixso Text Style internally references those
+variables. If the style is renamed or a role is remapped, update the style
+mapping; changing only an atomic variable mapping does not necessarily update
+an existing Pixso Text Style.
 
-Complete required states, accessibility, resize/minimum-window behavior, error recovery, semantic icons, Token coverage, visual parity, contract stamping, and packaging. Run full repository/delivery checks as applicable. Reopen the exact final artifact at the target viewport and show the validated result again.
+The generated runtime maps and coverage tables are projections. If the user
+edited the Obsidian workbook, first run
+`scripts/sync-obsidian-mapping-edits.mjs --check`; after reviewing the proposed
+changes, use its `--write` form to update the registry. Then run
+`node scripts/validate-mapping-registry.mjs`,
+`node scripts/sync-mapping-registry.mjs --write`, and its `--check` form. Use
+`scripts/build-obsidian-mapping-workbook.mjs` for the clear Obsidian maintenance
+view and `scripts/build-mapping-registry-doc.mjs` for the detailed report.
+Only apply pending rows from the workbook. If a Pixso target is a same-family
+candidate rather than an exact registered name, stop and ask for clarification.
+Never persist Pixso GUIDs, node IDs, or file keys in the registry; resolve them
+from the current Pixso document at runtime.
 
-## Page contracts and design authority
+## 3. Services and preview
 
-- Use `assets/design-system/design.md` and machine-readable assets under `assets/design-system/` as the bundled baseline.
-- A user-supplied approved design system may override the baseline according to `references/design-system.md`.
-- For reusable or dual-output pages, create `page-spec.json` from `assets/design-system/page-spec.schema.json`; validate and stamp it using the scripts named in `references/dual-output-contract.md`.
-- Keep requirements, `layout-contract.json`, `component-usage.json`, `page-spec.json`, and produced artifacts synchronized. A changed source contract invalidates stale evidence.
+Use the managed service entry only:
 
-## Conditional reference router
+```bash
+node scripts/start-text-to-ui-services.mjs start
+```
 
-Read only what the current Context Packet or workflow requires:
+It idempotently starts the Preview Hub, Component Gallery, and Pixso Bridge.
+The public Hub is `http://127.0.0.1:43173/`; the internal bridge is `43982`.
+Do not start an ad-hoc `4173` service for new work. A user-provided existing
+`4173` URL may still be captured as the source page.
 
-- Requirements and task modeling: `references/requirement-spec.md`, `references/task-modeling.md`, `references/information-hierarchy.md`.
-- Framework layout: `references/layouts/framework-layout-routing.md`, `references/pc-framework-layout-gate.md`, `references/harmonyos-layout-patterns.md`, `references/layout-system.md`.
-- Components: `references/components/source-resolution.md`, `references/component-package-integration.md`, `references/web-component-reuse-gate.md`.
-- Interaction and HTML: `references/interaction-spec.md`, `references/html-guidelines.md`, `references/qa-checklist.md`.
-- Icons and Tokens: `references/icon-usage.md`, `references/tokens.md`, `references/token-component-usage.md`.
-- Tool-heavy workflow: `references/tool-design.md`; do not load it for a simple content page.
-- Pixso: load only the files listed in step 5 for the selected fidelity path.
-- Review modes: `references/workflows/fast-preview.md` and, after approval, `references/workflows/release-validation.md`.
+For new HTML/React/Vue output, show an early interactive browser preview after
+layout, component-source, and Token checks. Release validation occurs only after
+the user approves the direction.
 
-## Tool routing and safety
+## 4. Pixso invariants
 
-- Use browser automation for rendering and interaction QA, not as the component source.
-- Use Pixso tools only when Pixso output is selected and after reading the relevant live-tool reference.
-- Use semantic SVG assets from the shared icon package; do not use text glyphs or emoji as product icons.
-- Keep existing user changes intact. Do not overwrite unrelated files or publish without authorization.
-- Use reversible, scoped actions. Ask only when a missing decision would materially change structure or external state.
+- Current rendered HTML is the visual authority for an existing website.
+- A normal run uses one fresh run ID, one browser capture, one compile, one
+  executor, one readback, and one screenshot diff.
+- The browser manifest is the sole geometry source. Component and Token mapping
+  happens only after geometry is locked.
+- A `TRUNCATE` text operation must carry an explicit semantic
+  `textAutoResize: "TRUNCATE"`, fixed captured width/height, and `maxLines: 1`.
+  The executor must load the font before trying the native value; a runtime
+  that rejects it may use only the versioned ending-ellipsis compatibility
+  renderer, whose metadata, visible `…`, and fixed bounds must pass readback.
+- Old runs, Baseline Frames, root plans, cached GUIDs, prior screenshots, and
+  page-specific Scene defaults never enter a new normal run.
+- A normal whole-page HTML import requires the connected Text-to-UI Pixso
+  plugin. Never auto-fallback to MCP. MCP whole-page execution is allowed only
+  for an explicit diagnostic or after the user explicitly approves the lower-
+  fidelity emergency path; never execute both for one run.
+- Permanent Agent Kernel `5.0.0`, Bridge protocol `4`, and Operation Plan `5`
+  are the current contract. Plans may be queued while Pixso is temporarily
+  disconnected; reconnecting the same installed Agent resumes the current job.
+- Keep the plugin draft visible while importing. After final readback succeeds,
+  atomically replace the previous canonical artboard; on pause or failure,
+  remove the draft and retain the previous accepted artboard. A normal run
+  must leave exactly one managed artboard.
+- Never claim Variable, Style, Component Instance, or visual parity without
+  readback evidence.
+- Normal HTML import does not call `code_to_design`; that capability is
+  diagnostic-only.
 
-## Completion gate
+The normative source is this `text-to-ui/` directory. Synchronize the repository
+`skill/` mirror, installed Skill, and installable Pixso plugin only after source
+tests pass.
 
-Do not report completion until:
+## 5. Completion
 
-- The confirmed workflow and requirement contract match the delivered result.
-- The PC framework layout contract is valid and visible in every renderer.
-- Every UI region follows library → contract → Token-based custom source order, with evidence.
-- The page uses real target-framework component imports where available.
-- Fast Preview was shown and explicitly approved before Release Validation.
-- Required interactions, states, accessibility, viewport, resize, and recovery checks pass.
-- Pixso claims, when applicable, are backed by exact snapshot and read-back evidence.
-- The exact final artifact was reopened for the final visible review.
-- Final paths, validation status, and honest limitations are reported.
+Report completion only when the chosen route's acceptance gates pass. Preserve
+unrelated user changes. Stop and report the exact failed gate rather than
+silently switching routes, replaying old artifacts, or drawing manual overlays.
+Return final artifact paths, validation status, and honest limitations.

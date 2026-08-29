@@ -22,6 +22,7 @@ const sourceFiles = {
   shadow: "tokens.shadow.json",
   typography: "tokens.typography.json",
   layout: "tokens.layout.json",
+  icon: "tokens.icon.json",
 };
 
 const source = Object.fromEntries(
@@ -363,6 +364,12 @@ function coreVariableDefinition(collection, name) {
     };
   }
   if (collection === "Size & Layout") {
+    if (name.startsWith("icon/stroke/")) {
+      const size = name.split("/").at(-1);
+      const value = Number(source.icon.lucide?.["project-stroke-width-by-display-size"]?.[size]);
+      if (!Number.isFinite(value)) throw new Error(`Missing icon stroke source: ${name}`);
+      return { type: "number", value, source: `tokens.icon.json:lucide.project-stroke-width-by-display-size.${size}` };
+    }
     if (name.startsWith("size/")) {
       const value = Number.parseFloat(name.split("/").at(-1));
       const sourcePath = coreSizeSourceByValue.get(value);
@@ -438,7 +445,6 @@ function pixsoTextStyleName(name) {
 }
 
 for (const [name, style] of Object.entries(source.typography.styles)) {
-  if (name === "body-s" || name === "caption-m") continue;
   const fontFamilyRef = style["font-family"];
   const family = resolveReference(fontFamilyRef, [source.typography]);
   const familyValue = Array.isArray(family) ? family[0] : family;

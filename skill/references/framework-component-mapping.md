@@ -142,17 +142,9 @@ options until the registry and validators prove full coverage.
 
 Drive the framework selectors from one preview registry. Every registry entry
 must declare the exact `logicalName`, supported states, runtime key, and real
-framework source. A framework option may be shown only when it loads the real
-adapter implementation. The gallery's user-facing runtime directory is one
-same-page catalog: HTML, React, and Vue are first-level tabs that replace the
-renderer inside the same card grid. All tabs read the same registry order,
-render the full catalog from the selected framework's source path, and report
-the selected `data-framework` at its root. The runtime catalog shows only the
-default component; users inspect states with pointer and keyboard interaction.
-`framework-html.html`, `framework-react.html`, and `framework-vue.html` may
-remain as developer-only standalone debug entries, but they must not be the
-primary navigation or a second user-facing catalog. A sample label or shared
-fixture copy is never evidence that another framework was rendered.
+framework routes. A framework option may be shown only when it loads the real
+adapter implementation. The standalone framework fixture page remains a test
+artifact, not the primary component documentation surface.
 
 Adding another framework or component requires updating the registry and its
 adapter implementation, not copying visual markup into the gallery shell.

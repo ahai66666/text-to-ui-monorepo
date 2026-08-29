@@ -15,7 +15,14 @@
     "resize": "fluid-desktop"
   },
   "shell": {
-    "pattern": "three-pane-list-detail",
+    "pattern": "pattern-b-three-pane",
+    "patternContract": {
+      "source": "assets/design-system/pattern-contracts.json",
+      "schemaVersion": 1
+    },
+    "paneOrder": ["primary-navigation", "secondary-list", "main-detail"],
+    "finalPaneLeadingSlot": "main-detail-operations",
+    "requiredSlots": ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"],
     "titlebar": "L",
     "surface": "white"
   },
@@ -64,7 +71,7 @@
   "provenance": {
     "runId": "page-spec-example-20260806",
     "hashAlgorithm": "sha256",
-    "pageSpecSha256": "b56668d79c79681beba4da018dd9eee541a393f1ba30f5143e4f2d7f8b3f0d89"
+    "pageSpecSha256": "d3f03cd1c91baba4132ce0e1ba501e960b0442998ce9c327c91de733cc75da02"
   },
   "tokenContract": {
     "map": "assets/design-system/dual-output-token-map.json",

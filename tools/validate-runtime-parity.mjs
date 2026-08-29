@@ -39,7 +39,7 @@ for (const componentId of comparisonIds) if (!ids.has(componentId)) failures.pus
 const comparisonGroupById = new Map(comparisonGroups.map((group) => [group.id, group.componentIds ?? []]));
 const requiredContractPlacements = {
   fields: ["input", "search", "textarea", "select"],
-  navigation: ["tabs", "list-card"],
+  navigation: ["primary-navigation-item", "tabs", "list-card"],
   disclosure: ["breadcrumb", "accordion", "collapsible", "navigation-menu", "menubar", "separator", "sidebar", "item"],
   "form-plus": ["field", "label", "combobox", "native-select", "slider", "input-otp", "kbd"]
 };

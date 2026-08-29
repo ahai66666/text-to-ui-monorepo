@@ -49,6 +49,7 @@ Pagination
 Popover
 Progress
 Radio Group
+Radio
 Select
 Separator
 Sidebar

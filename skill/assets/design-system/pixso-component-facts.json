@@ -1,0 +1,176 @@
+{
+  "$schema": "./pixso-component-facts.schema.json",
+  "schemaVersion": 1,
+  "kind": "text-to-ui.pixso-component-facts",
+  "document": "鸿蒙客户端设计规范",
+  "page": "NewComponents",
+  "source": "Pixso MCP read_component_config_data()，仅保留无 GUID 的组件名称和 Variant 轴",
+  "capturedAt": "2026-08-27",
+  "scope": "main-component-inventory",
+  "policy": {
+    "identity": "组件名称必须与当前 Pixso Component Set 或 COMPONENT 的 name 完全一致，区分大小写。",
+    "ids": "不保存 GUID、node ID、file key；执行时必须从当前 Pixso 文件重新解析。",
+    "businessInventory": "业务清单包含用户确认的 17 个组件；Dialog 的 .2in1 Container 和 .text 单独标为 helper。",
+    "refresh": "当前 Pixso 组件库发生增删或重命名后，重新读取 Pixso 并更新本事实清单。"
+  },
+  "componentSets": [
+    {
+      "name": "Button",
+      "classification": "business",
+      "variantAxes": {
+        "size": ["Medium", "Small"],
+        "state": ["Hover", "Pressed", "Disable", "Default"],
+        "type": ["Primary", "Secondary", "Danger", "Ghost"]
+      }
+    },
+    {
+      "name": "icon-text",
+      "classification": "business",
+      "variantAxes": {
+        "size": ["Medium"],
+        "state": ["Hover", "Pressed", "Disable", "Default"],
+        "type": ["primary", "ghost"]
+      }
+    },
+    {
+      "name": "Icon Button",
+      "classification": "business",
+      "variantAxes": {
+        "size": ["Medium"],
+        "state": ["Hover", "Pressed", "Disable", "Default"],
+        "type": ["Ghost"]
+      }
+    },
+    {
+      "name": "Selection Dropdown",
+      "classification": "business",
+      "variantAxes": {
+        "size": ["small", "Medium"],
+        "state": ["Hover", "Disabled", "Pressed", "Default"]
+      }
+    },
+    {
+      "name": "Chips",
+      "classification": "business",
+      "variantAxes": {
+        "状态": ["Hover", "Pressed", "Disabled", "Default"]
+      }
+    },
+    {
+      "name": "Menu-2in1",
+      "classification": "business",
+      "variantAxes": {
+        "菜单类型": ["Text with icon", "Text with subtitle", "subMenu"]
+      }
+    },
+    {
+      "name": "Snackbar",
+      "classification": "business",
+      "variantAxes": {
+        "左侧区域": ["1", "2"]
+      }
+    },
+    {
+      "name": "Search",
+      "classification": "business",
+      "variantAxes": {
+        "state": ["Actived", "Typing", "Hover", "Output", "Default", "Pressed"],
+        "surface": ["bg-white", "gb-gray"]
+      }
+    },
+    {
+      "name": "Input",
+      "classification": "business",
+      "variantAxes": {
+        "state": ["Hover", "Typing", "Actived", "Error", "Disable", "Default"],
+        "surface": ["gb-gray", "bg-white"]
+      }
+    },
+    {
+      "name": "CheckBox",
+      "classification": "business",
+      "variantAxes": {
+        "checked": ["false", "true"],
+        "state": ["Hover", "Disabled", "Default"]
+      }
+    },
+    {
+      "name": "Radio",
+      "classification": "business",
+      "variantAxes": {
+        "checked": ["false", "true"],
+        "state": ["Hover", "Disabled", "Default"]
+      }
+    },
+    {
+      "name": "Switch",
+      "classification": "business",
+      "variantAxes": {
+        "checked": ["false", "true"],
+        "state": ["Hover", "Disabled", "pressed", "Default"]
+      }
+    },
+    {
+      "name": "CheckboxGroup",
+      "classification": "business",
+      "variantAxes": {
+        "Hyperlink": ["ON", "OFF"],
+        "state": ["Default", "Hover", "Pressed"]
+      }
+    },
+    {
+      "name": ".2in1 Container",
+      "classification": "helper",
+      "variantAxes": {
+        "属性 1": ["Dialog"],
+        "属性 2": ["PC"],
+        "属性 3": ["Items"],
+        "属性 4": ["button"],
+        "属性 5": ["3_emphasize_port", "2_emphasize", "2_normal", "1_normal"]
+      },
+      "notes": "Dialog-2in1 的内部依赖，不作为独立 HTML 组件映射。"
+    },
+    {
+      "name": ".text",
+      "classification": "helper",
+      "variantAxes": {
+        "属性 1": ["默认"]
+      },
+      "notes": "Dialog-2in1 的内部依赖，不作为独立 HTML 组件映射。"
+    },
+    {
+      "name": "Dialog-2in1",
+      "classification": "business",
+      "variantAxes": {
+        "属性 1": ["1button", "title+2 button", "title+2lines", "content", "title+single line", "title+3 button"]
+      }
+    },
+    {
+      "name": "control button",
+      "classification": "business",
+      "variantAxes": {
+        "状态": ["Normal size", "Small size"]
+      }
+    },
+    {
+      "name": "Sidebar Item",
+      "classification": "business",
+      "variantAxes": {
+        "state": ["default", "变体2", "selected"]
+      }
+    }
+  ],
+  "standaloneComponents": [
+    {
+      "name": "ColorPicker-Tablet",
+      "classification": "business",
+      "variantAxes": {}
+    }
+  ],
+  "supportingComponents": {
+    "description": "当前 Pixso 还包含语义图标和局部辅助 COMPONENT；它们不进入本业务组件映射表。",
+    "inventoryCountFromReadComponents": 83,
+    "businessComponentCount": 17,
+    "helperComponentSetCount": 2
+  }
+}

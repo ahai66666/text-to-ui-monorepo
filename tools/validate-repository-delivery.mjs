@@ -87,6 +87,7 @@ for (const file of [
   "text-to-ui/SKILL.md",
   "text-to-ui/README.md",
   "text-to-ui/package.json",
+  "text-to-ui/assets/design-system/component-usage.schema.json",
   "text-to-ui/references/component-package-integration.md",
   "skill/SKILL.md",
   "skill/README.md",
@@ -101,6 +102,8 @@ for (const file of [
 const rootPackage = readJson("package.json") ?? {};
 const workspace = readText("pnpm-workspace.yaml");
 const rootReadme = readText("README.md");
+const canonicalSkill = readText("text-to-ui/SKILL.md");
+const requirementSpec = readText("text-to-ui/references/requirement-spec.md");
 
 assert(rootPackage.private === true, "root package must remain private");
 assert(rootPackage.packageManager === "pnpm@10.0.0", "root package must pin pnpm@10.0.0");
@@ -115,6 +118,12 @@ assert(
 assert(workspace.includes('packages:\n  - "packages/*"\n  - "apps/*"'), "workspace must include packages/* and apps/*");
 assert(rootReadme.includes("完整代码仓交付边界"), "root README must document complete-repository delivery");
 assert(rootReadme.includes("pnpm delivery:validate"), "root README must document delivery:validate");
+assert(canonicalSkill.includes("Mandatory Gate 0: analyze, propose, confirm"), "Text-to-UI Skill must keep the requirement-analysis gate");
+assert(canonicalSkill.includes("Confirmation: pending"), "Text-to-UI Skill must expose a pending confirmation state");
+assert(canonicalSkill.includes("Do not silently infer confirmation"), "Text-to-UI Skill must require explicit confirmation");
+assert(canonicalSkill.includes("Before confirmation, do **not** create or modify page HTML"), "Text-to-UI Skill must block page generation before confirmation");
+assert(requirementSpec.includes("The proposal must also expose the task model"), "requirement spec must preserve task-model analysis");
+assert(requirementSpec.includes("Do not start a renderer or create a page artifact while confirmation is `pending`"), "requirement spec must block renderers while pending");
 
 const registry = readJson("packages/component-contracts/src/components.json") ?? {};
 const components = Array.isArray(registry.components) ? registry.components : [];
@@ -137,8 +146,11 @@ const mirroredFiles = [
   "README.md",
   "package.json",
   "references/component-package-integration.md",
+  "references/requirement-spec.md",
+  "references/progressive-review-gates.md",
   "references/components/source-resolution.md",
   "references/layouts/framework-layout-routing.md",
+  "references/harmonyos-layout-patterns.md",
   "references/workflows/fast-preview.md",
   "references/workflows/release-validation.md",
   "references/index/generated/task-router.json",
@@ -151,8 +163,37 @@ const mirroredFiles = [
   "scripts/query-components.mjs",
   "scripts/query-tokens.mjs",
   "scripts/resolve-context.mjs",
+  "scripts/framework-renderer-contract.mjs",
+  "scripts/pattern-contract-lib.mjs",
+  "scripts/ui-scene-core.mjs",
+  "scripts/resolve-pattern-contract.mjs",
+  "scripts/validate-pattern-contracts.mjs",
+  "scripts/test-pattern-contract-resolution.mjs",
+  "assets/design-system/pattern-contracts.schema.json",
+  "assets/design-system/pattern-contracts.json",
+  "assets/design-system/page-spec.schema.json",
+  "assets/design-system/page-spec.example.json",
+  "assets/design-system/ui-scene.schema.json",
+  "scripts/generate-layout-contract.mjs",
   "scripts/validate-navigation-index.mjs",
   "scripts/verify-fast-preview.mjs",
+  "scripts/validate-page-layout-binding.mjs",
+  "scripts/validate-layout-markers.mjs",
+  "scripts/generate-html-component-skeleton.mjs",
+  "scripts/generate-framework-page.mjs",
+  "scripts/validate-ui-scene-pattern-binding.mjs",
+  "scripts/test-framework-page-generation.mjs",
+  "scripts/test-ui-scene-pattern-binding.mjs",
+  "scripts/validate-page-token-usage.mjs",
+  "scripts/validate-runtime-component-reuse.mjs",
+  "scripts/validate-web-component-reuse.mjs",
+  "scripts/test-html-strict-reuse-pipeline.mjs",
+  "scripts/test-validate-page-token-usage.mjs",
+  "scripts/test-validate-page-layout-binding.mjs",
+  "scripts/test-validate-layout-markers.mjs",
+  "scripts/test-resolve-context-pattern-gate.mjs",
+  "scripts/test-validate-web-component-reuse.mjs",
+  "references/web-component-reuse-gate.md",
 ];
 for (const relativePath of mirroredFiles) {
   const canonicalPath = path.join("text-to-ui", relativePath);

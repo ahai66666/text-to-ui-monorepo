@@ -119,9 +119,9 @@ assets/
 - Lucide source geometry is generated only through `scripts/export-icon-sprite.mjs` from `assets/icons/icon-aliases.json`. Never hand-author or approximate a Lucide path that exists in the pinned package; every HTML output containing icons must pass `scripts/audit-icons.mjs --strict`.
 - HarmonyOS Symbol remains the source for HarmonyOS-specific concepts and already-approved HarmonyOS glyphs. It is vendored under `assets/icons/harmonyos/`; the official 433 category entries resolve to 404 unique SVG files in `catalog/regular/`.
 - Source artboard: 24 × 24.
-- Lucide rendering: use outline geometry with project stroke width `1.5px`, `stroke-linecap: round`, and `stroke-linejoin: round`. Do not synthesize a filled variant from an outline icon.
-- HarmonyOS rendering: use Monochrome Regular (`400`) and the exact official filled-path geometry. Do not apply CSS `stroke-width`, line cap, or line join to exported HarmonyOS Symbol paths.
-- Filled or outline: use the exact approved source glyph. Only use a source-provided filled glyph; never manufacture an alternate style.
+- Lucide is the single general-purpose icon library. Use the pinned package geometry with project stroke width `1.5px`, `stroke-linecap: round`, and `stroke-linejoin: round`.
+- HarmonyOS Filled is not part of the Text-to-UI icon system. Do not generate, map, or select Filled variants.
+- Special assets such as Titlebar controls and the Checkbox mark remain exact vendored SVGs and are resolved only through semantic aliases.
 - Installation: `lucide@1.24.0` is project-managed through `package.json` and `pnpm-lock.yaml`. HarmonyOS Symbol remains project-vendored SVG.
 - Selection: define the action/object/state meaning first, search Lucide using canonical English concepts, shortlist 2–3 candidates, render them at the actual 16/20/24px usage size, visually compare, then bind the chosen asset to a semantic alias. Never select solely from a Chinese label or the first filename match.
 - Manual fallback: draw a 1.5px icon only when no approved source has a suitable glyph. Mark the asset as a fallback and keep it outside official library folders.
@@ -380,17 +380,17 @@ Do not use `@font-face` or remote font services in the current project scope.
 Use exact pixel values for Pixso parity.
 
 ```css
+--line-height-12: 12px;
 --line-height-14: 14px;
 --line-height-16: 16px;
 --line-height-20: 20px;
 --line-height-22: 22px;
 --line-height-24: 24px;
 --line-height-28: 28px;
---line-height-32: 32px;
---line-height-40: 40px;
---line-height-52: 52px;
---line-height-64: 64px;
---line-height-76: 76px;
+--line-height-36: 36px;
+--line-height-44: 44px;
+--line-height-58: 58px;
+--line-height-66: 66px;
 ```
 
 ### Font Weight Tokens
@@ -417,30 +417,29 @@ All styles use `--font-sans` and `--letter-spacing-normal`. Source names such as
 
 | Token | Size | Line height | Weight | Description | Usage |
 |---|---:|---:|---:|---|---|
-| `display-l` | 56px | 76px | 400 | 展示类标题 | 具体场景待补充 |
-| `display-m` | 48px | 64px | 400 | 展示类标题 | 具体场景待补充 |
-| `display-s` | 38px | 52px | 400 | 展示类标题 | 具体场景待补充 |
-| `title-l` | 30px | 40px | 700 | 主标题 | 具体场景待补充 |
-| `title-m` | 24px | 32px | 700 | 主标题 | 标题栏文本 |
-| `title-s` | 20px | 28px | 700 | 主标题 | 卡片标题、半模态弹窗标题、弹窗标题 |
-| `subtitle-l` | 18px | 24px | 500 | 次标题 | 普通内容子标题、菜单标题 |
-| `subtitle-m` | 16px | 22px | 500 | 次标题 | 标题辅助文本、列表文本、气泡提示主标题 |
-| `subtitle-s` | 14px | 20px | 500 | 次标题 | 列表子标题、普通副标题 |
-| `body-l` | 16px | 22px | 400 | 主文本 | 客户端默认正文、Sidebar、表格单元格、列表主文本、40px 菜单与操作控件 |
-| `body-m` | 14px | 20px | 400 | 副文本与紧凑标签 | 列表摘要与时间、普通描述、Toast、Label、表格表头、Checkbox / Radio / Switch 标签、Tabs 与 28px Small Button |
-| `body-s` | 12px | 16px | 400 | 兼容文本 | 仅兼容既有引用；新的可见客户端文本改用 `caption-l` |
-| `caption-l` | 12px | 16px | 500 | 引用与特殊提示 | 字段帮助与错误、状态标签、组件注释、辅助标签与特殊提示 |
-| `caption-m` | 10px | 14px | 500 | 兼容文本 | 保留 Token 兼容性；不得用于新的可见客户端 UI |
+| `display-l` | 56px | 66px | 400 | 展示类标题 | 大号展示标题 |
+| `display-m` | 48px | 58px | 400 | 展示类标题 | 中号展示标题 |
+| `display-s` | 38px | 44px | 400 | 展示类标题 | 小号展示标题 |
+| `title-l` | 30px | 36px | 700 | 主标题 | 页面主标题 |
+| `title-m` | 24px | 28px | 700 | 主标题 | 标题栏文本 |
+| `title-s` | 20px | 24px | 700 | 主标题 | 卡片标题、半模态弹窗标题、弹窗标题 |
+| `subtitle-l` | 18px | 22px | 500 | 次标题 | 普通内容子标题、菜单标题 |
+| `subtitle-m` | 16px | 20px | 500 | 次标题 | 标题辅助文本、列表文本、气泡提示主标题 |
+| `subtitle-s` | 14px | 16px | 500 | 次标题 | 列表子标题、普通副标题 |
+| `body-l` | 16px | 20px | 400 | 主文本 | 客户端默认正文、Sidebar、表格单元格、列表主文本、40px 菜单与操作控件 |
+| `body-m` | 14px | 16px | 400 | 副文本 | 列表摘要与时间、普通描述、Toast、Label、表格表头、Checkbox / Radio / Switch 标签、Tabs 与 28px Small Button |
+| `body-s` | 12px | 14px | 400 | 小号正文 | 辅助文本、次要说明、字段帮助与错误、状态标签 |
+| `caption-m` | 10px | 12px | 400 | 小号说明 | 极小字号的辅助说明 |
 
 Use each semantic style as a complete combination. Machine-readable mappings are stored in `tokens.typography.css` and `tokens.typography.json`.
 
 ### HTML ↔ Pixso Typography Mapping
 
-Use `typography-style-map.json` as the single mapping table. New visible UI is limited to its 12 `formalStyles`: each HTML semantic role maps one-to-one to the identically sized Pixso shared Text Style under `Typography/*`.
+Use `typography-style-map.json` as the single mapping table. New visible UI is limited to its 13 `formalStyles`: each HTML semantic role maps one-to-one to the identically sized Pixso shared Text Style under `Typography/*`.
 
 - HTML always uses `--font-sans`, which is a browser fallback stack.
-- Pixso uses only `font/family/sans = HarmonyOS Sans` and the 12 formal Text Styles. A fallback family never becomes a separate Pixso Text Style.
-- `body-s` and `caption-m` remain code compatibility Tokens only; they have no formal Pixso counterpart and must not be used for new visible UI.
+- Pixso uses only `font/family/sans = HarmonyOS Sans` and the 13 formal Text Styles. A fallback family never becomes a separate Pixso Text Style.
+- `body-s` and `caption-m` are formal Pixso Text Style counterparts. The old `caption-l` token is deprecated: migrate 12px supporting text to `body-s` and 10px supporting text to `caption-m`; do not create `Typography/Caption_L`.
 - `Typography/Component/*` are imported native-component dependencies, not public Text to UI styles. Do not select them for new page content; audit component references before any deletion. The unused legacy `Body_YaHei14` and `Body_YaHei16` styles were removed from Pixso.
 
 ### HTML ↔ Pixso Effect Mapping
@@ -1361,9 +1360,9 @@ List Item trailing text and chevrons use the secondary text color `--color-text-
 
 ### Rules
 
-Table uses `--color-surface`, `--radius-table` (12px), and a 1px `--color-border` outer stroke. The outer Table container owns `--padding-table` (`--space-6`, 24px) on all four sides, so its toolbar, row backgrounds, dividers, and pagination never touch the outer stroke. Header rows are 40px and data rows are 48px; the first header cell and every first-column body cell add `--space-5` (16px) from the inner Table edge. Internal columns may retain `--space-5` spacing. When the first-column name includes a leading Avatar, icon, thumbnail, or file-type visual, the gap between that visual and the name also uses `--space-5` (16px). Headers use muted `body-m` (14px / 20px / Regular 400); cells use `body-l` (16px / 22px / Regular 400); numeric values align right, and the first column owns the row label. Hover applies `--state-layer-hover`; selected rows use `--color-sidebar-selected`. Sortable headers are buttons with `aria-sort`, not clickable text containers.
+Table uses `--color-surface`, `--radius-table` (12px), and a 1px `--color-border` outer stroke. The outer Table container owns `--padding-table` (`--space-6`, 24px) on all four sides, so its toolbar, row backgrounds, dividers, and pagination never touch the outer stroke. Header rows are 40px and data rows are 48px; the first header cell and every first-column body cell add `--space-5` (16px) from the inner Table edge. Internal columns may retain `--space-5` spacing. When the first-column name includes a leading Avatar, icon, thumbnail, or file-type visual, the gap between that visual and the name also uses `--space-5` (16px). Headers use muted `body-m` (14px / 16px / Regular 400); cells use `body-l` (16px / 20px / Regular 400); numeric values align right, and the first column owns the row label. Hover applies `--state-layer-hover`; selected rows use `--color-sidebar-selected`. Sortable headers are buttons with `aria-sort`, not clickable text containers.
 
-Badge is 24px high, uses `--radius-badge`, `caption-l`, and 8px horizontal padding. Approved variants are neutral (gray), info (blue), success (green), warning (orange), and danger (red). Each uses a readable foreground color with a background from the same core family at 10% opacity. Badge/status labels and Alert backgrounds both use the approved 10% family surface; their component anatomy, height, typography, and actions provide the distinction. Every status label includes text; do not use a colored dot alone.
+Badge is 24px high, uses `--radius-badge`, `body-s`, and 8px horizontal padding. Approved variants are neutral (gray), info (blue), success (green), warning (orange), and danger (red). Each uses a readable foreground color with a background from the same core family at 10% opacity. Badge/status labels and Alert backgrounds both use the approved 10% family surface; their component anatomy, height, typography, and actions provide the distinction. Every status label includes text; do not use a colored dot alone.
 
 Progress uses an 8px neutral track with a brand indicator. Determinate progress exposes `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`; visible percentage text is required when precise completion matters.
 
@@ -1445,11 +1444,11 @@ All four sizes expose `状态=Normal` and `状态=unfocus`, producing eight vari
 
 ## 5.9 Multi-Pane Title Layer Placement
 
-Primary Navigation Shell defaults Main Content to the White surface (`--color-surface`); Gray (`--color-bg-subtle`) remains an approved optional variant. The shell supports two navigation-hierarchy variants. Its Brand Anchor and Primary Navigation share a continuous right divider using `--layout-navigation-divider-width` (0.5px) and `--color-border`; Primary Navigation keeps `--space-4` (12px) bottom margin from the shell edge. Expanded navigation uses `--layout-sidebar-width` (240px). A 40px collapse button sits at the Brand Anchor's right edge. Activating it reduces the navigation column to `--layout-sidebar-width-collapsed` (64px), hides the application Logo and name, hides route labels, and preserves the current selection. In the collapsed Brand Anchor, a 40px expand button occupies the former Logo position. Both controls use semantic Lucide aliases, expose `aria-expanded` and `aria-controls`, support native button keyboard activation, and transfer focus to the newly visible counterpart. A single-level shell uses the Sidebar directly for its route list. In a two-level shell, first-level functional-space entries appear as icon-only controls at the bottom-left of the navigation region, while the second-level routes continue to use the Sidebar component above. The complete first-level group is always anchored to the bottom edge of Primary Navigation; it must never be placed directly after the second-level menu at the top or middle. This is the client system's only approved first-level menu, and every entry uses a source-provided filled/solid glyph; ordinary navigation and component actions retain their normal icon style. Unselected first-level icons use the tertiary icon color through `--color-primary-level-unselected`, which resolves to `--color-icon-subtle` (`--color-neutral-dark-40`); Selected uses the brand foreground on a transparent background. Hover may add the Sidebar accent background but must preserve the current icon color. Expanded mode uses a fixed `--size-11` (40px) high horizontal group anchored at the bottom and distributes every first-level entry across the Sidebar content width. When the entire navigation is collapsed to 64px, every first-level entry remains visible as a 40×40 icon-only control and the group stacks them vertically from the bottom upward; never hide the unselected entries. Second-level navigation is organized into one or more independent collapsible menu groups. Each group heading is a button that toggles only its associated route list, preserves selection while collapsed, exposes `aria-expanded` and `aria-controls`, and uses `subtitle-s` (14px / 20px / Medium 500) with `--color-text-muted`. The gap between a group heading and its route list uses `--space-1` (2px). Reuse one 16px Chevron for both states and animate it through a 180-degree rotation; do not swap icon assets. Keep independent Selected states for both navigation levels; changing the first level updates the second-level Sidebar context.
+Primary Navigation Shell defaults Main Content to the White surface (`--color-surface`); Gray (`--color-bg-subtle`) remains an approved optional variant. The shell supports two navigation-hierarchy variants. Its Brand Anchor and Primary Navigation share a continuous right divider using `--layout-navigation-divider-width` (0.5px) and `--color-border`; Primary Navigation keeps `--space-4` (12px) bottom margin from the shell edge. Expanded navigation uses `--layout-sidebar-width` (240px). A 40px collapse button sits at the Brand Anchor's right edge. Activating it reduces the navigation column to `--layout-sidebar-width-collapsed` (64px), hides the application Logo and name, hides route labels, and preserves the current selection. In the collapsed Brand Anchor, a 40px expand button occupies the former Logo position. Both controls use semantic Lucide aliases, expose `aria-expanded` and `aria-controls`, support native button keyboard activation, and transfer focus to the newly visible counterpart. A single-level shell uses the Sidebar directly for its route list. In a two-level shell, first-level functional-space entries appear as icon-only controls at the bottom-left of the navigation region, while the second-level routes continue to use the Sidebar component above. The complete first-level group is always anchored to the bottom edge of Primary Navigation; it must never be placed directly after the second-level menu at the top or middle. This is the client system's only approved first-level menu, and every entry uses the same pinned Lucide Regular semantic-alias rule as ordinary navigation and component actions; HarmonyOS Filled icons are prohibited. Unselected first-level icons use the tertiary icon color through `--color-primary-level-unselected`, which resolves to `--color-icon-subtle` (`--color-neutral-dark-40`); Selected uses the brand foreground on a transparent background. Hover may add the Sidebar accent background but must preserve the current icon color. Expanded mode uses a fixed `--size-11` (40px) high horizontal group anchored at the bottom and distributes every first-level entry across the Sidebar content width. When the entire navigation is collapsed to 64px, every first-level entry remains visible as a 40×40 icon-only control and the group stacks them vertically from the bottom upward; never hide the unselected entries. Second-level navigation is organized into one or more independent collapsible menu groups. Each group heading is a button that toggles only its associated route list, preserves selection while collapsed, exposes `aria-expanded` and `aria-controls`, support native button keyboard activation, and uses `subtitle-s` (14px / 20px / Medium 500) with `--color-text-muted`. The gap between a group heading and its route list uses `--space-1` (2px). Reuse one 16px Chevron for both states and animate it through a 180-degree rotation; do not swap icon assets. Keep independent Selected states for both navigation levels; changing the first level updates the second-level Sidebar context.
 
 The component-gallery preview for Primary Navigation Shell must keep only the shell-defining content real: Brand Anchor, Global Primary Action Slot, navigation hierarchy, selection, and collapse controls. Represent the non-focused adjacent Main Content title and body with neutral static skeletons and no business copy or data. Keep window controls visible because they communicate the shell boundary. This is a documentation-preview focus rule, not a runtime loading-state requirement for generated product pages.
 
-Titlebar rendering and page-action ownership add these mandatory shell rules: keep the Titlebar component transparent; host each segment on the same surface as its pane below; omit horizontal dividers below Primary Navigation and Secondary Pane title segments; keep vertical pane dividers continuous. Add a Global Primary Action Slot inside Primary Navigation Shell between Brand Anchor and Sidebar navigation. Every page-global Primary Button must use this slot, with exactly one such CTA per page. Expanded mode uses a 40px-high icon + text Primary Button that fills the available width inside the Sidebar's 16px horizontal inset. The slot keeps 8px below Brand Anchor / Titlebar through `--layout-primary-action-slot-gap-top` and 12px before the first Sidebar navigation component through `--layout-primary-action-slot-gap-bottom`; these values belong only to the action slot and must not be reused as whole-navigation padding, generic component gaps, or menu-row spacing. Collapsed 64px mode uses a 40px icon-only Primary Button with an accessible name and Tooltip. Secondary, Ghost, Icon, and local buttons may appear elsewhere according to scope.
+Titlebar rendering and page-action ownership add these mandatory shell rules: keep the Titlebar component transparent with no bottom divider by default; host each segment on the same surface as its pane below; in a two-column shell keep both the branded left segment and the final title/window-control segment divider-free; in a three-column shell keep the branded Primary Navigation and Secondary Pane segments divider-free and add the only bottom divider to the final Main Detail segment, which owns the operation slot. Keep vertical pane dividers continuous. Add a Global Primary Action Slot inside Primary Navigation Shell between Brand Anchor and Sidebar navigation. Every page-global Primary Button must use this slot, with exactly one such CTA per page. The Primary Navigation owns a 16px horizontal inset and the slot itself adds `--space-3` (8px) horizontal inner padding, so the expanded button aligns to the Brand Anchor / Logo's 24px content axis. The slot keeps 8px below Brand Anchor / Titlebar through `--layout-primary-action-slot-gap-top` and 12px before the first Sidebar navigation component through `--layout-primary-action-slot-gap-bottom`; these values belong only to the action slot and must not be reused as whole-navigation padding, generic component gaps, or menu-row spacing. Collapsed 64px mode uses a 40px icon-only Primary Button with an accessible name and Tooltip; its dedicated slot compensation keeps the icon centered in the collapsed rail. Secondary, Ghost, Icon, and local buttons may appear elsewhere according to scope.
 
 The Global Title Layer must share the Workspace column boundaries. Treat the top-left of the final pane as `final-pane-leading-slot`:
 

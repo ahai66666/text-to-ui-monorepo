@@ -32,11 +32,27 @@ const selfContainedCssPlugin = () => ({
   }
 });
 
+const managedPreviewHealthPlugin = () => ({
+  name: "text-to-ui-managed-preview-health",
+  configureServer(server) {
+    server.middlewares.use("/__text_to_ui_gallery_health", (_request, response) => {
+      response.setHeader("content-type", "application/json; charset=utf-8");
+      response.end(JSON.stringify({ ok: true, service: "text-to-ui-component-gallery" }));
+    });
+  }
+});
+
 // The gallery has no modulepreload links that need a legacy fallback. Keeping
 // Vite's MutationObserver polyfill out of the preview avoids an unnecessary
 // runtime error in the embedded browser while preserving native module loading.
-export default defineConfig({
-  plugins: [vue(), fileRuntimeFallbackPlugin(), selfContainedCssPlugin()],
+export default defineConfig(({ command }) => ({
+  base: command === "serve" ? "/components/" : "./",
+  plugins: [vue(), managedPreviewHealthPlugin(), fileRuntimeFallbackPlugin(), selfContainedCssPlugin()],
+  server: {
+    host: "127.0.0.1",
+    port: 43175,
+    strictPort: true
+  },
   build: {
     modulePreload: { polyfill: false },
     rollupOptions: {
@@ -48,4 +64,4 @@ export default defineConfig({
       }
     }
   }
-});
+}));

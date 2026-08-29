@@ -31,7 +31,7 @@
   --radius-list-item: var(--radius-3);
   --radius-badge: var(--radius-full);
   --radius-progress: var(--radius-full);
-  --radius-avatar: var(--radius-3);
+  --radius-avatar: var(--radius-full);
   --radius-card: var(--radius-4);
   --radius-table: var(--radius-4);
   --radius-pagination-item: var(--radius-3);

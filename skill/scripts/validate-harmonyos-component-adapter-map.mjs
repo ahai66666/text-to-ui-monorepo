@@ -33,7 +33,7 @@ const textStyles = new Set([
   "Typography/Subtitle_S",
   "Typography/Body_L",
   "Typography/Body_M",
-  "Typography/Caption_L",
+  "Typography/Body_S",
 ]);
 const effectStyles = new Set([
   "Effect/Foundation/shadow-1",

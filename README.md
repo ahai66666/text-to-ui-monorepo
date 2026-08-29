@@ -1,10 +1,10 @@
 # Text-to-UI：HarmonyOS PC 设计开发协同系统
 
-`text-to-ui` 不是一个只把文字生成成页面的工具，也不是单独的一套组件库。它是连接需求分析、设计系统、跨框架原生组件、Pixso 设计稿、组件验收和页面生成流程的协同桥梁。
+`text-to-ui` 不是一个只把文字生成成页面的工具，也不是单独的一套组件库。它是连接需求分析、设计系统、跨框架 UI 组件实现、Pixso 设计稿、组件验收和页面生成流程的协同桥梁。
 
 它让设计师不再只交付一张静态效果图，也让开发者不再针对每个页面重复还原基础组件。双方围绕同一套组件契约、Tokens、图标、状态和交互规则工作，并通过真实的 HTML、React、Vue 运行时验证结果。
 
-> 项目定位：一个面向 HarmonyOS PC 的 Text-to-UI 设计开发协同系统，包含需求分析 Skill、跨框架原生组件库、设计系统、Pixso 映射、组件画廊和自动验证流程。
+> 项目定位：一个面向 HarmonyOS PC 的 Text-to-UI 设计开发协同系统，包含需求分析 Skill、多框架 UI 组件库、设计系统、Pixso 映射、组件画廊和自动验证流程。
 
 ## 系统如何工作
 
@@ -13,16 +13,16 @@ Text-to-UI Skill
     ↓
 组件契约、Tokens、图标、视觉规范
     ↓
-HTML 原生组件
-React 原生组件
-Vue 原生组件
+HTML 组件实现
+React 组件实现
+Vue 组件实现
     ↓
 Pixso 映射、组件画廊、浏览器验证
 ```
 
 其中有一条必须保持清晰的边界：
 
-> Skill 负责分析需求、选择组件、组织页面和调用规范；原生组件库负责真正的 HTML、React、Vue 实现。
+> Skill 负责分析需求、选择组件、组织页面和调用规范；生产组件包负责真正的 HTML、React、Vue 实现。
 
 Skill 不用视觉相似的临时代码冒充生产组件。页面生成时，它会优先读取组件注册表和设计系统，选择已有组件、Variant 和 Pattern；组件包则提供可在真实工程中使用的结构、状态、行为和样式源码。
 
@@ -67,7 +67,7 @@ Text-to-UI 将这些问题转化为可复用、可实现、可验证的系统能
 
 对开发者最核心的价值是：
 
-> 从“照着设计稿重复还原”升级为“直接调用统一契约下的原生组件”。
+> 从“照着设计稿重复还原”升级为“直接调用统一契约下的 UI 组件”。
 
 ## 设计与开发协作流程
 
@@ -89,7 +89,7 @@ Text-to-UI 将这些问题转化为可复用、可实现、可验证的系统能
 HTML / React / Vue 运行时与自动校验
 ```
 
-根据任务也可以选择 Pixso-first 或 Direct HTML。无论采用哪种流程，页面结构、组件选择、状态和 Token 都应来自同一份规则系统；不能把 Pixso 普通图层宣称为原生组件实例，也不能把 HTML 外观相似物冒充 React 或 Vue 源组件。
+根据任务也可以选择 Pixso-first 或 Direct HTML。无论采用哪种流程，页面结构、组件选择、状态和 Token 都应来自同一份规则系统；不能把 Pixso 普通图层宣称为已注册组件实例，也不能把 HTML 外观相似物冒充 React 或 Vue 源组件。
 
 ## 核心模块
 
@@ -138,9 +138,9 @@ HTML / React / Vue 运行时与自动校验
 
 | 组件范围 | HTML | React | Vue | Pixso 映射 |
 | --- | --- | --- | --- | --- |
-| 50 个登记组件 | Partial | Partial | Partial | Logical mapping |
+| 55 个登记组件 | Partial | Partial | Partial | Logical mapping |
 
-目前 50 个组件已经具有独立的 HTML、React、Vue 源码入口，并使用 canonical CSS Variables，但仍统一标记为 `Partial`。只有以下六项都具有可重复运行的证据后，组件才会恢复为 `Ready`：
+目前 55 个组件已经具有独立的 HTML、React、Vue 源码入口，并使用 canonical CSS Variables，但仍统一标记为 `Partial`。本次新增 `AspectRatio`、`Bubble`、`PrimaryNavigationItem`、`Radio`、`Typography` 五个组件。只有以下六项都具有可重复运行的证据后，组件才会恢复为 `Ready`：
 
 - `sourceReady`
 - `contractReady`
@@ -149,7 +149,9 @@ HTML / React / Vue 运行时与自动校验
 - `accessibilityParity`
 - `tokenParity`
 
-当前质量门是 `0 Ready / 50 Partial`。这是一项有意保留的诚实成熟度标记：Skill 和 Pixso 严格通道不能把尚未完成六维验收的组件宣称为完整复用。
+当前质量门是 `0 Ready / 55 Partial`。这是一项有意保留的诚实成熟度标记：Skill 和 Pixso 严格通道不能把尚未完成六维验收的组件宣称为完整复用。
+
+Pattern 是页面级组合契约，不是组件注册表条目。目前仓库提供 4 个可解析 Pattern：两栏工作台、三栏工作台、工具工作区和检查器页面。HTML、React、Vue 与 Pixso 必须使用同一份 Pattern 契约，不能在框架适配器中各自重新定义页面结构。
 
 ## 完整代码仓交付边界
 
@@ -175,6 +177,43 @@ text-to-ui-monorepo/
 - 只安装 Skill 而没有组件包时，Skill 必须明确报告组件库不可用，不能静默生成视觉相似替代品。
 - 克隆仓库不会自动把 Skill 注册到 Codex；仍需安装 `skill/`，并为组件复用提供完整仓库或已发布包。
 
+## Text-to-UI 与 Pixso 插件交付
+
+HTML 导入 Pixso 采用同一条可重复执行的链路：
+
+```text
+HTML / 浏览器最终计算样式
+  → Visual Manifest
+  → DOM Visual IR
+  → Operation Plan
+  → Text-to-UI Pixso Native Renderer
+  → Pixso 变量、文字样式和组件实例
+```
+
+仓库中的职责边界如下：
+
+| 路径 | 用途 | 是否包含运行缓存 |
+| --- | --- | --- |
+| `text-to-ui/` | Skill 唯一规范源、导入编译器、映射规则和测试 | 否 |
+| `skill/` | 可独立安装的 Skill 同步镜像 | 否；`.text-to-ui/` 运行状态不发布 |
+| `text-to-ui/scripts/pixso-native-renderer-plugin/` | 可在 Pixso 开发者模式加载的插件包 | 否 |
+| `packages/` | HTML、React、Vue 组件和共享设计系统源码 | 否 |
+
+插件包负责在已打开的 Pixso 文件中执行 Operation Plan，并持续监听本地桥接服务；Skill 负责采集 HTML、锁定几何、生成计划和提供规则。正常整页导入只使用插件执行，不与 MCP 整页绘制并行，也不读取旧计划、旧截图、旧 GUID 或旧画板作为新运行输入。插件代码/API 变更后需要重新加载插件包；规则、映射或页面内容变化只需要重新生成并发布新的 Operation Plan。
+
+导入中的关键不变量：普通文字默认内容自适应，只有 HTML 明确使用省略规则且文本超出盒宽时才使用 `TRUNCATE`；图标热区横纵居中，16/20/24px 图标描边分别为 1/1.25/1.5px，并优先绑定 Pixso `Size & Layout` 中的对应变量；几何锁定后才做 Token、文字样式和精确组件映射。缺少精确资源时保留原始 SVG 或普通图层，不用近似组件覆盖真实布局。
+
+插件的本地桥接服务可通过以下命令启动和检查：
+
+```bash
+pnpm services:start
+node text-to-ui/scripts/pixso-plugin-bridge.mjs status
+pnpm --dir text-to-ui pixso:plugin:build
+pnpm --dir text-to-ui pixso:delivery:check
+```
+
+`.text-to-ui/` 下的任务状态、归档计划、连接会话和临时结果只属于本机运行时，不应提交到 GitHub；审计截图和一次性回归输出也不属于 Skill 或插件发布包。
+
 ## 本地运行
 
 环境要求：Node.js 22、pnpm 10。
@@ -194,6 +233,9 @@ pnpm --filter @text-to-ui/component-gallery dev
 
 # 或生成正式构建
 pnpm gallery:build
+
+# 启动可复用的 Coremail 示例工作台
+pnpm --filter @text-to-ui/coremail-workbench dev
 ```
 
 ## 自动验证
@@ -223,4 +265,8 @@ Skill、组件包和 Tokens 使用独立版本，例如：
 
 GitHub Release 可以发布 Skill ZIP 与组件包构建产物；需要作为工程依赖使用时，再发布 React/Vue 等 npm 包。仓库不保存目标 Pixso 文件的运行时 GUID，组件和变量应在当前文件中动态解析。
 
-组件迁移与六维验收规则见 [`docs/component-migration-plan.md`](docs/component-migration-plan.md)。
+组件迁移与六维验收规则见 [`docs/component-migration-plan.md`](docs/component-migration-plan.md)。多人协作约定见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+
+## 许可证
+
+本项目采用 [MIT License](LICENSE)。第三方依赖和外部设计资源仍以其各自许可证或授权范围为准。

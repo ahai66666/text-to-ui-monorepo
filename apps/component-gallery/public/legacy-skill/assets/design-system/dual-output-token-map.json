@@ -16,10 +16,10 @@
     "hardcodedPageColors": false
   },
   "summary": {
-    "mappedPixsoVariables": 127,
+    "mappedPixsoVariables": 130,
     "primitiveColors": 56,
     "semanticColors": 99,
-    "semanticTokenMappings": 287
+    "semanticTokenMappings": 290
   },
   "variableMappings": [
     {
@@ -914,6 +914,39 @@
       "valueTransform": "identity"
     },
     {
+      "sourceToken": "tokens.icon.json:lucide.project-stroke-width-by-display-size.16",
+      "webCssVariable": "--icon-outline-stroke-width-16",
+      "webContractPath": null,
+      "pixsoVariable": "icon/stroke/16",
+      "collection": "Size & Layout",
+      "type": "number",
+      "resolvedValue": 1,
+      "pixsoValue": 1,
+      "valueTransform": "identity"
+    },
+    {
+      "sourceToken": "tokens.icon.json:lucide.project-stroke-width-by-display-size.20",
+      "webCssVariable": "--icon-outline-stroke-width-20",
+      "webContractPath": null,
+      "pixsoVariable": "icon/stroke/20",
+      "collection": "Size & Layout",
+      "type": "number",
+      "resolvedValue": 1.25,
+      "pixsoValue": 1.25,
+      "valueTransform": "identity"
+    },
+    {
+      "sourceToken": "tokens.icon.json:lucide.project-stroke-width-by-display-size.24",
+      "webCssVariable": "--icon-outline-stroke-width-24",
+      "webContractPath": null,
+      "pixsoVariable": "icon/stroke/24",
+      "collection": "Size & Layout",
+      "type": "number",
+      "resolvedValue": 1.5,
+      "pixsoValue": 1.5,
+      "valueTransform": "identity"
+    },
+    {
       "sourceToken": "tokens.radius.json:radius.0",
       "webCssVariable": "--radius-0",
       "webContractPath": null,
@@ -1255,6 +1288,17 @@
       "valueTransform": "identity"
     },
     {
+      "sourceToken": "tokens.typography.json:line-height.12",
+      "webCssVariable": "--line-height-12",
+      "webContractPath": null,
+      "pixsoVariable": "font/line-height/12",
+      "collection": "Typography",
+      "type": "number",
+      "resolvedValue": 12,
+      "pixsoValue": 12,
+      "valueTransform": "identity"
+    },
+    {
       "sourceToken": "tokens.typography.json:line-height.14",
       "webCssVariable": "--line-height-14",
       "webContractPath": null,
@@ -1321,58 +1365,47 @@
       "valueTransform": "identity"
     },
     {
-      "sourceToken": "tokens.typography.json:line-height.32",
-      "webCssVariable": "--line-height-32",
+      "sourceToken": "tokens.typography.json:line-height.36",
+      "webCssVariable": "--line-height-36",
       "webContractPath": null,
-      "pixsoVariable": "font/line-height/32",
+      "pixsoVariable": "font/line-height/36",
       "collection": "Typography",
       "type": "number",
-      "resolvedValue": 32,
-      "pixsoValue": 32,
+      "resolvedValue": 36,
+      "pixsoValue": 36,
       "valueTransform": "identity"
     },
     {
-      "sourceToken": "tokens.typography.json:line-height.40",
-      "webCssVariable": "--line-height-40",
+      "sourceToken": "tokens.typography.json:line-height.44",
+      "webCssVariable": "--line-height-44",
       "webContractPath": null,
-      "pixsoVariable": "font/line-height/40",
+      "pixsoVariable": "font/line-height/44",
       "collection": "Typography",
       "type": "number",
-      "resolvedValue": 40,
-      "pixsoValue": 40,
+      "resolvedValue": 44,
+      "pixsoValue": 44,
       "valueTransform": "identity"
     },
     {
-      "sourceToken": "tokens.typography.json:line-height.52",
-      "webCssVariable": "--line-height-52",
+      "sourceToken": "tokens.typography.json:line-height.58",
+      "webCssVariable": "--line-height-58",
       "webContractPath": null,
-      "pixsoVariable": "font/line-height/52",
+      "pixsoVariable": "font/line-height/58",
       "collection": "Typography",
       "type": "number",
-      "resolvedValue": 52,
-      "pixsoValue": 52,
+      "resolvedValue": 58,
+      "pixsoValue": 58,
       "valueTransform": "identity"
     },
     {
-      "sourceToken": "tokens.typography.json:line-height.64",
-      "webCssVariable": "--line-height-64",
+      "sourceToken": "tokens.typography.json:line-height.66",
+      "webCssVariable": "--line-height-66",
       "webContractPath": null,
-      "pixsoVariable": "font/line-height/64",
+      "pixsoVariable": "font/line-height/66",
       "collection": "Typography",
       "type": "number",
-      "resolvedValue": 64,
-      "pixsoValue": 64,
-      "valueTransform": "identity"
-    },
-    {
-      "sourceToken": "tokens.typography.json:line-height.76",
-      "webCssVariable": "--line-height-76",
-      "webContractPath": null,
-      "pixsoVariable": "font/line-height/76",
-      "collection": "Typography",
-      "type": "number",
-      "resolvedValue": 76,
-      "pixsoValue": 76,
+      "resolvedValue": 66,
+      "pixsoValue": 66,
       "valueTransform": "identity"
     },
     {
@@ -2523,9 +2556,9 @@
       "role": "spacing/padding/alert-right",
       "sourceToken": "tokens.spacing.json:padding.alert-right",
       "webCssVariable": "--padding-alert-right",
-      "pixsoVariable": "space/4",
-      "resolvedCssValue": "12px",
-      "pixsoValue": 12,
+      "pixsoVariable": "space/2",
+      "resolvedCssValue": "4px",
+      "pixsoValue": 4,
       "valueTransform": "identity"
     },
     {
@@ -3691,11 +3724,11 @@
     },
     {
       "role": "typography/display-l/line-height",
-      "sourceToken": "tokens.typography.json:line-height.76",
+      "sourceToken": "tokens.typography.json:line-height.66",
       "webCssVariable": "--type-display-l-leading",
-      "pixsoVariable": "font/line-height/76",
-      "resolvedCssValue": "76px",
-      "pixsoValue": 76,
+      "pixsoVariable": "font/line-height/66",
+      "resolvedCssValue": "66px",
+      "pixsoValue": 66,
       "valueTransform": "identity"
     },
     {
@@ -3718,11 +3751,11 @@
     },
     {
       "role": "typography/display-m/line-height",
-      "sourceToken": "tokens.typography.json:line-height.64",
+      "sourceToken": "tokens.typography.json:line-height.58",
       "webCssVariable": "--type-display-m-leading",
-      "pixsoVariable": "font/line-height/64",
-      "resolvedCssValue": "64px",
-      "pixsoValue": 64,
+      "pixsoVariable": "font/line-height/58",
+      "resolvedCssValue": "58px",
+      "pixsoValue": 58,
       "valueTransform": "identity"
     },
     {
@@ -3745,11 +3778,11 @@
     },
     {
       "role": "typography/display-s/line-height",
-      "sourceToken": "tokens.typography.json:line-height.52",
+      "sourceToken": "tokens.typography.json:line-height.44",
       "webCssVariable": "--type-display-s-leading",
-      "pixsoVariable": "font/line-height/52",
-      "resolvedCssValue": "52px",
-      "pixsoValue": 52,
+      "pixsoVariable": "font/line-height/44",
+      "resolvedCssValue": "44px",
+      "pixsoValue": 44,
       "valueTransform": "identity"
     },
     {
@@ -3772,11 +3805,11 @@
     },
     {
       "role": "typography/title-l/line-height",
-      "sourceToken": "tokens.typography.json:line-height.40",
+      "sourceToken": "tokens.typography.json:line-height.36",
       "webCssVariable": "--type-title-l-leading",
-      "pixsoVariable": "font/line-height/40",
-      "resolvedCssValue": "40px",
-      "pixsoValue": 40,
+      "pixsoVariable": "font/line-height/36",
+      "resolvedCssValue": "36px",
+      "pixsoValue": 36,
       "valueTransform": "identity"
     },
     {
@@ -3799,11 +3832,11 @@
     },
     {
       "role": "typography/title-m/line-height",
-      "sourceToken": "tokens.typography.json:line-height.32",
+      "sourceToken": "tokens.typography.json:line-height.28",
       "webCssVariable": "--type-title-m-leading",
-      "pixsoVariable": "font/line-height/32",
-      "resolvedCssValue": "32px",
-      "pixsoValue": 32,
+      "pixsoVariable": "font/line-height/28",
+      "resolvedCssValue": "28px",
+      "pixsoValue": 28,
       "valueTransform": "identity"
     },
     {
@@ -3826,11 +3859,11 @@
     },
     {
       "role": "typography/title-s/line-height",
-      "sourceToken": "tokens.typography.json:line-height.28",
+      "sourceToken": "tokens.typography.json:line-height.24",
       "webCssVariable": "--type-title-s-leading",
-      "pixsoVariable": "font/line-height/28",
-      "resolvedCssValue": "28px",
-      "pixsoValue": 28,
+      "pixsoVariable": "font/line-height/24",
+      "resolvedCssValue": "24px",
+      "pixsoValue": 24,
       "valueTransform": "identity"
     },
     {
@@ -3853,11 +3886,11 @@
     },
     {
       "role": "typography/subtitle-l/line-height",
-      "sourceToken": "tokens.typography.json:line-height.24",
+      "sourceToken": "tokens.typography.json:line-height.22",
       "webCssVariable": "--type-subtitle-l-leading",
-      "pixsoVariable": "font/line-height/24",
-      "resolvedCssValue": "24px",
-      "pixsoValue": 24,
+      "pixsoVariable": "font/line-height/22",
+      "resolvedCssValue": "22px",
+      "pixsoValue": 22,
       "valueTransform": "identity"
     },
     {
@@ -3880,11 +3913,11 @@
     },
     {
       "role": "typography/subtitle-m/line-height",
-      "sourceToken": "tokens.typography.json:line-height.22",
+      "sourceToken": "tokens.typography.json:line-height.20",
       "webCssVariable": "--type-subtitle-m-leading",
-      "pixsoVariable": "font/line-height/22",
-      "resolvedCssValue": "22px",
-      "pixsoValue": 22,
+      "pixsoVariable": "font/line-height/20",
+      "resolvedCssValue": "20px",
+      "pixsoValue": 20,
       "valueTransform": "identity"
     },
     {
@@ -3907,11 +3940,11 @@
     },
     {
       "role": "typography/subtitle-s/line-height",
-      "sourceToken": "tokens.typography.json:line-height.20",
+      "sourceToken": "tokens.typography.json:line-height.16",
       "webCssVariable": "--type-subtitle-s-leading",
-      "pixsoVariable": "font/line-height/20",
-      "resolvedCssValue": "20px",
-      "pixsoValue": 20,
+      "pixsoVariable": "font/line-height/16",
+      "resolvedCssValue": "16px",
+      "pixsoValue": 16,
       "valueTransform": "identity"
     },
     {
@@ -3934,11 +3967,11 @@
     },
     {
       "role": "typography/body-l/line-height",
-      "sourceToken": "tokens.typography.json:line-height.22",
+      "sourceToken": "tokens.typography.json:line-height.20",
       "webCssVariable": "--type-body-l-leading",
-      "pixsoVariable": "font/line-height/22",
-      "resolvedCssValue": "22px",
-      "pixsoValue": 22,
+      "pixsoVariable": "font/line-height/20",
+      "resolvedCssValue": "20px",
+      "pixsoValue": 20,
       "valueTransform": "identity"
     },
     {
@@ -3961,11 +3994,11 @@
     },
     {
       "role": "typography/body-m/line-height",
-      "sourceToken": "tokens.typography.json:line-height.20",
+      "sourceToken": "tokens.typography.json:line-height.16",
       "webCssVariable": "--type-body-m-leading",
-      "pixsoVariable": "font/line-height/20",
-      "resolvedCssValue": "20px",
-      "pixsoValue": 20,
+      "pixsoVariable": "font/line-height/16",
+      "resolvedCssValue": "16px",
+      "pixsoValue": 16,
       "valueTransform": "identity"
     },
     {
@@ -3978,30 +4011,57 @@
       "valueTransform": "identity"
     },
     {
-      "role": "typography/caption-l/font-size",
+      "role": "typography/body-s/font-size",
       "sourceToken": "tokens.typography.json:font-size.12",
-      "webCssVariable": "--type-caption-l-size",
+      "webCssVariable": "--type-body-s-size",
       "pixsoVariable": "font/size/12",
       "resolvedCssValue": "12px",
       "pixsoValue": 12,
       "valueTransform": "identity"
     },
     {
-      "role": "typography/caption-l/line-height",
-      "sourceToken": "tokens.typography.json:line-height.16",
-      "webCssVariable": "--type-caption-l-leading",
-      "pixsoVariable": "font/line-height/16",
-      "resolvedCssValue": "16px",
-      "pixsoValue": 16,
+      "role": "typography/body-s/line-height",
+      "sourceToken": "tokens.typography.json:line-height.14",
+      "webCssVariable": "--type-body-s-leading",
+      "pixsoVariable": "font/line-height/14",
+      "resolvedCssValue": "14px",
+      "pixsoValue": 14,
       "valueTransform": "identity"
     },
     {
-      "role": "typography/caption-l/font-weight",
-      "sourceToken": "tokens.typography.json:font-weight.500",
-      "webCssVariable": "--type-caption-l-weight",
-      "pixsoVariable": "font/weight/500",
-      "resolvedCssValue": "500",
-      "pixsoValue": 500,
+      "role": "typography/body-s/font-weight",
+      "sourceToken": "tokens.typography.json:font-weight.400",
+      "webCssVariable": "--type-body-s-weight",
+      "pixsoVariable": "font/weight/400",
+      "resolvedCssValue": "400",
+      "pixsoValue": 400,
+      "valueTransform": "identity"
+    },
+    {
+      "role": "typography/caption-m/font-size",
+      "sourceToken": "tokens.typography.json:font-size.10",
+      "webCssVariable": "--type-caption-m-size",
+      "pixsoVariable": "font/size/10",
+      "resolvedCssValue": "10px",
+      "pixsoValue": 10,
+      "valueTransform": "identity"
+    },
+    {
+      "role": "typography/caption-m/line-height",
+      "sourceToken": "tokens.typography.json:line-height.12",
+      "webCssVariable": "--type-caption-m-leading",
+      "pixsoVariable": "font/line-height/12",
+      "resolvedCssValue": "12px",
+      "pixsoValue": 12,
+      "valueTransform": "identity"
+    },
+    {
+      "role": "typography/caption-m/font-weight",
+      "sourceToken": "tokens.typography.json:font-weight.400",
+      "webCssVariable": "--type-caption-m-weight",
+      "pixsoVariable": "font/weight/400",
+      "resolvedCssValue": "400",
+      "pixsoValue": 400,
       "valueTransform": "identity"
     }
   ],

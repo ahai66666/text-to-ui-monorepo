@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "packages/component-contracts/src/components.json",
-  "componentCount": 50,
+  "componentCount": 55,
   "categoryCount": 12,
   "visualAuthority": [
     "Component/Design MD",
@@ -78,14 +78,13 @@
       ],
       "behaviorChecks": [
         "focus",
-        "disabled",
-        "multiple-main-detail-actions"
+        "disabled"
       ],
       "textRoles": [
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -95,7 +94,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/maximize",
@@ -104,7 +103,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -113,7 +112,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -125,17 +124,21 @@
       ],
       "props": [
         "label",
+        "paneTitle",
         "size",
+        "layout",
+        "paneRole",
         "disabled",
         "state",
         "mainDetailActions",
         "onMainDetailAction",
+        "onAction",
         "className"
       ],
       "slots": [
         "leading",
         "label",
-        "trailing",
+        "main-content-title",
         "main-detail-actions",
         "actions"
       ],
@@ -146,9 +149,35 @@
           "defaultPlacement": "final-pane-leading-slot",
           "layout": "compact-horizontal-group",
           "leadingInsetToken": "layout/main-detail-action-leading-padding",
+          "overflow": {
+            "strategy": "collapse-to-more",
+            "triggerLogicalName": "Icon Button/Ghost/Default",
+            "triggerActionId": "more",
+            "triggerIconAlias": "action/more",
+            "triggerPosition": "last",
+            "eligibleButtonTypes": [
+              "icon",
+              "icon-text-ghost"
+            ],
+            "preserveMode": true,
+            "preserveOrder": true,
+            "fit": "available-width",
+            "staticBoard": {
+              "renderTrigger": true,
+              "renderMenu": false
+            }
+          },
+          "modePolicy": {
+            "type": "uniform-business-actions",
+            "allowedModes": [
+              "icon",
+              "icon-text"
+            ],
+            "mixedModes": "forbidden",
+            "overflowTriggerExcluded": true
+          },
           "allowedButtonVariants": [
-            "ghost",
-            "ghost-icon"
+            "ghost"
           ],
           "forbidden": [
             "page-global-primary",
@@ -157,7 +186,49 @@
             "section-action",
             "selection-action",
             "inline-action"
-          ]
+          ],
+          "activeWhen": {
+            "layout": "three-column",
+            "paneRole": "final-pane"
+          },
+          "allowedButtonTypes": [
+            "icon",
+            "icon-text-ghost"
+          ],
+          "allowedButtonLogicalNames": [
+            "Icon Button/Ghost/Default",
+            "Icon Text Button/Ghost/Default"
+          ],
+          "buttonTypeContracts": {
+            "icon": {
+              "logicalName": "Icon Button/Ghost/Default",
+              "mode": "icon",
+              "requiredSlots": [
+                "icon"
+              ],
+              "forbiddenSlots": [
+                "label"
+              ]
+            },
+            "icon-text-ghost": {
+              "logicalName": "Icon Text Button/Ghost/Default",
+              "mode": "icon-text",
+              "requiredSlots": [
+                "icon",
+                "label"
+              ]
+            }
+          }
+        },
+        "main-content-title": {
+          "cardinality": "0..1",
+          "scope": "main-content-pane-global",
+          "activeWhen": {
+            "layout": "two-column",
+            "paneRole": "final-pane"
+          },
+          "defaultPlacement": "final-pane-leading-slot",
+          "leadingInsetToken": "layout/main-title-leading-padding"
         }
       },
       "layoutRules": {
@@ -317,7 +388,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/download",
@@ -326,7 +397,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/settings",
@@ -335,7 +406,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -344,7 +415,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "navigation/chevron-down",
@@ -353,7 +424,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/refresh",
@@ -362,7 +433,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/more",
@@ -371,15 +442,19 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
         "color.primary",
         "color.primary-text",
+        "color.text",
         "size.button-height",
+        "size.button-sm-height",
         "radius.button",
         "spacing.padding-button-x",
+        "spacing.padding-button-sm-x",
+        "typography.body-m",
         "typography.body-l"
       ],
       "props": [
@@ -459,7 +534,7 @@
         "value:body-l",
         "placeholder:body-l",
         "label:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -538,6 +613,7 @@
       "behaviorChecks": [
         "input",
         "clear",
+        "advanced-search",
         "focus",
         "disabled"
       ],
@@ -553,7 +629,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -562,7 +638,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -576,18 +652,45 @@
       ],
       "props": [
         "value",
+        "defaultValue",
         "placeholder",
-        "disabled"
+        "disabled",
+        "state",
+        "surface",
+        "advancedSearch",
+        "advancedSearchLabel",
+        "onAdvancedSearch",
+        "onChange",
+        "onClear"
       ],
       "slots": [
         "leading",
         "value",
-        "clear"
+        "clear",
+        "advanced-search"
       ],
-      "slotContracts": {},
+      "slotContracts": {
+        "advanced-search": {
+          "cardinality": "0..1",
+          "scope": "search-query-builder",
+          "defaultPlacement": "trailing-after-clear",
+          "control": "small-text-button",
+          "variant": "ghost",
+          "size": "small",
+          "mode": "text",
+          "textColorToken": "color.text-muted",
+          "trailingInsetToken": "space/2",
+          "requiresAccessibleName": true,
+          "interaction": "open-advanced-search-layer",
+          "coexistenceOrder": [
+            "clear",
+            "advanced-search"
+          ]
+        }
+      },
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/search.html",
+        "html": "packages/components-html/src/index.js#search",
         "react": "packages/components-react/src/index.jsx#Search",
         "vue": "packages/components-vue/src/Search.vue"
       },
@@ -647,7 +750,7 @@
         "value:body-l",
         "placeholder:body-l",
         "label:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -729,7 +832,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -739,7 +842,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -813,7 +916,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -887,7 +990,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -897,7 +1000,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -936,11 +1039,94 @@
       }
     },
     {
+      "id": "radio",
+      "logicalName": "Radio/Unselected/Default",
+      "category": "choices",
+      "categoryLabel": "选择控件",
+      "order": 41,
+      "legacyVisualGroup": "choices",
+      "canonicalSelector": "section#choices [data-component=\"Radio/Unselected/Default\"]",
+      "canonicalSpecimen": "legacy:choices:radio",
+      "fixtureId": "fixture-radio",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "unselected",
+          "variant": "unselected",
+          "state": "default",
+          "checked": false
+        },
+        {
+          "id": "selected",
+          "variant": "selected",
+          "state": "selected",
+          "checked": true
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:body-m"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "color.primary",
+        "color.primary-text",
+        "size.indicator.radio-size",
+        "radius.full",
+        "spacing.gap.choice-label",
+        "typography.body-m"
+      ],
+      "props": [
+        "checked",
+        "defaultChecked",
+        "label",
+        "name",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "control",
+        "label"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#radio",
+        "react": "packages/components-react/src/index.jsx#Radio",
+        "vue": "packages/components-vue/src/Radio.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
       "id": "radio-group",
       "logicalName": "Radio Group/Default",
       "category": "choices",
       "categoryLabel": "选择控件",
-      "order": 41,
+      "order": 42,
       "legacyVisualGroup": "choices",
       "canonicalSelector": "section#choices [data-component=\"Radio Group/Default\"]",
       "canonicalSpecimen": "legacy:choices:radio-group",
@@ -969,7 +1155,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -979,7 +1165,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1022,7 +1208,7 @@
       "logicalName": "Switch/Default",
       "category": "choices",
       "categoryLabel": "选择控件",
-      "order": 42,
+      "order": 43,
       "legacyVisualGroup": "choices",
       "canonicalSelector": "section#choices [data-component=\"Switch/Default\"]",
       "canonicalSpecimen": "legacy:choices:switch",
@@ -1051,7 +1237,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1061,7 +1247,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1090,6 +1276,117 @@
         "html": "packages/components-html/src/index.js#switch",
         "react": "packages/components-react/src/index.jsx#Switch",
         "vue": "packages/components-vue/src/Switch.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "primary-navigation-item",
+      "logicalName": "Primary Navigation Item/Level 1",
+      "category": "navigation",
+      "categoryLabel": "导航",
+      "order": 49,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Primary Navigation Item/Level 1\"]",
+      "canonicalSpecimen": "legacy:navigation:primary-navigation-item",
+      "fixtureId": "fixture-primary-navigation-item",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default",
+          "surface": "white"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [],
+      "iconSlots": [
+        {
+          "alias": "navigation/grid",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "field/calendar",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "navigation/mail-unread",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "action/settings",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.primary-level-unselected",
+        "color.sidebar-accent",
+        "color.sidebar-selected-text",
+        "color.focus-ring",
+        "size.icon-button",
+        "icon-size-lg",
+        "radius.icon-button"
+      ],
+      "props": [
+        "label",
+        "ariaLabel",
+        "icon",
+        "selected",
+        "disabled",
+        "state",
+        "onSelect",
+        "className"
+      ],
+      "slots": [
+        "icon",
+        "tooltip"
+      ],
+      "slotContracts": {
+        "icon": {
+          "cardinality": "1",
+          "scope": "primary-navigation-item",
+          "displaySize": "24px",
+          "kind": "regular",
+          "source": "lucide"
+        }
+      },
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/primary-navigation-item.html",
+        "react": "packages/components-react/src/index.jsx#PrimaryNavigationItem",
+        "vue": "packages/components-vue/src/PrimaryNavigationItem.vue"
       },
       "readiness": {
         "sourceReady": true,
@@ -1145,7 +1442,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "navigation/recent",
@@ -1154,7 +1451,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/more",
@@ -1163,7 +1460,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1285,7 +1582,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1293,7 +1590,6 @@
         "color.sidebar-selected",
         "color.text",
         "color.text-muted",
-        "color.divider",
         "size.list-item-height",
         "radius.list-item",
         "typography.body-l",
@@ -1370,7 +1666,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1439,7 +1735,10 @@
         "disabled"
       ],
       "textRoles": [
-        "content:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1449,7 +1748,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1520,7 +1819,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1531,7 +1830,7 @@
             20,
             24
           ],
-          "kind": "outline"
+          "kind": "regular"
         },
         {
           "slot": "next",
@@ -1541,7 +1840,7 @@
             20,
             24
           ],
-          "kind": "outline"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -1622,7 +1921,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -1635,6 +1934,10 @@
       "props": [
         "label",
         "value",
+        "description",
+        "checked",
+        "name",
+        "ariaLabel",
         "disabled",
         "state",
         "className"
@@ -1690,7 +1993,7 @@
         "disabled"
       ],
       "textRoles": [
-        "label:caption-l"
+        "label:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -1702,8 +2005,20 @@
         "color.primary"
       ],
       "props": [
-        "label",
-        "value",
+        "title",
+        "description",
+        "supporting",
+        "leadingIcon",
+        "leading",
+        "titleSlot",
+        "descriptionSlot",
+        "supportingSlot",
+        "content",
+        "trailing",
+        "trailingText",
+        "trailingSlot",
+        "actions",
+        "selected",
         "disabled",
         "state",
         "className"
@@ -1762,7 +2077,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -1783,8 +2098,10 @@
         "leading",
         "title",
         "description",
+        "supporting",
         "content",
-        "trailing"
+        "trailing",
+        "actions"
       ],
       "slotContracts": {},
       "layoutRules": {},
@@ -1872,7 +2189,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -2093,7 +2410,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2103,7 +2420,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2175,7 +2492,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2185,7 +2502,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2254,8 +2571,9 @@
       ],
       "textRoles": [
         "title:title-s",
+        "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2263,7 +2581,7 @@
           "displaySizes": [
             20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2336,7 +2654,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2344,7 +2662,7 @@
           "displaySizes": [
             20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2416,7 +2734,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2426,7 +2744,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2498,7 +2816,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2508,7 +2826,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2579,7 +2897,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -2661,7 +2979,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "tokenRoles": [
@@ -2744,7 +3062,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2754,7 +3072,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2890,17 +3208,16 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
+          "slot": "close",
           "alias": "action/close",
           "displaySizes": [
-            16,
-            20,
-            24
+            20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -2927,9 +3244,20 @@
         "title",
         "description",
         "content",
-        "actions"
+        "actions",
+        "close"
       ],
-      "slotContracts": {},
+      "slotContracts": {
+        "close": {
+          "cardinality": "1",
+          "scope": "semi-modal-header",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "20px",
+          "trailingInsetToken": "space/5",
+          "trailingInset": "16px"
+        }
+      },
       "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#semi-modal",
@@ -2982,7 +3310,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2992,7 +3320,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3070,7 +3398,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3080,7 +3408,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3158,29 +3486,17 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
-          "alias": "action/copy",
+          "alias": "action/more",
           "displaySizes": [
+            16,
+            20,
             24
           ],
-          "kind": "auto"
-        },
-        {
-          "alias": "action/rename",
-          "displaySizes": [
-            24
-          ],
-          "kind": "auto"
-        },
-        {
-          "alias": "action/delete",
-          "displaySizes": [
-            24
-          ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3259,7 +3575,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3269,7 +3585,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3339,7 +3655,10 @@
         "disabled"
       ],
       "textRoles": [
-        "label:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3349,7 +3668,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3426,7 +3745,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3436,7 +3755,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3509,7 +3828,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3519,7 +3838,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3592,7 +3911,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3602,7 +3921,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3673,7 +3992,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3683,7 +4002,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3754,7 +4073,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3764,7 +4083,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3836,7 +4155,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3846,7 +4165,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -3917,7 +4236,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3927,7 +4246,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4002,7 +4321,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4012,7 +4331,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4089,7 +4408,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4099,7 +4418,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4166,47 +4485,93 @@
         }
       ],
       "behaviorChecks": [
-        "focus",
+        "open",
+        "select",
+        "preview",
+        "download",
+        "escape",
+        "outside-click",
         "disabled"
       ],
       "textRoles": [
         "title:subtitle-s",
         "content:body-m",
         "description:body-s",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
-          "alias": "action/download",
+          "slot": "menu-trigger",
+          "alias": "navigation/chevron-down",
           "displaySizes": [
-            16,
-            20,
-            24
+            20
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
         "color.text",
-        "color.surface",
-        "color.border",
+        "color.surface-muted",
         "typography.subtitle-s",
         "typography.body-s",
         "spacing.component-gap"
       ],
       "props": [
-        "label",
-        "value",
+        "type",
+        "name",
+        "meta",
+        "leading",
+        "content",
+        "actions",
         "disabled",
-        "state",
-        "className"
+        "onAction",
+        "onPreview",
+        "onDownload"
       ],
       "slots": [
-        "label",
+        "leading",
+        "title",
         "content",
-        "description"
+        "description",
+        "actions",
+        "menu-trigger",
+        "menu"
       ],
-      "slotContracts": {},
+      "slotContracts": {
+        "actions": {
+          "cardinality": "0..1",
+          "scope": "attachment-surface",
+          "defaultPlacement": "trailing-end",
+          "control": "attachment-action-menu",
+          "interaction": "open-attachment-action-menu",
+          "menuItems": [
+            "preview",
+            "download"
+          ]
+        },
+        "menu-trigger": {
+          "cardinality": "0..1",
+          "scope": "attachment-action-menu",
+          "defaultVisibility": "visible",
+          "iconAlias": "navigation/chevron-down",
+          "iconSize": "20px",
+          "ariaHasPopup": "menu"
+        },
+        "menu": {
+          "cardinality": "0..1",
+          "scope": "attachment-action-menu",
+          "role": "menu",
+          "items": [
+            "preview",
+            "download"
+          ],
+          "closeOn": [
+            "escape",
+            "outside-click",
+            "select"
+          ]
+        }
+      },
       "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#attachment",
@@ -4255,7 +4620,7 @@
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4265,7 +4630,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4293,6 +4658,219 @@
         "html": "packages/components-html/src/advanced.js#carousel",
         "react": "packages/components-react/src/advanced.jsx#Carousel",
         "vue": "packages/components-vue/src/advanced.js#Carousel"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "aspect-ratio",
+      "logicalName": "Aspect Ratio/Default",
+      "category": "specialized",
+      "categoryLabel": "专用内容",
+      "order": 112,
+      "legacyVisualGroup": "specialized",
+      "canonicalSelector": "section#specialized [data-component=\"Aspect Ratio/Default\"]",
+      "canonicalSpecimen": "legacy:specialized:aspect-ratio",
+      "fixtureId": "fixture-aspect-ratio",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/generated/aspect-ratio.html",
+        "react": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio",
+        "vue": "packages/components-vue/src/generated/AspectRatio.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "bubble",
+      "logicalName": "Bubble/Default",
+      "category": "specialized",
+      "categoryLabel": "专用内容",
+      "order": 113,
+      "legacyVisualGroup": "specialized",
+      "canonicalSelector": "section#specialized [data-component=\"Bubble/Default\"]",
+      "canonicalSpecimen": "legacy:specialized:bubble",
+      "fixtureId": "fixture-bubble",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/generated/bubble.html",
+        "react": "packages/components-react/src/generated/Bubble.jsx#Bubble",
+        "vue": "packages/components-vue/src/generated/Bubble.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "typography",
+      "logicalName": "Typography/Default",
+      "category": "specialized",
+      "categoryLabel": "专用内容",
+      "order": 114,
+      "legacyVisualGroup": "specialized",
+      "canonicalSelector": "section#specialized [data-component=\"Typography/Default\"]",
+      "canonicalSpecimen": "legacy:specialized:typography",
+      "fixtureId": "fixture-typography",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/generated/typography.html",
+        "react": "packages/components-react/src/generated/Typography.jsx#Typography",
+        "vue": "packages/components-vue/src/generated/Typography.vue"
       },
       "readiness": {
         "sourceReady": true,
@@ -4368,51 +4946,62 @@
         "disabled"
       ],
       "textRoles": [
-        "content:subtitle-s",
-        "action:body-m"
+        "content:subtitle-s"
       ],
       "iconSlots": [
         {
           "alias": "status/info",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/success",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/warning",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/danger",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "status/neutral",
           "displaySizes": [
-            20
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
           "displaySizes": [
-            16
+            16,
+            20,
+            24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4499,7 +5088,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [
@@ -4570,7 +5159,10 @@
         "disabled"
       ],
       "textRoles": [
-        "content:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4580,7 +5172,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         },
         {
           "alias": "action/close",
@@ -4589,7 +5181,7 @@
             20,
             24
           ],
-          "kind": "auto"
+          "kind": "regular"
         }
       ],
       "tokenRoles": [

@@ -604,6 +604,11 @@
         }
       },
       "line-height": {
+        "12": {
+          "value": "12px",
+          "type": "dimension",
+          "description": "tokens.typography.json:line-height.12"
+        },
         "14": {
           "value": "14px",
           "type": "dimension",
@@ -634,30 +639,25 @@
           "type": "dimension",
           "description": "tokens.typography.json:line-height.28"
         },
-        "32": {
-          "value": "32px",
+        "36": {
+          "value": "36px",
           "type": "dimension",
-          "description": "tokens.typography.json:line-height.32"
+          "description": "tokens.typography.json:line-height.36"
         },
-        "40": {
-          "value": "40px",
+        "44": {
+          "value": "44px",
           "type": "dimension",
-          "description": "tokens.typography.json:line-height.40"
+          "description": "tokens.typography.json:line-height.44"
         },
-        "52": {
-          "value": "52px",
+        "58": {
+          "value": "58px",
           "type": "dimension",
-          "description": "tokens.typography.json:line-height.52"
+          "description": "tokens.typography.json:line-height.58"
         },
-        "64": {
-          "value": "64px",
+        "66": {
+          "value": "66px",
           "type": "dimension",
-          "description": "tokens.typography.json:line-height.64"
-        },
-        "76": {
-          "value": "76px",
-          "type": "dimension",
-          "description": "tokens.typography.json:line-height.76"
+          "description": "tokens.typography.json:line-height.66"
         }
       },
       "weight": {

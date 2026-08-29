@@ -44,6 +44,8 @@
       "colorVariables": [
         "neutral-light/100",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "neutral-dark/10"
       ]
     },
@@ -61,7 +63,8 @@
       "colorVariables": [
         "neutral-light/100",
         "neutral-dark/90",
-        "neutral-dark/60"
+        "neutral-dark/60",
+        "neutral-dark/40"
       ]
     },
     "Sidebar Item/Default": {
@@ -79,7 +82,9 @@
         "neutral-dark/05",
         "brand/10",
         "brand/100",
-        "neutral-dark/90"
+        "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40"
       ]
     },
     "List Item/White Surface/Default": {
@@ -98,7 +103,8 @@
         "neutral-light/100",
         "brand/10",
         "neutral-dark/90",
-        "neutral-dark/60"
+        "neutral-dark/60",
+        "neutral-dark/40"
       ]
     },
     "Accordion/Default": {
@@ -115,6 +121,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -153,6 +161,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -170,6 +180,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -309,6 +321,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -827,6 +841,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -845,6 +861,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -881,6 +899,8 @@
         "neutral-light/100",
         "neutral-dark/05",
         "neutral-dark/90",
+        "neutral-dark/60",
+        "neutral-dark/40",
         "brand/100"
       ]
     },
@@ -895,6 +915,91 @@
         "label",
         "trailing",
         "actions"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Primary Navigation Item/Level 1": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "icon",
+        "tooltip"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Aspect Ratio/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Bubble/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Radio/Unselected/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "variant",
+        "state"
+      ],
+      "slots": [
+        "control",
+        "label"
+      ],
+      "colorVariables": [
+        "neutral-light/100",
+        "neutral-dark/05",
+        "neutral-dark/90",
+        "brand/100"
+      ]
+    },
+    "Typography/Default": {
+      "libraryPage": "NewComponents",
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
       ],
       "colorVariables": [
         "neutral-light/100",

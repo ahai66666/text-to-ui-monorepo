@@ -74,17 +74,17 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `font/size/38` | `HarmonyOS Sans` | `--font-size-38` | `38px` |
 | `font/size/48` | `HarmonyOS Sans` | `--font-size-48` | `48px` |
 | `font/size/56` | `HarmonyOS Sans` | `--font-size-56` | `56px` |
+| `font/line-height/12` | `HarmonyOS Sans` | `--line-height-12` | `12px` |
 | `font/line-height/14` | `HarmonyOS Sans` | `--line-height-14` | `14px` |
 | `font/line-height/16` | `HarmonyOS Sans` | `--line-height-16` | `16px` |
 | `font/line-height/20` | `HarmonyOS Sans` | `--line-height-20` | `20px` |
 | `font/line-height/22` | `HarmonyOS Sans` | `--line-height-22` | `22px` |
 | `font/line-height/24` | `HarmonyOS Sans` | `--line-height-24` | `24px` |
 | `font/line-height/28` | `HarmonyOS Sans` | `--line-height-28` | `28px` |
-| `font/line-height/32` | `HarmonyOS Sans` | `--line-height-32` | `32px` |
-| `font/line-height/40` | `HarmonyOS Sans` | `--line-height-40` | `40px` |
-| `font/line-height/52` | `HarmonyOS Sans` | `--line-height-52` | `52px` |
-| `font/line-height/64` | `HarmonyOS Sans` | `--line-height-64` | `64px` |
-| `font/line-height/76` | `HarmonyOS Sans` | `--line-height-76` | `76px` |
+| `font/line-height/36` | `HarmonyOS Sans` | `--line-height-36` | `36px` |
+| `font/line-height/44` | `HarmonyOS Sans` | `--line-height-44` | `44px` |
+| `font/line-height/58` | `HarmonyOS Sans` | `--line-height-58` | `58px` |
+| `font/line-height/66` | `HarmonyOS Sans` | `--line-height-66` | `66px` |
 | `font/weight/400` | `HarmonyOS Sans` | `--font-weight-400` | `400` |
 | `font/weight/500` | `HarmonyOS Sans` | `--font-weight-500` | `500` |
 | `font/weight/700` | `HarmonyOS Sans` | `--font-weight-700` | `700` |
@@ -139,7 +139,7 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `spacing/padding/tooltip` | `--padding-tooltip` | `space/3` | `8px` |
 | `spacing/padding/alert` | `--padding-alert` | `space/3` | `8px` |
 | `spacing/padding/alert-left` | `--padding-alert-left` | `space/3` | `8px` |
-| `spacing/padding/alert-right` | `--padding-alert-right` | `space/4` | `12px` |
+| `spacing/padding/alert-right` | `--padding-alert-right` | `space/2` | `4px` |
 | `spacing/padding/selection-option` | `--padding-selection-option` | `space/3` | `8px` |
 | `spacing/padding/tab-x` | `--padding-tab-x` | `space/4` | `12px` |
 | `spacing/padding/tab-panel` | `--padding-tab-panel` | `space/5` | `16px` |
@@ -194,6 +194,9 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `size/component/tab-vertical-height` | `--height-tab-vertical` | `size/40` | `40px` |
 | `size/component/menu-item-height` | `--height-menu-item` | `size/40` | `40px` |
 | `size/component/list-item-height` | `--height-list-item` | `size/40` | `40px` |
+| `size/component/list-item-single-line-height` | `--height-list-item-single-line` | `size/48` | `48px` |
+| `size/component/list-item-double-line-height` | `--height-list-item-double-line` | `size/56` | `56px` |
+| `size/component/list-item-triple-line-height` | `--height-list-item-triple-line` | `size/80` | `80px` |
 | `size/component/list-heading-height` | `--height-list-heading` | `size/40` | `40px` |
 | `size/component/tree-item-height` | `--height-tree-item` | `size/40` | `40px` |
 | `size/component/button-height` | `--height-button` | `size/40` | `40px` |
@@ -246,7 +249,7 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `radius/list-item` | `--radius-list-item` | `radius/08` | `8px` |
 | `radius/badge` | `--radius-badge` | `radius/full` | `999px` |
 | `radius/progress` | `--radius-progress` | `radius/full` | `999px` |
-| `radius/avatar` | `--radius-avatar` | `radius/08` | `8px` |
+| `radius/avatar` | `--radius-avatar` | `radius/full` | `999px` |
 | `radius/table` | `--radius-table` | `radius/12` | `12px` |
 | `radius/pagination-item` | `--radius-pagination-item` | `radius/08` | `8px` |
 | `radius/dialog` | `--radius-dialog` | `radius/16` | `16px` |
@@ -278,38 +281,41 @@ Total: 71 non-color variables. Together with 56 colors, the Pixso baseline conta
 | `layout/spacing/main-detail-padding-top` | `--layout-main-detail-padding-top` | `space/5` | `16px` |
 | `layout/spacing/main-detail-padding-bottom` | `--layout-main-detail-padding-bottom` | `space/0` | `0px` |
 | `typography/display-l/font-size` | `--type-display-l-size` | `font/size/56` | `56px` |
-| `typography/display-l/line-height` | `--type-display-l-leading` | `font/line-height/76` | `76px` |
+| `typography/display-l/line-height` | `--type-display-l-leading` | `font/line-height/66` | `66px` |
 | `typography/display-l/font-weight` | `--type-display-l-weight` | `font/weight/400` | `400` |
 | `typography/display-m/font-size` | `--type-display-m-size` | `font/size/48` | `48px` |
-| `typography/display-m/line-height` | `--type-display-m-leading` | `font/line-height/64` | `64px` |
+| `typography/display-m/line-height` | `--type-display-m-leading` | `font/line-height/58` | `58px` |
 | `typography/display-m/font-weight` | `--type-display-m-weight` | `font/weight/400` | `400` |
 | `typography/display-s/font-size` | `--type-display-s-size` | `font/size/38` | `38px` |
-| `typography/display-s/line-height` | `--type-display-s-leading` | `font/line-height/52` | `52px` |
+| `typography/display-s/line-height` | `--type-display-s-leading` | `font/line-height/44` | `44px` |
 | `typography/display-s/font-weight` | `--type-display-s-weight` | `font/weight/400` | `400` |
 | `typography/title-l/font-size` | `--type-title-l-size` | `font/size/30` | `30px` |
-| `typography/title-l/line-height` | `--type-title-l-leading` | `font/line-height/40` | `40px` |
+| `typography/title-l/line-height` | `--type-title-l-leading` | `font/line-height/36` | `36px` |
 | `typography/title-l/font-weight` | `--type-title-l-weight` | `font/weight/700` | `700` |
 | `typography/title-m/font-size` | `--type-title-m-size` | `font/size/24` | `24px` |
-| `typography/title-m/line-height` | `--type-title-m-leading` | `font/line-height/32` | `32px` |
+| `typography/title-m/line-height` | `--type-title-m-leading` | `font/line-height/28` | `28px` |
 | `typography/title-m/font-weight` | `--type-title-m-weight` | `font/weight/700` | `700` |
 | `typography/title-s/font-size` | `--type-title-s-size` | `font/size/20` | `20px` |
-| `typography/title-s/line-height` | `--type-title-s-leading` | `font/line-height/28` | `28px` |
+| `typography/title-s/line-height` | `--type-title-s-leading` | `font/line-height/24` | `24px` |
 | `typography/title-s/font-weight` | `--type-title-s-weight` | `font/weight/700` | `700` |
 | `typography/subtitle-l/font-size` | `--type-subtitle-l-size` | `font/size/18` | `18px` |
-| `typography/subtitle-l/line-height` | `--type-subtitle-l-leading` | `font/line-height/24` | `24px` |
+| `typography/subtitle-l/line-height` | `--type-subtitle-l-leading` | `font/line-height/22` | `22px` |
 | `typography/subtitle-l/font-weight` | `--type-subtitle-l-weight` | `font/weight/500` | `500` |
 | `typography/subtitle-m/font-size` | `--type-subtitle-m-size` | `font/size/16` | `16px` |
-| `typography/subtitle-m/line-height` | `--type-subtitle-m-leading` | `font/line-height/22` | `22px` |
+| `typography/subtitle-m/line-height` | `--type-subtitle-m-leading` | `font/line-height/20` | `20px` |
 | `typography/subtitle-m/font-weight` | `--type-subtitle-m-weight` | `font/weight/500` | `500` |
 | `typography/subtitle-s/font-size` | `--type-subtitle-s-size` | `font/size/14` | `14px` |
-| `typography/subtitle-s/line-height` | `--type-subtitle-s-leading` | `font/line-height/20` | `20px` |
+| `typography/subtitle-s/line-height` | `--type-subtitle-s-leading` | `font/line-height/16` | `16px` |
 | `typography/subtitle-s/font-weight` | `--type-subtitle-s-weight` | `font/weight/500` | `500` |
 | `typography/body-l/font-size` | `--type-body-l-size` | `font/size/16` | `16px` |
-| `typography/body-l/line-height` | `--type-body-l-leading` | `font/line-height/22` | `22px` |
+| `typography/body-l/line-height` | `--type-body-l-leading` | `font/line-height/20` | `20px` |
 | `typography/body-l/font-weight` | `--type-body-l-weight` | `font/weight/400` | `400` |
 | `typography/body-m/font-size` | `--type-body-m-size` | `font/size/14` | `14px` |
-| `typography/body-m/line-height` | `--type-body-m-leading` | `font/line-height/20` | `20px` |
+| `typography/body-m/line-height` | `--type-body-m-leading` | `font/line-height/16` | `16px` |
 | `typography/body-m/font-weight` | `--type-body-m-weight` | `font/weight/400` | `400` |
-| `typography/caption-l/font-size` | `--type-caption-l-size` | `font/size/12` | `12px` |
-| `typography/caption-l/line-height` | `--type-caption-l-leading` | `font/line-height/16` | `16px` |
-| `typography/caption-l/font-weight` | `--type-caption-l-weight` | `font/weight/500` | `500` |
+| `typography/body-s/font-size` | `--type-body-s-size` | `font/size/12` | `12px` |
+| `typography/body-s/line-height` | `--type-body-s-leading` | `font/line-height/14` | `14px` |
+| `typography/body-s/font-weight` | `--type-body-s-weight` | `font/weight/400` | `400` |
+| `typography/caption-m/font-size` | `--type-caption-m-size` | `font/size/10` | `10px` |
+| `typography/caption-m/line-height` | `--type-caption-m-leading` | `font/line-height/12` | `12px` |
+| `typography/caption-m/font-weight` | `--type-caption-m-weight` | `font/weight/400` | `400` |

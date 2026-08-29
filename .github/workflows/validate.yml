@@ -15,8 +15,5 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile=false
-      - run: pnpm delivery:validate
-      - run: pnpm contracts:validate
-      - run: pnpm pixso:mapping:test
-      - run: pnpm frameworks:validate
-      - run: pnpm tokens:validate
+      - run: pnpm test
+      - run: pnpm gallery:build

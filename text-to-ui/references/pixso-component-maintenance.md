@@ -5,8 +5,12 @@ are created, repaired, or synchronized with the bundled component gallery.
 
 ## Authority and generated specification
 
-The component system has four authority layers:
+The component system has a cross-source relationship layer plus four local
+authority layers:
 
+0. `assets/design-system/mapping-registry.json` owns the selected HTML/Token ↔
+   Pixso/native component relationships and profile boundaries. Its generated
+   maps and coverage tables are projections.
 1. `assets/design-system/tokens.*.json` owns primitive and semantic values.
 2. `assets/design-system/design.md` and component references own semantic rules.
 3. `preview/component-gallery.html` plus its CSS and approved SVG sources own the
@@ -17,10 +21,41 @@ Do not infer a Pixso component from its name alone. Build and check the
 machine-readable contract first:
 
 ```bash
+node scripts/validate-mapping-registry.mjs
 node scripts/build-pixso-component-specs.mjs
 node scripts/build-pixso-component-specs.mjs --check
 node scripts/validate-pixso-component-specs.mjs
 ```
+
+For HTML-to-Pixso synchronization, the contract is also executable. Generate a
+library plan from `packages/component-contracts/src/components.json`:
+
+```bash
+node scripts/generate-pixso-component-library-plan.mjs \
+  --out /absolute/path/pixso-component-library-plan.json
+node scripts/validate-pixso-component-library-plan.mjs \
+  --plan /absolute/path/pixso-component-library-plan.json
+```
+
+The plan writes `NewComponents` by default and supports a manual-review target
+such as `Components` via `--library-page Components`. A review plan must be
+approved before its components are used as production Instances. Both targets
+create direct Pixso `COMPONENT` nodes with exact logical names. Every declared HTML slot becomes a `#slot-name` layer;
+text/boolean props are exposed as component properties, and HTML source,
+renderer key, slot contracts, and Token roles are stored as provenance. This
+prevents a page generator from mistaking a component set with a partial slot
+surface for a complete component. A missing slot is repaired in the library
+phase and never replaced by a page-local combination.
+
+The generator also resolves an HTML logical name to the closest approved
+Pixso visual spec (for example `Titlebar/Default` uses the existing L/64px
+geometry and `Checkbox/Default` uses the Unchecked/20px geometry). This is an
+identity alias only; the generated component keeps the HTML logical name so
+page mapping remains deterministic. Surface ownership follows the HTML
+contract: a white host surface does not imply a white component. Search/Input
+controls on a white host bind the neutral-dark/05 control fill, while ordinary
+list and navigation items leave their root transparent. Only explicit cards,
+dialogs, and primary/secondary controls own a default fill.
 
 The generated file is
 `assets/design-system/pixso-component-specs.json`. It records the authoritative
@@ -63,17 +98,20 @@ the approved disabled opacity token. Colors such as `brand/10`,
 Resolve component icons through `assets/icons/icon-aliases.json`.
 
 - Common controls use exact Lucide package geometry.
-- HarmonyOS primary-level icons use the approved filled HarmonyOS SVG.
+- Primary-level icons use the approved pinned Lucide Regular aliases.
 - Titlebar controls use the exact titlebar SVG assets.
 - Status icons use their approved circle assets.
+- Outline icon stroke weights are authoritative by display size: 16px = 1px,
+  20px = 1.25px, and 24px = 1.5px. Every icon hot zone sets both axes to
+  `CENTER`, then centers the actual vector bounds horizontally and vertically;
+  this applies to page SVGs, component masters, and swapped instances.
 
 Do not substitute a similarly named icon-font glyph for an approved SVG.
 
 Run `node scripts/validate-pixso-icon-map.mjs` before releasing a Pixso component change. For generated Text to UI components, reject `HM Symbol` and `icon_font` layers unless the component is explicitly marked as an untouched native source reference.
 
-For the primary-level/settings repair, use the exact
-primary-level/settings alias from assets/icons/icon-aliases.json
-(gearshape.svg), replace the component-library slot in NewComponents, and
+For the primary-navigation settings repair, use the exact
+`action/settings` alias from assets/icons/icon-aliases.json (`lucide/settings`), replace the component-library slot in NewComponents, and
 verify the 24 × 24 viewBox, root/vector geometry, visible overflow, and
 currentColor binding on a temporary linked instance. Regenerate the HTML sprite
 from the same alias and run the strict icon audit. Do not fix only the page
@@ -101,11 +139,11 @@ active-document change.
 
 The canonical plugin source remains under
 `text-to-ui/scripts/pixso-component-registry-sync-plugin/`. Every Pixso plugin
-release must also be copied to the user's fixed delivery directory:
-`/Users/zhaobohai/Desktop/资源管理/我的代码仓/pixso插件/`. Keep each plugin in
-its own named subfolder containing its `manifest.json`, entry script, and a
-short installation note. Do not make a temporary workspace path the only
-upload location.
+release must also be copied to the local plugin delivery directory configured
+by `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT` (or the user's local plugin folder). Keep
+each plugin in its own named subfolder containing its `manifest.json`, entry
+script, and a short installation note. Do not make a temporary workspace path
+the only upload location.
 
 ### Coremail registration helper
 

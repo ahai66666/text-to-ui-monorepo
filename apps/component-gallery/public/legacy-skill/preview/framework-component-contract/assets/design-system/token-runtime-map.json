@@ -1148,6 +1148,16 @@
     {
       "pixsoCollection": "Typography",
       "pixsoMode": "HarmonyOS Sans",
+      "pixsoVariable": "font/line-height/12",
+      "sourceToken": "tokens.typography.json:line-height.12",
+      "cssVariable": "--line-height-12",
+      "resolvedCssValue": "12px",
+      "pixsoValue": 12,
+      "valueTransform": "identity"
+    },
+    {
+      "pixsoCollection": "Typography",
+      "pixsoMode": "HarmonyOS Sans",
       "pixsoVariable": "font/line-height/14",
       "sourceToken": "tokens.typography.json:line-height.14",
       "cssVariable": "--line-height-14",
@@ -1208,51 +1218,41 @@
     {
       "pixsoCollection": "Typography",
       "pixsoMode": "HarmonyOS Sans",
-      "pixsoVariable": "font/line-height/32",
-      "sourceToken": "tokens.typography.json:line-height.32",
-      "cssVariable": "--line-height-32",
-      "resolvedCssValue": "32px",
-      "pixsoValue": 32,
+      "pixsoVariable": "font/line-height/36",
+      "sourceToken": "tokens.typography.json:line-height.36",
+      "cssVariable": "--line-height-36",
+      "resolvedCssValue": "36px",
+      "pixsoValue": 36,
       "valueTransform": "identity"
     },
     {
       "pixsoCollection": "Typography",
       "pixsoMode": "HarmonyOS Sans",
-      "pixsoVariable": "font/line-height/40",
-      "sourceToken": "tokens.typography.json:line-height.40",
-      "cssVariable": "--line-height-40",
-      "resolvedCssValue": "40px",
-      "pixsoValue": 40,
+      "pixsoVariable": "font/line-height/44",
+      "sourceToken": "tokens.typography.json:line-height.44",
+      "cssVariable": "--line-height-44",
+      "resolvedCssValue": "44px",
+      "pixsoValue": 44,
       "valueTransform": "identity"
     },
     {
       "pixsoCollection": "Typography",
       "pixsoMode": "HarmonyOS Sans",
-      "pixsoVariable": "font/line-height/52",
-      "sourceToken": "tokens.typography.json:line-height.52",
-      "cssVariable": "--line-height-52",
-      "resolvedCssValue": "52px",
-      "pixsoValue": 52,
+      "pixsoVariable": "font/line-height/58",
+      "sourceToken": "tokens.typography.json:line-height.58",
+      "cssVariable": "--line-height-58",
+      "resolvedCssValue": "58px",
+      "pixsoValue": 58,
       "valueTransform": "identity"
     },
     {
       "pixsoCollection": "Typography",
       "pixsoMode": "HarmonyOS Sans",
-      "pixsoVariable": "font/line-height/64",
-      "sourceToken": "tokens.typography.json:line-height.64",
-      "cssVariable": "--line-height-64",
-      "resolvedCssValue": "64px",
-      "pixsoValue": 64,
-      "valueTransform": "identity"
-    },
-    {
-      "pixsoCollection": "Typography",
-      "pixsoMode": "HarmonyOS Sans",
-      "pixsoVariable": "font/line-height/76",
-      "sourceToken": "tokens.typography.json:line-height.76",
-      "cssVariable": "--line-height-76",
-      "resolvedCssValue": "76px",
-      "pixsoValue": 76,
+      "pixsoVariable": "font/line-height/66",
+      "sourceToken": "tokens.typography.json:line-height.66",
+      "cssVariable": "--line-height-66",
+      "resolvedCssValue": "66px",
+      "pixsoValue": 66,
       "valueTransform": "identity"
     },
     {
@@ -2097,6 +2097,22 @@
       "pixsoValue": "#ED6F2119",
       "valueTransform": "identity"
     },
+    "color/badge-danger-text": {
+      "cssVariable": "--color-badge-danger-text",
+      "pixsoVariable": "function/danger/100",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-text",
+      "resolvedCssValue": "#E84026FF",
+      "pixsoValue": "#E84026FF",
+      "valueTransform": "identity"
+    },
+    "color/badge-danger-bg": {
+      "cssVariable": "--color-badge-danger-bg",
+      "pixsoVariable": "function/danger/10",
+      "sourceToken": "tokens.colors.json:semantic.badge-danger-bg",
+      "resolvedCssValue": "#E8402619",
+      "pixsoValue": "#E8402619",
+      "valueTransform": "identity"
+    },
     "color/chart-1": {
       "cssVariable": "--color-chart-1",
       "pixsoVariable": "multi/01",
@@ -2363,10 +2379,10 @@
     },
     "spacing/padding/alert-right": {
       "cssVariable": "--padding-alert-right",
-      "pixsoVariable": "space/4",
+      "pixsoVariable": "space/2",
       "sourceToken": "tokens.spacing.json:padding.alert-right",
-      "resolvedCssValue": "12px",
-      "pixsoValue": 12,
+      "resolvedCssValue": "4px",
+      "pixsoValue": 4,
       "valueTransform": "identity"
     },
     "spacing/padding/selection-option": {
@@ -2801,6 +2817,30 @@
       "pixsoValue": 40,
       "valueTransform": "identity"
     },
+    "size/component/list-item-single-line-height": {
+      "cssVariable": "--height-list-item-single-line",
+      "pixsoVariable": "size/48",
+      "sourceToken": "tokens.size.json:component.list-item-single-line-height",
+      "resolvedCssValue": "48px",
+      "pixsoValue": 48,
+      "valueTransform": "identity"
+    },
+    "size/component/list-item-double-line-height": {
+      "cssVariable": "--height-list-item-double-line",
+      "pixsoVariable": "size/56",
+      "sourceToken": "tokens.size.json:component.list-item-double-line-height",
+      "resolvedCssValue": "56px",
+      "pixsoValue": 56,
+      "valueTransform": "identity"
+    },
+    "size/component/list-item-triple-line-height": {
+      "cssVariable": "--height-list-item-triple-line",
+      "pixsoVariable": "size/80",
+      "sourceToken": "tokens.size.json:component.list-item-triple-line-height",
+      "resolvedCssValue": "80px",
+      "pixsoValue": 80,
+      "valueTransform": "identity"
+    },
     "size/component/list-heading-height": {
       "cssVariable": "--height-list-heading",
       "pixsoVariable": "size/40",
@@ -3219,10 +3259,10 @@
     },
     "radius/avatar": {
       "cssVariable": "--radius-avatar",
-      "pixsoVariable": "radius/08",
+      "pixsoVariable": "radius/full",
       "sourceToken": "tokens.radius.json:semantic.avatar",
-      "resolvedCssValue": "8px",
-      "pixsoValue": 8,
+      "resolvedCssValue": "999px",
+      "pixsoValue": 999,
       "valueTransform": "identity"
     },
     "radius/table": {
@@ -3475,10 +3515,10 @@
     },
     "typography/display-l/line-height": {
       "cssVariable": "--type-display-l-leading",
-      "pixsoVariable": "font/line-height/76",
-      "resolvedCssValue": "76px",
-      "sourceToken": "tokens.typography.json:line-height.76",
-      "pixsoValue": 76,
+      "pixsoVariable": "font/line-height/66",
+      "resolvedCssValue": "66px",
+      "sourceToken": "tokens.typography.json:line-height.66",
+      "pixsoValue": 66,
       "valueTransform": "identity"
     },
     "typography/display-l/font-weight": {
@@ -3499,10 +3539,10 @@
     },
     "typography/display-m/line-height": {
       "cssVariable": "--type-display-m-leading",
-      "pixsoVariable": "font/line-height/64",
-      "resolvedCssValue": "64px",
-      "sourceToken": "tokens.typography.json:line-height.64",
-      "pixsoValue": 64,
+      "pixsoVariable": "font/line-height/58",
+      "resolvedCssValue": "58px",
+      "sourceToken": "tokens.typography.json:line-height.58",
+      "pixsoValue": 58,
       "valueTransform": "identity"
     },
     "typography/display-m/font-weight": {
@@ -3523,10 +3563,10 @@
     },
     "typography/display-s/line-height": {
       "cssVariable": "--type-display-s-leading",
-      "pixsoVariable": "font/line-height/52",
-      "resolvedCssValue": "52px",
-      "sourceToken": "tokens.typography.json:line-height.52",
-      "pixsoValue": 52,
+      "pixsoVariable": "font/line-height/44",
+      "resolvedCssValue": "44px",
+      "sourceToken": "tokens.typography.json:line-height.44",
+      "pixsoValue": 44,
       "valueTransform": "identity"
     },
     "typography/display-s/font-weight": {
@@ -3547,10 +3587,10 @@
     },
     "typography/title-l/line-height": {
       "cssVariable": "--type-title-l-leading",
-      "pixsoVariable": "font/line-height/40",
-      "resolvedCssValue": "40px",
-      "sourceToken": "tokens.typography.json:line-height.40",
-      "pixsoValue": 40,
+      "pixsoVariable": "font/line-height/36",
+      "resolvedCssValue": "36px",
+      "sourceToken": "tokens.typography.json:line-height.36",
+      "pixsoValue": 36,
       "valueTransform": "identity"
     },
     "typography/title-l/font-weight": {
@@ -3571,10 +3611,10 @@
     },
     "typography/title-m/line-height": {
       "cssVariable": "--type-title-m-leading",
-      "pixsoVariable": "font/line-height/32",
-      "resolvedCssValue": "32px",
-      "sourceToken": "tokens.typography.json:line-height.32",
-      "pixsoValue": 32,
+      "pixsoVariable": "font/line-height/28",
+      "resolvedCssValue": "28px",
+      "sourceToken": "tokens.typography.json:line-height.28",
+      "pixsoValue": 28,
       "valueTransform": "identity"
     },
     "typography/title-m/font-weight": {
@@ -3595,10 +3635,10 @@
     },
     "typography/title-s/line-height": {
       "cssVariable": "--type-title-s-leading",
-      "pixsoVariable": "font/line-height/28",
-      "resolvedCssValue": "28px",
-      "sourceToken": "tokens.typography.json:line-height.28",
-      "pixsoValue": 28,
+      "pixsoVariable": "font/line-height/24",
+      "resolvedCssValue": "24px",
+      "sourceToken": "tokens.typography.json:line-height.24",
+      "pixsoValue": 24,
       "valueTransform": "identity"
     },
     "typography/title-s/font-weight": {
@@ -3619,10 +3659,10 @@
     },
     "typography/subtitle-l/line-height": {
       "cssVariable": "--type-subtitle-l-leading",
-      "pixsoVariable": "font/line-height/24",
-      "resolvedCssValue": "24px",
-      "sourceToken": "tokens.typography.json:line-height.24",
-      "pixsoValue": 24,
+      "pixsoVariable": "font/line-height/22",
+      "resolvedCssValue": "22px",
+      "sourceToken": "tokens.typography.json:line-height.22",
+      "pixsoValue": 22,
       "valueTransform": "identity"
     },
     "typography/subtitle-l/font-weight": {
@@ -3643,10 +3683,10 @@
     },
     "typography/subtitle-m/line-height": {
       "cssVariable": "--type-subtitle-m-leading",
-      "pixsoVariable": "font/line-height/22",
-      "resolvedCssValue": "22px",
-      "sourceToken": "tokens.typography.json:line-height.22",
-      "pixsoValue": 22,
+      "pixsoVariable": "font/line-height/20",
+      "resolvedCssValue": "20px",
+      "sourceToken": "tokens.typography.json:line-height.20",
+      "pixsoValue": 20,
       "valueTransform": "identity"
     },
     "typography/subtitle-m/font-weight": {
@@ -3667,10 +3707,10 @@
     },
     "typography/subtitle-s/line-height": {
       "cssVariable": "--type-subtitle-s-leading",
-      "pixsoVariable": "font/line-height/20",
-      "resolvedCssValue": "20px",
-      "sourceToken": "tokens.typography.json:line-height.20",
-      "pixsoValue": 20,
+      "pixsoVariable": "font/line-height/16",
+      "resolvedCssValue": "16px",
+      "sourceToken": "tokens.typography.json:line-height.16",
+      "pixsoValue": 16,
       "valueTransform": "identity"
     },
     "typography/subtitle-s/font-weight": {
@@ -3691,10 +3731,10 @@
     },
     "typography/body-l/line-height": {
       "cssVariable": "--type-body-l-leading",
-      "pixsoVariable": "font/line-height/22",
-      "resolvedCssValue": "22px",
-      "sourceToken": "tokens.typography.json:line-height.22",
-      "pixsoValue": 22,
+      "pixsoVariable": "font/line-height/20",
+      "resolvedCssValue": "20px",
+      "sourceToken": "tokens.typography.json:line-height.20",
+      "pixsoValue": 20,
       "valueTransform": "identity"
     },
     "typography/body-l/font-weight": {
@@ -3715,10 +3755,10 @@
     },
     "typography/body-m/line-height": {
       "cssVariable": "--type-body-m-leading",
-      "pixsoVariable": "font/line-height/20",
-      "resolvedCssValue": "20px",
-      "sourceToken": "tokens.typography.json:line-height.20",
-      "pixsoValue": 20,
+      "pixsoVariable": "font/line-height/16",
+      "resolvedCssValue": "16px",
+      "sourceToken": "tokens.typography.json:line-height.16",
+      "pixsoValue": 16,
       "valueTransform": "identity"
     },
     "typography/body-m/font-weight": {
@@ -3729,28 +3769,52 @@
       "pixsoValue": 400,
       "valueTransform": "identity"
     },
-    "typography/caption-l/font-size": {
-      "cssVariable": "--type-caption-l-size",
+    "typography/body-s/font-size": {
+      "cssVariable": "--type-body-s-size",
       "pixsoVariable": "font/size/12",
       "resolvedCssValue": "12px",
       "sourceToken": "tokens.typography.json:font-size.12",
       "pixsoValue": 12,
       "valueTransform": "identity"
     },
-    "typography/caption-l/line-height": {
-      "cssVariable": "--type-caption-l-leading",
-      "pixsoVariable": "font/line-height/16",
-      "resolvedCssValue": "16px",
-      "sourceToken": "tokens.typography.json:line-height.16",
-      "pixsoValue": 16,
+    "typography/body-s/line-height": {
+      "cssVariable": "--type-body-s-leading",
+      "pixsoVariable": "font/line-height/14",
+      "resolvedCssValue": "14px",
+      "sourceToken": "tokens.typography.json:line-height.14",
+      "pixsoValue": 14,
       "valueTransform": "identity"
     },
-    "typography/caption-l/font-weight": {
-      "cssVariable": "--type-caption-l-weight",
-      "pixsoVariable": "font/weight/500",
-      "resolvedCssValue": "500",
-      "sourceToken": "tokens.typography.json:font-weight.500",
-      "pixsoValue": 500,
+    "typography/body-s/font-weight": {
+      "cssVariable": "--type-body-s-weight",
+      "pixsoVariable": "font/weight/400",
+      "resolvedCssValue": "400",
+      "sourceToken": "tokens.typography.json:font-weight.400",
+      "pixsoValue": 400,
+      "valueTransform": "identity"
+    },
+    "typography/caption-m/font-size": {
+      "cssVariable": "--type-caption-m-size",
+      "pixsoVariable": "font/size/10",
+      "resolvedCssValue": "10px",
+      "sourceToken": "tokens.typography.json:font-size.10",
+      "pixsoValue": 10,
+      "valueTransform": "identity"
+    },
+    "typography/caption-m/line-height": {
+      "cssVariable": "--type-caption-m-leading",
+      "pixsoVariable": "font/line-height/12",
+      "resolvedCssValue": "12px",
+      "sourceToken": "tokens.typography.json:line-height.12",
+      "pixsoValue": 12,
+      "valueTransform": "identity"
+    },
+    "typography/caption-m/font-weight": {
+      "cssVariable": "--type-caption-m-weight",
+      "pixsoVariable": "font/weight/400",
+      "resolvedCssValue": "400",
+      "sourceToken": "tokens.typography.json:font-weight.400",
+      "pixsoValue": 400,
       "valueTransform": "identity"
     }
   }

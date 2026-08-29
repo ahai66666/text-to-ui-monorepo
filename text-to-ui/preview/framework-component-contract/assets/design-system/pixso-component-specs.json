@@ -23,7 +23,7 @@
         "Subtitle_M",
         "Body_L",
         "Body_M",
-        "Caption_L",
+        "Body_S",
         "Display_M"
       ]
     },
@@ -36,6 +36,18 @@
       "titlebar": "exact-titlebar-svg",
       "prohibitIconFontsForGeneratedNodes": true,
       "resizeRootAndVectorsTogether": true,
+      "strokeWeightFormula": "supported display sizes use strokeWidthByDisplaySize[displaySize]; other approved sizes use 1.5 * displaySize / sourceArtboard",
+      "strokeWeightByDisplaySize": {
+        "16": 1,
+        "20": 1.25,
+        "24": 1.5
+      },
+      "hotZone": {
+        "alignment": "CENTER",
+        "axes": "BOTH",
+        "overflow": "VISIBLE",
+        "verificationTolerance": 0.5
+      },
       "forbidApproximation": true
     },
     "placementPolicy": {
@@ -718,9 +730,9 @@
       },
       "autoLayout": true,
       "textRoles": {},
-      "iconSize": 20,
-      "exactAssetIcons": [
-        "primary-level/overview"
+      "iconSize": 24,
+      "iconAliases": [
+        "navigation/grid"
       ],
       "transparent": true
     },
@@ -1000,7 +1012,7 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Caption_L"
+        "Label": "Body_S"
       },
       "direction": "horizontal",
       "paddingX": 8,
@@ -1016,7 +1028,7 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Caption_L"
+        "Label": "Body_S"
       },
       "direction": "horizontal",
       "paddingX": 8,
@@ -1032,7 +1044,7 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Caption_L"
+        "Label": "Body_S"
       },
       "direction": "horizontal",
       "paddingX": 8,
@@ -1048,7 +1060,7 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Caption_L"
+        "Label": "Body_S"
       },
       "direction": "horizontal",
       "paddingX": 8,
@@ -1064,9 +1076,10 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Initials": "Caption_L"
+        "Initials": "Body_S"
       },
-      "iconSize": 20
+      "iconSize": 20,
+      "radiusToken": "radius/avatar"
     },
     "Avatar/32/Fallback": {
       "family": "Avatar",
@@ -1078,9 +1091,10 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Initials": "Caption_L"
+        "Initials": "Body_S"
       },
-      "iconSize": 20
+      "iconSize": 20,
+      "radiusToken": "radius/avatar"
     },
     "Avatar/40/Image": {
       "family": "Avatar",
@@ -1092,9 +1106,10 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Initials": "Caption_L"
+        "Initials": "Body_S"
       },
-      "iconSize": 24
+      "iconSize": 24,
+      "radiusToken": "radius/avatar"
     },
     "Avatar/40/Fallback": {
       "family": "Avatar",
@@ -1106,9 +1121,10 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Initials": "Caption_L"
+        "Initials": "Body_S"
       },
-      "iconSize": 24
+      "iconSize": 24,
+      "radiusToken": "radius/avatar"
     },
     "Progress/Default": {
       "family": "Progress",
@@ -1328,7 +1344,7 @@
       },
       "autoLayout": true,
       "textRoles": {
-        "Message": "Caption_L"
+        "Message": "Body_S"
       },
       "maxWidth": 240,
       "paddingToken": "padding/tooltip",

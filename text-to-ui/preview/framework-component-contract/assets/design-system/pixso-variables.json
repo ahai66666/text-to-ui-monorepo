@@ -615,6 +615,11 @@
           "value": 56,
           "source": "tokens.typography.json:font-size.56"
         },
+        "font/line-height/12": {
+          "type": "number",
+          "value": 12,
+          "source": "tokens.typography.json:line-height.12"
+        },
         "font/line-height/14": {
           "type": "number",
           "value": 14,
@@ -645,30 +650,25 @@
           "value": 28,
           "source": "tokens.typography.json:line-height.28"
         },
-        "font/line-height/32": {
+        "font/line-height/36": {
           "type": "number",
-          "value": 32,
-          "source": "tokens.typography.json:line-height.32"
+          "value": 36,
+          "source": "tokens.typography.json:line-height.36"
         },
-        "font/line-height/40": {
+        "font/line-height/44": {
           "type": "number",
-          "value": 40,
-          "source": "tokens.typography.json:line-height.40"
+          "value": 44,
+          "source": "tokens.typography.json:line-height.44"
         },
-        "font/line-height/52": {
+        "font/line-height/58": {
           "type": "number",
-          "value": 52,
-          "source": "tokens.typography.json:line-height.52"
+          "value": 58,
+          "source": "tokens.typography.json:line-height.58"
         },
-        "font/line-height/64": {
+        "font/line-height/66": {
           "type": "number",
-          "value": 64,
-          "source": "tokens.typography.json:line-height.64"
-        },
-        "font/line-height/76": {
-          "type": "number",
-          "value": 76,
-          "source": "tokens.typography.json:line-height.76"
+          "value": 66,
+          "source": "tokens.typography.json:line-height.66"
         },
         "font/weight/400": {
           "type": "number",
@@ -699,7 +699,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 56,
-        "lineHeight": "76px",
+        "lineHeight": "66px",
         "fontWeight": 400,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.display-l"
@@ -708,7 +708,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 48,
-        "lineHeight": "64px",
+        "lineHeight": "58px",
         "fontWeight": 400,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.display-m"
@@ -717,7 +717,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 38,
-        "lineHeight": "52px",
+        "lineHeight": "44px",
         "fontWeight": 400,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.display-s"
@@ -726,7 +726,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 30,
-        "lineHeight": "40px",
+        "lineHeight": "36px",
         "fontWeight": 700,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.title-l"
@@ -735,7 +735,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 24,
-        "lineHeight": "32px",
+        "lineHeight": "28px",
         "fontWeight": 700,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.title-m"
@@ -744,7 +744,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 20,
-        "lineHeight": "28px",
+        "lineHeight": "24px",
         "fontWeight": 700,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.title-s"
@@ -753,7 +753,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 18,
-        "lineHeight": "24px",
+        "lineHeight": "22px",
         "fontWeight": 500,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.subtitle-l"
@@ -762,7 +762,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 16,
-        "lineHeight": "22px",
+        "lineHeight": "20px",
         "fontWeight": 500,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.subtitle-m"
@@ -771,7 +771,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 14,
-        "lineHeight": "20px",
+        "lineHeight": "16px",
         "fontWeight": 500,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.subtitle-s"
@@ -780,7 +780,7 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 16,
-        "lineHeight": "22px",
+        "lineHeight": "20px",
         "fontWeight": 400,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.body-l"
@@ -789,19 +789,28 @@
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 14,
-        "lineHeight": "20px",
+        "lineHeight": "16px",
         "fontWeight": 400,
         "letterSpacing": "0px",
         "source": "tokens.typography.json:styles.body-m"
       },
-      "Typography/Caption_L": {
+      "Typography/Body_S": {
         "type": "text",
         "fontFamily": "HarmonyOS Sans",
         "fontSize": 12,
-        "lineHeight": "16px",
-        "fontWeight": 500,
+        "lineHeight": "14px",
+        "fontWeight": 400,
         "letterSpacing": "0px",
-        "source": "tokens.typography.json:styles.caption-l"
+        "source": "tokens.typography.json:styles.body-s"
+      },
+      "Typography/Caption_M": {
+        "type": "text",
+        "fontFamily": "HarmonyOS Sans",
+        "fontSize": 10,
+        "lineHeight": "12px",
+        "fontWeight": 400,
+        "letterSpacing": "0px",
+        "source": "tokens.typography.json:styles.caption-m"
       }
     },
     "effect": {
@@ -940,7 +949,7 @@
     "component/spacing/padding/tooltip": "space.3",
     "component/spacing/padding/alert": "space.3",
     "component/spacing/padding/alert-left": "space.3",
-    "component/spacing/padding/alert-right": "space.4",
+    "component/spacing/padding/alert-right": "space.2",
     "component/spacing/padding/selection-option": "space.3",
     "component/spacing/padding/tab-x": "space.4",
     "component/spacing/padding/tab-panel": "space.5",
@@ -995,6 +1004,9 @@
     "component/size/component/tab-vertical-height": "size.11",
     "component/size/component/menu-item-height": "size.11",
     "component/size/component/list-item-height": "size.11",
+    "component/size/component/list-item-single-line-height": "size.13",
+    "component/size/component/list-item-double-line-height": "size.14",
+    "component/size/component/list-item-triple-line-height": "size.17",
     "component/size/component/list-heading-height": "size.11",
     "component/size/component/tree-item-height": "size.11",
     "component/size/component/button-height": "size.11",
@@ -1043,7 +1055,7 @@
     "component/radius/list-item": "radius.3",
     "component/radius/badge": "radius.full",
     "component/radius/progress": "radius.full",
-    "component/radius/avatar": "radius.3",
+    "component/radius/avatar": "radius.full",
     "component/radius/card": "radius.4",
     "component/radius/table": "radius.4",
     "component/radius/pagination-item": "radius.3",

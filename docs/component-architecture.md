@@ -10,13 +10,13 @@
 - React：JSX/props/state，使用同一套契约属性。
 - Vue：SFC/props/reactivity，不能把 `data-v-*` 或 CSS Module hash 当作组件身份。
 
-三种实现不是相互编译，而是同一契约的独立适配器。当前 50 个逻辑组件在 HTML、React、Vue 中都已有独立源码入口，且已移除通用生成适配器；但没有通过六维一致性检查的框架必须标记为 `partial`，不能进入完整覆盖矩阵。旧 Skill 的 HTML 画廊只能作为 `visualAuthority`，不能把一个 `LegacyCatalog` 包装器当成三框架实现。
+三种实现不是相互编译，而是同一契约的独立适配器。当前 55 个逻辑组件在 HTML、React、Vue 中都已有独立源码入口，且已移除通用生成适配器；但没有通过六维一致性检查的框架必须标记为 `partial`，不能进入完整覆盖矩阵。旧 Skill 的 HTML 画廊只能作为 `visualAuthority`，不能把一个 `LegacyCatalog` 包装器当成三框架实现。
 
 ## 实现来源策略
 
 每条契约都声明 `sourceStrategy`，用来控制成本和视觉一致性：
 
-- `canonical-custom`：优先复制旧 Skill 已验收的结构和规则，针对 HarmonyOS PC 交互重新写轻量组件。当前 50 类独立实现均采用这一策略或其专用变体。
+- `canonical-custom`：优先复制旧 Skill 已验收的结构和规则，针对 HarmonyOS PC 交互重新写轻量组件。当前 55 类独立实现均采用这一策略或其专用变体。
 - `shadcn-behavior-canonical-style`：只把 shadcn / shadcn-vue 当作键盘、焦点、弹层等行为的起点，再覆盖全部 canonical Token、字体、间距、状态和图标；不能直接展示 shadcn 默认外观。
 - `canonical-static`：对不需要复杂框架行为的组件，使用可读的独立静态适配器；视觉值仍由旧 Skill 的 canonical Token 和规则提供。
 
@@ -32,7 +32,7 @@ pnpm dlx shadcn@latest init --preset b1aIcEaeG --base aria --template vite
 
 组件包不重新发明一套 CSS。旧 Skill 的 `text-to-ui/preview/component-gallery.css`、`text-to-ui/assets/design-system/` Token 和 `fixtures/framework-component-contract/shared/` 组件规则是现阶段的视觉基线；`packages/component-styles/src/index.css` 是三个框架的 canonical CSS 入口，`packages/component-contracts/src/components.css` 只保留向后兼容导入。这样 HTML、React、Vue 共享同一套尺寸、字体、状态层、Surface 和图标语义。
 
-组件画廊把“契约视觉基线”和“运行时组件”分成两个入口，但视觉基线只有一份：旧 Skill 的全量画廊直接作为契约的唯一视觉来源，保留历史 56 个组件的完整 Pattern、状态、布局与 Token 说明；当前注册表和运行时目录收敛为 50 个组件。运行时入口在同一个一级目录中提供 HTML、React、Vue 三个 Tab；选择 Tab 只替换目录中的真实渲染器，不跳转二级页面。三种渲染器都读取 `components.json.registryPolicy.comparisonGroups` 的同一视觉章节和组件顺序，生成同一套卡片外壳，只展示结构性 Variant，Hover、Focus、Pressed、Selected 和点击反馈通过真实控件交互查看。组件自己的 `category/order` 继续服务代码组织，不再改变视觉对比位置。来源路径和六维验收结果移到工程回归区，避免日常预览被工程信息包围。这里的框架切换不是给同一份 HTML 换标签，也不是复制一套假数据：每张卡片都从 `frameworks.<framework>.source` 指向的真实源码加载，根节点声明 `data-framework`。三套实现共享 Token、样式和契约，但渲染、Props、事件与响应式状态由各自框架执行。
+组件画廊把“契约视觉基线”和“运行时组件”分成两个入口，但视觉基线只有一份：旧 Skill 的全量画廊直接作为契约的唯一视觉来源，保留历史 56 个组件的完整 Pattern、状态、布局与 Token 说明；当前注册表和运行时目录收敛为 55 个组件。运行时入口在同一个一级目录中提供 HTML、React、Vue 三个 Tab；选择 Tab 只替换目录中的真实渲染器，不跳转二级页面。三种渲染器都读取 `components.json.registryPolicy.comparisonGroups` 的同一视觉章节和组件顺序，生成同一套卡片外壳，只展示结构性 Variant，Hover、Focus、Pressed、Selected 和点击反馈通过真实控件交互查看。组件自己的 `category/order` 继续服务代码组织，不再改变视觉对比位置。来源路径和六维验收结果移到工程回归区，避免日常预览被工程信息包围。这里的框架切换不是给同一份 HTML 换标签，也不是复制一套假数据：每张卡片都从 `frameworks.<framework>.source` 指向的真实源码加载，根节点声明 `data-framework`。三套实现共享 Token、样式和契约，但渲染、Props、事件与响应式状态由各自框架执行。
 
 运行时目录不把状态矩阵铺成第二套样例。每个卡片只渲染组件的默认态；组件自身仍保留完整状态契约，浏览器里的原生 `:hover`、`:focus-visible`、`:active` 和事件逻辑负责展示状态变化。Input 的白色内容面/灰色输入面等 Surface 规则仍由同一套组件样式驱动。其余组件直接加载各自生成的 HTML、JSX 或 Vue SFC 适配器；卡片中的示例文案只是源码默认 Props 的 fixture，不得用来冒充另一框架的渲染结果。只有当注册表中的 HTML、React、Vue 源码和状态/交互校验都通过时，才可以标记为 `ready`。
 

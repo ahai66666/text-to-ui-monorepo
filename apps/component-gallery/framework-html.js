@@ -4,7 +4,7 @@ import "../../packages/components-html/src/styles.css";
 import "./framework-runtime.css";
 
 const escape = (value = "") => String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
-const coreRenderers = { button: "buttonGallery", input: "inputGallery", search: "searchGallery", sidebar: "sidebarGallery", "list-card": "listCardGallery" };
+const coreRenderers = { button: "buttonGallery", input: "inputGallery", search: "searchGallery", "primary-navigation-item": "primaryNavigationItemGallery", sidebar: "sidebarGallery", "list-card": "listCardGallery" };
 const runtimeRenderer = (id) => coreRenderers[id] ?? id;
 const frameworkLinks = `<nav class="tui-runtime-framework-switch" aria-label="选择运行时框架"><a href="/framework-html.html" aria-current="page">HTML</a><a href="/framework-react.html">React</a><a href="/framework-vue.html">Vue</a></nav>`;
 
@@ -21,7 +21,7 @@ const renderCard = (component) => {
 };
 
 const root = document.querySelector("#framework-runtime-root");
-root.innerHTML = `<div class="tui-runtime-framework-shell" data-framework="html"><header class="tui-runtime-framework-shell__head"><a href="/index.html#runtime-view">← 返回运行时目录</a><h1>HTML 运行时组件</h1><p>这里加载的是 packages/components-html 中登记的真实 HTML 适配器，不是契约截图，也不是用其他框架的结果冒充。56 个逻辑组件都从同一份注册表逐项解析；核心五类额外展示完整 Surface 与状态矩阵。</p>${frameworkLinks}</header><section class="tui-runtime-framework-directory" aria-label="HTML 运行时组件目录">${contracts.components.map(renderCard).join("")}</section><p class="status" id="framework-runtime-status" aria-live="polite">已加载 ${contracts.components.length} 个 HTML 适配器。</p></div>`;
+root.innerHTML = `<div class="tui-runtime-framework-shell" data-framework="html"><header class="tui-runtime-framework-shell__head"><a href="/index.html#runtime-view">← 返回运行时目录</a><h1>HTML 运行时组件</h1><p>这里加载的是 packages/components-html 中登记的真实 HTML 适配器，不是契约截图，也不是用其他框架的结果冒充。${contracts.components.length} 个逻辑组件都从同一份注册表逐项解析；核心组件额外展示完整 Surface 与状态矩阵。</p>${frameworkLinks}</header><section class="tui-runtime-framework-directory" aria-label="HTML 运行时组件目录">${contracts.components.map(renderCard).join("")}</section><p class="status" id="framework-runtime-status" aria-live="polite">已加载 ${contracts.components.length} 个 HTML 适配器。</p></div>`;
 
 const status = document.querySelector("#framework-runtime-status");
 const setStatus = (message) => { if (status) status.textContent = message; };
