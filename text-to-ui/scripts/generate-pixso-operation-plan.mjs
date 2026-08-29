@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
-import { compileOperationPlan, loadComponentMap, loadTokenResources, parseArgs, permanentAgentContract, readJson, writeJson } from "./pixso-native-scene-lib.mjs";
+import { compileOperationPlan, loadComponentMap, loadTokenResources, parseArgs, permanentAgentContract, readJson, repoRelativePath, writeJson } from "./pixso-native-scene-lib.mjs";
 import { reconcileOperationPlanWithVisualManifest } from "./pixso-visual-reconcile.mjs";
 import { validateImportRun } from "./validate-pixso-import-run.mjs";
 
@@ -27,9 +27,9 @@ if (args["run-manifest"] || args["visual-manifest"]) {
   reconcileOperationPlanWithVisualManifest(plan, visualManifest, tokens);
   plan.execution.importRun = {
     runId: runManifest.runId,
-    manifestPath: path.resolve(args["run-manifest"]),
+    manifestPath: repoRelativePath(args["run-manifest"]),
     htmlSourceFingerprint: runManifest.source?.htmlSourceFingerprint,
-    visualManifestPath: path.resolve(args["visual-manifest"]),
+    visualManifestPath: repoRelativePath(args["visual-manifest"]),
     visualManifestSource: visualManifest.source,
     minimumSelectorCoverage: Number(args["minimum-selector-coverage"] ?? 0.8),
     minimumVisualEvidenceCoverage: Number(args["minimum-visual-evidence-coverage"] ?? 0.95),

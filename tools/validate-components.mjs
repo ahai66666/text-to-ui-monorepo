@@ -73,9 +73,34 @@ if (!titlebar?.slots?.includes("main-detail-actions")) failures.push("Titlebar/D
 if (!titlebar?.props?.includes("mainDetailActions") || !titlebar?.props?.includes("onMainDetailAction")) failures.push("Titlebar/Default: multi-action framework props are required");
 if (mainDetailActions?.cardinality !== "0..n" || mainDetailActions?.scope !== "main-detail-pane-global" || mainDetailActions?.defaultPlacement !== "final-pane-leading-slot") failures.push("Titlebar/Default: Main Detail action slot cardinality, scope, and placement are invalid");
 if (mainDetailActions?.leadingInsetToken !== "layout/main-detail-action-leading-padding") failures.push("Titlebar/Default: Main Detail action slot must use the canonical 16px leading inset Token");
+if (JSON.stringify(mainDetailActions?.allowedButtonTypes) !== JSON.stringify(["icon", "icon-text-ghost"])) failures.push("Titlebar/Default: Main Detail action slot must allow only icon and icon-text-ghost buttons");
+if (JSON.stringify(mainDetailActions?.allowedButtonVariants) !== JSON.stringify(["ghost"])) failures.push("Titlebar/Default: Main Detail action slot must use the ghost Button variant");
 if (titlebar?.layoutRules?.secondaryListPane?.surfaceInset !== "16px" || titlebar?.layoutRules?.secondaryListPane?.contentAxis !== "24px") failures.push("Titlebar/Default: Secondary List Pane 16px surface inset and 24px content axis are required");
 if (titlebar?.layoutRules?.mainDetailPane?.paddingInline !== "24px" || titlebar?.layoutRules?.mainDetailPane?.paddingTop !== "16px" || titlebar?.layoutRules?.mainDetailPane?.paddingBottom !== "0px") failures.push("Titlebar/Default: Main Detail Pane must use 24px inline, 16px top, and 0px bottom insets");
 if (titlebar?.layoutRules?.mainDetailActions?.leadingInset !== "16px") failures.push("Titlebar/Default: Main Detail action slot must begin 16px after the pane divider");
+
+const primaryNavigation = contracts.components.find((component) => component.id === "primary-navigation-item");
+const expectedPrimaryNavigationAliases = ["navigation/grid", "field/calendar", "navigation/mail-unread", "action/settings"];
+if (!primaryNavigation?.slots?.includes("icon") || primaryNavigation?.slotContracts?.icon?.kind !== "regular") failures.push("Primary Navigation Item: first-level icon slot must use the Lucide Regular rule");
+if (primaryNavigation?.slotContracts?.icon?.displaySize !== "24px" || primaryNavigation?.slotContracts?.icon?.source !== "lucide") failures.push("Primary Navigation Item: icon slot must use the 24px Lucide Regular contract");
+if (JSON.stringify(primaryNavigation?.iconAliases) !== JSON.stringify(expectedPrimaryNavigationAliases)) failures.push("Primary Navigation Item: icon aliases must use the approved Lucide Regular semantic aliases");
+
+const semiModal = contracts.components.find((component) => component.id === "semi-modal");
+const semiModalClose = semiModal?.slotContracts?.close;
+if (!semiModal?.slots?.includes("close") || semiModalClose?.iconAlias !== "action/close") failures.push("Semi-modal/Default: close slot must be declared in the header");
+if (semiModalClose?.iconSize !== "20px" || semiModalClose?.trailingInsetToken !== "space/5" || semiModalClose?.trailingInset !== "16px") failures.push("Semi-modal/Default: close slot must use a 20px icon and 16px trailing inset");
+if (JSON.stringify(semiModal?.iconSlots?.[0]?.displaySizes) !== JSON.stringify([20])) failures.push("Semi-modal/Default: close icon display size must be restricted to 20px");
+
+const attachment = contracts.components.find((component) => component.id === "attachment");
+const attachmentActions = attachment?.slotContracts?.actions;
+const attachmentMenuTrigger = attachment?.slotContracts?.["menu-trigger"];
+const attachmentMenu = attachment?.slotContracts?.menu;
+if (!attachment?.slots?.includes("actions") || !attachment?.slots?.includes("menu-trigger") || !attachment?.slots?.includes("menu")) failures.push("Attachment/Default: actions, menu-trigger, and menu slots are required");
+if (!attachment?.props?.includes("onAction") || !attachment?.props?.includes("onPreview") || !attachment?.props?.includes("onDownload")) failures.push("Attachment/Default: action callbacks are required");
+if (!attachment?.tokenRoles?.includes("color.surface-muted") || attachment?.tokenRoles?.includes("color.border")) failures.push("Attachment/Default: surface-muted is required and default border is forbidden");
+if (attachmentActions?.defaultPlacement !== "trailing-end" || attachmentActions?.control !== "attachment-action-menu" || JSON.stringify(attachmentActions?.menuItems) !== JSON.stringify(["preview", "download"])) failures.push("Attachment/Default: trailing action menu contract is invalid");
+if (attachmentMenuTrigger?.defaultVisibility !== "visible" || attachmentMenuTrigger?.iconAlias !== "navigation/chevron-down" || attachmentMenuTrigger?.iconSize !== "20px") failures.push("Attachment/Default: visible 20px chevron menu trigger is required");
+if (attachmentMenu?.role !== "menu" || JSON.stringify(attachmentMenu?.items) !== JSON.stringify(["preview", "download"])) failures.push("Attachment/Default: preview/download menu contract is invalid");
 
 if (!(await exists("packages/tokens/src/index.css"))) failures.push("Token package entry is missing");
 if (!(await exists("apps/component-gallery/index.html"))) failures.push("Component gallery is missing");
@@ -91,7 +116,7 @@ else {
   const htmlRuntime = await read("apps/component-gallery/runtime-html.js");
   const reactRuntime = await read("apps/component-gallery/runtime-react.jsx");
   const vueRuntime = await read("apps/component-gallery/runtime-vue.js");
-  for (const componentId of ["button", "input", "search", "sidebar", "list-card"]) {
+  for (const componentId of ["button", "input", "search", "primary-navigation-item", "sidebar", "list-card"]) {
     if (!htmlRuntime.includes("renderRuntimeHtmlComponent") || !reactRuntime.includes(`id === \"${componentId}\"`) || !vueRuntime.includes(`id === \"${componentId}\"`)) failures.push(`${componentId}: unified runtime catalog is missing its canonical adapter`);
   }
   for (const frameworkEntry of ["framework-html.html", "framework-react.html", "framework-vue.html"]) {

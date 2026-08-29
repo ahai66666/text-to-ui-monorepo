@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "workflow": "html-first",
+  "viewport": { "width": 1728, "height": 1152 },
+  "layoutContractPath": "layout-contract.json",
+  "shell": {
+    "pattern": "pattern-b-three-pane",
+    "paneOrder": ["primary-navigation", "secondary-list", "main-detail"],
+    "finalPaneLeadingSlot": "main-detail-operations",
+    "requiredSlots": ["primary-navigation-shell", "global-title-layer", "global-primary-action", "main-detail-actions"]
+  },
+  "tokenContract": {
+    "map": "assets/design-system/dual-output-token-map.json",
+    "webStrategy": "css-custom-properties",
+    "pixsoStrategy": "variable-bindings",
+    "forbidHardcodedStyleValues": true,
+    "usedTokens": [
+      { "role": "shell.sidebar.width", "sourceToken": "tokens.layout.json:shell.sidebar-width", "webCssVariable": "--layout-sidebar-width", "pixsoVariable": "layout/width/240" },
+      { "role": "shell.secondary-pane.width", "sourceToken": "tokens.layout.json:shell.secondary-pane-width", "webCssVariable": "--layout-secondary-pane-width", "pixsoVariable": "layout/width/360" },
+      { "role": "shell.sidebar.padding-x", "sourceToken": "tokens.spacing.json:space.5", "webCssVariable": "--space-5", "pixsoVariable": "space/5" },
+      { "role": "detail.padding-x", "sourceToken": "tokens.spacing.json:space.6", "webCssVariable": "--space-6", "pixsoVariable": "space/6" }
+    ]
+  },
+  "layoutTokens": ["layout/width/240", "layout/width/360", "space/5", "space/6"],
+  "components": []
+}

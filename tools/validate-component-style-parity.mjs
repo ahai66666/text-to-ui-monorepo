@@ -40,6 +40,7 @@ for (const selector of [
   ".tui-input",
   ".tui-search",
   ".tui-sidebar-item",
+  ".tui-primary-navigation-item",
   ".tui-list-card",
   ".tui-titlebar[data-size=\"small\"]",
   ".tui-titlebar[data-size=\"medium\"]",
@@ -76,6 +77,7 @@ for (const relative of [
   "packages/components-vue/src/icon-map.js",
   "packages/components-html/src/search.html",
   "packages/components-html/src/sidebar.html",
+  "packages/components-html/src/primary-navigation-item.html",
   "packages/components-html/src/list-card.html"
 ]) {
   const source = read(relative);
@@ -102,6 +104,7 @@ for (const value of ["standalone", "two-column", "three-column"]) if (!titlebar?
 for (const value of ["global", "primary-navigation", "secondary-pane", "final-pane"]) if (!titlebar?.structuralAxes?.paneRole?.includes(value)) failures.push(`titlebar: missing paneRole axis ${value}`);
 if (titlebar?.slotContracts?.["main-content-title"]?.activeWhen?.layout !== "two-column") failures.push("titlebar: two-column title slot contract is missing");
 if (titlebar?.slotContracts?.["main-detail-actions"]?.activeWhen?.layout !== "three-column") failures.push("titlebar: three-column Main Detail action slot contract is missing");
+if (JSON.stringify(titlebar?.slotContracts?.["main-detail-actions"]?.allowedButtonTypes) !== JSON.stringify(["icon", "icon-text-ghost"])) failures.push("titlebar: Main Detail action slot button type contract is invalid");
 if (titlebar?.dividerRules?.["two-column"]?.["primary-navigation"] !== "no-horizontal-divider") failures.push("titlebar: two-column primary-navigation divider rule is missing");
 if (titlebar?.dividerRules?.["two-column"]?.["final-pane"] !== "no-horizontal-divider") failures.push("titlebar: two-column final-pane divider rule is missing");
 if (titlebar?.dividerRules?.["three-column"]?.["primary-navigation"] !== "no-horizontal-divider") failures.push("titlebar: three-column primary-navigation divider rule is missing");
@@ -112,8 +115,28 @@ for (const rule of [
   ".tui-titlebar[data-layout=\"two-column\"][data-pane-role=\"final-pane\"] { border-bottom: 0",
   ".tui-titlebar[data-layout=\"three-column\"][data-pane-role=\"final-pane\"] { border-bottom: var(--layout-navigation-divider-width) solid var(--color-border)"
 ]) requireText(packageCss, rule, "Titlebar layout CSS");
+const attachment = contracts.components.find((component) => component.id === "attachment");
+if (!attachment?.tokenRoles?.includes("color.surface-muted") || attachment?.tokenRoles?.includes("color.border")) failures.push("attachment: neutral-dark.5 surface role must replace the default border surface roles");
+if (attachment?.slotContracts?.actions?.defaultPlacement !== "trailing-end" || attachment?.slotContracts?.actions?.control !== "attachment-action-menu") failures.push("attachment: trailing action menu contract is missing");
+for (const rule of [
+  ".tui-attachment {",
+  "border: 0",
+  "background: var(--color-neutral-dark-05)",
+  ".tui-attachment__actions {",
+  ".tui-attachment__menu-trigger",
+  ".tui-attachment__menu-trigger > .tui-icon { width: var(--icon-size-md); height: var(--icon-size-md);",
+  ".tui-attachment__menu {",
+  "right: 0"
+]) requireText(packageCss, rule, "Attachment interaction CSS");
 const input = contracts.components.find((component) => component.id === "input");
 if (input?.allowedStates?.includes("selected")) failures.push("input: selected is not a legal input state");
+const radio = contracts.components.find((component) => component.id === "radio");
+if (radio?.logicalName !== "Radio/Unselected/Default" || !radio?.slots?.includes("control") || !radio?.slots?.includes("label")) failures.push("radio: standalone control and label slots are required");
+for (const rule of [
+  ".tui-radio {",
+  ".tui-radio__indicator { width: var(--radio-size); height: var(--radio-size);",
+  ".tui-radio input:checked + .tui-radio__indicator"
+]) requireText(packageCss, rule, "Radio component CSS");
 const search = contracts.components.find((component) => component.id === "search");
 if (!search?.slots?.includes("advanced-search")) failures.push("search: advanced-search slot is missing");
 if (search?.slotContracts?.["advanced-search"]?.defaultPlacement !== "trailing-after-clear") failures.push("search: advanced-search placement contract is missing");
@@ -122,10 +145,19 @@ if (search?.slotContracts?.["advanced-search"]?.control !== "small-text-button")
 if (search?.slotContracts?.["advanced-search"]?.variant !== "ghost") failures.push("search: advanced-search button variant must be ghost");
 if (search?.slotContracts?.["advanced-search"]?.size !== "small") failures.push("search: advanced-search button size must be small");
 if (search?.slotContracts?.["advanced-search"]?.mode !== "text") failures.push("search: advanced-search button mode must be text");
+if (search?.slotContracts?.["advanced-search"]?.textColorToken !== "color.text-muted") failures.push("search: advanced-search text must use color.text-muted");
 if (search?.slotContracts?.["advanced-search"]?.trailingInsetToken !== "space/2") failures.push("search: advanced-search trailing inset must use space/2");
 requireText(packageCss, ".tui-search__advanced", "Search advanced slot CSS");
 requireText(packageCss, ".tui-search__advanced { flex: 0 0 auto;", "Search advanced text button sizing");
+requireText(packageCss, ".tui-search .tui-search__advanced { color: var(--color-text-muted);", "Search advanced secondary text color");
 requireText(packageCss, ".tui-search:has([data-slot=\"advanced-search\"]) { padding-right: var(--space-2);", "Search advanced trailing inset");
+requireText(packageCss, ".tui-primary-navigation-item [data-slot=\"icon\"] { width: var(--icon-size-lg); height: var(--icon-size-lg);", "Primary navigation regular icon sizing");
+const semiModal = contracts.components.find((component) => component.id === "semi-modal");
+if (semiModal?.slotContracts?.close?.iconSize !== "20px" || semiModal?.slotContracts?.close?.trailingInset !== "16px") failures.push("semi-modal: close icon and trailing inset contract is invalid");
+for (const rule of [
+  ".tui-dialog--semi .tui-dialog__header { padding-right: var(--space-5); }",
+  ".tui-dialog--semi .tui-dialog__close > .tui-icon { width: var(--icon-size-md); height: var(--icon-size-md); }"
+]) requireText(packageCss, rule, "Semi-modal geometry CSS");
 const textarea = contracts.components.find((component) => component.id === "textarea");
 if (JSON.stringify(textarea?.specimens?.map((specimen) => specimen.surface)) !== JSON.stringify(["white", "gray"])) failures.push("textarea: white/gray surface specimens are incomplete");
 if (JSON.stringify(textarea?.allowedStates) !== JSON.stringify(["default", "hover", "focus", "filled", "error", "disabled"])) failures.push("textarea: state matrix must match Input without selected");

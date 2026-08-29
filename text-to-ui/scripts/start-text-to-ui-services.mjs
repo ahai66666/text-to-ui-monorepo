@@ -16,9 +16,9 @@ const bridgePort = Number(process.env.TEXT_TO_UI_PIXSO_BRIDGE_PORT ?? 43982);
 const minimumBridgeVersion = 4;
 const minimumBridgeProtocolVersion = 4;
 const bridgeStateDirectory = path.join(repository, "text-to-ui/.text-to-ui/pixso-bridge");
-const outputsRoot = "/Users/zhaobohai/Documents/办公/outputs";
-const outputsPrefix = "/Documents/办公/outputs/";
-const repositoryPrefix = "/Documents/鸿蒙风格skill/";
+const outputsRoot = path.resolve(process.env.TEXT_TO_UI_OUTPUTS_ROOT ?? path.join(repository, "outputs"));
+const outputsPrefix = process.env.TEXT_TO_UI_OUTPUTS_PREFIX ?? "/outputs/";
+const repositoryPrefix = process.env.TEXT_TO_UI_REPOSITORY_PREFIX ?? "/repo/";
 const bridgeScript = path.join(scriptDirectory, "pixso-plugin-bridge.mjs");
 const viteEntry = path.join(repository, "apps/component-gallery/node_modules/vite/bin/vite.js");
 
@@ -150,7 +150,7 @@ function createHub() {
     if (serveRepository(request, response, url.pathname)) return;
     if (url.pathname === "/") {
       response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-      return response.end(`<!doctype html><meta charset="utf-8"><title>Text-to-UI Preview Hub</title><style>body{font:16px system-ui;margin:40px;line-height:1.6}a{display:block}</style><h1>Text-to-UI Preview Hub</h1><a href="/components/">组件预览</a><p>页面产物路径：/Documents/办公/outputs/&lt;artifact&gt;/</p><p>Pixso 自动桥接：${host}:${bridgePort}</p>`);
+      return response.end(`<!doctype html><meta charset="utf-8"><title>Text-to-UI Preview Hub</title><style>body{font:16px system-ui;margin:40px;line-height:1.6}a{display:block}</style><h1>Text-to-UI Preview Hub</h1><a href="/components/">组件预览</a><p>页面产物路径：${outputsPrefix}&lt;artifact&gt;/</p><p>Pixso 自动桥接：${host}:${bridgePort}</p>`);
     }
     response.writeHead(404);
     response.end("Not Found");
@@ -217,7 +217,7 @@ async function main() {
       spawn(process.execPath, [fileURLToPath(import.meta.url), "serve"], { detached: true, stdio: "ignore" }).unref();
       await waitFor(endpoints.hub, "text-to-ui-preview-hub");
     }
-    process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, outputs: `http://${host}:${hubPort}/Documents/办公/outputs/<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
+    process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, outputs: `http://${host}:${hubPort}${outputsPrefix}<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
     return;
   }
   if (command !== "serve") throw new Error("Usage: start-text-to-ui-services.mjs [start|status]");
@@ -231,7 +231,7 @@ async function main() {
     hub.once("error", reject);
     hub.listen(hubPort, host, resolve);
   });
-  process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, outputs: `http://${host}:${hubPort}/Documents/办公/outputs/<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, outputs: `http://${host}:${hubPort}${outputsPrefix}<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
 
   const shutdown = () => {
     hub.close();

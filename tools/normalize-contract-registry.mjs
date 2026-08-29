@@ -17,7 +17,7 @@ const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
 
 const readyIds = new Set();
 const customIds = new Set([
-  "button", "input", "search", "titlebar", "field", "textarea", "select", "combobox", "native-select", "checkbox", "radio-group", "switch", "tabs", "accordion", "collapsible", "sidebar", "list-card", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast",
+  "button", "input", "search", "titlebar", "field", "textarea", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "tabs", "accordion", "collapsible", "primary-navigation-item", "sidebar", "list-card", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast",
   "dialog", "alert-dialog", "semi-modal", "navigation-menu", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment", "carousel"
 ]);
 const shadcnIds = new Set([
@@ -44,6 +44,7 @@ const implementationPaths = {
   combobox: { html: "packages/components-html/src/index.js#combobox", react: "packages/components-react/src/index.jsx#Combobox", vue: "packages/components-vue/src/Combobox.vue" },
   "native-select": { html: "packages/components-html/src/index.js#nativeSelect", react: "packages/components-react/src/index.jsx#NativeSelect", vue: "packages/components-vue/src/NativeSelect.vue" },
   checkbox: { html: "packages/components-html/src/index.js#checkbox", react: "packages/components-react/src/index.jsx#Checkbox", vue: "packages/components-vue/src/Checkbox.vue" },
+  radio: { html: "packages/components-html/src/index.js#radio", react: "packages/components-react/src/index.jsx#Radio", vue: "packages/components-vue/src/Radio.vue" },
   "radio-group": { html: "packages/components-html/src/index.js#radioGroup", react: "packages/components-react/src/index.jsx#RadioGroup", vue: "packages/components-vue/src/RadioGroup.vue" },
   switch: { html: "packages/components-html/src/index.js#switch", react: "packages/components-react/src/index.jsx#Switch", vue: "packages/components-vue/src/Switch.vue" },
   tabs: { html: "packages/components-html/src/index.js#tabs", react: "packages/components-react/src/index.jsx#Tabs", vue: "packages/components-vue/src/Tabs.vue" },
@@ -64,6 +65,7 @@ const implementationPaths = {
   alert: { html: "packages/components-html/src/index.js#alert", react: "packages/components-react/src/index.jsx#Alert", vue: "packages/components-vue/src/Alert.vue" },
   tooltip: { html: "packages/components-html/src/index.js#tooltip", react: "packages/components-react/src/index.jsx#Tooltip", vue: "packages/components-vue/src/Tooltip.vue" },
   toast: { html: "packages/components-html/src/index.js#toast", react: "packages/components-react/src/index.jsx#Toast", vue: "packages/components-vue/src/Toast.vue" },
+  "primary-navigation-item": { html: "packages/components-html/src/primary-navigation-item.html", react: "packages/components-react/src/index.jsx#PrimaryNavigationItem", vue: "packages/components-vue/src/PrimaryNavigationItem.vue" },
   sidebar: { html: "packages/components-html/src/sidebar.html", react: "packages/components-react/src/index.jsx#Sidebar", vue: "packages/components-vue/src/Sidebar.vue" },
   "list-card": { html: "packages/components-html/src/list-card.html", react: "packages/components-react/src/index.jsx#ListCard", vue: "packages/components-vue/src/ListCard.vue" },
   dialog: { html: "packages/components-html/src/advanced.js#dialog", react: "packages/components-react/src/advanced.jsx#Dialog", vue: "packages/components-vue/src/advanced.js#Dialog" },

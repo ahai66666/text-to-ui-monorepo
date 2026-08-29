@@ -17,6 +17,8 @@ pnpm delivery:validate
 
 更新 Skill 时只编辑 `text-to-ui/` 规范源，再将相同文件同步到 `skill/`；不要在两个目录中维护不同规则。
 
+当前配套 Monorepo 提供 55 个组件契约、4 个页面 Pattern，以及 HTML、React、Vue 三套真实 UI 组件实现。组件包、Tokens、共享样式、Pixso 映射和正式画廊位于 Monorepo 的 `packages/` 与 `apps/` 下；本 Skill 负责规则、索引、页面编排和导入工具，不替代生产组件源码。
+
 当前版本提供三条可选工作流：
 
 1. **V1 · HTML 初稿 → Pixso 细化 → 最终 Demo（首推）**：需求分析 → 方案确认 → HTML 初稿 → 浏览器检查 → Pixso 细化 → 人工确认 → 最终 Demo。
@@ -331,7 +333,7 @@ HTML 初稿导入 Pixso 后，代码中的字面量会先成为图层属性；�
 
 ## 版本与命名
 
-- 当前工作区 Skill 版本：`v1.3.0`（以 `package.json` 为准）
+- 当前工作区 Skill 版本：`v1.4.0`（以 `package.json` 为准）
 - 工作流编号：`V1`（HTML 初稿 → Pixso 细化）、`V2`（视觉优先）、`V3`（直接生成 HTML）。
 - 最新稳定发布：[`v1.1.0`](https://github.com/ahai66666/text-to-ui/releases/tag/v1.1.0)
 
@@ -339,4 +341,4 @@ HTML 初稿导入 Pixso 后，代码中的字面量会先成为图层属性；�
 
 ## 许可证
 
-当前仓库尚未提供开源许可证。未经明确授权，请勿将项目内容用于再分发或商业发布。
+本项目采用 MIT License，详见本目录的 [`LICENSE`](LICENSE)。

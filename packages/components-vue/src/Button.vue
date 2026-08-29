@@ -2,8 +2,9 @@
 import "./styles.css";
 import { computed } from "vue";
 import Icon from "./Icon.js";
-const props = defineProps({ label: String, variant: { type: String, default: "primary" }, size: { type: String, default: "standard" }, mode: { type: String, default: "text" }, state: { type: String, default: "default" }, disabled: Boolean, icon: { type: String, default: "" }, menuOpen: Boolean });
+const props = defineProps({ label: String, variant: { type: String, default: "primary" }, size: { type: String, default: "standard" }, mode: { type: String, default: "text" }, state: { type: String, default: "default" }, disabled: Boolean, icon: { type: String, default: "" }, logicalName: { type: String, default: "" }, menuOpen: Boolean });
 const logicalName = computed(() => {
+  if (props.logicalName) return props.logicalName;
   if (props.mode === "icon-text") return "Button/Icon Text/Default";
   if (props.mode === "icon") return "Button/Icon/Default";
   if (props.mode === "selection-dropdown") return "Button/Selection Dropdown/Default";

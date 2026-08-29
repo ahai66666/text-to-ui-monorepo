@@ -5,6 +5,7 @@ import "./gallery.css";
 
 const viewAliases = {
   "contract-view": "contract",
+  "pattern-view": "pattern",
   "runtime-view": "runtime",
   "regression-view": "regression",
   "contract-components": "contract",
@@ -19,7 +20,7 @@ const viewLinks = [...document.querySelectorAll("[data-view-link]")];
 const viewTabs = [...document.querySelectorAll("[data-view-tab]")];
 const setPreviewView = (requested, updateHash = false) => {
   const alias = viewAliases[requested] ?? requested;
-  const view = ["contract", "runtime", "regression"].includes(alias) ? alias : "contract";
+  const view = ["contract", "pattern", "runtime", "regression"].includes(alias) ? alias : "contract";
   views.forEach((section) => { section.hidden = section.dataset.view !== view; });
   viewLinks.forEach((link) => {
     const selected = link.dataset.viewLink === view;
@@ -27,7 +28,7 @@ const setPreviewView = (requested, updateHash = false) => {
     else link.removeAttribute("aria-current");
   });
   viewTabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.viewTab === view)));
-  if (view === "contract") window.__loadLegacyFrames?.();
+  if (view === "contract" || view === "pattern") window.__loadLegacyFrames?.();
   if (updateHash && location.hash !== `#${view}-view`) history.replaceState(null, "", `#${view}-view`);
 };
 viewTabs.forEach((tab) => tab.addEventListener("click", () => setPreviewView(tab.dataset.viewTab, true)));

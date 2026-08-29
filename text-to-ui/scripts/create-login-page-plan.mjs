@@ -1,8 +1,17 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const sourcePlanPath = process.argv[2] ?? "/Users/zhaobohai/Documents/办公/outputs/coremail-mail-home-v5/.text-to-ui/pixso-runs/20260826095851-07ec4c1a-e34686/pixso-operation-plan.json";
-const outputRoot = process.argv[3] ?? "/Users/zhaobohai/Documents/办公/outputs/coremail-mail-home-v5/.text-to-ui/login-pages";
+const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const sourcePlanPath = process.argv[2]
+  ?? process.env.TEXT_TO_UI_SOURCE_PLAN
+  ?? path.join(repository, "apps/coremail-workbench/pixso/pixso-operation-plan.json");
+const outputRoot = process.argv[3]
+  ?? process.env.TEXT_TO_UI_OUTPUT_ROOT
+  ?? path.join(repository, "outputs/login-pages");
+if (!fs.existsSync(sourcePlanPath)) {
+  throw new Error(`Source Pixso operation plan not found: ${sourcePlanPath}. Pass the plan as the first argument or set TEXT_TO_UI_SOURCE_PLAN.`);
+}
 const sourcePlan = JSON.parse(fs.readFileSync(sourcePlanPath, "utf8"));
 
 const stamp = new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14);

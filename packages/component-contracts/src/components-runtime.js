@@ -104,7 +104,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -444,7 +444,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -477,8 +477,8 @@ export default {
       ]
     },
     {
-      "id": "attachment",
-      "logicalName": "Attachment/Default",
+      "id": "aspect-ratio",
+      "logicalName": "Aspect Ratio/Default",
       "variants": [
         "default"
       ],
@@ -504,6 +504,156 @@ export default {
         "color.text",
         "color.surface",
         "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "source": "canonical-static",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/generated/aspect-ratio.html",
+        "react": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio",
+        "vue": "packages/components-vue/src/generated/AspectRatio.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-static",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/generated/aspect-ratio.html"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/generated/AspectRatio.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "specialized",
+      "categoryLabel": "专用内容",
+      "order": 112,
+      "canonicalSection": "section#specialized",
+      "canonicalSelector": "section#specialized [data-component=\"Aspect Ratio/Default\"]",
+      "legacyVisualGroup": "specialized",
+      "canonicalSpecimen": "legacy:specialized:aspect-ratio",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-aspect-ratio",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "behaviors": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null
+    },
+    {
+      "id": "attachment",
+      "logicalName": "Attachment/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "type",
+        "name",
+        "meta",
+        "leading",
+        "content",
+        "actions",
+        "disabled",
+        "onAction",
+        "onPreview",
+        "onDownload"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "content",
+        "description",
+        "actions",
+        "menu-trigger",
+        "menu"
+      ],
+      "slotContracts": {
+        "actions": {
+          "cardinality": "0..1",
+          "scope": "attachment-surface",
+          "defaultPlacement": "trailing-end",
+          "control": "attachment-action-menu",
+          "interaction": "open-attachment-action-menu",
+          "menuItems": [
+            "preview",
+            "download"
+          ]
+        },
+        "menu-trigger": {
+          "cardinality": "0..1",
+          "scope": "attachment-action-menu",
+          "defaultVisibility": "visible",
+          "iconAlias": "navigation/chevron-down",
+          "iconSize": "20px",
+          "ariaHasPopup": "menu"
+        },
+        "menu": {
+          "cardinality": "0..1",
+          "scope": "attachment-action-menu",
+          "role": "menu",
+          "items": [
+            "preview",
+            "download"
+          ],
+          "closeOn": [
+            "escape",
+            "outside-click",
+            "select"
+          ]
+        }
+      },
+      "tokenRoles": [
+        "color.text",
+        "color.surface-muted",
         "typography.subtitle-s",
         "typography.body-s",
         "spacing.component-gap"
@@ -555,10 +705,15 @@ export default {
       "surface": "white",
       "sizing": "intrinsic",
       "behaviors": [
-        "focus",
+        "open",
+        "select",
+        "preview",
+        "download",
+        "escape",
+        "outside-click",
         "disabled"
       ],
-      "iconSemantic": "action/download",
+      "iconSemantic": "navigation/chevron-down",
       "readiness": {
         "sourceReady": true,
         "contractReady": true,
@@ -579,21 +734,20 @@ export default {
         "title:subtitle-s",
         "content:body-m",
         "description:body-s",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
-          "alias": "action/download",
+          "slot": "menu-trigger",
+          "alias": "navigation/chevron-down",
           "displaySizes": [
-            16,
-            20,
-            24
+            20
           ],
           "kind": "regular"
         }
       ],
       "iconAliases": [
-        "action/download"
+        "navigation/chevron-down"
       ]
     },
     {
@@ -611,6 +765,10 @@ export default {
       "props": [
         "label",
         "value",
+        "description",
+        "checked",
+        "name",
+        "ariaLabel",
         "disabled",
         "state",
         "className"
@@ -707,7 +865,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -729,8 +887,20 @@ export default {
         "disabled"
       ],
       "props": [
-        "label",
-        "value",
+        "title",
+        "description",
+        "supporting",
+        "leadingIcon",
+        "leading",
+        "titleSlot",
+        "descriptionSlot",
+        "supportingSlot",
+        "content",
+        "trailing",
+        "trailingText",
+        "trailingSlot",
+        "actions",
+        "selected",
         "disabled",
         "state",
         "className"
@@ -816,7 +986,7 @@ export default {
         "disabled"
       ],
       "textRoles": [
-        "label:caption-l"
+        "label:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -923,7 +1093,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -939,6 +1109,113 @@ export default {
       "iconAliases": [
         "navigation/chevron-down"
       ]
+    },
+    {
+      "id": "bubble",
+      "logicalName": "Bubble/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "source": "canonical-static",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/generated/bubble.html",
+        "react": "packages/components-react/src/generated/Bubble.jsx#Bubble",
+        "vue": "packages/components-vue/src/generated/Bubble.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-static",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/generated/bubble.html"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/generated/Bubble.jsx#Bubble"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/generated/Bubble.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "specialized",
+      "categoryLabel": "专用内容",
+      "order": 113,
+      "canonicalSection": "section#specialized",
+      "canonicalSelector": "section#specialized [data-component=\"Bubble/Default\"]",
+      "legacyVisualGroup": "specialized",
+      "canonicalSpecimen": "legacy:specialized:bubble",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-bubble",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "behaviors": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null
     },
     {
       "id": "button",
@@ -986,10 +1263,22 @@ export default {
         "color.primary-text",
         "color.text",
         "size.button-height",
+        "size.button-sm-height",
         "radius.button",
         "spacing.padding-button-x",
+        "spacing.padding-button-sm-x",
+        "typography.body-m",
         "typography.body-l"
       ],
+      "sizePolicy": {
+        "defaultSize": "standard",
+        "defaultHeightToken": "size.button-height",
+        "defaultHeight": "40px",
+        "compactSize": "small",
+        "compactHeightToken": "size.button-sm-height",
+        "compactHeight": "28px",
+        "compactRequiresExplicitContract": true
+      },
       "iconAliases": [
         "action/add",
         "action/download",
@@ -1008,6 +1297,14 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
       "frameworks": {
         "html": {
           "status": "partial",
@@ -1035,6 +1332,8 @@ export default {
       "order": 20,
       "canonicalSection": "section#buttons",
       "canonicalSelector": "section#buttons [data-component=\"Button/Primary/Default\"]",
+      "legacyVisualGroup": "buttons",
+      "canonicalSpecimen": "legacy:buttons:button",
       "specimens": [
         {
           "id": "primary",
@@ -1128,27 +1427,16 @@ export default {
       "fixtureId": "fixture-button",
       "surface": "white",
       "sizing": "intrinsic",
-      "behaviors": [
-        "click",
-        "keyboard-activation",
-        "disabled"
-      ],
-      "iconSemantic": "action/add",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "buttons",
-      "canonicalSpecimen": "legacy:buttons:button",
       "allowedStates": [
         "default",
         "hover",
         "pressed",
         "focus",
+        "disabled"
+      ],
+      "behaviors": [
+        "click",
+        "keyboard-activation",
         "disabled"
       ],
       "textRoles": [
@@ -1219,7 +1507,8 @@ export default {
           ],
           "kind": "regular"
         }
-      ]
+      ],
+      "iconSemantic": "action/add"
     },
     {
       "id": "calendar",
@@ -1324,7 +1613,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1364,8 +1653,10 @@ export default {
         "leading",
         "title",
         "description",
+        "supporting",
         "content",
-        "trailing"
+        "trailing",
+        "actions"
       ],
       "tokenRoles": [
         "color.text",
@@ -1445,7 +1736,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -1552,7 +1843,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1673,7 +1964,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1794,7 +2085,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -1916,7 +2207,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2041,7 +2332,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2167,7 +2458,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2404,7 +2695,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2531,7 +2822,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2668,7 +2959,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": [],
@@ -2798,7 +3089,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -2917,7 +3208,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3040,7 +3331,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -3155,7 +3446,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3216,6 +3507,14 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
       "frameworks": {
         "html": {
           "status": "partial",
@@ -3243,6 +3542,8 @@ export default {
       "order": 30,
       "canonicalSection": "section#fields",
       "canonicalSelector": "section#fields [data-component=\"Input/White Surface/Default\"]",
+      "legacyVisualGroup": "fields",
+      "canonicalSpecimen": "legacy:fields:input",
       "specimens": [
         {
           "id": "white-surface",
@@ -3263,23 +3564,6 @@ export default {
         "gray"
       ],
       "sizing": "fill",
-      "behaviors": [
-        "input",
-        "focus",
-        "disabled",
-        "error"
-      ],
-      "iconSemantic": null,
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "fields",
-      "canonicalSpecimen": "legacy:fields:input",
       "allowedStates": [
         "default",
         "hover",
@@ -3288,14 +3572,21 @@ export default {
         "error",
         "disabled"
       ],
+      "behaviors": [
+        "input",
+        "focus",
+        "disabled",
+        "error"
+      ],
       "textRoles": [
         "value:body-l",
         "placeholder:body-l",
         "label:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
+      "iconAliases": [],
       "iconSlots": [],
-      "iconAliases": []
+      "iconSemantic": null
     },
     {
       "id": "input-otp",
@@ -3399,7 +3690,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3558,7 +3849,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -3665,7 +3956,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3786,7 +4077,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -3907,7 +4198,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4028,7 +4319,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4149,7 +4440,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4165,6 +4456,173 @@ export default {
       "iconAliases": [
         "navigation/grid"
       ]
+    },
+    {
+      "id": "primary-navigation-item",
+      "logicalName": "Primary Navigation Item/Level 1",
+      "variants": [
+        "default",
+        "selected"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "ariaLabel",
+        "icon",
+        "selected",
+        "disabled",
+        "state",
+        "onSelect",
+        "className"
+      ],
+      "slots": [
+        "icon",
+        "tooltip"
+      ],
+      "tokenRoles": [
+        "color.primary-level-unselected",
+        "color.sidebar-accent",
+        "color.sidebar-selected-text",
+        "color.focus-ring",
+        "size.icon-button",
+        "icon-size-lg",
+        "radius.icon-button"
+      ],
+      "iconAliases": [
+        "navigation/grid",
+        "field/calendar",
+        "navigation/mail-unread",
+        "action/settings"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/primary-navigation-item.html",
+        "react": "packages/components-react/src/index.jsx#PrimaryNavigationItem",
+        "vue": "packages/components-vue/src/PrimaryNavigationItem.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/primary-navigation-item.html"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#PrimaryNavigationItem"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/PrimaryNavigationItem.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "navigation",
+      "categoryLabel": "导航",
+      "order": 49,
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Primary Navigation Item/Level 1\"]",
+      "legacyVisualGroup": "navigation",
+      "canonicalSpecimen": "legacy:navigation:primary-navigation-item",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default",
+          "surface": "white"
+        }
+      ],
+      "fixtureId": "fixture-primary-navigation-item",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "behaviors": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [],
+      "iconSlots": [
+        {
+          "alias": "navigation/grid",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "field/calendar",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "navigation/mail-unread",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "action/settings",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "iconSemantic": "navigation/grid",
+      "slotContracts": {
+        "icon": {
+          "cardinality": "1",
+          "scope": "primary-navigation-item",
+          "displaySize": "24px",
+          "kind": "regular",
+          "source": "lucide"
+        }
+      },
+      "structuralAxes": {
+        "placement": [
+          "primary-navigation-shell"
+        ],
+        "alignment": [
+          "bottom"
+        ],
+        "presentation": [
+          "icon-only"
+        ]
+      }
     },
     {
       "id": "pagination",
@@ -4269,7 +4727,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4408,7 +4866,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4534,7 +4992,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4550,6 +5008,127 @@ export default {
       "iconAliases": [
         "status/success"
       ]
+    },
+    {
+      "id": "radio",
+      "logicalName": "Radio/Unselected/Default",
+      "variants": [
+        "unselected",
+        "selected"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "props": [
+        "checked",
+        "defaultChecked",
+        "label",
+        "name",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "control",
+        "label"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "color.primary",
+        "color.primary-text",
+        "size.indicator.radio-size",
+        "radius.full",
+        "spacing.gap.choice-label",
+        "typography.body-m"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#radio",
+        "react": "packages/components-react/src/index.jsx#Radio",
+        "vue": "packages/components-vue/src/Radio.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#radio"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#Radio"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/Radio.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "choices",
+      "categoryLabel": "选择控件",
+      "order": 41,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Radio/Unselected/Default\"]",
+      "legacyVisualGroup": "choices",
+      "canonicalSpecimen": "legacy:choices:radio",
+      "specimens": [
+        {
+          "id": "unselected",
+          "variant": "unselected",
+          "state": "default",
+          "checked": false
+        },
+        {
+          "id": "selected",
+          "variant": "selected",
+          "state": "selected",
+          "checked": true
+        }
+      ],
+      "fixtureId": "fixture-radio",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "behaviors": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:body-m"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null
     },
     {
       "id": "radio-group",
@@ -4616,7 +5195,7 @@ export default {
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "choices",
       "categoryLabel": "选择控件",
-      "order": 41,
+      "order": 42,
       "canonicalSection": "section#choices",
       "canonicalSelector": "section#choices [data-component=\"Radio Group/Default\"]",
       "specimens": [
@@ -4655,7 +5234,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -4728,6 +5307,14 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
       "frameworks": {
         "html": {
           "status": "partial",
@@ -4755,6 +5342,8 @@ export default {
       "order": 31,
       "canonicalSection": "section#fields",
       "canonicalSelector": "section#fields [data-component=\"Search/White Surface/Default\"]",
+      "legacyVisualGroup": "fields",
+      "canonicalSpecimen": "legacy:fields:search",
       "specimens": [
         {
           "id": "white-surface",
@@ -4775,30 +5364,19 @@ export default {
         "gray"
       ],
       "sizing": "fill",
-      "behaviors": [
-        "input",
-        "clear",
-        "advanced-search",
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "field/search",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "fields",
-      "canonicalSpecimen": "legacy:fields:search",
       "allowedStates": [
         "default",
         "hover",
         "focus",
         "filled",
         "error",
+        "disabled"
+      ],
+      "behaviors": [
+        "input",
+        "clear",
+        "advanced-search",
+        "focus",
         "disabled"
       ],
       "textRoles": [
@@ -4825,6 +5403,7 @@ export default {
           "kind": "regular"
         }
       ],
+      "iconSemantic": "field/search",
       "slotContracts": {
         "advanced-search": {
           "cardinality": "0..1",
@@ -4834,6 +5413,7 @@ export default {
           "variant": "ghost",
           "size": "small",
           "mode": "text",
+          "textColorToken": "color.text-muted",
           "trailingInsetToken": "space/2",
           "requiresAccessibleName": true,
           "interaction": "open-advanced-search-layer",
@@ -4959,7 +5539,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -5078,7 +5658,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -5134,6 +5714,14 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
       "frameworks": {
         "html": {
           "status": "partial",
@@ -5161,6 +5749,8 @@ export default {
       "order": 50,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"Sidebar Item/Default\"]",
+      "legacyVisualGroup": "navigation",
+      "canonicalSpecimen": "legacy:navigation:sidebar",
       "specimens": [
         {
           "id": "default",
@@ -5172,28 +5762,17 @@ export default {
       "fixtureId": "fixture-sidebar",
       "surface": "white",
       "sizing": "fill",
-      "behaviors": [
-        "select",
-        "keyboard-activation",
-        "disabled"
-      ],
-      "iconSemantic": "navigation/grid",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "navigation",
-      "canonicalSpecimen": "legacy:navigation:sidebar",
       "allowedStates": [
         "default",
         "hover",
         "pressed",
         "focus",
         "selected",
+        "disabled"
+      ],
+      "behaviors": [
+        "select",
+        "keyboard-activation",
         "disabled"
       ],
       "textRoles": [
@@ -5228,7 +5807,8 @@ export default {
           ],
           "kind": "regular"
         }
-      ]
+      ],
+      "iconSemantic": "navigation/grid"
     },
     {
       "id": "slider",
@@ -5332,7 +5912,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -5415,7 +5995,7 @@ export default {
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "choices",
       "categoryLabel": "选择控件",
-      "order": 42,
+      "order": 43,
       "canonicalSection": "section#choices",
       "canonicalSelector": "section#choices [data-component=\"Switch/Default\"]",
       "specimens": [
@@ -5454,7 +6034,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -5820,7 +6400,7 @@ export default {
         "value:body-l",
         "placeholder:body-l",
         "label:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -5936,7 +6516,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -6082,6 +6662,113 @@ export default {
       ]
     },
     {
+      "id": "typography",
+      "logicalName": "Typography/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "source": "canonical-static",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/generated/typography.html",
+        "react": "packages/components-react/src/generated/Typography.jsx#Typography",
+        "vue": "packages/components-vue/src/generated/Typography.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-static",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/generated/typography.html"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/generated/Typography.jsx#Typography"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/generated/Typography.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "specialized",
+      "categoryLabel": "专用内容",
+      "order": 114,
+      "canonicalSection": "section#specialized",
+      "canonicalSelector": "section#specialized [data-component=\"Typography/Default\"]",
+      "legacyVisualGroup": "specialized",
+      "canonicalSpecimen": "legacy:specialized:typography",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-typography",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "behaviors": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null
+    },
+    {
       "id": "list-card",
       "logicalName": "List Item/White Surface/Default",
       "variants": [
@@ -6115,7 +6802,6 @@ export default {
         "color.sidebar-selected",
         "color.text",
         "color.text-muted",
-        "color.divider",
         "size.list-item-height",
         "radius.list-item",
         "typography.body-l",
@@ -6133,6 +6819,14 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
       "frameworks": {
         "html": {
           "status": "partial",
@@ -6160,6 +6854,8 @@ export default {
       "order": 51,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"List Item/White Surface/Default\"]",
+      "legacyVisualGroup": "navigation",
+      "canonicalSpecimen": "legacy:navigation:list-card",
       "specimens": [
         {
           "id": "single-text-arrow",
@@ -6207,28 +6903,17 @@ export default {
       "fixtureId": "fixture-list-card",
       "surface": "white",
       "sizing": "fill",
-      "behaviors": [
-        "select",
-        "keyboard-activation",
-        "disabled"
-      ],
-      "iconSemantic": "navigation/list",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "navigation",
-      "canonicalSpecimen": "legacy:navigation:list-card",
       "allowedStates": [
         "default",
         "hover",
         "pressed",
         "focus",
         "selected",
+        "disabled"
+      ],
+      "behaviors": [
+        "select",
+        "keyboard-activation",
         "disabled"
       ],
       "textRoles": [
@@ -6246,7 +6931,8 @@ export default {
           ],
           "kind": "regular"
         }
-      ]
+      ],
+      "iconSemantic": "navigation/list"
     },
     {
       "id": "semi-modal",
@@ -6279,7 +6965,8 @@ export default {
         "title",
         "description",
         "content",
-        "actions"
+        "actions",
+        "close"
       ],
       "tokenRoles": [
         "color.text",
@@ -6419,15 +7106,14 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
+          "slot": "close",
           "alias": "action/close",
           "displaySizes": [
-            16,
-            20,
-            24
+            20
           ],
           "kind": "regular"
         }
@@ -6453,7 +7139,18 @@ export default {
       "interactionStates": [
         "closed",
         "open"
-      ]
+      ],
+      "slotContracts": {
+        "close": {
+          "cardinality": "1",
+          "scope": "semi-modal-header",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "20px",
+          "trailingInsetToken": "space/5",
+          "trailingInset": "16px"
+        }
+      }
     },
     {
       "id": "titlebar",
@@ -6496,9 +7193,35 @@ export default {
           "defaultPlacement": "final-pane-leading-slot",
           "layout": "compact-horizontal-group",
           "leadingInsetToken": "layout/main-detail-action-leading-padding",
+          "overflow": {
+            "strategy": "collapse-to-more",
+            "triggerLogicalName": "Icon Button/Ghost/Default",
+            "triggerActionId": "more",
+            "triggerIconAlias": "action/more",
+            "triggerPosition": "last",
+            "eligibleButtonTypes": [
+              "icon",
+              "icon-text-ghost"
+            ],
+            "preserveMode": true,
+            "preserveOrder": true,
+            "fit": "available-width",
+            "staticBoard": {
+              "renderTrigger": true,
+              "renderMenu": false
+            }
+          },
+          "modePolicy": {
+            "type": "uniform-business-actions",
+            "allowedModes": [
+              "icon",
+              "icon-text"
+            ],
+            "mixedModes": "forbidden",
+            "overflowTriggerExcluded": true
+          },
           "allowedButtonVariants": [
-            "ghost",
-            "ghost-icon"
+            "ghost"
           ],
           "forbidden": [
             "page-global-primary",
@@ -6511,6 +7234,34 @@ export default {
           "activeWhen": {
             "layout": "three-column",
             "paneRole": "final-pane"
+          },
+          "allowedButtonTypes": [
+            "icon",
+            "icon-text-ghost"
+          ],
+          "allowedButtonLogicalNames": [
+            "Icon Button/Ghost/Default",
+            "Icon Text Button/Ghost/Default"
+          ],
+          "buttonTypeContracts": {
+            "icon": {
+              "logicalName": "Icon Button/Ghost/Default",
+              "mode": "icon",
+              "requiredSlots": [
+                "icon"
+              ],
+              "forbiddenSlots": [
+                "label"
+              ]
+            },
+            "icon-text-ghost": {
+              "logicalName": "Icon Text Button/Ghost/Default",
+              "mode": "icon-text",
+              "requiredSlots": [
+                "icon",
+                "label"
+              ]
+            }
           }
         },
         "main-content-title": {
@@ -6653,7 +7404,7 @@ export default {
         "title:title-s",
         "content:body-l",
         "description:body-m",
-        "help:caption-l"
+        "help:body-s"
       ],
       "iconSlots": [
         {
@@ -6758,7 +7509,7 @@ export default {
     ],
     "readyWhen": "all readinessDimensions are true",
     "runtimeRule": "只显示结构性 specimens；hover/pressed/focus/open/close 由真实组件交互触发",
-    "comparisonRule": "原生组件预览必须严格跟随旧 Skill 契约页的章节和组件顺序；业务 category 仅用于代码组织，不得决定视觉对比顺序",
+    "comparisonRule": "框架运行时组件预览必须严格跟随旧 Skill 契约页的章节和组件顺序；业务 category 仅用于代码组织，不得决定视觉对比顺序",
     "comparisonGroups": [
       {
         "id": "titlebars",
@@ -6789,6 +7540,7 @@ export default {
         "label": "选择控件",
         "componentIds": [
           "checkbox",
+          "radio",
           "radio-group",
           "switch"
         ]
@@ -6797,6 +7549,7 @@ export default {
         "id": "navigation",
         "label": "Tabs · 标签页与导航列表",
         "componentIds": [
+          "primary-navigation-item",
           "tabs",
           "list-card"
         ]
@@ -6870,7 +7623,10 @@ export default {
         "label": "专用内容与布局",
         "componentIds": [
           "attachment",
-          "carousel"
+          "carousel",
+          "aspect-ratio",
+          "bubble",
+          "typography"
         ]
       },
       {

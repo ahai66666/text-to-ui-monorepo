@@ -55,6 +55,13 @@ export function writeJson(file, value) {
   fs.writeFileSync(output, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+export function repoRelativePath(file) {
+  const repository = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
+  const absolute = path.resolve(file);
+  const relative = path.relative(repository, absolute);
+  return relative && !relative.startsWith("..") ? relative : `<external>/${path.basename(absolute)}`;
+}
+
 export function stableJson(value) {
   return `${JSON.stringify(value, null, 2)}\n`;
 }

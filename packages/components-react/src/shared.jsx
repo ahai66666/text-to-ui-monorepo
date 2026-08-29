@@ -10,18 +10,19 @@ const iconChildren = (content, size, preservePaint = false) => [...content.match
   return React.createElement(tag, { ...props, key: `${tag}-${index}` });
 });
 
-export const Icon = ({ name, className = "", size = 20, decorative = true, ariaLabel = "" }) => {
+export const Icon = ({ name, className = "", size = 20, decorative = true, ariaLabel = "", iconStyle = "regular" }) => {
   const definition = iconDefinitions[name];
   if (!definition) throw new Error(`Unknown icon semantic alias: ${name}`);
   if (![16, 20, 24].includes(Number(size))) throw new Error(`Unsupported icon display size: ${size}`);
+  if (!["regular", "solid"].includes(iconStyle)) throw new Error(`Unsupported icon style: ${iconStyle}`);
   return React.createElement("svg", {
-    className: `tui-icon tui-icon--regular${className ? ` ${className}` : ""}`,
+    className: `tui-icon tui-icon--${iconStyle}${className ? ` ${className}` : ""}`,
     viewBox: definition.viewBox,
     width: size,
     height: size,
     "data-icon-alias": name,
     "data-icon-size": size,
-    "data-icon-kind": "regular",
+    "data-icon-kind": iconStyle,
     "aria-hidden": decorative ? "true" : undefined,
     role: decorative ? undefined : "img",
     "aria-label": decorative ? undefined : ariaLabel

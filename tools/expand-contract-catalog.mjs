@@ -10,7 +10,7 @@ const source = JSON.parse(await fs.readFile(contractPath, "utf8"));
 const existing = new Map(source.components.map((component) => [component.logicalName, component]));
 
 const names = [
-  "Accordion", "Alert", "Alert Dialog", "Aspect Ratio", "Attachment", "Avatar", "Badge", "Breadcrumb", "Bubble", "Button", "Calendar", "Card", "Carousel", "Chart", "Checkbox", "Collapsible", "Combobox", "Context Menu", "Data Table", "Date Picker", "Time Picker", "Dialog", "Dropdown Menu", "Empty", "Field", "Hover Card", "Input", "Input OTP", "Item", "Kbd", "Label", "Menubar", "Native Select", "Navigation Menu", "Pagination", "Popover", "Progress", "Radio Group", "Search", "Select", "Separator", "Sidebar", "Slider", "Switch", "Table", "Tabs", "Textarea", "Toast", "Tooltip", "Typography", "List Card", "Semi-modal", "Titlebar"
+  "Accordion", "Alert", "Alert Dialog", "Aspect Ratio", "Attachment", "Avatar", "Badge", "Breadcrumb", "Bubble", "Button", "Calendar", "Card", "Carousel", "Chart", "Checkbox", "Collapsible", "Combobox", "Context Menu", "Data Table", "Date Picker", "Time Picker", "Dialog", "Dropdown Menu", "Empty", "Field", "Hover Card", "Input", "Input OTP", "Item", "Kbd", "Label", "Menubar", "Native Select", "Navigation Menu", "Primary Navigation Item", "Pagination", "Popover", "Progress", "Radio", "Radio Group", "Search", "Select", "Separator", "Sidebar", "Slider", "Switch", "Table", "Tabs", "Textarea", "Toast", "Tooltip", "Typography", "List Card", "Semi-modal", "Titlebar"
 ];
 
 const idFor = (name) => name
@@ -22,7 +22,7 @@ const idFor = (name) => name
 const stateFor = (name) => {
   const states = ["default", "hover", "focus", "disabled"];
   if (["Accordion", "Collapsible", "Dialog", "Alert Dialog", "Dropdown Menu", "Popover", "Hover Card", "Context Menu", "Menubar", "Navigation Menu", "Select", "Combobox", "Date Picker", "Time Picker", "Titlebar"].includes(name)) states.push("open");
-  if (["Checkbox", "Radio Group", "Switch", "Tabs", "Sidebar", "Table", "Data Table", "List Card"].includes(name)) states.push("selected");
+  if (["Checkbox", "Radio", "Radio Group", "Switch", "Tabs", "Sidebar", "Table", "Data Table", "List Card"].includes(name)) states.push("selected");
   if (["Input", "Textarea", "Field", "Search", "Combobox", "Select", "Date Picker", "Time Picker"].includes(name)) states.push("error");
   if (["Progress", "Chart", "Toast"].includes(name)) states.push("loading");
   return [...new Set(states)];
@@ -62,6 +62,12 @@ const baseContracts = {
   },
   Search: {
     id: "search", logicalName: "Search/White Surface/Default", variants: ["default", "focused", "with-value"], states: ["default", "hover", "focus", "disabled"], props: ["value", "placeholder", "disabled"], slots: ["leading", "value", "clear"], tokenRoles: ["color.input-bg", "color.text", "color.icon", "size.search-height", "radius.search", "spacing.padding-search-x", "typography.body-l"], iconAliases: ["field/search", "action/close"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/search", react: "@text-to-ui/components-react/Search", vue: "@text-to-ui/components-vue/Search" }
+  },
+  Radio: {
+    id: "radio", logicalName: "Radio/Unselected/Default", variants: ["unselected", "selected"], states: ["default", "hover", "focus", "disabled", "selected"], props: ["checked", "defaultChecked", "label", "name", "value", "disabled", "state", "className"], slots: ["control", "label"], tokenRoles: ["color.text", "color.surface", "color.border", "color.primary", "color.primary-text", "size.indicator.radio-size", "radius.full", "spacing.gap.choice-label", "typography.body-m"], source: "skill-canonical", status: "ready", implementations: { html: "packages/components-html/src/index.js#radio", react: "packages/components-react/src/index.jsx#Radio", vue: "packages/components-vue/src/Radio.vue" }
+  },
+  "Primary Navigation Item": {
+    id: "primary-navigation-item", logicalName: "Primary Navigation Item/Level 1", variants: ["default", "selected"], states: ["default", "hover", "pressed", "focus", "selected", "disabled"], props: ["label", "ariaLabel", "icon", "selected", "disabled", "state", "onSelect", "className"], slots: ["icon", "tooltip"], tokenRoles: ["color.primary-level-unselected", "color.sidebar-accent", "color.sidebar-selected-text", "color.focus-ring", "size.icon-button", "icon-size-lg", "radius.icon-button"], structuralAxes: { placement: ["primary-navigation-shell"], alignment: ["bottom"], presentation: ["icon-only"] }, iconAliases: ["navigation/grid", "field/calendar", "navigation/mail-unread", "action/settings"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/primary-navigation-item", react: "@text-to-ui/components-react/PrimaryNavigationItem", vue: "@text-to-ui/components-vue/PrimaryNavigationItem" }
   },
   Sidebar: {
     id: "sidebar", logicalName: "Sidebar Item/Default", variants: ["default", "selected", "collapsed"], states: ["default", "hover", "pressed", "focus", "selected", "disabled"], props: ["label", "icon", "selected", "collapsed", "count"], slots: ["leading", "label", "trailing"], tokenRoles: ["color.sidebar-bg", "color.sidebar-selected", "color.text", "color.primary", "size.list-item-height", "radius.list-item", "typography.body-l"], iconAliases: ["navigation/grid", "navigation/recent", "action/settings"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/sidebar", react: "@text-to-ui/components-react/Sidebar", vue: "@text-to-ui/components-vue/Sidebar" }

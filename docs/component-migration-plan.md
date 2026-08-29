@@ -3,7 +3,7 @@
 当前组件包不把旧 Skill 的全量 HTML 画廊当作三框架组件。`packages/component-contracts/src/components.json` 是唯一覆盖状态来源：
 
 - `ready`：HTML、React、Vue 都有真实源码，契约属性、状态、Slots、Token 和视觉检查全部通过。
-- `partial`：源码或六维一致性尚未完成，不能作为跨框架或 Pixso 严格复用组件；当前 50 个组件处于此状态。三框架源码入口已经齐全，视觉、行为、可访问性和 Token 证据仍需逐批补齐。
+- `partial`：源码或六维一致性尚未完成，不能作为跨框架或 Pixso 严格复用组件；当前 55 个组件处于此状态。三框架源码入口已经齐全，视觉、行为、可访问性和 Token 证据仍需逐批补齐。
 
 ## 已完成
 

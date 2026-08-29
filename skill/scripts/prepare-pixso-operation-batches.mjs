@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
-import { parseArgs, readJson, writeJson } from "./pixso-native-scene-lib.mjs";
+import { parseArgs, readJson, repoRelativePath, writeJson } from "./pixso-native-scene-lib.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const usage = "Usage: prepare-pixso-operation-batches.mjs --plan <pixso-operation-plan.json> --out <pixso-operation-batches.json> [--max-operations 100]";
@@ -20,7 +20,7 @@ for (let index = 0; index < plan.operations.length; index += maxOperations) {
 const output = {
   schemaVersion: 1,
   kind: "pixso-operation-batches",
-  plan: path.resolve(args.plan),
+  plan: repoRelativePath(args.plan),
   maxOperations,
   page: plan.page,
   execution: plan.execution,

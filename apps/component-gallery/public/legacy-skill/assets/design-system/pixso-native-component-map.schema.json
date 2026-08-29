@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.text-to-ui/pixso-native-component-map.schema.json",
+  "type": "object",
+  "required": ["schemaVersion", "libraryPage", "mappings"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "libraryPage": { "type": "string", "minLength": 1 },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["logicalName", "rendererKey", "availability", "supportedProps", "supportedSlots"],
+        "properties": {
+          "logicalName": { "type": "string", "minLength": 1 },
+          "rendererKey": { "type": "string", "minLength": 1 },
+          "pixsoName": { "type": ["string", "null"] },
+          "componentSetName": { "type": ["string", "null"] },
+          "availability": { "enum": ["mapped", "native-only", "blocked"] },
+          "variant": { "type": "object" },
+          "supportedProps": { "type": "array", "items": { "type": "string" } },
+          "supportedSlots": { "type": "array", "items": { "type": "string" } },
+          "contentColor": {
+            "oneOf": [
+              { "type": "string", "minLength": 1 },
+              {
+                "type": "object",
+                "required": ["text", "icon"],
+                "properties": {
+                  "text": { "type": "string", "minLength": 1 },
+                  "icon": { "type": "string", "minLength": 1 }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

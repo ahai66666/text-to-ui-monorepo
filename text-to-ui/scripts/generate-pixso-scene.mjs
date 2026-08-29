@@ -3,7 +3,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { loadComponentMap, loadTokenResources, parseArgs, readJson, writeJson } from "./pixso-native-scene-lib.mjs";
+import { loadComponentMap, loadTokenResources, parseArgs, readJson, repoRelativePath, writeJson } from "./pixso-native-scene-lib.mjs";
 import { buildCoremailScene, collectSceneStats } from "./coremail-semantic-adapter.mjs";
 import { computeHtmlSourceFingerprint, validateFreshHtmlVisualSnapshot } from "./html-visual-contract.mjs";
 
@@ -67,5 +67,5 @@ sourceFingerprint.update("coremail-secondary-list-v2");
 sourceFingerprint.update(`html-source:${htmlSourceFingerprint}`);
 const scene = buildCoremailScene({ pageSpec, layoutContract, pageData, componentMap, visualSnapshot, sourceFingerprint: sourceFingerprint.digest("hex").slice(0, 24), htmlSourceFingerprint, tokens, assetBaseDir: path.dirname(pageDataPath) });
 writeJson(args.out, scene);
-if (args["stats-out"]) writeJson(args["stats-out"], { schemaVersion: 1, scene: path.resolve(args.out), ...collectSceneStats(scene) });
+if (args["stats-out"]) writeJson(args["stats-out"], { schemaVersion: 1, scene: repoRelativePath(args.out), ...collectSceneStats(scene) });
 console.log(JSON.stringify({ ok: true, scene: path.resolve(args.out), ...collectSceneStats(scene) }, null, 2));

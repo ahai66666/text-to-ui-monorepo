@@ -126,7 +126,7 @@
           "enum": ["source", "compiled-only"]
         },
         "reuseStrategy": {
-          "enum": ["registered-components", "import-and-repair"]
+          "enum": ["registered-components", "import-and-repair", "native-pixso-scene"]
         },
         "strictComponentParity": {
           "type": "boolean"
@@ -155,6 +155,17 @@
         }
       }
     },
+    "pixso": {
+      "type": "object",
+      "properties": {
+        "strategy": { "enum": ["native-scene", "html-import", "none"] },
+        "stateScope": { "const": "default-visible" },
+        "targetFrame": { "type": "string", "minLength": 1 },
+        "preserveExistingFrames": { "type": "boolean" },
+        "pageData": { "type": "string", "minLength": 1 },
+        "componentMap": { "type": "string", "minLength": 1 }
+      }
+    },
     "shell": {
       "type": "object",
       "required": [
@@ -162,8 +173,16 @@
       ],
       "properties": {
         "pattern": {
-          "type": "string",
-          "minLength": 1
+          "enum": ["pattern-a-two-pane", "pattern-b-three-pane", "pattern-c-tool-workspace", "pattern-d-inspector"]
+        },
+        "patternContract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "schemaVersion"],
+          "properties": {
+            "source": { "const": "assets/design-system/pattern-contracts.json" },
+            "schemaVersion": { "const": 1 }
+          }
         }
       }
     },

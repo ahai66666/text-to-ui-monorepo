@@ -1,4 +1,4 @@
-import { Teleport, computed, defineComponent, h, nextTick, onBeforeUnmount, ref, watch } from "vue";
+import { Teleport, computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import "./styles.css";
 import Icon from "./Icon.js";
 
@@ -69,11 +69,11 @@ export const Popover = defineComponent({ setup: () => { const open = ref(false);
 export const HoverCard = defineComponent({ setup: () => () => h("div", { class: "tui-component tui-advanced-hover-card", ...contract("hover-card", "Hover Card/Default") }, [h("button", { class: "tui-button", type: "button", "data-variant": "ghost", "data-typography-role": "body-l" }, "组件说明"), h("div", { class: "tui-advanced-hover-card__panel", role: "tooltip" }, [text("strong", "组件说明", "title-s"), text("span", "查看组件的详细使用规则", "body-m")])]) });
 
 export const Slider = defineComponent({ props: { modelValue: { type: Number, default: 84 } }, emits: ["update:modelValue", "change"], setup(props, { emit }) { const value = ref(props.modelValue); return () => h("label", { class: "tui-component tui-slider", ...contract("slider", "Slider/Default") }, [text("span", "透明度", "body-m", { "data-slot": "label" }), h("input", { type: "range", min: 0, max: 100, value: value.value, "aria-label": "透明度", onInput: (event) => { value.value = Number(event.target.value); emit("update:modelValue", value.value); emit("change", value.value); } }), text("output", value.value, "body-m")]); } });
-export const InputOtp = defineComponent({ props: { length: { type: Number, default: 6 } }, emits: ["complete"], setup(props, { emit }) { const values = ref(Array(props.length).fill("")); return () => h("fieldset", { class: "tui-component tui-input-otp", ...contract("input-otp", "Input OTP/Default") }, [text("legend", "验证码", "body-m"), h("div", { class: "tui-input-otp__cells" }, values.value.map((value, index) => h("input", { class: "tui-input-otp__cell", key: index, type: "text", inputmode: "numeric", maxlength: 1, value, "aria-label": `第 ${index + 1} 位验证码`, "data-typography-role": "body-l", onInput: (event) => { const next = [...values.value]; next[index] = event.target.value.slice(-1); values.value = next; if (next.every(Boolean)) emit("complete", next.join("")); } }))), text("small", "请输入 6 位验证码", "caption-l")]); } });
+export const InputOtp = defineComponent({ props: { length: { type: Number, default: 6 } }, emits: ["complete"], setup(props, { emit }) { const values = ref(Array(props.length).fill("")); return () => h("fieldset", { class: "tui-component tui-input-otp", ...contract("input-otp", "Input OTP/Default") }, [text("legend", "验证码", "body-m"), h("div", { class: "tui-input-otp__cells" }, values.value.map((value, index) => h("input", { class: "tui-input-otp__cell", key: index, type: "text", inputmode: "numeric", maxlength: 1, value, "aria-label": `第 ${index + 1} 位验证码`, "data-typography-role": "body-l", onInput: (event) => { const next = [...values.value]; next[index] = event.target.value.slice(-1); values.value = next; if (next.every(Boolean)) emit("complete", next.join("")); } }))), text("small", "请输入 6 位验证码", "body-s")]); } });
 export const Kbd = defineComponent({ setup: () => () => h("kbd", { class: "tui-component tui-kbd", ...contract("kbd", "Kbd/Default"), "data-typography-role": "body-m" }, "⌘ K") });
 
-export const Chart = defineComponent({ setup: () => () => h("figure", { class: "tui-component tui-chart", ...contract("chart", "Chart/Default") }, [text("figcaption", "项目趋势", "title-s"), h("svg", { class: "tui-chart__svg", viewBox: "0 0 240 96", role: "img", "aria-label": "项目趋势图" }, [h("path", { d: "M8 78L52 58L96 64L140 32L184 42L232 14", fill: "none", stroke: "currentColor", "stroke-width": 1.5 }), h("path", { d: "M8 80H232", fill: "none", stroke: "currentColor", "stroke-width": 1, opacity: .24 })]), text("span", "本周完成度 84%", "caption-l")]) });
-export const Calendar = defineComponent({ setup: () => { const selected = ref("7"); return () => h("section", { class: "tui-component tui-calendar", ...contract("calendar", "Calendar/Default") }, [h("header", null, [text("strong", "2026 年 08 月", "title-s"), h("button", { class: "tui-icon-button", type: "button", "aria-label": "上个月" }, "‹"), h("button", { class: "tui-icon-button", type: "button", "aria-label": "下个月" }, "›")]), h("div", { class: "tui-calendar__week", "data-typography-role": "caption-l" }, calendarWeekdays.map((day) => text("span", day, "caption-l", { key: `week-${day}` }))), h("div", { class: "tui-calendar__days", role: "grid" }, calendarDays.map((day, index) => h("button", { key: `${day}-${index}`, type: "button", role: "gridcell", class: day === selected.value && index === 12 ? "is-selected" : "", onClick: () => { selected.value = day; } }, day)))]); } });
+export const Chart = defineComponent({ setup: () => () => h("figure", { class: "tui-component tui-chart", ...contract("chart", "Chart/Default") }, [text("figcaption", "项目趋势", "title-s"), h("svg", { class: "tui-chart__svg", viewBox: "0 0 240 96", role: "img", "aria-label": "项目趋势图" }, [h("path", { d: "M8 78L52 58L96 64L140 32L184 42L232 14", fill: "none", stroke: "currentColor", "stroke-width": 1.5 }), h("path", { d: "M8 80H232", fill: "none", stroke: "currentColor", "stroke-width": 1, opacity: .24 })]), text("span", "本周完成度 84%", "body-s")]) });
+export const Calendar = defineComponent({ setup: () => { const selected = ref("7"); return () => h("section", { class: "tui-component tui-calendar", ...contract("calendar", "Calendar/Default") }, [h("header", null, [text("strong", "2026 年 08 月", "title-s"), h("button", { class: "tui-icon-button", type: "button", "aria-label": "上个月" }, "‹"), h("button", { class: "tui-icon-button", type: "button", "aria-label": "下个月" }, "›")]), h("div", { class: "tui-calendar__week", "data-typography-role": "body-s" }, calendarWeekdays.map((day) => text("span", day, "body-s", { key: `week-${day}` }))), h("div", { class: "tui-calendar__days", role: "grid" }, calendarDays.map((day, index) => h("button", { key: `${day}-${index}`, type: "button", role: "gridcell", class: day === selected.value && index === 12 ? "is-selected" : "", onClick: () => { selected.value = day; } }, day)))]); } });
 
 const Picker = defineComponent({ props: { id: String, logicalName: String, label: String, value: String, iconName: String }, setup(props, { slots }) { const open = ref(false); return () => h("div", { class: "tui-component tui-picker", ...contract(props.id, props.logicalName, "default", open.value ? "open" : "default") }, [text("label", props.label, "body-m"), h("button", { class: "tui-picker__trigger", type: "button", "aria-haspopup": "dialog", "aria-expanded": open.value, onClick: () => { open.value = !open.value; } }, [text("span", props.value, "body-l", { "data-slot": "value" }), h(Icon, { name: props.iconName, size: 20 })]), h("div", { class: "tui-picker__panel", role: "dialog", hidden: !open.value }, slots.default?.())]); } });
 export const DatePicker = defineComponent({
@@ -82,7 +82,7 @@ export const DatePicker = defineComponent({
     return () => h(Picker, { id: "date-picker", logicalName: "Date Picker/Default", label: "日期", value: value.value, iconName: "field/calendar" }, {
       default: () => [
         h("div", { class: "tui-picker__calendar" }, [
-          ...calendarWeekdays.map((d) => text("span", d, "caption-l", { key: `week-${d}` })),
+          ...calendarWeekdays.map((d) => text("span", d, "body-s", { key: `week-${d}` })),
           ...calendarDays.map((d, index) => h("button", { key: `day-${d}-${index}`, type: "button", role: "gridcell", class: d === "7" && index === 12 ? "is-selected" : "", onClick: () => { value.value = `2026-08-${d.padStart(2, "0")}`; } }, d))
         ]),
         h("footer", null, [
@@ -99,9 +99,9 @@ export const TimePicker = defineComponent({
     return () => h(Picker, { id: "time-picker", logicalName: "Time Picker/Default", label: "时间", value: value.value, iconName: "field/clock" }, {
       default: () => [
         h("div", { class: "tui-picker__columns" }, [
-          h("div", null, [text("span", "时", "caption-l"), ...["08", "09", "10"].map((d) => h("button", { key: `hour-${d}`, type: "button", class: d === "09" ? "is-selected" : "", onClick: () => { value.value = `${d}:${value.value.split(":")[1] ?? "30"}`; } }, d))]),
+          h("div", null, [text("span", "时", "body-s"), ...["08", "09", "10"].map((d) => h("button", { key: `hour-${d}`, type: "button", class: d === "09" ? "is-selected" : "", onClick: () => { value.value = `${d}:${value.value.split(":")[1] ?? "30"}`; } }, d))]),
           h("b", null, ":"),
-          h("div", null, [text("span", "分", "caption-l"), ...["25", "30", "35"].map((d) => h("button", { key: `minute-${d}`, type: "button", class: d === "30" ? "is-selected" : "", onClick: () => { value.value = `${value.value.split(":")[0] ?? "09"}:${d}`; } }, d))])
+          h("div", null, [text("span", "分", "body-s"), ...["25", "30", "35"].map((d) => h("button", { key: `minute-${d}`, type: "button", class: d === "30" ? "is-selected" : "", onClick: () => { value.value = `${value.value.split(":")[0] ?? "09"}:${d}`; } }, d))])
         ]),
         h("footer", null, [
           h("button", { type: "button", "data-typography-role": "body-l", onClick: () => { value.value = ""; } }, "清除"),
@@ -112,5 +112,34 @@ export const TimePicker = defineComponent({
   }
 });
 
-export const Attachment = defineComponent({ emits: ["download"], setup(_, { emit }) { return () => h("article", { class: "tui-component tui-attachment", ...contract("attachment", "Attachment/Default") }, [text("span", "PDF", "caption-l", { class: "tui-attachment__type" }), h("div", null, [text("strong", "项目说明.pdf", "subtitle-s"), text("small", "2.4 MB · 已上传", "body-s")]), h("button", { class: "tui-icon-button tui-attachment__download", type: "button", "aria-label": "下载", onClick: () => emit("download") }, [h(Icon, { name: "action/download", size: 20 })])]); } });
-export const Carousel = defineComponent({ setup: () => { const slide = ref(0); const items = ["HarmonyOS PC 组件规范", "项目协作动态", "设计 Token 资产"]; return () => h("section", { class: "tui-component tui-carousel", ...contract("carousel", "Carousel/Default"), "aria-roledescription": "carousel" }, [h("header", null, [text("strong", "项目概览", "title-s"), text("span", `${slide.value + 1} / 3`, "caption-l", { class: "tui-carousel__count" })]), text("div", items[slide.value], "body-l", { class: "tui-carousel__slide" }), h("footer", null, [h("button", { class: "tui-icon-button", type: "button", "aria-label": "上一项", onClick: () => { slide.value = (slide.value + 2) % 3; } }, "‹"), h("button", { class: "tui-icon-button", type: "button", "aria-label": "下一项", onClick: () => { slide.value = (slide.value + 1) % 3; } }, "›")])]); } });
+export const Attachment = defineComponent({
+  props: {
+    type: { type: String, default: "PDF" }, name: { type: String, default: "项目说明.pdf" }, meta: { type: String, default: "2.4 MB · 已上传" }, disabled: Boolean
+  },
+  emits: ["action", "download", "preview"],
+  setup(props, { emit, slots }) {
+    const open = ref(false); const root = ref(); const trigger = ref(); const menu = ref();
+    const menuId = `attachment-menu-${Math.random().toString(36).slice(2)}`;
+    const close = (restoreFocus = false) => { open.value = false; if (restoreFocus) nextTick(() => trigger.value?.focus()); };
+    const choose = (action) => { close(); emit("action", action); if (action === "download") emit("download"); if (action === "preview") emit("preview"); };
+    const onPointerDown = (event) => { if (open.value && !root.value?.contains(event.target)) close(); };
+    const onKeydown = (event) => {
+      if (!open.value) return;
+      if (event.key === "Escape") { event.preventDefault(); close(true); return; }
+      if (!["ArrowDown", "ArrowUp"].includes(event.key) || !menu.value?.contains(event.target)) return;
+      const items = [...menu.value.querySelectorAll('[role="menuitem"]')]; if (!items.length) return;
+      event.preventDefault(); const index = Math.max(0, items.indexOf(document.activeElement)); items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
+    };
+    onMounted(() => { document.addEventListener("pointerdown", onPointerDown); document.addEventListener("keydown", onKeydown); });
+    onBeforeUnmount(() => { document.removeEventListener("pointerdown", onPointerDown); document.removeEventListener("keydown", onKeydown); });
+    watch(open, (value) => { if (value) nextTick(() => menu.value?.querySelector('[role="menuitem"]')?.focus()); });
+    return () => {
+      const defaultActions = h("span", { class: "tui-attachment__actions", "data-slot": "actions" }, [
+        h("button", { ref: trigger, class: "tui-icon-button tui-attachment__menu-trigger", "data-slot": "menu-trigger", type: "button", "aria-label": "打开附件操作菜单", "aria-haspopup": "menu", "aria-expanded": open.value, "aria-controls": menuId, disabled: props.disabled, onClick: () => { open.value = !open.value; } }, [h(Icon, { name: "navigation/chevron-down", size: 20 })]),
+        h("div", { ref: menu, id: menuId, class: "tui-button-dropdown__menu tui-attachment__menu", "data-slot": "menu", role: "menu", hidden: !open.value }, [h("button", { class: "tui-button-dropdown__item", type: "button", role: "menuitem", "data-action": "preview", "data-typography-role": "body-l", onClick: () => choose("preview") }, "预览"), h("button", { class: "tui-button-dropdown__item", type: "button", role: "menuitem", "data-action": "download", "data-typography-role": "body-l", onClick: () => choose("download") }, "下载")])
+      ]);
+      return h("article", { ref: root, class: "tui-component tui-attachment", ...contract("attachment", "Attachment/Default", "default", props.disabled ? "disabled" : open.value ? "open" : "default"), "aria-disabled": props.disabled || undefined }, [slots.leading?.() ?? text("span", props.type, "body-s", { class: "tui-attachment__type", "data-slot": "leading" }), slots.content?.() ?? h("div", { "data-slot": "content" }, [text("strong", props.name, "subtitle-s", { "data-slot": "title" }), text("small", props.meta, "body-s", { "data-slot": "description" })]), slots.actions?.() ?? defaultActions]);
+    };
+  }
+});
+export const Carousel = defineComponent({ setup: () => { const slide = ref(0); const items = ["HarmonyOS PC 组件规范", "项目协作动态", "设计 Token 资产"]; return () => h("section", { class: "tui-component tui-carousel", ...contract("carousel", "Carousel/Default"), "aria-roledescription": "carousel" }, [h("header", null, [text("strong", "项目概览", "title-s"), text("span", `${slide.value + 1} / 3`, "body-s", { class: "tui-carousel__count" })]), text("div", items[slide.value], "body-l", { class: "tui-carousel__slide" }), h("footer", null, [h("button", { class: "tui-icon-button", type: "button", "aria-label": "上一项", onClick: () => { slide.value = (slide.value + 2) % 3; } }, "‹"), h("button", { class: "tui-icon-button", type: "button", "aria-label": "下一项", onClick: () => { slide.value = (slide.value + 1) % 3; } }, "›")])]); } });

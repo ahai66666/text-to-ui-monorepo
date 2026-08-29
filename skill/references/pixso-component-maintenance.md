@@ -139,11 +139,11 @@ active-document change.
 
 The canonical plugin source remains under
 `text-to-ui/scripts/pixso-component-registry-sync-plugin/`. Every Pixso plugin
-release must also be copied to the user's fixed delivery directory:
-`/Users/zhaobohai/Desktop/资源管理/我的代码仓/pixso插件/`. Keep each plugin in
-its own named subfolder containing its `manifest.json`, entry script, and a
-short installation note. Do not make a temporary workspace path the only
-upload location.
+release must also be copied to the local plugin delivery directory configured
+by `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT` (or the user's local plugin folder). Keep
+each plugin in its own named subfolder containing its `manifest.json`, entry
+script, and a short installation note. Do not make a temporary workspace path
+the only upload location.
 
 ### Coremail registration helper
 

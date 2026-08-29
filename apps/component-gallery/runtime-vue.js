@@ -1,5 +1,5 @@
 import { createApp, h, ref } from "vue";
-import { Button, Input, Search, Sidebar, ListCard, Titlebar, Textarea, Field, Select, Combobox, NativeSelect, Checkbox, RadioGroup, Switch, Tabs, Accordion, Collapsible, Avatar, Badge, Card, Item, Table, DataTable, Pagination, Breadcrumb, Progress, Empty, Separator, Label, Alert, Tooltip, Toast, Icon } from "../../packages/components-vue/src/index.js?rev=20260812-1";
+import { Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Titlebar, Textarea, Field, Select, Combobox, NativeSelect, Checkbox, Radio, RadioGroup, Switch, Tabs, Accordion, Collapsible, Avatar, Badge, Card, Item, Table, DataTable, Pagination, Breadcrumb, Progress, Empty, Separator, Label, Alert, Tooltip, Toast, Icon } from "../../packages/components-vue/src/index.js?rev=20260812-1";
 import { AlertDialog, Attachment, Calendar, Carousel, Chart, ContextMenu, DatePicker, Dialog, DropdownMenu, HoverCard, InputOtp, Kbd, Menubar, NavigationMenu, Popover, Slider, SemiModal, TimePicker } from "../../packages/components-vue/src/advanced.js?rev=20260812-1";
 import * as Generated from "../../packages/components-vue/src/generated/index.js?rev=20260810-1";
 import { cardClass, comparisonMetaFor, componentTitle, coreIds, feedbackSpecimensFor, runtimeCategories } from "./runtime-catalog.js";
@@ -53,7 +53,7 @@ const RuntimeStructuralButton = (props) => h("div", { class: "tui-runtime-struct
 const RuntimeTitlebarGallery = (props) => h("div", { class: "tui-runtime-titlebar-gallery", "data-runtime-component": "titlebar" }, [
   h("div", { class: "tui-runtime-titlebar-layouts", key: "layouts" }, [
     h("div", { key: "two-column" }, [h("span", { class: "tui-runtime-surface-label" }, "两栏 · 左侧品牌 / 右侧标题与窗口控制"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two" }, [h(Titlebar, { key: "brand", layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "final", layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large", onAction: (action) => props.setStatus?.(`Titlebar · 两栏 · ${action}`) })])]),
-    h("div", { key: "three-column" }, [h("span", { class: "tui-runtime-surface-label" }, "三栏 · 第三栏操作槽位与分割线"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }], onMainDetailAction: (action) => props.setStatus?.(`Titlebar · Main Detail · ${action}`), onAction: (action) => props.setStatus?.(`Titlebar · 三栏 · ${action}`) })])])
+    h("div", { key: "three-column" }, [h("span", { class: "tui-runtime-surface-label" }, "三栏 · Main Detail 操作：Icon Button / Icon Text Button"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save", buttonType: "icon" }, { id: "expand", label: "展开", icon: "window/maximize", buttonType: "icon-text-ghost" }], onMainDetailAction: (action) => props.setStatus?.(`Titlebar · Main Detail · ${action}`), onAction: (action) => props.setStatus?.(`Titlebar · 三栏 · ${action}`) })])])
   ]),
   ...[
   ["small", "S · 40px"],
@@ -92,6 +92,15 @@ const runtimeCore = (id, setStatus, component) => {
     h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })]),
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })])
   ]);
+  if (id === "primary-navigation-item") return h("div", { class: "tui-runtime-core-gallery tui-runtime-primary-navigation-gallery" }, [
+    h("p", { class: "tui-runtime-note", key: "note" }, "一级导航使用独立的原生 Primary Navigation Item；Pattern 只负责把它放入底部对齐的 primary-navigation-shell。"),
+    h("nav", { class: "tui-primary-navigation-items", "aria-label": "一级导航", key: "items" }, [
+      h(PrimaryNavigationItem, { key: "workspace", label: "工作台", icon: "navigation/grid" }),
+      h(PrimaryNavigationItem, { key: "projects", label: "项目", icon: "field/calendar", selected: true }),
+      h(PrimaryNavigationItem, { key: "messages", label: "消息", icon: "navigation/mail-unread" }),
+      h(PrimaryNavigationItem, { key: "settings", label: "设置", icon: "action/settings" })
+    ])
+  ]);
   if (id === "sidebar") return h(Sidebar, { items: [
     { id: "projects", label: "项目", icon: "navigation/grid", count: 24, state: "selected" },
     { id: "recent", label: "最近访问", icon: "navigation/recent" },
@@ -118,6 +127,7 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "combobox") return h(Combobox, { label: "负责人", options: ["选择成员", "林晓", "赵博海"], onChange: (value) => setStatus(`Combobox · ${value}`) });
   if (id === "native-select") return h(NativeSelect, { label: "视图", onChange: (event) => setStatus(`Native Select · ${event?.target?.value ?? event}`) });
   if (id === "checkbox") return h(Checkbox, { onChange: (value) => setStatus(`Checkbox · ${value ? "选中" : "取消"}`) });
+  if (id === "radio") return h("div", { class: "tui-runtime-structural-grid" }, [h(Radio, { key: "unselected", label: "未选中", value: "unselected", name: "runtime-radio", onChange: () => setStatus("Radio · 未选中") }), h(Radio, { key: "selected", label: "已选中", value: "selected", name: "runtime-radio", modelValue: true, onChange: () => setStatus("Radio · 已选中") })]);
   if (id === "radio-group") return h(RadioGroup, { onChange: (value) => setStatus(`Radio Group · ${value}`) });
   if (id === "switch") return h(Switch, { onChange: (value) => setStatus(`Switch · ${value ? "开启" : "关闭"}`) });
   if (id === "tabs") return h(Tabs, { onChange: (value) => setStatus(`Tabs · ${value}`) });
@@ -170,7 +180,7 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "calendar") return h(Calendar);
   if (id === "date-picker") return h(DatePicker);
   if (id === "time-picker") return h(TimePicker);
-  if (id === "attachment") return h(Attachment, { onDownload: () => setStatus("Attachment · 已下载") });
+  if (id === "attachment") return h(Attachment, { onAction: (action) => setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) });
   if (id === "carousel") return h(Carousel);
   return null;
 };
@@ -178,9 +188,10 @@ const runtimeCore = (id, setStatus, component) => {
 const RuntimeCard = (props) => {
   const Component = Generated[pascal(props.component.id)];
   const comparison = comparisonMetaFor(props.component);
+  const directProps = props.component.id === "attachment" ? { onAction: (action) => props.setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) } : {};
   const preview = coreIds.has(props.component.id)
     ? runtimeCore(props.component.id, props.setStatus, props.component)
-    : (Component ? h(Component, { state: "default", fixtureId: props.component.fixtureId }) : h("p", { class: "tui-runtime-framework-missing" }, `Vue 适配器缺失：${props.component.id}`));
+    : (Component ? h(Component, { state: "default", fixtureId: props.component.fixtureId, ...directProps }) : h("p", { class: "tui-runtime-framework-missing" }, `Vue 适配器缺失：${props.component.id}`));
   return h("article", {
     class: cardClass(props.component),
     "data-component-card": props.component.id,

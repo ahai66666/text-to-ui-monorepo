@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { derivePixsoImportModules, parseArgs, readJson, writeJson } from "./pixso-native-scene-lib.mjs";
+import { derivePixsoImportModules, parseArgs, readJson, repoRelativePath, writeJson } from "./pixso-native-scene-lib.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const usage = "Usage: prepare-pixso-mcp-batches.mjs --plan <pixso-operation-plan.json> --out <mcp-call-plan.json> [--out-script <mcp-script-note.js>] [--max-script-bytes <150000>]";
@@ -15,7 +15,8 @@ if (args.help || !args.plan || !args.out) {
 
 const sourcePlan = readJson(args.plan);
 const scripts = path.dirname(fileURLToPath(import.meta.url));
-const runtime = fs.readFileSync(path.join(scripts, "pixso-native-execution-runtime.js"), "utf8").trim();
+const runtimePath = path.join(scripts, "pixso-native-execution-runtime.min.js");
+const runtime = fs.readFileSync(fs.existsSync(runtimePath) ? runtimePath : path.join(scripts, "pixso-native-execution-runtime.js"), "utf8").trim();
 const maximumBytes = Number(args["max-script-bytes"] ?? 150000);
 if (!Number.isFinite(maximumBytes) || maximumBytes < 30000) throw new Error("--max-script-bytes must be at least 30000");
 // The final call adds module-part metadata after a candidate chunk has been
@@ -52,6 +53,18 @@ function operationIndexesFor(module) {
 
 function resourcesFor(operations, { includeBinary = true } = {}) {
   const source = sourcePlan.resources ?? {};
+  const variableNames = new Set();
+  const styleRefs = new Set();
+  const collectRefs = (value) => {
+    if (typeof value === "string") {
+      if (value.startsWith("$variable/")) variableNames.add(value.slice("$variable/".length));
+      if (value.startsWith("$style/")) styleRefs.add(value);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    for (const nested of Object.values(value)) collectRefs(nested);
+  };
+  for (const operation of operations) collectRefs(operation);
   const iconAliases = new Set(operations
     .filter((operation) => operation.op === "hydrate-icon")
     .map((operation) => operation.iconRef?.alias)
@@ -63,8 +76,16 @@ function resourcesFor(operations, { includeBinary = true } = {}) {
   return {
     componentLibraryPage: source.componentLibraryPage,
     variableAliases: source.variableAliases ?? {},
-    variables: source.variables ?? [],
-    styles: source.styles ?? [],
+    // The shared runtime is intentionally kept close to Pixso MCP's 150 KB
+    // eval_script limit. A module only needs the Variables and Styles
+    // referenced by its own operations; shipping the complete token catalog
+    // in every call made otherwise-valid modules overflow the limit.
+    variables: (source.variables ?? [])
+      .filter((variable) => variableNames.has(variable.name) || variableNames.has(String(variable.ref ?? "").replace(/^\$variable\//, "")))
+      .map((variable) => ({ name: variable.name, ref: variable.ref })),
+    styles: (source.styles ?? [])
+      .filter((style) => styleRefs.has(style.ref))
+      .map((style) => ({ ref: style.ref, role: style.role })),
     // The icon-hydration batch is also the safe repair point for semantic icon
     // masters referenced by create-instance operations. Include the complete
     // icon catalog in that one bounded batch so an upgrade can repair old
@@ -123,7 +144,12 @@ function splitModule(module, operations, isLastModule) {
         "execute",
         isLastModule && isFinalCandidate,
       ));
-      if (singleBytes > planningLimit) throw new Error(`MCP module ${module.id} has one operation larger than ${maximumBytes} bytes (${singleBytes})`);
+      // The planning headroom is only needed when deciding whether another
+      // operation can join the current chunk. A single operation may consume
+      // that headroom as long as the final serialized MCP call still respects
+      // the hard user-configured maximum; otherwise valid near-limit calls
+      // would be rejected before the final byte check below.
+      if (singleBytes > maximumBytes) throw new Error(`MCP module ${module.id} has one operation larger than ${maximumBytes} bytes (${singleBytes})`);
     } else {
       current = candidate;
     }
@@ -242,7 +268,7 @@ if (args["out-script"]) {
 const output = {
   schemaVersion: 4,
   kind: "pixso-mcp-eval-call-plan",
-  sourcePlan: path.resolve(args.plan),
+  sourcePlan: repoRelativePath(args.plan),
   executor: { kind: "shared-pixso-plugin-api-runtime", version: "4", fallbackOnly: true },
   runId,
   rootNodeId,

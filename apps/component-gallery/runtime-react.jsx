@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Button, Input, Search, Sidebar, ListCard, Titlebar, Textarea, Field, Select, Combobox, NativeSelect, Checkbox, RadioGroup, Switch, Tabs, Accordion, Collapsible, Avatar, Badge, Card, Item, Table, DataTable, Pagination, Breadcrumb, Progress, Empty, Separator, Label, Alert, Tooltip, Toast, Icon } from "../../packages/components-react/src/index.jsx?rev=20260812-1";
+import { Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Titlebar, Textarea, Field, Select, Combobox, NativeSelect, Checkbox, Radio, RadioGroup, Switch, Tabs, Accordion, Collapsible, Avatar, Badge, Card, Item, Table, DataTable, Pagination, Breadcrumb, Progress, Empty, Separator, Label, Alert, Tooltip, Toast, Icon } from "../../packages/components-react/src/index.jsx?rev=20260812-1";
 import { AlertDialog, Attachment, Calendar, Carousel, Chart, ContextMenu, DatePicker, Dialog, DropdownMenu, HoverCard, InputOtp, Kbd, Menubar, NavigationMenu, Popover, Slider, SemiModal, TimePicker } from "../../packages/components-react/src/advanced.jsx?rev=20260812-1";
 import * as Generated from "../../packages/components-react/src/generated/index.jsx?rev=20260810-1";
 import { cardClass, cardDescription, comparisonMetaFor, componentTitle, coreIds, feedbackSpecimensFor, runtimeCategories, runtimeComponents, specimensFor } from "./runtime-catalog.js";
@@ -50,7 +50,7 @@ const RuntimeStructuralButton = ({ setStatus }) => h("div", { className: "tui-ru
 const RuntimeTitlebarGallery = ({ setStatus }) => h("div", { className: "tui-runtime-titlebar-gallery", "data-runtime-component": "titlebar" }, [
   h("div", { className: "tui-runtime-titlebar-layouts", key: "layouts" }, [
     h("div", { key: "two-column" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "两栏 · 左侧品牌 / 右侧标题与窗口控制"), h("div", { className: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two", key: "shell" }, [h(Titlebar, { key: "brand", layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "final", layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large", onAction: (action) => setStatus(`Titlebar · 两栏 · ${action}`) })])]),
-    h("div", { key: "three-column" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "三栏 · 第三栏操作槽位与分割线"), h("div", { className: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three", key: "shell" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save" }, { id: "expand", label: "展开", icon: "window/maximize" }, { id: "more", label: "更多", icon: "action/more" }], onMainDetailAction: (action) => setStatus(`Titlebar · Main Detail · ${action}`), onAction: (action) => setStatus(`Titlebar · 三栏 · ${action}`) })])])
+    h("div", { key: "three-column" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "三栏 · Main Detail 操作：Icon Button / Icon Text Button"), h("div", { className: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three", key: "shell" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save", buttonType: "icon" }, { id: "expand", label: "展开", icon: "window/maximize", buttonType: "icon-text-ghost" }], onMainDetailAction: (action) => setStatus(`Titlebar · Main Detail · ${action}`), onAction: (action) => setStatus(`Titlebar · 三栏 · ${action}`) })])])
   ]),
   ...[
   ["small", "S · 40px"],
@@ -88,6 +88,15 @@ const runtimeCore = (id, setStatus, component) => {
     h("div", { key: "white", "data-surface-context": "white" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })]),
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { className: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })])
   ]);
+  if (id === "primary-navigation-item") return h("div", { className: "tui-runtime-core-gallery tui-runtime-primary-navigation-gallery" }, [
+    h("p", { className: "tui-runtime-note", key: "note" }, "一级导航使用独立的原生 Primary Navigation Item；Pattern 只负责把它放入底部对齐的 primary-navigation-shell。"),
+    h("nav", { className: "tui-primary-navigation-items", "aria-label": "一级导航", key: "items" }, [
+      h(PrimaryNavigationItem, { key: "workspace", label: "工作台", icon: "navigation/grid" }),
+      h(PrimaryNavigationItem, { key: "projects", label: "项目", icon: "field/calendar", selected: true }),
+      h(PrimaryNavigationItem, { key: "messages", label: "消息", icon: "navigation/mail-unread" }),
+      h(PrimaryNavigationItem, { key: "settings", label: "设置", icon: "action/settings" })
+    ])
+  ]);
   if (id === "sidebar") return h(Sidebar, { items: [
     { id: "projects", label: "项目", icon: "navigation/grid", count: 24, state: "selected" },
     { id: "recent", label: "最近访问", icon: "navigation/recent" },
@@ -114,6 +123,7 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "combobox") return h(Combobox, { label: "负责人", options: ["选择成员", "林晓", "赵博海"], onChange: (value) => setStatus(`Combobox · ${value}`) });
   if (id === "native-select") return h(NativeSelect, { label: "视图", onChange: (event) => setStatus(`Native Select · ${event.target?.value ?? event}`) });
   if (id === "checkbox") return h(Checkbox, { onChange: (event) => setStatus(`Checkbox · ${event.target.checked ? "选中" : "取消"}`) });
+  if (id === "radio") return h("div", { className: "tui-runtime-structural-grid" }, [h(Radio, { key: "unselected", label: "未选中", value: "unselected", name: "runtime-radio", onChange: () => setStatus("Radio · 未选中") }), h(Radio, { key: "selected", label: "已选中", value: "selected", name: "runtime-radio", defaultChecked: true, onChange: () => setStatus("Radio · 已选中") })]);
   if (id === "radio-group") return h(RadioGroup, { onChange: (value) => setStatus(`Radio Group · ${value}`) });
   if (id === "switch") return h(Switch, { onChange: (event) => setStatus(`Switch · ${event.target.checked ? "开启" : "关闭"}`) });
   if (id === "tabs") return h(Tabs, { onChange: (value) => setStatus(`Tabs · ${value}`) });
@@ -166,7 +176,7 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "calendar") return h(Calendar);
   if (id === "date-picker") return h(DatePicker);
   if (id === "time-picker") return h(TimePicker);
-  if (id === "attachment") return h(Attachment, { onDownload: () => setStatus("Attachment · 已下载") });
+  if (id === "attachment") return h(Attachment, { onAction: (action) => setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) });
   if (id === "carousel") return h(Carousel);
   return null;
 };
@@ -174,9 +184,10 @@ const runtimeCore = (id, setStatus, component) => {
 function RuntimeCard({ component, setStatus }) {
   const Component = Generated[pascal(component.id)];
   const comparison = comparisonMetaFor(component);
+  const directProps = component.id === "attachment" ? { onAction: (action) => setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) } : {};
   const preview = coreIds.has(component.id)
     ? runtimeCore(component.id, setStatus, component)
-    : (Component ? h(Component, { state: "default", fixtureId: component.fixtureId }) : h("p", { className: "tui-runtime-framework-missing" }, `React 适配器缺失：${component.id}`));
+    : (Component ? h(Component, { state: "default", fixtureId: component.fixtureId, ...directProps }) : h("p", { className: "tui-runtime-framework-missing" }, `React 适配器缺失：${component.id}`));
   const previewContent = Array.isArray(preview)
     ? preview.map((child, index) => h(React.Fragment, { key: index }, child))
     : preview;

@@ -1,4 +1,4 @@
-import { renderRuntimeHtmlComponent } from "../../packages/components-html/src/index.js?rev=20260812-1";
+import { bindTitlebarOverflow, renderRuntimeHtmlComponent } from "../../packages/components-html/src/index.js?rev=20260812-2";
 import { cardClass, cardDescription, comparisonMetaFor, componentTitle, feedbackSpecimensFor, runtimeCategories, runtimeComponents, specimensFor } from "./runtime-catalog.js";
 
 const escapeHtml = (value = "") => String(value)
@@ -42,7 +42,7 @@ const bindRuntimeInteractions = (root, setStatus) => {
     setStatus(`${componentId === "alert-dialog" ? "Alert Dialog" : componentId === "semi-modal" ? "Semi-modal" : "Dialog"} · ${reason}`);
   };
   const closeMenus = () => {
-    root.querySelectorAll(".tui-button-dropdown__menu, .tui-generated__menu, .tui-generated__panel, .tui-advanced-menu__panel, .tui-advanced-popover__panel, .tui-picker__panel").forEach((menu) => {
+    root.querySelectorAll(".tui-button-dropdown__menu, .tui-generated__menu, .tui-generated__panel, .tui-advanced-menu__panel, .tui-advanced-popover__panel, .tui-picker__panel, .tui-attachment__menu, .tui-titlebar__overflow-menu").forEach((menu) => {
       menu.hidden = true;
       menu.classList.remove("is-open");
       const trigger = menu.previousElementSibling;
@@ -50,6 +50,7 @@ const bindRuntimeInteractions = (root, setStatus) => {
     });
   };
   const onClick = (event) => {
+    if (root.contains(event.target) && !event.target.closest(".tui-attachment__actions")) closeMenus();
     const target = event.target.closest("button, input, textarea, select, a");
     if (!target || !root.contains(target) || target.disabled) return;
     const owner = target.closest("[data-component-card]");
@@ -77,15 +78,47 @@ const bindRuntimeInteractions = (root, setStatus) => {
       if (menu) { const open = menu.hidden; closeMenus(); syncMenu(target, menu, open); setStatus(`${componentTitle(runtimeComponents.find((item) => item.id === id) ?? { logicalName: "Button" })} · ${open ? "打开" : "收起"}`); }
       return;
     }
-    if (target.matches(".tui-button-dropdown__item")) {
+    if (target.matches(".tui-button-dropdown__item") && !target.closest(".tui-attachment__menu")) {
       const rootButton = target.closest(".tui-button-dropdown")?.querySelector("[data-slot=label]");
       if (rootButton) rootButton.textContent = target.textContent;
       closeMenus();
       setStatus(`已选择 ${target.textContent.trim()}`);
       return;
     }
+    if (target.matches(".tui-attachment__menu-trigger")) {
+      const component = target.closest(".tui-attachment");
+      const menu = component?.querySelector(":scope > .tui-attachment__actions > .tui-attachment__menu");
+      if (menu) {
+        const open = menu.hidden;
+        closeMenus();
+        menu.hidden = !open;
+        menu.classList.toggle("is-open", open);
+        target.setAttribute("aria-expanded", String(open));
+        if (open) menu.querySelector('[role="menuitem"]')?.focus();
+        setStatus(`Attachment · ${open ? "打开操作菜单" : "收起操作菜单"}`);
+      }
+      return;
+    }
+    if (target.matches('.tui-attachment__menu [role="menuitem"]')) {
+      const action = target.dataset.action;
+      closeMenus();
+      setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`);
+      return;
+    }
     if (target.matches(".tui-titlebar__action, .tui-titlebar__pane-action")) {
       setStatus(`Titlebar · ${target.matches(".tui-titlebar__pane-action") ? "Main Detail · " : ""}${target.dataset.action ?? "action"}`);
+      return;
+    }
+    if (target.matches(".tui-primary-navigation-item")) {
+      target.closest(".tui-primary-navigation-items")?.querySelectorAll(".tui-primary-navigation-item").forEach((item) => {
+        if (!item.disabled) {
+          const selected = item === target;
+          item.dataset.state = selected ? "selected" : "default";
+          item.dataset.variant = selected ? "selected" : "default";
+          item.setAttribute("aria-pressed", String(selected));
+        }
+      });
+      setStatus(`Primary Navigation Item · ${target.getAttribute("aria-label") ?? "已选择"}`);
       return;
     }
     if (target.matches('.tui-search [data-slot="advanced-search"]')) {
@@ -200,10 +233,6 @@ const bindRuntimeInteractions = (root, setStatus) => {
       setStatus(`${componentTitle(runtimeComponents.find((item) => item.id === id) ?? { logicalName: "表单" })} · 已编辑`);
       return;
     }
-    if (target.matches(".tui-attachment__download")) {
-      setStatus("Attachment · 已下载");
-      return;
-    }
     if (target.matches(".tui-carousel__prev, .tui-carousel__next")) {
       const carousel = target.closest(".tui-carousel");
       const slide = carousel?.querySelector(".tui-carousel__slide");
@@ -216,8 +245,8 @@ const bindRuntimeInteractions = (root, setStatus) => {
       setStatus(`Carousel · ${next + 1} / ${items.length}`);
       return;
     }
-    if (target.matches(".tui-checkbox input, .tui-switch input, .tui-radio-group input")) {
-      const owner = target.closest(".tui-checkbox, .tui-switch, .tui-radio-group");
+    if (target.matches(".tui-checkbox input, .tui-switch input, .tui-radio input, .tui-radio-group input")) {
+      const owner = target.closest(".tui-checkbox, .tui-switch, .tui-radio, .tui-radio-group");
       if (owner && target.type !== "radio") owner.dataset.state = target.checked ? "selected" : "default";
       setStatus(`${componentTitle(runtimeComponents.find((item) => item.id === id) ?? { logicalName: "选择控件" })} · ${target.checked ? "选中" : "取消"}`);
       return;
@@ -291,15 +320,23 @@ const bindRuntimeInteractions = (root, setStatus) => {
       const layer = [...root.querySelectorAll(".tui-overlay-layer:not([hidden])")].at(-1);
       if (layer) { event.preventDefault(); closeOverlay(layer, "取消"); return; }
     }
-    const target = event.target.closest?.(".tui-select__trigger, .tui-select__menu [role=option], .tui-tabs__list [role=tab], .tui-advanced-menu__trigger, .tui-picker__trigger");
+    const target = event.target.closest?.(".tui-select__trigger, .tui-select__menu [role=option], .tui-tabs__list [role=tab], .tui-advanced-menu__trigger, .tui-picker__trigger, .tui-attachment__menu-trigger, .tui-attachment__menu [role=menuitem]");
     if (!target || !root.contains(target)) return;
-    if (event.key === "Escape") { event.preventDefault(); closeMenus(); (target.closest(".tui-select, .tui-advanced-menu, .tui-advanced-menubar, .tui-picker")?.querySelector(".tui-select__trigger, .tui-advanced-menu__trigger, .tui-picker__trigger"))?.focus(); return; }
+    if (event.key === "Escape") { event.preventDefault(); closeMenus(); (target.closest(".tui-select, .tui-advanced-menu, .tui-advanced-menubar, .tui-picker")?.querySelector(".tui-select__trigger, .tui-advanced-menu__trigger, .tui-picker__trigger") ?? target.closest(".tui-attachment")?.querySelector(".tui-attachment__menu-trigger"))?.focus(); return; }
     if (target.matches('[role="tab"]') && ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(event.key)) {
       event.preventDefault();
       const tabs = [...target.closest('[role="tablist"]')?.querySelectorAll('[role="tab"]') ?? []];
       const index = Math.max(0, tabs.indexOf(target));
       const next = tabs[(index + (event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : tabs.length - 1)) % tabs.length];
       next?.focus(); next?.click();
+      return;
+    }
+    if (target.matches('[role="menuitem"]') && ["ArrowDown", "ArrowUp"].includes(event.key)) {
+      const items = [...target.closest(".tui-attachment__menu")?.querySelectorAll('[role="menuitem"]') ?? []];
+      if (!items.length) return;
+      event.preventDefault();
+      const index = Math.max(0, items.indexOf(target));
+      items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
       return;
     }
     if (!target.matches('[role="option"]')) return;
@@ -376,6 +413,9 @@ const bindRuntimeInteractions = (root, setStatus) => {
   root.addEventListener("keydown", onKeydown);
   root.addEventListener("change", onChange);
   document.addEventListener("click", onDocumentClick);
+  const removeTitlebarOverflow = bindTitlebarOverflow(root, {
+    onAction: (action) => setStatus(`Titlebar · Main Detail · ${action}`)
+  });
   return () => {
     delete root.dataset.interactionsBound;
     root.removeEventListener("click", onClick);
@@ -385,6 +425,7 @@ const bindRuntimeInteractions = (root, setStatus) => {
     root.removeEventListener("keydown", onKeydown);
     root.removeEventListener("change", onChange);
     document.removeEventListener("click", onDocumentClick);
+    removeTitlebarOverflow();
     directOverlayAbort.abort();
   };
 };

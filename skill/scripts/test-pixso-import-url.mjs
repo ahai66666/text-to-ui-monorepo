@@ -14,7 +14,7 @@ fs.mkdirSync(path.join(htmlRoot, "pages"), { recursive: true });
 fs.writeFileSync(path.join(htmlRoot, "index.html"), "<!doctype html><main>Coremail</main>\n");
 fs.writeFileSync(path.join(htmlRoot, "pages", "detail.html"), "<!doctype html><main>Detail</main>\n");
 
-const rootUrl = "http://127.0.0.1:4173/Documents/办公/outputs/coremail-mail-home-v5/";
+const rootUrl = "http://127.0.0.1:4173/outputs/coremail-mail-home-v5/";
 assert.deepEqual(resolvePixsoImportUrl({ htmlRoot, requestedUrl: rootUrl }), {
   url: new URL(rootUrl).href,
   requestedUrl: new URL(rootUrl).href,

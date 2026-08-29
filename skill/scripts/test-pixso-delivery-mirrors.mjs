@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,10 +11,13 @@ const repository = path.resolve(fileURLToPath(new URL("../..", import.meta.url))
 const source = path.join(repository, "text-to-ui");
 const mirrors = [
   { name: "repository skill mirror", root: path.join(repository, "skill") },
-  { name: "installed skill", root: "/Users/zhaobohai/.codex/skills/text-to-ui" },
 ];
+const installedRoot = process.env.TEXT_TO_UI_INSTALLED_SKILL_ROOT
+  ?? path.join(os.homedir(), ".codex/skills/text-to-ui");
+if (fs.existsSync(installedRoot)) mirrors.push({ name: "installed skill", root: installedRoot });
 const files = [
   "SKILL.md",
+  "README.md",
   "package.json",
   "protocol/README.md",
   "protocol/permanent-agent-capabilities.json",
@@ -81,6 +85,7 @@ const files = [
   "scripts/generate-pixso-scene.mjs",
   "scripts/html-visual-contract.mjs",
   "scripts/pixso-native-execution-runtime.js",
+  "scripts/pixso-native-execution-runtime.min.js",
   "scripts/pixso-plugin-bridge.mjs",
   "scripts/pixso-official-adapter.mjs",
   "scripts/test-pixso-official-adapter.mjs",
@@ -118,10 +123,15 @@ for (const mirror of mirrors) {
     assert.equal(digest(actual), digest(expected), `${mirror.name} differs for ${relative}`);
   }
 }
-const delivery = "/Users/zhaobohai/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-native-renderer";
-for (const relative of ["main.js", "manifest.json", "ui.html", "README.md", "pixso-plugin-bridge.mjs", "pixso-official-adapter.mjs", "permanent-agent-capabilities.json", "compatibility-matrix.json"]) {
-  assert.ok(fs.existsSync(path.join(delivery, relative)), `plugin delivery is missing ${relative}`);
-  assert.equal(digest(path.join(delivery, relative)), digest(path.join(source, "scripts/pixso-native-renderer-plugin", relative)), `plugin delivery differs for ${relative}`);
+const delivery = process.env.TEXT_TO_UI_PLUGIN_DELIVERY_ROOT
+  ?? path.join(os.homedir(), "Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-native-renderer");
+if (fs.existsSync(delivery)) {
+  for (const relative of ["main.js", "manifest.json", "ui.html", "README.md", "pixso-plugin-bridge.mjs", "pixso-official-adapter.mjs", "permanent-agent-capabilities.json", "compatibility-matrix.json"]) {
+    assert.ok(fs.existsSync(path.join(delivery, relative)), `plugin delivery is missing ${relative}`);
+    assert.equal(digest(path.join(delivery, relative)), digest(path.join(source, "scripts/pixso-native-renderer-plugin", relative)), `plugin delivery differs for ${relative}`);
+  }
+  assert.equal(digest(path.join(delivery, "pixso-native-component-map.json")), digest(path.join(source, "assets/design-system/pixso-native-component-map.json")), "plugin delivery differs for component map");
+} else {
+  console.log(`Pixso plugin delivery not found at ${delivery}; set TEXT_TO_UI_PLUGIN_DELIVERY_ROOT to validate it.`);
 }
-assert.equal(digest(path.join(delivery, "pixso-native-component-map.json")), digest(path.join(source, "assets/design-system/pixso-native-component-map.json")), "plugin delivery differs for component map");
-console.log(`Pixso delivery mirrors passed: ${mirrors.length} skill mirrors and installable plugin package.`);
+console.log(`Pixso delivery mirrors passed: ${mirrors.length} repository/installed skill mirror(s).`);

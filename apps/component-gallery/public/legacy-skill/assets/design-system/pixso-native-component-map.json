@@ -1,0 +1,449 @@
+{
+  "$schema": "./pixso-native-component-map.schema.json",
+  "schemaVersion": 1,
+  "libraryPage": "NewComponents",
+  "resolution": "exact-symbolic-name-at-runtime",
+  "policy": {
+    "persistDocumentGuids": false,
+    "mappedOnlyWhenAvailabilityIsMapped": true,
+    "unmappedFallback": "native-composition",
+    "doNotGuessAliases": true
+  },
+  "mappings": [
+    {
+      "logicalName": "Button/Primary/Default",
+      "rendererKey": "button",
+      "pixsoName": "Button",
+      "componentSetName": "Button",
+      "availability": "mapped",
+      "variant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Primary"
+      },
+      "supportedProps": [
+        "label",
+        "variant",
+        "size",
+        "mode",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "icon",
+        "label"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-light/100",
+        "icon": "$variable/neutral-light/100"
+      }
+    },
+    {
+      "logicalName": "Icon Text Button/Primary/Default",
+      "rendererKey": "button",
+      "pixsoName": "icon-text",
+      "componentSetName": "icon-text",
+      "availability": "mapped",
+      "variant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Primary"
+      },
+      "supportedProps": [
+        "label",
+        "variant",
+        "size",
+        "mode",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "icon",
+        "label"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-light/100",
+        "icon": "$variable/neutral-light/100"
+      }
+    },
+    {
+      "logicalName": "Icon Text Button/Ghost/Default",
+      "rendererKey": "button",
+      "pixsoName": "icon-text",
+      "componentSetName": "icon-text",
+      "availability": "mapped",
+      "variant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Ghost"
+      },
+      "supportedProps": [
+        "label",
+        "variant",
+        "size",
+        "mode",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "icon",
+        "label"
+      ],
+      "contentColor": {
+        "text": "$variable/brand/100",
+        "icon": "$variable/brand/100"
+      }
+    },
+    {
+      "logicalName": "Icon Button/Ghost/Default",
+      "rendererKey": "button",
+      "pixsoName": "Icon Button",
+      "componentSetName": "Icon Button",
+      "availability": "mapped",
+      "variant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "Ghost"
+      },
+      "supportedProps": [
+        "label",
+        "variant",
+        "size",
+        "mode",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "icon"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Selection Dropdown/Default",
+      "rendererKey": "selection-dropdown",
+      "pixsoName": "Selection Dropdown",
+      "componentSetName": "Selection Dropdown",
+      "availability": "mapped",
+      "variant": {
+        "size": "Medium",
+        "state": "Default"
+      },
+      "supportedProps": [
+        "label",
+        "variant",
+        "menuItems",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "label",
+        "trigger"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Input/White Surface/Default",
+      "rendererKey": "input",
+      "pixsoName": "Input",
+      "componentSetName": "Input",
+      "availability": "mapped",
+      "variant": {
+        "surface": "white",
+        "state": "Default"
+      },
+      "supportedProps": [
+        "value",
+        "placeholder",
+        "surface",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Input/Gray Surface/Default",
+      "rendererKey": "input",
+      "pixsoName": "Input",
+      "componentSetName": "Input",
+      "availability": "mapped",
+      "variant": {
+        "surface": "dark",
+        "state": "Default"
+      },
+      "supportedProps": [
+        "value",
+        "placeholder",
+        "surface",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Search/White Surface/Default",
+      "rendererKey": "search",
+      "pixsoName": "Search",
+      "componentSetName": "Search",
+      "availability": "mapped",
+      "variant": {
+        "surface": "white",
+        "state": "Default"
+      },
+      "supportedProps": [
+        "value",
+        "placeholder",
+        "surface",
+        "advancedSearch",
+        "advancedSearchLabel",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "leading",
+        "value",
+        "clear",
+        "advanced-search"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Search/Gray Surface/Default",
+      "rendererKey": "search",
+      "pixsoName": "Search",
+      "componentSetName": "Search",
+      "availability": "mapped",
+      "variant": {
+        "surface": "dark",
+        "state": "Default"
+      },
+      "supportedProps": [
+        "value",
+        "placeholder",
+        "surface",
+        "advancedSearch",
+        "advancedSearchLabel",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "leading",
+        "value",
+        "clear",
+        "advanced-search"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Checkbox/Unchecked/Default",
+      "rendererKey": "checkbox",
+      "pixsoName": "CheckBox",
+      "componentSetName": "CheckBox",
+      "availability": "mapped",
+      "variant": {
+        "checked": "false",
+        "state": "Default"
+      },
+      "supportedProps": [
+        "checked",
+        "label",
+        "description",
+        "ariaLabel",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "label",
+        "description"
+      ],
+      "contentColor": {
+        "text": "$variable/neutral-dark/90",
+        "icon": "$variable/neutral-dark/90"
+      }
+    },
+    {
+      "logicalName": "Titlebar/L/Normal",
+      "rendererKey": "titlebar",
+      "pixsoName": null,
+      "availability": "native-only",
+      "supportedProps": [
+        "label",
+        "paneRole",
+        "size",
+        "layout",
+        "mainDetailActions",
+        "actionOverflow"
+      ],
+      "supportedSlots": [
+        "leading",
+        "label",
+        "main-detail-actions"
+      ],
+      "subcomponentMappings": [
+        {
+          "htmlRole": "window-controls",
+          "htmlSlot": "actions",
+          "htmlSelector": ".tui-titlebar__actions > [data-slot=\"titlebar-action\"]",
+          "cardinality": "3",
+          "pixsoTarget": "control button",
+          "textToUiSpecKey": "Titlebar/L/Normal",
+          "variantByHtmlSize": {
+            "small": {
+              "状态": "Small size"
+            },
+            "medium": {
+              "状态": "Normal size"
+            },
+            "large": {
+              "状态": "Normal size"
+            },
+            "xlarge": {
+              "状态": "Normal size"
+            }
+          },
+          "actions": [
+            {
+              "htmlAction": "minimize",
+              "pixsoLayer": "最小化",
+              "iconAlias": "window/minimize"
+            },
+            {
+              "htmlAction": "maximize",
+              "pixsoLayer": "最大化",
+              "iconAlias": "window/maximize"
+            },
+            {
+              "htmlAction": "close",
+              "pixsoLayer": "关闭",
+              "iconAlias": "window/close"
+            }
+          ],
+          "sourceEvidence": "用户提供的 Titlebar actions DOM 片段；以语义 data-slot/data-action 为稳定身份，不把长 CSS nth-child 选择器作为映射主键。",
+          "providedSelectorEvidence": "#runtime-directory > div:nth-child(4) > div > section > div > article > div > div.tui-runtime-titlebar-gallery > div > div:nth-child(1) > div > header:nth-child(2) > div",
+          "notes": "这是 Titlebar 内部的窗口控制组映射，不是把整个 Titlebar 映射成 control button。"
+        }
+      ]
+    },
+    {
+      "logicalName": "Sidebar Item/Default",
+      "rendererKey": "sidebar",
+      "pixsoName": "Sidebar Item",
+      "availability": "mapped",
+      "supportedProps": [
+        "label",
+        "icon",
+        "count",
+        "selected",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "leading",
+        "label",
+        "trailing"
+      ],
+      "componentSetName": "Sidebar Item",
+      "variant": {
+        "state": "default"
+      }
+    },
+    {
+      "logicalName": "List Item/White Surface/Default",
+      "rendererKey": "item",
+      "pixsoName": null,
+      "availability": "native-only",
+      "supportedProps": [
+        "title",
+        "description",
+        "leading",
+        "trailing",
+        "state"
+      ],
+      "supportedSlots": [
+        "leading",
+        "title",
+        "description",
+        "trailing"
+      ]
+    },
+    {
+      "logicalName": "Avatar/40/Fallback",
+      "rendererKey": "avatar",
+      "pixsoName": null,
+      "availability": "native-only",
+      "supportedProps": [
+        "initials",
+        "name",
+        "size"
+      ],
+      "supportedSlots": [
+        "content"
+      ]
+    },
+    {
+      "logicalName": "Badge/Success/Default",
+      "rendererKey": "badge",
+      "pixsoName": null,
+      "availability": "native-only",
+      "supportedProps": [
+        "label",
+        "tone"
+      ],
+      "supportedSlots": [
+        "label"
+      ]
+    },
+    {
+      "logicalName": "Attachment/Default",
+      "rendererKey": "attachment",
+      "pixsoName": null,
+      "availability": "native-only",
+      "supportedProps": [
+        "type",
+        "name",
+        "meta",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "leading",
+        "title",
+        "description",
+        "actions"
+      ]
+    },
+    {
+      "logicalName": "Primary Navigation Item/Level 1",
+      "rendererKey": "primary-navigation-item",
+      "pixsoName": null,
+      "availability": "native-only",
+      "supportedProps": [
+        "label",
+        "iconName",
+        "selected",
+        "disabled"
+      ],
+      "supportedSlots": [
+        "icon",
+        "label"
+      ]
+    }
+  ]
+}

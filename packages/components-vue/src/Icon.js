@@ -9,6 +9,8 @@ export default function Icon(props) {
   if (!definition) throw new Error(`Unknown icon semantic alias: ${props.name}`);
   const size = Number(props.size ?? 20);
   if (![16, 20, 24].includes(size)) throw new Error(`Unsupported icon display size: ${size}`);
+  const iconStyle = props.iconStyle ?? "regular";
+  if (!["regular", "solid"].includes(iconStyle)) throw new Error(`Unsupported icon style: ${iconStyle}`);
   const children = [...definition.content.matchAll(/<(path|circle|rect|line|polyline|polygon)\s+([^>]*?)\s*\/?>(?:<\/\1>)?/g)].map(([, tag, raw], index) => {
     const attrs = parseAttributes(raw);
     if (attrs.stroke) attrs.strokeWidth = iconStrokeWidths[size];
@@ -16,13 +18,13 @@ export default function Icon(props) {
     return h(tag, { ...attrs, key: index });
   });
   return h("svg", {
-    class: `tui-icon tui-icon--regular${props.class ? ` ${props.class}` : ""}`,
+    class: `tui-icon tui-icon--${iconStyle}${props.class ? ` ${props.class}` : ""}`,
     viewBox: definition.viewBox,
     width: size,
     height: size,
     "data-icon-alias": props.name,
     "data-icon-size": size,
-    "data-icon-kind": "regular",
+    "data-icon-kind": iconStyle,
     "aria-hidden": props.decorative !== false ? "true" : undefined,
     role: props.decorative === false ? "img" : undefined,
     "aria-label": props.decorative === false ? props.ariaLabel : undefined

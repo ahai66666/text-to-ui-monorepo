@@ -34,7 +34,7 @@ For Vue SFC, scoped CSS, CSS Modules, or Vue UI libraries, also read
 
 Default final folder:
 
-`/Users/zhaobohai/Desktop/资源管理/我的代码仓/`
+`<workspace>/outputs/` (or the user-configured output root)
 
 If writing there requires approval, request it. If approval is unavailable, save to workspace `outputs/` and clearly tell the user.
 

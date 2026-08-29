@@ -19,7 +19,7 @@ Object.assign(lucideAliases, {
   "action/maximize": "maximize-2",
   "field/calendar": "calendar-days",
   "field/clock": "clock-3",
-  "navigation/grid": "grid-2x2",
+  "navigation/grid": "layout-grid",
   "navigation/list": "list",
   "navigation/recent": "history",
   "action/settings": "settings",
@@ -47,7 +47,7 @@ for (const [alias, definition] of Object.entries(aliasRegistry.aliases).filter((
   const match = asset.match(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/i);
   if (!match) throw new Error(`Invalid SVG asset for ${alias}: ${definition.path}`);
   const viewBox = match[1].match(/\bviewBox=["']([^"']+)["']/i)?.[1] ?? "0 0 24 24";
-  symbols.push(`    <symbol id="tui-${alias.replaceAll("/", "-")}" viewBox="${viewBox}">${match[2].trim()}</symbol>`);
+  symbols.push(`    <symbol id="tui-${alias.replaceAll("/", "-")}" data-icon-alias="${alias}" data-icon-source="asset" data-icon-path="${definition.path}" viewBox="${viewBox}">${match[2].trim()}</symbol>`);
 }
 const sprite = `<?xml version="1.0"?>\n<svg xmlns="http://www.w3.org/2000/svg"><defs>\n${symbols.join("\n")}\n</defs></svg>\n`;
 await fs.writeFile(target, sprite);

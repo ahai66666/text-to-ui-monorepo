@@ -88,7 +88,7 @@ if (!styleText.includes('data-surface="gray"]:hover')) failures.push("gray Input
 if (!styleText.includes("border: 2px solid var(--color-input-hover-border-on-subtle); padding-inline: 11px")) failures.push("gray Input/Search hover compensation missing");
 if (!styleText.includes("linear-gradient(var(--color-input-hover-bg-on-subtle-layer)")) failures.push("gray Input/Search hover layer missing");
 if (/\.tui-(?:input|search)(?::focus(?:-within)?|\[data-state=\"focus\"\])\s*\{[^}]*outline\s*:/s.test(styleText)) failures.push("Input/Search must not use an outer focus outline");
-for (const role of ["body-l", "body-m", "caption-l", "title-s", "subtitle-s"]) if (!styleText.includes(`data-typography-role=\"${role}\"`)) failures.push(`typography role selector missing: ${role}`);
+for (const role of ["body-l", "body-m", "body-s", "title-s", "subtitle-s"]) if (!styleText.includes(`data-typography-role=\"${role}\"`)) failures.push(`typography role selector missing: ${role}`);
 const generatorText = await read("tools/generate-full-component-adapters.mjs");
 if (generatorText.includes('?? "navigation/grid"') || generatorText.includes("?? 'navigation/grid'")) failures.push("generated adapters must not silently fall back to navigation/grid icons");
 
