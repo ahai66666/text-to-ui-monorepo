@@ -7,7 +7,8 @@ export default {
       "id": "accordion",
       "logicalName": "Accordion/Default",
       "variants": [
-        "default"
+        "default",
+        "open"
       ],
       "states": [
         "default",
@@ -64,11 +65,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 70,
-      "canonicalSection": "section#disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Accordion/Default\"]",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 18,
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Accordion/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -136,8 +137,10 @@ export default {
         "disabled"
       ],
       "props": [
-        "label",
-        "value",
+        "title",
+        "detail",
+        "expanded",
+        "contentId",
         "disabled",
         "state",
         "className"
@@ -194,11 +197,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "feedback",
-      "categoryLabel": "提示与反馈",
-      "order": 120,
-      "canonicalSection": "section#feedback",
-      "canonicalSelector": "section#feedback [data-component=\"Alert/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 210,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Alert/Default\"]",
       "specimens": [
         {
           "id": "info",
@@ -400,11 +403,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 81,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Alert Dialog/Default\"]",
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 513,
+      "canonicalSection": "section#containers",
+      "canonicalSelector": "section#containers [data-component=\"Alert Dialog/Default\"]",
       "specimens": [
         {
           "id": "danger-confirm",
@@ -475,113 +478,6 @@ export default {
         "closed",
         "open"
       ]
-    },
-    {
-      "id": "aspect-ratio",
-      "logicalName": "Aspect Ratio/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-static",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/generated/aspect-ratio.html",
-        "react": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio",
-        "vue": "packages/components-vue/src/generated/AspectRatio.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-static",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/generated/aspect-ratio.html"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/generated/AspectRatio.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 112,
-      "canonicalSection": "section#specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Aspect Ratio/Default\"]",
-      "legacyVisualGroup": "specialized",
-      "canonicalSpecimen": "legacy:specialized:aspect-ratio",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-aspect-ratio",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconAliases": [],
-      "iconSlots": [],
-      "iconSemantic": null
     },
     {
       "id": "attachment",
@@ -690,8 +586,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 110,
+      "categoryLabel": "特殊组件",
+      "order": 610,
       "canonicalSection": "section#specialized",
       "canonicalSelector": "section#specialized [data-component=\"Attachment/Default\"]",
       "specimens": [
@@ -816,11 +712,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 60,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Avatar/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 215,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Avatar/Default\"]",
       "specimens": [
         {
           "id": "fallback-32",
@@ -875,40 +771,24 @@ export default {
       "logicalName": "Badge/Default",
       "variants": [
         "default",
+        "info",
         "success",
         "warning",
         "danger",
-        "info"
+        "neutral"
       ],
       "states": [
         "default",
-        "hover",
-        "focus",
         "disabled"
       ],
       "props": [
-        "title",
-        "description",
-        "supporting",
-        "leadingIcon",
-        "leading",
-        "titleSlot",
-        "descriptionSlot",
-        "supportingSlot",
-        "content",
-        "trailing",
-        "trailingText",
-        "trailingSlot",
-        "actions",
-        "selected",
+        "label",
+        "tone",
         "disabled",
-        "state",
         "className"
       ],
       "slots": [
-        "label",
-        "content",
-        "description"
+        "label"
       ],
       "tokenRoles": [
         "color.text",
@@ -949,11 +829,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 61,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Badge/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 216,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Badge/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -981,8 +861,6 @@ export default {
       "canonicalSpecimen": "legacy:data-display:badge",
       "allowedStates": [
         "default",
-        "hover",
-        "focus",
         "disabled"
       ],
       "textRoles": [
@@ -1054,8 +932,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 53,
+      "categoryLabel": "导航类",
+      "order": 14,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"Breadcrumb/Default\"]",
       "specimens": [
@@ -1111,113 +989,6 @@ export default {
       ]
     },
     {
-      "id": "bubble",
-      "logicalName": "Bubble/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-static",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/generated/bubble.html",
-        "react": "packages/components-react/src/generated/Bubble.jsx#Bubble",
-        "vue": "packages/components-vue/src/generated/Bubble.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-static",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/generated/bubble.html"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/generated/Bubble.jsx#Bubble"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/generated/Bubble.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 113,
-      "canonicalSection": "section#specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Bubble/Default\"]",
-      "legacyVisualGroup": "specialized",
-      "canonicalSpecimen": "legacy:specialized:bubble",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-bubble",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconAliases": [],
-      "iconSlots": [],
-      "iconSemantic": null
-    },
-    {
       "id": "button",
       "logicalName": "Button/Primary/Default",
       "variants": [
@@ -1234,7 +1005,6 @@ export default {
         "text",
         "icon-text",
         "icon",
-        "selection-dropdown",
         "split-dropdown"
       ],
       "states": [
@@ -1249,6 +1019,7 @@ export default {
         "variant",
         "size",
         "mode",
+        "iconOnly",
         "disabled",
         "menuItems"
       ],
@@ -1297,6 +1068,7 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "readiness": {
         "sourceReady": true,
         "contractReady": true,
@@ -1326,12 +1098,11 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "buttons",
-      "categoryLabel": "按钮",
-      "order": 20,
-      "canonicalSection": "section#buttons",
-      "canonicalSelector": "section#buttons [data-component=\"Button/Primary/Default\"]",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 110,
+      "canonicalSection": "section#actions",
+      "canonicalSelector": "section#actions [data-component=\"Button/Primary/Default\"]",
       "legacyVisualGroup": "buttons",
       "canonicalSpecimen": "legacy:buttons:button",
       "specimens": [
@@ -1412,16 +1183,17 @@ export default {
           "mode": "icon-text"
         },
         {
-          "id": "selection-dropdown",
-          "variant": "secondary",
-          "state": "default",
-          "mode": "selection-dropdown"
-        },
-        {
           "id": "split-dropdown",
           "variant": "ghost",
           "state": "default",
           "mode": "split-dropdown"
+        },
+        {
+          "id": "split-dropdown-icon",
+          "variant": "ghost",
+          "state": "default",
+          "mode": "split-dropdown",
+          "iconOnly": true
         }
       ],
       "fixtureId": "fixture-button",
@@ -1573,11 +1345,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 103,
-      "canonicalSection": "section#loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Calendar/Default\"]",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 419,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Calendar/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -1628,357 +1400,6 @@ export default {
       ],
       "iconAliases": [
         "field/calendar"
-      ]
-    },
-    {
-      "id": "card",
-      "logicalName": "Card/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "supporting",
-        "content",
-        "trailing",
-        "actions"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/index.js#card",
-        "react": "packages/components-react/src/index.jsx#Card",
-        "vue": "packages/components-vue/src/Card.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/index.js#card"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/index.jsx#Card"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/Card.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 62,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Card/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-card",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": null,
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "data-display",
-      "canonicalSpecimen": "legacy:data-display:card",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "iconAliases": []
-    },
-    {
-      "id": "carousel",
-      "logicalName": "Carousel/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#carousel",
-        "react": "packages/components-react/src/advanced.jsx#Carousel",
-        "vue": "packages/components-vue/src/advanced.js#Carousel"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/advanced.js#carousel"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/advanced.jsx#Carousel"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/advanced.js#Carousel"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 111,
-      "canonicalSection": "section#specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Carousel/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-carousel",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "navigation/chevron-down",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "specialized",
-      "canonicalSpecimen": "legacy:specialized:carousel",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-down",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "iconAliases": [
-        "navigation/chevron-down"
-      ]
-    },
-    {
-      "id": "chart",
-      "logicalName": "Chart/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#chart",
-        "react": "packages/components-react/src/advanced.jsx#Chart",
-        "vue": "packages/components-vue/src/advanced.js#Chart"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/advanced.js#chart"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/advanced.jsx#Chart"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/advanced.js#Chart"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 102,
-      "canonicalSection": "section#loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Chart/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-chart",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "navigation/grid",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "loading-data",
-      "canonicalSpecimen": "legacy:loading-data:chart",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "iconAliases": [
-        "navigation/grid"
       ]
     },
     {
@@ -2045,8 +1466,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 40,
+      "categoryLabel": "选择类",
+      "order": 410,
       "canonicalSection": "section#choices",
       "canonicalSelector": "section#choices [data-component=\"Checkbox/Default\"]",
       "specimens": [
@@ -2106,7 +1527,8 @@ export default {
       "id": "collapsible",
       "logicalName": "Collapsible/Default",
       "variants": [
-        "default"
+        "default",
+        "open"
       ],
       "states": [
         "default",
@@ -2116,8 +1538,10 @@ export default {
         "open"
       ],
       "props": [
-        "label",
-        "value",
+        "title",
+        "detail",
+        "expanded",
+        "contentId",
         "disabled",
         "state",
         "className"
@@ -2165,11 +1589,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 71,
-      "canonicalSection": "section#disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Collapsible/Default\"]",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 19,
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Collapsible/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -2288,11 +1712,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 91,
-      "canonicalSection": "section#form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Combobox/Default\"]",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 315,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Combobox/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -2414,11 +1838,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 85,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Context Menu/Default\"]",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 112,
+      "canonicalSection": "section#actions",
+      "canonicalSelector": "section#actions [data-component=\"Context Menu/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -2474,116 +1898,6 @@ export default {
       "iconAliases": [
         "action/more"
       ]
-    },
-    {
-      "id": "data-table",
-      "logicalName": "Data Table/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/index.js#dataTable",
-        "react": "packages/components-react/src/index.jsx#DataTable",
-        "vue": "packages/components-vue/src/DataTable.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/index.js#dataTable"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/index.jsx#DataTable"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/DataTable.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 65,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Data Table/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-data-table",
-      "surface": "white",
-      "sizing": "fill",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": null,
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "data-display",
-      "canonicalSpecimen": "legacy:data-display:data-table",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "textRoles": [
-        "header:body-m",
-        "cell:body-l"
-      ],
-      "iconSlots": [],
-      "iconAliases": []
     },
     {
       "id": "date-picker",
@@ -2652,11 +1966,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 104,
-      "canonicalSection": "section#loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Date Picker/Default\"]",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 420,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Date Picker/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -2779,11 +2093,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 105,
-      "canonicalSection": "section#loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Time Picker/Default\"]",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 421,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Time Picker/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -2844,7 +2158,8 @@ export default {
       "logicalName": "Dialog/Default",
       "variants": [
         "single",
-        "double"
+        "double",
+        "triple"
       ],
       "states": [
         "closed",
@@ -2858,16 +2173,57 @@ export default {
         "actionLayout",
         "confirmLabel",
         "cancelLabel",
+        "thirdActionLabel",
         "onConfirm",
         "onCancel",
+        "onThirdAction",
         "onOpenChange"
       ],
       "slots": [
-        "title",
+        "titlebar",
         "description",
         "content",
         "actions"
       ],
+      "slotContracts": {
+        "titlebar": {
+          "cardinality": "1",
+          "scope": "dialog-header",
+          "acceptedContent": "Dialog title slot",
+          "variants": [
+            "title-only",
+            "title-subtitle"
+          ],
+          "pixsoComponent": ".Title",
+          "pixsoVariants": {
+            "title-only": "2 Line=OFF",
+            "title-subtitle": "2 Line=ON"
+          }
+        },
+        "actions": {
+          "cardinality": "1",
+          "scope": "dialog-actions",
+          "acceptedContent": "Button instances",
+          "buttonCount": {
+            "min": 1,
+            "max": 3
+          },
+          "layouts": [
+            "one-button",
+            "two-buttons",
+            "three-buttons"
+          ],
+          "pixsoComponent": ".Dialog_Container",
+          "pixsoVariants": {
+            "one-button": "quantity=1_normal",
+            "two-buttons": [
+              "quantity=2_normal",
+              "quantity=2_emphasize"
+            ],
+            "three-buttons": "quantity=3_emphasize_port"
+          }
+        }
+      },
       "tokenRoles": [
         "color.text",
         "color.surface",
@@ -2908,11 +2264,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 80,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Dialog/Default\"]",
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 512,
+      "canonicalSection": "section#containers",
+      "canonicalSelector": "section#containers [data-component=\"Dialog/Default\"]",
       "specimens": [
         {
           "id": "single-default",
@@ -2926,6 +2282,13 @@ export default {
           "variant": "double",
           "state": "closed",
           "actionLayout": "double",
+          "intent": "default"
+        },
+        {
+          "id": "triple-default",
+          "variant": "triple",
+          "state": "closed",
+          "actionLayout": "triple",
           "intent": "default"
         }
       ],
@@ -2966,7 +2329,8 @@ export default {
       "structuralAxes": {
         "actionLayout": [
           "single",
-          "double"
+          "double",
+          "triple"
         ],
         "intent": [
           "default",
@@ -3043,11 +2407,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 86,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Dropdown Menu/Default\"]",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 113,
+      "canonicalSection": "section#actions",
+      "canonicalSelector": "section#actions [data-component=\"Dropdown Menu/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -3104,125 +2468,6 @@ export default {
       ],
       "iconAliases": [
         "action/more"
-      ]
-    },
-    {
-      "id": "empty",
-      "logicalName": "Empty/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/index.js#empty",
-        "react": "packages/components-react/src/index.jsx#Empty",
-        "vue": "packages/components-vue/src/Empty.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/index.js#empty"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/index.jsx#Empty"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/Empty.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 67,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Empty/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-empty",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "action/add",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "data-display",
-      "canonicalSpecimen": "legacy:data-display:empty",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/add",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "iconAliases": [
-        "action/add"
       ]
     },
     {
@@ -3290,11 +2535,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 34,
-      "canonicalSection": "section#fields",
-      "canonicalSelector": "section#fields [data-component=\"Field/Default\"]",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 313,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Field/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -3332,6 +2577,146 @@ export default {
         "content:body-l",
         "description:body-m",
         "help:body-s"
+      ],
+      "iconSlots": [],
+      "iconAliases": []
+    },
+    {
+      "id": "form-field",
+      "logicalName": "Form Field/Default",
+      "variants": [
+        "input",
+        "select"
+      ],
+      "states": [
+        "default",
+        "error",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "required",
+        "error",
+        "disabled",
+        "state",
+        "surface",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "control",
+        "error"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.alert",
+        "typography.subtitle-s",
+        "typography.body-s",
+        "spacing.component-gap"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#form-field",
+        "react": "packages/components-react/src/index.jsx#FormField",
+        "vue": "packages/components-vue/src/FormField.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#form-field"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#FormField"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/FormField.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 509,
+      "canonicalSection": "section#containers",
+      "canonicalSelector": "section#containers [data-component=\"Form Field/Default\"]",
+      "specimens": [
+        {
+          "id": "default-white",
+          "variant": "input",
+          "state": "default",
+          "surface": "white"
+        },
+        {
+          "id": "default-gray",
+          "variant": "input",
+          "state": "default",
+          "surface": "gray"
+        },
+        {
+          "id": "required-white",
+          "variant": "select",
+          "state": "default",
+          "surface": "white",
+          "required": true
+        },
+        {
+          "id": "required-gray",
+          "variant": "select",
+          "state": "default",
+          "surface": "gray",
+          "required": true
+        },
+        {
+          "id": "error-white",
+          "variant": "input",
+          "state": "error",
+          "surface": "white"
+        },
+        {
+          "id": "error-gray",
+          "variant": "input",
+          "state": "error",
+          "surface": "gray"
+        }
+      ],
+      "fixtureId": "fixture-form-field",
+      "surface": "white",
+      "sizing": "fill",
+      "behaviors": [
+        "slot-control",
+        "validation",
+        "disabled"
+      ],
+      "iconSemantic": null,
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "legacyVisualGroup": "fields",
+      "canonicalSpecimen": "legacy:fields:form-field",
+      "allowedStates": [
+        "default",
+        "error",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:subtitle-s",
+        "error:body-s"
       ],
       "iconSlots": [],
       "iconAliases": []
@@ -3402,11 +2787,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 84,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Hover Card/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 214,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Hover Card/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -3537,11 +2922,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 30,
-      "canonicalSection": "section#fields",
-      "canonicalSelector": "section#fields [data-component=\"Input/White Surface/Default\"]",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 310,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Input/White Surface/Default\"]",
       "legacyVisualGroup": "fields",
       "canonicalSpecimen": "legacy:fields:input",
       "specimens": [
@@ -3587,391 +2972,6 @@ export default {
       "iconAliases": [],
       "iconSlots": [],
       "iconSemantic": null
-    },
-    {
-      "id": "input-otp",
-      "logicalName": "Input OTP/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#input-otp",
-        "react": "packages/components-react/src/advanced.jsx#InputOtp",
-        "vue": "packages/components-vue/src/advanced.js#InputOtp"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/advanced.js#input-otp"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/advanced.jsx#InputOtp"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/advanced.js#InputOtp"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 94,
-      "canonicalSection": "section#form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Input OTP/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-input-otp",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "action/check",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "form-plus",
-      "canonicalSpecimen": "legacy:form-plus:input-otp",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/check",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "iconAliases": [
-        "action/check"
-      ]
-    },
-    {
-      "id": "item",
-      "logicalName": "Item/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "color.divider",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/index.js#item",
-        "react": "packages/components-react/src/index.jsx#Item",
-        "vue": "packages/components-vue/src/Item.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/index.js#item"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/index.jsx#Item"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/Item.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 63,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Item/Default\"]",
-      "specimens": [
-        {
-          "id": "single-text-arrow",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "text-arrow"
-        },
-        {
-          "id": "double-icon",
-          "variant": "double-line",
-          "state": "default",
-          "lines": 2,
-          "trailing": "icon"
-        },
-        {
-          "id": "triple-radio",
-          "variant": "triple-line",
-          "state": "default",
-          "lines": 3,
-          "trailing": "radio"
-        },
-        {
-          "id": "single-checkbox",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "checkbox"
-        },
-        {
-          "id": "single-switch",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "switch"
-        },
-        {
-          "id": "single-notification-arrow",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "notification-arrow"
-        }
-      ],
-      "fixtureId": "fixture-item",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": null,
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "data-display",
-      "canonicalSpecimen": "legacy:data-display:item",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "iconAliases": []
-    },
-    {
-      "id": "kbd",
-      "logicalName": "Kbd/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#kbd",
-        "react": "packages/components-react/src/advanced.jsx#Kbd",
-        "vue": "packages/components-vue/src/advanced.js#Kbd"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/advanced.js#kbd"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/advanced.jsx#Kbd"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/advanced.js#Kbd"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 95,
-      "canonicalSection": "section#form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Kbd/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-kbd",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "action/more",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "form-plus",
-      "canonicalSpecimen": "legacy:form-plus:kbd",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "iconAliases": [
-        "action/more"
-      ]
     },
     {
       "id": "label",
@@ -4037,11 +3037,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 90,
-      "canonicalSection": "section#form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Label/Default\"]",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 314,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Label/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -4110,6 +3110,7 @@ export default {
       "props": [
         "label",
         "value",
+        "items",
         "disabled",
         "state",
         "className"
@@ -4117,14 +3118,19 @@ export default {
       "slots": [
         "label",
         "content",
-        "description"
+        "description",
+        "item-leading",
+        "item-label",
+        "item-trailing"
       ],
       "tokenRoles": [
         "color.text",
         "color.surface",
         "color.border",
         "typography.body-l",
-        "spacing.component-gap"
+        "spacing.component-gap",
+        "icon-size-lg",
+        "spacing.menu-item-content"
       ],
       "source": "canonical-custom",
       "status": "partial",
@@ -4157,11 +3163,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 73,
-      "canonicalSection": "section#disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Menubar/Default\"]",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 16,
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Menubar/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -4173,6 +3179,11 @@ export default {
       "surface": "white",
       "sizing": "intrinsic",
       "behaviors": [
+        "open",
+        "select",
+        "escape",
+        "arrow-keys",
+        "hover-submenu",
         "focus",
         "disabled"
       ],
@@ -4202,18 +3213,51 @@ export default {
       ],
       "iconSlots": [
         {
+          "slot": "item-leading",
           "alias": "navigation/grid",
           "displaySizes": [
-            16,
-            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "slot": "item-trailing",
+          "alias": "navigation/chevron-right",
+          "displaySizes": [
             24
           ],
           "kind": "regular"
         }
       ],
       "iconAliases": [
-        "navigation/grid"
-      ]
+        "navigation/grid",
+        "navigation/chevron-right"
+      ],
+      "slotContracts": {
+        "item-leading": {
+          "cardinality": "0..1",
+          "scope": "menubar-item",
+          "iconSize": "24px",
+          "iconToken": "icon-size-lg",
+          "gapToken": "gap-menu-item-content",
+          "gap": "8px",
+          "source": "lucide"
+        },
+        "item-label": {
+          "cardinality": "1",
+          "scope": "menubar-item",
+          "typographyRole": "body-l"
+        },
+        "item-trailing": {
+          "cardinality": "0..1",
+          "scope": "menubar-item",
+          "iconAlias": "navigation/chevron-right",
+          "iconSize": "24px",
+          "iconToken": "icon-size-lg",
+          "activeWhen": "hasSubmenu",
+          "placement": "trailing-end"
+        }
+      }
     },
     {
       "id": "native-select",
@@ -4279,11 +3323,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 92,
-      "canonicalSection": "section#form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Native Select/Default\"]",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 416,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Native Select/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -4337,127 +3381,6 @@ export default {
       ]
     },
     {
-      "id": "navigation-menu",
-      "logicalName": "Navigation Menu/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#navigation-menu",
-        "react": "packages/components-react/src/advanced.jsx#NavigationMenu",
-        "vue": "packages/components-vue/src/advanced.js#NavigationMenu"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/advanced.js#navigation-menu"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/advanced.jsx#NavigationMenu"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/advanced.js#NavigationMenu"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 72,
-      "canonicalSection": "section#disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Navigation Menu/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-navigation-menu",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": "navigation/grid",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "disclosure",
-      "canonicalSpecimen": "legacy:disclosure:navigation-menu",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "iconAliases": [
-        "navigation/grid"
-      ]
-    },
-    {
       "id": "primary-navigation-item",
       "logicalName": "Primary Navigation Item/Level 1",
       "variants": [
@@ -4495,6 +3418,17 @@ export default {
         "icon-size-lg",
         "radius.icon-button"
       ],
+      "structuralAxes": {
+        "placement": [
+          "primary-navigation-shell"
+        ],
+        "alignment": [
+          "bottom"
+        ],
+        "presentation": [
+          "icon-only"
+        ]
+      },
       "iconAliases": [
         "navigation/grid",
         "field/calendar",
@@ -4541,8 +3475,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 49,
+      "categoryLabel": "导航类",
+      "order": 11,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"Primary Navigation Item/Level 1\"]",
       "legacyVisualGroup": "navigation",
@@ -4611,17 +3545,6 @@ export default {
           "kind": "regular",
           "source": "lucide"
         }
-      },
-      "structuralAxes": {
-        "placement": [
-          "primary-navigation-shell"
-        ],
-        "alignment": [
-          "bottom"
-        ],
-        "presentation": [
-          "icon-only"
-        ]
       }
     },
     {
@@ -4688,8 +3611,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 54,
+      "categoryLabel": "导航类",
+      "order": 17,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"Pagination/Default\"]",
       "specimens": [
@@ -4822,11 +3745,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 83,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Popover/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 213,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Popover/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -4951,11 +3874,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 66,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Progress/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 220,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Progress/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -5088,8 +4011,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 41,
+      "categoryLabel": "选择类",
+      "order": 411,
       "canonicalSection": "section#choices",
       "canonicalSelector": "section#choices [data-component=\"Radio/Unselected/Default\"]",
       "legacyVisualGroup": "choices",
@@ -5194,8 +4117,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 42,
+      "categoryLabel": "选择类",
+      "order": 412,
       "canonicalSection": "section#choices",
       "canonicalSelector": "section#choices [data-component=\"Radio Group/Default\"]",
       "specimens": [
@@ -5250,6 +4173,154 @@ export default {
       "iconAliases": [
         "action/check"
       ]
+    },
+    {
+      "id": "chips",
+      "logicalName": "Chips/Default",
+      "variants": [
+        "default",
+        "with-icon",
+        "closable"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "pressed",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "icon",
+        "closable",
+        "disabled",
+        "state",
+        "onClose"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "close"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface-muted",
+        "color.state-layer-hover",
+        "color.state-layer-pressed",
+        "size.tag-height",
+        "spacing.padding-tag-x",
+        "typography.body-m",
+        "radius.tag"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#chips",
+        "react": "packages/components-react/src/Chips.jsx#Chips",
+        "vue": "packages/components-vue/src/Chips.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#chips"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/Chips.jsx#Chips"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/Chips.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 111,
+      "canonicalSection": "section#actions",
+      "canonicalSelector": "section#actions [data-component=\"Chips/Default\"]",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        },
+        {
+          "id": "hover",
+          "variant": "with-icon",
+          "state": "hover"
+        },
+        {
+          "id": "pressed",
+          "variant": "closable",
+          "state": "pressed"
+        },
+        {
+          "id": "disabled",
+          "variant": "closable",
+          "state": "disabled"
+        }
+      ],
+      "fixtureId": "fixture-chips",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "behaviors": [
+        "focus",
+        "disabled"
+      ],
+      "iconSemantic": null,
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "legacyVisualGroup": "actions",
+      "canonicalSpecimen": "legacy:actions:chips",
+      "allowedStates": [
+        "default",
+        "hover",
+        "pressed",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "iconAliases": [],
+      "slotContracts": {
+        "leading": {
+          "cardinality": "0..1",
+          "scope": "chips",
+          "iconSize": "16px"
+        },
+        "label": {
+          "cardinality": "1",
+          "scope": "chips",
+          "typographyRole": "body-m"
+        },
+        "close": {
+          "cardinality": "0..1",
+          "scope": "chips",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "16px",
+          "requiresAccessibleName": true
+        }
+      }
     },
     {
       "id": "search",
@@ -5337,11 +4408,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 31,
-      "canonicalSection": "section#fields",
-      "canonicalSelector": "section#fields [data-component=\"Search/White Surface/Default\"]",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 311,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Search/White Surface/Default\"]",
       "legacyVisualGroup": "fields",
       "canonicalSpecimen": "legacy:fields:search",
       "specimens": [
@@ -5490,11 +4561,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 33,
-      "canonicalSection": "section#fields",
-      "canonicalSelector": "section#fields [data-component=\"Select/Default\"]",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 415,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Select/Default\"]",
       "specimens": [
         {
           "id": "white-surface",
@@ -5557,113 +4628,6 @@ export default {
       ]
     },
     {
-      "id": "separator",
-      "logicalName": "Separator/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-custom",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/index.js#separator",
-        "react": "packages/components-react/src/index.jsx#Separator",
-        "vue": "packages/components-vue/src/Separator.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-custom",
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/index.js#separator"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/index.jsx#Separator"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/Separator.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 74,
-      "canonicalSection": "section#disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Separator/Default\"]",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-separator",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "iconSemantic": null,
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "legacyVisualGroup": "disclosure",
-      "canonicalSpecimen": "legacy:disclosure:separator",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "iconAliases": []
-    },
-    {
       "id": "sidebar",
       "logicalName": "Sidebar Item/Default",
       "variants": [
@@ -5714,6 +4678,7 @@ export default {
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "readiness": {
         "sourceReady": true,
         "contractReady": true,
@@ -5743,10 +4708,9 @@ export default {
         "linkedInstanceRequired": true,
         "variableReadbackRequired": true
       },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 50,
+      "categoryLabel": "导航类",
+      "order": 12,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"Sidebar Item/Default\"]",
       "legacyVisualGroup": "navigation",
@@ -5814,7 +4778,8 @@ export default {
       "id": "slider",
       "logicalName": "Slider/Default",
       "variants": [
-        "default"
+        "style-1",
+        "style-2"
       ],
       "states": [
         "default",
@@ -5831,8 +4796,8 @@ export default {
       ],
       "slots": [
         "label",
-        "content",
-        "description"
+        "control",
+        "value"
       ],
       "tokenRoles": [
         "color.text",
@@ -5872,15 +4837,15 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 93,
-      "canonicalSection": "section#form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Slider/Default\"]",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 417,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Slider/Default\"]",
       "specimens": [
         {
           "id": "default",
-          "variant": "default",
+          "variant": "style-1",
           "state": "default"
         }
       ],
@@ -5928,6 +4893,128 @@ export default {
       "iconAliases": [
         "action/more"
       ]
+    },
+    {
+      "id": "color-picker",
+      "logicalName": "ColorPicker/Tablet",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "value",
+        "defaultValue",
+        "disabled",
+        "state",
+        "className",
+        "onChange"
+      ],
+      "slots": [
+        "title",
+        "tabs",
+        "mode",
+        "hue",
+        "saturation",
+        "brightness",
+        "alpha",
+        "preview",
+        "eyedropper",
+        "hex",
+        "favorites"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.title-s",
+        "typography.body-l",
+        "typography.body-m",
+        "typography.body-s",
+        "spacing.component-gap",
+        "radius.card"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#color-picker",
+        "react": "packages/components-react/src/advanced.jsx#ColorPicker",
+        "vue": "packages/components-vue/src/advanced.js#ColorPicker"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/advanced.js#color-picker"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/advanced.jsx#ColorPicker"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/advanced.js#ColorPicker"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 217,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"ColorPicker/Tablet\"]",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-color-picker",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "behaviors": [
+        "select",
+        "input",
+        "focus",
+        "disabled"
+      ],
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "legacyVisualGroup": "form-plus",
+      "canonicalSpecimen": "legacy:form-plus:color-picker",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "iconAliases": [],
+      "iconSemantic": null
     },
     {
       "id": "switch",
@@ -5994,8 +5081,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 43,
+      "categoryLabel": "选择类",
+      "order": 413,
       "canonicalSection": "section#choices",
       "canonicalSelector": "section#choices [data-component=\"Switch/Default\"]",
       "specimens": [
@@ -6117,11 +5204,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 64,
-      "canonicalSection": "section#data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Table/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 218,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Table/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -6226,8 +5313,8 @@ export default {
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
       "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 52,
+      "categoryLabel": "导航类",
+      "order": 13,
       "canonicalSection": "section#navigation",
       "canonicalSelector": "section#navigation [data-component=\"Tabs/Default\"]",
       "specimens": [
@@ -6346,11 +5433,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 32,
-      "canonicalSection": "section#fields",
-      "canonicalSelector": "section#fields [data-component=\"Textarea/Default\"]",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 312,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Textarea/Default\"]",
       "specimens": [
         {
           "id": "white-surface",
@@ -6406,65 +5493,63 @@ export default {
       "iconAliases": []
     },
     {
-      "id": "toast",
-      "logicalName": "Toast/Default",
+      "id": "snackbar",
+      "logicalName": "Snackbar/Default",
       "variants": [
-        "default",
-        "success",
-        "warning",
-        "danger",
-        "info"
+        "title-only",
+        "title-subtitle"
       ],
       "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
+        "default"
       ],
       "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
+        "title",
+        "subtitle",
+        "actionLabel",
+        "leftArea",
+        "closable",
+        "onAction",
+        "onClose"
       ],
       "slots": [
-        "label",
-        "content",
-        "description"
+        "leading",
+        "title",
+        "subtitle",
+        "action",
+        "close"
       ],
       "tokenRoles": [
         "color.text",
         "color.surface",
-        "color.border",
+        "typography.subtitle-s",
+        "typography.body-s",
         "typography.body-m",
         "spacing.component-gap",
         "color.primary",
-        "shadow.1",
-        "radius.card"
+        "shadow.3",
+        "radius.5"
       ],
       "source": "canonical-custom",
       "status": "partial",
       "implementations": {
-        "html": "packages/components-html/src/index.js#toast",
-        "react": "packages/components-react/src/index.jsx#Toast",
-        "vue": "packages/components-vue/src/Toast.vue"
+        "html": "packages/components-html/src/index.js#snackbar",
+        "react": "packages/components-react/src/index.jsx#Snackbar",
+        "vue": "packages/components-vue/src/Snackbar.vue"
       },
       "visualAuthority": "skill-canonical",
       "sourceStrategy": "canonical-custom",
       "frameworks": {
         "html": {
           "status": "partial",
-          "source": "packages/components-html/src/index.js#toast"
+          "source": "packages/components-html/src/index.js#snackbar"
         },
         "react": {
           "status": "partial",
-          "source": "packages/components-react/src/index.jsx#Toast"
+          "source": "packages/components-react/src/index.jsx#Snackbar"
         },
         "vue": {
           "status": "partial",
-          "source": "packages/components-vue/src/Toast.vue"
+          "source": "packages/components-vue/src/Snackbar.vue"
         }
       },
       "pixso": {
@@ -6475,26 +5560,33 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "feedback",
-      "categoryLabel": "提示与反馈",
-      "order": 122,
-      "canonicalSection": "section#feedback",
-      "canonicalSelector": "section#feedback [data-component=\"Toast/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 211,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Snackbar/Default\"]",
       "specimens": [
         {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
+          "id": "title-only",
+          "variant": "title-only",
+          "state": "default",
+          "leftArea": "1"
+        },
+        {
+          "id": "title-subtitle",
+          "variant": "title-subtitle",
+          "state": "default",
+          "leftArea": "2"
         }
       ],
-      "fixtureId": "fixture-toast",
+      "fixtureId": "fixture-snackbar",
       "surface": "white",
       "sizing": "intrinsic",
       "behaviors": [
-        "focus",
-        "disabled"
+        "action",
+        "close"
       ],
-      "iconSemantic": "status/success",
+      "iconSemantic": "status/info",
       "readiness": {
         "sourceReady": true,
         "contractReady": true,
@@ -6504,44 +5596,75 @@ export default {
         "tokenParity": true
       },
       "legacyVisualGroup": "feedback",
-      "canonicalSpecimen": "legacy:feedback:toast",
+      "canonicalSpecimen": "pixso:Snackbar:左侧区域=1",
       "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
+        "default"
       ],
       "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
+        "title:subtitle-s",
+        "subtitle:body-s",
+        "action:body-m"
       ],
       "iconSlots": [
         {
-          "alias": "status/success",
+          "slot": "leading",
+          "alias": "status/info",
           "displaySizes": [
-            16,
-            20,
             24
           ],
           "kind": "regular"
         },
         {
+          "slot": "close",
           "alias": "action/close",
           "displaySizes": [
-            16,
-            20,
-            24
+            20
           ],
           "kind": "regular"
         }
       ],
       "iconAliases": [
-        "status/success",
+        "status/info",
         "action/close"
-      ]
+      ],
+      "slotContracts": {
+        "leading": {
+          "cardinality": "1",
+          "scope": "snackbar-main",
+          "iconAlias": "status/info",
+          "iconSize": "24px",
+          "source": "lucide"
+        },
+        "title": {
+          "cardinality": "1",
+          "scope": "snackbar-content",
+          "typographyRole": "subtitle-s"
+        },
+        "subtitle": {
+          "cardinality": "0..1",
+          "scope": "snackbar-content",
+          "typographyRole": "body-s",
+          "activeWhen": "variant=title-subtitle"
+        },
+        "action": {
+          "cardinality": "0..1",
+          "scope": "snackbar-actions",
+          "control": "small-button-slot",
+          "acceptedComponentContract": "button",
+          "requiredSize": "small",
+          "accepts": "any shared Button mode and variant at small size",
+          "defaultControl": "Button/Ghost/Default"
+        },
+        "close": {
+          "cardinality": "0..1",
+          "scope": "snackbar-actions",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "20px",
+          "hotZone": "40px",
+          "requiresAccessibleName": true
+        }
+      }
     },
     {
       "id": "tooltip",
@@ -6607,11 +5730,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "feedback",
-      "categoryLabel": "提示与反馈",
-      "order": 121,
-      "canonicalSection": "section#feedback",
-      "canonicalSelector": "section#feedback [data-component=\"Tooltip/Default\"]",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 212,
+      "canonicalSection": "section#display",
+      "canonicalSelector": "section#display [data-component=\"Tooltip/Default\"]",
       "specimens": [
         {
           "id": "default",
@@ -6660,113 +5783,6 @@ export default {
       "iconAliases": [
         "status/info"
       ]
-    },
-    {
-      "id": "typography",
-      "logicalName": "Typography/Default",
-      "variants": [
-        "default"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "source": "canonical-static",
-      "status": "partial",
-      "implementations": {
-        "html": "packages/components-html/src/generated/typography.html",
-        "react": "packages/components-react/src/generated/Typography.jsx#Typography",
-        "vue": "packages/components-vue/src/generated/Typography.vue"
-      },
-      "visualAuthority": "skill-canonical",
-      "sourceStrategy": "canonical-static",
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      },
-      "frameworks": {
-        "html": {
-          "status": "partial",
-          "source": "packages/components-html/src/generated/typography.html"
-        },
-        "react": {
-          "status": "partial",
-          "source": "packages/components-react/src/generated/Typography.jsx#Typography"
-        },
-        "vue": {
-          "status": "partial",
-          "source": "packages/components-vue/src/generated/Typography.vue"
-        }
-      },
-      "pixso": {
-        "status": "logical-mapping",
-        "libraryPage": "NewComponents",
-        "resolveGuidsAtRuntime": true,
-        "linkedInstanceRequired": true,
-        "variableReadbackRequired": true
-      },
-      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 114,
-      "canonicalSection": "section#specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Typography/Default\"]",
-      "legacyVisualGroup": "specialized",
-      "canonicalSpecimen": "legacy:specialized:typography",
-      "specimens": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "fixtureId": "fixture-typography",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "behaviors": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconAliases": [],
-      "iconSlots": [],
-      "iconSemantic": null
     },
     {
       "id": "list-card",
@@ -6849,11 +5865,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 51,
-      "canonicalSection": "section#navigation",
-      "canonicalSelector": "section#navigation [data-component=\"List Item/White Surface/Default\"]",
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 510,
+      "canonicalSection": "section#containers",
+      "canonicalSelector": "section#containers [data-component=\"List Item/White Surface/Default\"]",
       "legacyVisualGroup": "navigation",
       "canonicalSpecimen": "legacy:navigation:list-card",
       "specimens": [
@@ -7008,11 +6024,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 82,
-      "canonicalSection": "section#overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Semi-modal/Default\"]",
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 514,
+      "canonicalSection": "section#containers",
+      "canonicalSelector": "section#containers [data-component=\"Semi-modal/Default\"]",
       "specimens": [
         {
           "id": "s-white-non-modal",
@@ -7330,11 +6346,11 @@ export default {
         "variableReadbackRequired": true
       },
       "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
-      "category": "titlebars",
-      "categoryLabel": "标题栏",
+      "category": "navigation",
+      "categoryLabel": "导航类",
       "order": 10,
-      "canonicalSection": "section#titlebars",
-      "canonicalSelector": "section#titlebars [data-component=\"Titlebar/Default\"]",
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Titlebar/Default\"]",
       "specimens": [
         {
           "id": "small-normal",
@@ -7473,6 +6489,495 @@ export default {
         },
         "verticalPaneDividers": "owned-by-layout-and-continuous"
       }
+    },
+    {
+      "id": "segmented-button",
+      "logicalName": "Segmented Button/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "props": [
+        "options",
+        "value",
+        "defaultValue",
+        "label",
+        "disabled",
+        "onChange"
+      ],
+      "slots": [
+        "option"
+      ],
+      "tokenRoles": [
+        "color.surface",
+        "color.text",
+        "color.primary",
+        "radius.tab",
+        "spacing.padding-segmented-control",
+        "typography.body-m"
+      ],
+      "source": "canonical-custom",
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#segmentedButton",
+        "react": "packages/components-react/src/index.jsx#SegmentedButton",
+        "vue": "packages/components-vue/src/SegmentedButton.vue"
+      },
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 414,
+      "canonicalSection": "section#choices",
+      "canonicalSelector": "section#choices [data-component=\"Segmented Button/Default\"]",
+      "legacyVisualGroup": "choices",
+      "canonicalSpecimen": "legacy:choices:segmented-button",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-segmented-button",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "behaviors": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null,
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "status": "partial",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#segmentedButton"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#SegmentedButton"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/SegmentedButton.vue"
+        }
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      }
+    },
+    {
+      "id": "number-selector",
+      "logicalName": "Number Selector/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "props": [
+        "label",
+        "value",
+        "defaultValue",
+        "min",
+        "max",
+        "step",
+        "disabled",
+        "onChange"
+      ],
+      "slots": [
+        "label",
+        "decrement",
+        "value",
+        "increment"
+      ],
+      "tokenRoles": [
+        "color.surface",
+        "color.text",
+        "color.border",
+        "color.primary",
+        "size.input-height",
+        "radius.input",
+        "typography.body-l"
+      ],
+      "source": "canonical-custom",
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#numberSelector",
+        "react": "packages/components-react/src/index.jsx#NumberSelector",
+        "vue": "packages/components-vue/src/NumberSelector.vue"
+      },
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 316,
+      "canonicalSection": "section#input",
+      "canonicalSelector": "section#input [data-component=\"Number Selector/Default\"]",
+      "legacyVisualGroup": "fields",
+      "canonicalSpecimen": "legacy:fields:number-selector",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-number-selector",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "behaviors": [
+        "input",
+        "increment",
+        "decrement",
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null,
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "status": "partial",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#numberSelector"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#NumberSelector"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/NumberSelector.vue"
+        }
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      }
+    },
+    {
+      "id": "sub-tabs",
+      "logicalName": "Sub Tabs/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "props": [
+        "tabs",
+        "value",
+        "defaultValue",
+        "disabled",
+        "onChange"
+      ],
+      "slots": [
+        "label",
+        "content"
+      ],
+      "tokenRoles": [
+        "color.neutral-dark-05",
+        "color.text-muted",
+        "color.brand-10",
+        "color.brand-100",
+        "spacing.gap-subtab-item",
+        "spacing.space-5",
+        "radius.subtab",
+        "size.size-10",
+        "typography.subtitle-m"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#subTabs",
+        "react": "packages/components-react/src/index.jsx#SubTabs",
+        "vue": "packages/components-vue/src/SubTabs.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#subTabs"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#SubTabs"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/SubTabs.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 13.5,
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Sub Tabs/Default\"]",
+      "legacyVisualGroup": "navigation",
+      "canonicalSpecimen": "legacy:navigation:sub-tabs",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-sub-tabs",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "behaviors": [
+        "select",
+        "arrow-keys",
+        "focus"
+      ],
+      "textRoles": [
+        "label:subtitle-m",
+        "unselected-label:body-l",
+        "content:body-l"
+      ],
+      "iconAliases": [],
+      "iconSlots": [],
+      "iconSemantic": null
+    },
+    {
+      "id": "tree-view",
+      "logicalName": "Tree View/Default",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "expanded",
+        "disabled"
+      ],
+      "props": [
+        "nodes",
+        "selectedId",
+        "expandedIds",
+        "defaultSelectedId",
+        "defaultExpandedIds",
+        "disabled",
+        "onSelect",
+        "onToggle"
+      ],
+      "slots": [
+        "node-leading",
+        "node-label",
+        "node-trailing"
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.text-muted",
+        "color.surface",
+        "color.border",
+        "color.primary",
+        "spacing.menu-item-content",
+        "size.tree-item-height",
+        "radius.subtab",
+        "typography.body-l",
+        "typography.body-m"
+      ],
+      "source": "canonical-custom",
+      "status": "partial",
+      "implementations": {
+        "html": "packages/components-html/src/index.js#treeView",
+        "react": "packages/components-react/src/index.jsx#TreeView",
+        "vue": "packages/components-vue/src/TreeView.vue"
+      },
+      "visualAuthority": "skill-canonical",
+      "sourceStrategy": "canonical-custom",
+      "frameworks": {
+        "html": {
+          "status": "partial",
+          "source": "packages/components-html/src/index.js#treeView"
+        },
+        "react": {
+          "status": "partial",
+          "source": "packages/components-react/src/index.jsx#TreeView"
+        },
+        "vue": {
+          "status": "partial",
+          "source": "packages/components-vue/src/TreeView.vue"
+        }
+      },
+      "pixso": {
+        "status": "logical-mapping",
+        "libraryPage": "NewComponents",
+        "resolveGuidsAtRuntime": true,
+        "linkedInstanceRequired": true,
+        "variableReadbackRequired": true
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      },
+      "contractNotes": "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 14.5,
+      "canonicalSection": "section#navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Tree View/Default\"]",
+      "legacyVisualGroup": "navigation",
+      "canonicalSpecimen": "legacy:navigation:tree-view",
+      "specimens": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "fixtureId": "fixture-tree-view",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "expanded",
+        "disabled"
+      ],
+      "behaviors": [
+        "select",
+        "toggle",
+        "arrow-keys",
+        "focus"
+      ],
+      "textRoles": [
+        "node-label:body-l",
+        "node-trailing:body-m"
+      ],
+      "iconAliases": [
+        "navigation/chevron-right",
+        "navigation/grid",
+        "object/file"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-right",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "navigation/grid",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "object/file",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "iconSemantic": "navigation/chevron-right"
     }
   ],
   "registryPolicy": {
@@ -7497,7 +7002,13 @@ export default {
       "message-scroller",
       "toggle",
       "spinner",
-      "skeleton"
+      "skeleton",
+      "aspect-ratio",
+      "bubble",
+      "typography",
+      "chart",
+      "empty",
+      "data-table"
     ],
     "readinessDimensions": [
       "sourceReady",
@@ -7512,146 +7023,105 @@ export default {
     "comparisonRule": "框架运行时组件预览必须严格跟随旧 Skill 契约页的章节和组件顺序；业务 category 仅用于代码组织，不得决定视觉对比顺序",
     "comparisonGroups": [
       {
-        "id": "titlebars",
-        "label": "Titlebar · 标题栏",
-        "componentIds": [
-          "titlebar"
-        ]
-      },
-      {
-        "id": "buttons",
-        "label": "Button · 按钮",
-        "componentIds": [
-          "button"
-        ]
-      },
-      {
-        "id": "fields",
-        "label": "输入与选择",
-        "componentIds": [
-          "input",
-          "search",
-          "textarea",
-          "select"
-        ]
-      },
-      {
-        "id": "choices",
-        "label": "选择控件",
-        "componentIds": [
-          "checkbox",
-          "radio",
-          "radio-group",
-          "switch"
-        ]
-      },
-      {
         "id": "navigation",
-        "label": "Tabs · 标签页与导航列表",
+        "label": "导航类",
         "componentIds": [
+          "titlebar",
           "primary-navigation-item",
-          "tabs",
-          "list-card"
-        ]
-      },
-      {
-        "id": "data-display",
-        "label": "卡片与数据展示",
-        "componentIds": [
-          "card",
-          "avatar",
-          "badge",
-          "table",
-          "data-table",
-          "progress",
-          "pagination",
-          "empty"
-        ]
-      },
-      {
-        "id": "disclosure",
-        "label": "披露与导航",
-        "componentIds": [
-          "breadcrumb",
-          "accordion",
-          "collapsible",
-          "navigation-menu",
-          "menubar",
-          "separator",
           "sidebar",
-          "item"
+          "tabs",
+          "sub-tabs",
+          "tree-view",
+          "breadcrumb",
+          "menubar",
+          "pagination",
+          "accordion",
+          "collapsible"
         ]
       },
       {
-        "id": "overlays",
-        "label": "浮层与命令",
+        "id": "actions",
+        "label": "操作类",
         "componentIds": [
-          "dialog",
-          "alert-dialog",
-          "semi-modal",
-          "popover",
-          "hover-card",
+          "button",
+          "chips",
           "context-menu",
           "dropdown-menu"
         ]
       },
       {
-        "id": "form-plus",
-        "label": "复合表单",
+        "id": "display",
+        "label": "展示类",
         "componentIds": [
-          "field",
-          "label",
-          "combobox",
-          "native-select",
-          "slider",
-          "input-otp",
-          "kbd"
+          "alert",
+          "snackbar",
+          "tooltip",
+          "popover",
+          "hover-card",
+          "avatar",
+          "badge",
+          "color-picker",
+          "table",
+          "progress"
         ]
       },
       {
-        "id": "loading-data",
-        "label": "加载、图表与日期时间",
+        "id": "input",
+        "label": "输入类",
         "componentIds": [
-          "chart",
+          "input",
+          "search",
+          "textarea",
+          "field",
+          "label",
+          "combobox",
+          "number-selector"
+        ]
+      },
+      {
+        "id": "choices",
+        "label": "选择类",
+        "componentIds": [
+          "checkbox",
+          "radio",
+          "radio-group",
+          "switch",
+          "segmented-button",
+          "select",
+          "native-select",
+          "slider",
           "calendar",
           "date-picker",
           "time-picker"
         ]
       },
       {
-        "id": "specialized",
-        "label": "专用内容与布局",
+        "id": "containers",
+        "label": "容器类",
         "componentIds": [
-          "attachment",
-          "carousel",
-          "aspect-ratio",
-          "bubble",
-          "typography"
+          "form-field",
+          "list-card",
+          "dialog",
+          "alert-dialog",
+          "semi-modal"
         ]
       },
       {
-        "id": "feedback",
-        "label": "Tooltip · 工具提示与反馈浮层",
+        "id": "specialized",
+        "label": "特殊组件",
         "componentIds": [
-          "alert",
-          "tooltip",
-          "toast"
+          "attachment"
         ]
       }
     ],
     "categoryOrder": [
-      "titlebars",
-      "buttons",
-      "fields",
-      "choices",
       "navigation",
-      "data-display",
-      "disclosure",
-      "overlays",
-      "form-plus",
-      "loading-data",
-      "specialized",
-      "feedback"
+      "actions",
+      "display",
+      "input",
+      "choices",
+      "containers",
+      "specialized"
     ]
   }
 };

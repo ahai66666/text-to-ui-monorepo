@@ -219,15 +219,15 @@ function populateReader() {
 }
 
 function showToast(message) {
-  const toast = component("toast");
-  toast.classList.add("workbench-toast");
-  const text = $("[data-slot='message']", toast) || $("span", toast) || toast;
+  const snackbar = component("snackbar", { title: message, actionLabel: "", closable: false });
+  snackbar.classList.add("workbench-snackbar");
+  const text = $("[data-slot='title']", snackbar) || $("span", snackbar) || snackbar;
   text.textContent = message;
   const host = $(".toast-host");
-  host.replaceChildren(toast);
-  requestAnimationFrame(() => toast.classList.add("is-visible"));
+  host.replaceChildren(snackbar);
+  requestAnimationFrame(() => snackbar.classList.add("is-visible"));
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.remove(), 2200);
+  showToast.timer = setTimeout(() => snackbar.remove(), 2200);
 }
 
 function openCompose() {

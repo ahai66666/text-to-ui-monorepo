@@ -32,11 +32,13 @@ pnpm dlx shadcn@latest init --preset b1aIcEaeG --base aria --template vite
 
 组件包不重新发明一套 CSS。旧 Skill 的 `text-to-ui/preview/component-gallery.css`、`text-to-ui/assets/design-system/` Token 和 `fixtures/framework-component-contract/shared/` 组件规则是现阶段的视觉基线；`packages/component-styles/src/index.css` 是三个框架的 canonical CSS 入口，`packages/component-contracts/src/components.css` 只保留向后兼容导入。这样 HTML、React、Vue 共享同一套尺寸、字体、状态层、Surface 和图标语义。
 
-组件画廊把“契约视觉基线”和“运行时组件”分成两个入口，但视觉基线只有一份：旧 Skill 的全量画廊直接作为契约的唯一视觉来源，保留历史 56 个组件的完整 Pattern、状态、布局与 Token 说明；当前注册表和运行时目录收敛为 55 个组件。运行时入口在同一个一级目录中提供 HTML、React、Vue 三个 Tab；选择 Tab 只替换目录中的真实渲染器，不跳转二级页面。三种渲染器都读取 `components.json.registryPolicy.comparisonGroups` 的同一视觉章节和组件顺序，生成同一套卡片外壳，只展示结构性 Variant，Hover、Focus、Pressed、Selected 和点击反馈通过真实控件交互查看。组件自己的 `category/order` 继续服务代码组织，不再改变视觉对比位置。来源路径和六维验收结果移到工程回归区，避免日常预览被工程信息包围。这里的框架切换不是给同一份 HTML 换标签，也不是复制一套假数据：每张卡片都从 `frameworks.<framework>.source` 指向的真实源码加载，根节点声明 `data-framework`。三套实现共享 Token、样式和契约，但渲染、Props、事件与响应式状态由各自框架执行。
+`packages/component-contracts/src/components.json` 是组件契约唯一可编辑源。`components-runtime.js`、验收 manifest 和交付镜像都是确定性投影，文件头或校验会明确它们的生成来源；禁止直接维护这些副本。组件的公开身份始终是 `logicalName`，运行时 `id`、`fixtureId`、视觉选择器只服务内部渲染和测试，不能被业务页面或 Pixso 映射直接拼接使用。
 
-运行时目录不把状态矩阵铺成第二套样例。每个卡片只渲染组件的默认态；组件自身仍保留完整状态契约，浏览器里的原生 `:hover`、`:focus-visible`、`:active` 和事件逻辑负责展示状态变化。Input 的白色内容面/灰色输入面等 Surface 规则仍由同一套组件样式驱动。其余组件直接加载各自生成的 HTML、JSX 或 Vue SFC 适配器；卡片中的示例文案只是源码默认 Props 的 fixture，不得用来冒充另一框架的渲染结果。只有当注册表中的 HTML、React、Vue 源码和状态/交互校验都通过时，才可以标记为 `ready`。
+组件画廊的日常入口只保留 Pattern 和真实运行时组件。Pattern 用于查看栏位、滚动和组合规则；运行时入口在同一个一级目录中提供 HTML、React、Vue 三个 Tab，选择 Tab 只替换真实渲染器，不跳转二级页面。每张运行时卡片的标题栏右侧提供“组件规范”按钮；弹窗从同一份契约投影逻辑身份、Variant、状态、Slots、行为、Token、当前框架实现路径和六维验收结果。契约不再作为另一套视觉画廊或 iframe 基线，避免把 fixture 误读为组件的最终视觉规范。
 
-运行时的每张卡片同时写入 `data-contract-id`、视觉对比用的 `data-category/data-order`、代码组织用的 `data-registry-category/data-registry-order` 和 `data-fixture-id`，因此 HTML、React、Vue 可以与契约视觉页逐项对照，而不用牺牲组件注册表的业务分类。直接打开 `file://` 时只运行带内联 SVG 的 HTML 静态 fallback，React/Vue Tab 会明确置灰并提示使用 HTTP；只有 HTTP/Vite 页面才加载真实的 React/Vue 模块并用于三框架验收。
+三种渲染器读取 `components.json.registryPolicy.comparisonGroups` 的同一视觉章节和组件顺序，生成同一套卡片外壳，只展示结构性 Variant；Hover、Focus、Pressed、Selected 和点击反馈通过真实控件交互查看。组件自己的 `category/order` 继续服务代码组织，不再改变视觉对比位置。框架切换不是给同一份 HTML 换标签，也不是复制一套假数据：每张卡片都从 `frameworks.<framework>.source` 指向的真实源码加载，根节点声明 `data-framework`。三套实现共享 Token、样式和契约，但渲染、Props、事件与响应式状态由各自框架执行。
+
+运行时目录不把状态矩阵铺成第二套样例。每个卡片只渲染组件的默认态；组件自身仍保留完整状态契约，浏览器里的原生 `:hover`、`:focus-visible`、`:active` 和事件逻辑负责展示状态变化。卡片中的示例文案只是源码默认 Props 的 fixture，不得用来冒充另一框架的渲染结果。直接打开 `file://` 时只运行带内联 SVG 的 HTML 静态 fallback，React/Vue Tab 会明确置灰并提示使用 HTTP；只有 HTTP/Vite 页面才加载真实的 React/Vue 模块并用于三框架验收。
 
 旧 Skill 已构建的 React / Vue / HTML fixture 仍保留在回归资料中，只用于历史交互对照；面向用户的运行时入口是 `index.html#runtime-view` 内的同页 Tab。`framework-html.html`、`framework-react.html`、`framework-vue.html` 仍保留为开发者单框架调试入口，不作为日常目录导航，也不把旧 fixture 的类名或截图当成组件身份。旧 Skill 视觉文件会在画廊构建时同步到稳定的 `apps/component-gallery/public/legacy-skill/` 路径，并写入 `.baseline-manifest.json` 对每个预览/Token 文件做 SHA-256 校验；`pnpm gallery:baseline:validate` 会阻止源文件与交付副本悄悄漂移，避免开发服务器的 fallback 把旧页面误加载成新的画廊。
 

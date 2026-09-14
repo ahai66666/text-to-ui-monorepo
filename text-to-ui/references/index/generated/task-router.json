@@ -7,7 +7,7 @@
     },
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "8480f5758724239ff9290b8efb0c0120ba220ed3deacb69221d2b8a59151ca7b"
+      "sha256": "76b9603a65c146e150c0345ad25083a9b36b7c9c73ca20bd59109eb275609077"
     },
     {
       "path": "text-to-ui/references/index/layout-routes.source.json",

@@ -31,17 +31,20 @@ for (const component of components) {
 
 const comparisonGroups = registry.registryPolicy?.comparisonGroups ?? [];
 const comparisonIds = comparisonGroups.flatMap((group) => group.componentIds ?? []);
-if (comparisonGroups.length !== 12) failures.push(`comparison order must contain 12 contract sections, received ${comparisonGroups.length}`);
+if (comparisonGroups.length !== 7) failures.push(`comparison order must contain 7 functional sections, received ${comparisonGroups.length}`);
 if (comparisonIds.length !== components.length) failures.push(`comparison order must contain ${components.length} components, received ${comparisonIds.length}`);
 if (new Set(comparisonIds).size !== comparisonIds.length) failures.push("comparison order contains duplicate component ids");
 for (const component of components) if (!comparisonIds.includes(component.id)) failures.push(`${component.id}: missing from contract comparison order`);
 for (const componentId of comparisonIds) if (!ids.has(componentId)) failures.push(`${componentId}: comparison order references an unknown component`);
 const comparisonGroupById = new Map(comparisonGroups.map((group) => [group.id, group.componentIds ?? []]));
 const requiredContractPlacements = {
-  fields: ["input", "search", "textarea", "select"],
-  navigation: ["primary-navigation-item", "tabs", "list-card"],
-  disclosure: ["breadcrumb", "accordion", "collapsible", "navigation-menu", "menubar", "separator", "sidebar", "item"],
-  "form-plus": ["field", "label", "combobox", "native-select", "slider", "input-otp", "kbd"]
+  navigation: ["titlebar", "primary-navigation-item", "sidebar", "tabs", "sub-tabs", "tree-view", "breadcrumb", "menubar", "pagination", "accordion", "collapsible"],
+  actions: ["button", "chips", "context-menu", "dropdown-menu"],
+  display: ["alert", "snackbar", "tooltip", "popover", "hover-card", "avatar", "badge", "color-picker", "table", "progress"],
+  input: ["input", "search", "textarea", "field", "label", "combobox", "number-selector"],
+  choices: ["checkbox", "radio", "radio-group", "switch", "segmented-button", "select", "native-select", "slider", "calendar", "date-picker", "time-picker"],
+  containers: ["form-field", "list-card", "dialog", "alert-dialog", "semi-modal"],
+  specialized: ["attachment"]
 };
 for (const [groupId, expectedIds] of Object.entries(requiredContractPlacements)) {
   if (JSON.stringify(comparisonGroupById.get(groupId)) !== JSON.stringify(expectedIds)) failures.push(`${groupId}: comparison order no longer matches the contract visual baseline`);

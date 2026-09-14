@@ -1,5 +1,7 @@
 {
   "schemaVersion": 2,
+  "generatedFrom": "text-to-ui/assets/design-system/mapping-registry.json",
+  "readOnly": true,
   "policy": {
     "resolveGuidsAtRuntime": true,
     "guidIsNotAStableSource": true,
@@ -8,12 +10,122 @@
     "requireVariableReadback": true
   },
   "components": {
+    "Accordion/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Accordion",
+      "availability": "mapped",
+      "variant": {
+        "State": "Collapsed"
+      },
+      "variantAxes": [
+        "State"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
+    "Alert/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Alert",
+      "availability": "mapped",
+      "variant": {
+        "属性 1": "Info"
+      },
+      "variantAxes": [
+        "属性 1"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
+    "Alert Dialog/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ]
+    },
+    "Attachment/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "leading",
+        "title",
+        "content",
+        "description",
+        "actions",
+        "menu-trigger",
+        "menu"
+      ]
+    },
+    "Avatar/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
+    "Badge/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Badge",
+      "availability": "mapped",
+      "variant": {
+        "属性 1": "Neutral"
+      },
+      "variantAxes": [
+        "属性 1"
+      ],
+      "slots": [
+        "label"
+      ]
+    },
+    "Breadcrumb/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Breadcrumb",
+      "availability": "mapped",
+      "variant": {
+        "level": "3"
+      },
+      "variantAxes": [
+        "level"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
     "Button/Primary/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "Button",
+      "availability": "mapped",
+      "variant": {
+        "type": "Primary",
+        "size": "Medium",
+        "state": "Default"
+      },
       "variantAxes": [
-        "size",
         "type",
-        "mode",
+        "size",
         "state"
       ],
       "slots": [
@@ -21,991 +133,623 @@
         "label",
         "trigger",
         "menu"
-      ],
-      "colorVariables": [
-        "brand/100",
-        "neutral-light/100",
-        "neutral-dark/05",
-        "function/danger/100"
-      ]
-    },
-    "Input/White Surface/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "surface",
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "neutral-dark/10"
-      ]
-    },
-    "Search/White Surface/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "surface",
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "value",
-        "clear"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40"
-      ]
-    },
-    "Sidebar Item/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state",
-        "collapsed"
-      ],
-      "slots": [
-        "leading",
-        "label",
-        "trailing"
-      ],
-      "colorVariables": [
-        "neutral-dark/05",
-        "brand/10",
-        "brand/100",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40"
-      ]
-    },
-    "List Item/White Surface/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "surface",
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "trailing"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "brand/10",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40"
-      ]
-    },
-    "Accordion/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
-      ]
-    },
-    "Alert/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "brand/10",
-        "function/success/10",
-        "function/warning/10",
-        "function/danger/10",
-        "neutral-dark/05"
-      ]
-    },
-    "Alert Dialog/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "title",
-        "description",
-        "content",
-        "actions"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
-      ]
-    },
-    "Attachment/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
-      ]
-    },
-    "Avatar/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Badge/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Breadcrumb/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Calendar/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Card/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Carousel/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Chart/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Checkbox/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "CheckBox",
+      "availability": "mapped",
+      "variant": {
+        "checked": "false",
+        "state": "Default"
+      },
       "variantAxes": [
+        "checked",
         "state"
       ],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
       ]
     },
     "Collapsible/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "Collapsible",
+      "availability": "mapped",
+      "variant": {
+        "State": "Collapsed"
+      },
       "variantAxes": [
-        "state"
+        "State"
       ],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Combobox/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前输入类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "leading",
         "value",
         "trailing",
         "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Context Menu/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前操作类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Data Table/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Date Picker/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "leading",
         "value",
         "trailing",
         "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Time Picker/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "leading",
         "value",
         "trailing",
         "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Dialog/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "Dialog-2in1",
+      "availability": "mapped",
+      "variant": {
+        "style": "1button"
+      },
       "variantAxes": [
-        "variant",
-        "state"
+        "style"
       ],
       "slots": [
-        "title",
+        "titlebar",
         "description",
         "content",
         "actions"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Dropdown Menu/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前 Text-to-UI 映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Empty/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Field/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前输入类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "leading",
         "value",
         "trailing",
         "help"
+      ]
+    },
+    "Form Field/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Form Field",
+      "availability": "mapped",
+      "variant": {
+        "surface": "White",
+        "state": "Default"
+      },
+      "variantAxes": [
+        "surface",
+        "state"
       ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
+      "slots": [
+        "label",
+        "control",
+        "error"
       ]
     },
     "Hover Card/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "title",
         "description",
         "content",
         "actions"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
-    "Input OTP/Default": {
+    "Input/White Surface/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "Input",
+      "availability": "mapped",
+      "variant": {
+        "surface": "bg-white",
+        "state": "Default"
+      },
       "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Item/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
+        "surface",
         "state"
       ],
       "slots": [
         "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Kbd/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
+        "value",
+        "trailing",
+        "help"
       ]
     },
     "Label/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前输入类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Menubar/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "Menubar",
+      "availability": "mapped",
+      "variant": {
+        "state": "Default",
+        "surface": "bg-white"
+      },
       "variantAxes": [
-        "state"
+        "state",
+        "surface"
       ],
       "slots": [
         "label",
         "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
+        "description",
+        "item-leading",
+        "item-label",
+        "item-trailing"
       ]
     },
     "Native Select/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "leading",
         "value",
         "trailing",
         "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Navigation Menu/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Pagination/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Popover/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "title",
-        "description",
-        "content",
-        "actions"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Progress/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Radio Group/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Select/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Separator/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Slider/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Switch/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Table/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Tabs/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Textarea/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
-      ]
-    },
-    "Toast/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
-      ]
-    },
-    "Tooltip/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
-      ]
-    },
-    "Semi-modal/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "title",
-        "description",
-        "content",
-        "actions"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "neutral-dark/60",
-        "neutral-dark/40",
-        "brand/100"
-      ]
-    },
-    "Titlebar/Default": {
-      "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
-      "slots": [
-        "leading",
-        "label",
-        "trailing",
-        "actions"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Primary Navigation Item/Level 1": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "variant",
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "icon",
         "tooltip"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
-    "Aspect Ratio/Default": {
+    "Pagination/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": "Pagination/Default",
+      "availability": "mapped",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
-    "Bubble/Default": {
+    "Popover/Default": {
       "libraryPage": "NewComponents",
-      "variantAxes": [
-        "state"
-      ],
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ]
+    },
+    "Progress/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Progress/Default",
+      "availability": "mapped",
+      "variant": {},
+      "variantAxes": [],
       "slots": [
         "label",
         "content",
         "description"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
     "Radio/Unselected/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": "Radio",
+      "availability": "mapped",
+      "variant": {
+        "checked": "false",
+        "state": "Default"
+      },
       "variantAxes": [
-        "variant",
+        "checked",
         "state"
       ],
       "slots": [
         "control",
         "label"
-      ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
       ]
     },
-    "Typography/Default": {
+    "Radio Group/Default": {
       "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
+    "Chips/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Chips",
+      "availability": "mapped",
+      "variant": {
+        "状态": "Default"
+      },
       "variantAxes": [
+        "状态"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "close"
+      ]
+    },
+    "Search/White Surface/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Search",
+      "availability": "mapped",
+      "variant": {
+        "surface": "bg-white",
+        "state": "Default"
+      },
+      "variantAxes": [
+        "surface",
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "value",
+        "clear",
+        "advanced-search"
+      ]
+    },
+    "Select/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ]
+    },
+    "Sidebar Item/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Sidebar Item",
+      "availability": "mapped",
+      "variant": {
+        "state": "default"
+      },
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "trailing"
+      ]
+    },
+    "Slider/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Slider",
+      "availability": "mapped",
+      "variant": {
+        "style": "style-1"
+      },
+      "variantAxes": [
+        "style"
+      ],
+      "slots": [
+        "label",
+        "control",
+        "value"
+      ]
+    },
+    "ColorPicker/Tablet": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Snackbar/ColorPicker-Tablet",
+      "availability": "mapped",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "title",
+        "tabs",
+        "mode",
+        "hue",
+        "saturation",
+        "brightness",
+        "alpha",
+        "preview",
+        "eyedropper",
+        "hex",
+        "favorites"
+      ]
+    },
+    "Switch/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Switch",
+      "availability": "mapped",
+      "variant": {
+        "checked": "false",
+        "state": "Default"
+      },
+      "variantAxes": [
+        "checked",
         "state"
       ],
       "slots": [
         "label",
         "content",
         "description"
+      ]
+    },
+    "Table/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ]
+    },
+    "Tabs/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
+    "Textarea/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Textarea",
+      "availability": "mapped",
+      "variant": {
+        "surface": "bg-white",
+        "state": "Default"
+      },
+      "variantAxes": [
+        "surface",
+        "state"
       ],
-      "colorVariables": [
-        "neutral-light/100",
-        "neutral-dark/05",
-        "neutral-dark/90",
-        "brand/100"
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ]
+    },
+    "Snackbar/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Snackbar",
+      "availability": "mapped",
+      "variant": {
+        "左侧区域": "1"
+      },
+      "variantAxes": [
+        "左侧区域"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "subtitle",
+        "action",
+        "close"
+      ]
+    },
+    "Tooltip/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ]
+    },
+    "List Item/White Surface/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "excluded",
+      "mappingReason": "List Item 样例结构复杂，按当前容器类范围保留框架实现，不映射为 Pixso 组件。",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "trailing"
+      ]
+    },
+    "Semi-modal/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions",
+        "close"
+      ]
+    },
+    "Titlebar/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "leading",
+        "label",
+        "main-content-title",
+        "main-detail-actions",
+        "actions"
+      ]
+    },
+    "Segmented Button/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Segmented Button",
+      "availability": "mapped",
+      "variant": {
+        "count": "3"
+      },
+      "variantAxes": [
+        "count"
+      ],
+      "slots": [
+        "option"
+      ]
+    },
+    "Number Selector/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Number Selector/Default",
+      "availability": "mapped",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "label",
+        "decrement",
+        "value",
+        "increment"
+      ]
+    },
+    "Sub Tabs/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": "Sub Tabs Item",
+      "availability": "mapped",
+      "variant": {
+        "state": "Unselected"
+      },
+      "variantAxes": [
+        "state"
+      ],
+      "slots": [
+        "label",
+        "content"
+      ]
+    },
+    "Tree View/Default": {
+      "libraryPage": "NewComponents",
+      "pixsoTarget": null,
+      "availability": "blocked",
+      "variant": {},
+      "variantAxes": [],
+      "slots": [
+        "node-leading",
+        "node-label",
+        "node-trailing"
       ]
     }
   }

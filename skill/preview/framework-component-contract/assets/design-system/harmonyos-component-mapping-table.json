@@ -10,10 +10,10 @@
     "strictParityRequiresEveryUsedTargetVerified": true
   },
   "summary": {
-    "total": 76,
-    "mapped-pending-verification": 16,
-    "mapped-needs-rebuild": 5,
-    "missing-target": 55
+    "total": 80,
+    "mapped-pending-verification": 17,
+    "mapped-needs-rebuild": 4,
+    "missing-target": 59
   },
   "rows": [
     {
@@ -65,11 +65,11 @@
       "category": "01 Actions",
       "target": "Icon Text Button/Primary/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Icon Text Button",
+      "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
-        "type": "Primary"
+        "type": "primary"
       },
       "sourceVariantAliases": [],
       "reuse": "structure",
@@ -79,27 +79,27 @@
     {
       "category": "01 Actions",
       "target": "Icon Text Button/Secondary/Default",
-      "status": "mapped-needs-rebuild",
-      "sourceComponentSet": "Icon Text Button",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
-        "type": "Primary"
+        "type": "secondary"
       },
       "sourceVariantAliases": [],
       "reuse": "structure",
       "strictEligible": false,
-      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
     },
     {
       "category": "01 Actions",
       "target": "Icon Text Button/Ghost/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Icon Text Button",
+      "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
-        "type": "Ghost"
+        "type": "ghost"
       },
       "sourceVariantAliases": [
         {
@@ -202,6 +202,19 @@
       "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
     },
     {
+      "category": "02 Chips",
+      "target": "Chips/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Chips",
+      "sourceVariant": {
+        "状态": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
       "category": "02 Forms",
       "target": "Field/Default",
       "status": "missing-target",
@@ -227,7 +240,7 @@
       "category": "02 Forms",
       "target": "Input/White Surface/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput",
+      "sourceComponentSet": "Input",
       "sourceVariant": {
         "surface": "white",
         "state": "Default"
@@ -241,7 +254,7 @@
       "category": "02 Forms",
       "target": "Input/Gray Surface/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput",
+      "sourceComponentSet": "Input",
       "sourceVariant": {
         "surface": "dark",
         "state": "Default"
@@ -282,30 +295,24 @@
     {
       "category": "02 Forms",
       "target": "Textarea/White Surface/Default",
-      "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput-Muti-2in1",
-      "sourceVariant": {
-        "灰色场景": "OFF",
-        "状态": "Normal"
-      },
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
       "sourceVariantAliases": [],
-      "reuse": "structure",
+      "reuse": null,
       "strictEligible": false,
-      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
     },
     {
       "category": "02 Forms",
       "target": "Textarea/Gray Surface/Default",
-      "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput-Muti-2in1",
-      "sourceVariant": {
-        "灰色场景": "ON",
-        "状态": "Normal"
-      },
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
       "sourceVariantAliases": [],
-      "reuse": "structure",
+      "reuse": null,
       "strictEligible": false,
-      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
     },
     {
       "category": "02 Forms",
@@ -372,10 +379,10 @@
       "category": "02 Forms",
       "target": "Checkbox/Unchecked/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "CheckBox-2 in 1",
+      "sourceComponentSet": "CheckBox",
       "sourceVariant": {
-        "Selected": "OFF",
-        "状态": "Enabled"
+        "checked": "false",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "visual-reference",
@@ -386,10 +393,10 @@
       "category": "02 Forms",
       "target": "Radio/Unselected/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Radio-Phone",
+      "sourceComponentSet": "Radio",
       "sourceVariant": {
-        "Selected": "OFF",
-        "状态": "Enabled"
+        "checked": "false",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "visual-reference",
@@ -400,10 +407,10 @@
       "category": "02 Forms",
       "target": "Switch/Off/Default",
       "status": "mapped-pending-verification",
-      "sourceComponentSet": "Switch-Phone",
+      "sourceComponentSet": "Switch",
       "sourceVariant": {
-        "Selected": "OFF",
-        "状态": "Enabled"
+        "checked": "false",
+        "state": "Default"
       },
       "sourceVariantAliases": [],
       "reuse": "visual-reference",
@@ -420,6 +427,17 @@
       "reuse": null,
       "strictEligible": false,
       "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "ColorPicker/Tablet",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "ColorPicker-Tablet",
+      "sourceVariant": {},
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
     },
     {
       "category": "02 Forms",
@@ -512,6 +530,17 @@
     {
       "category": "03 Navigation",
       "target": "Primary Level Icon/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Menubar/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
       "sourceVariant": null,
@@ -931,6 +960,17 @@
     },
     {
       "category": "05 Feedback",
+      "target": "Dialog/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
       "target": "Tooltip/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
@@ -947,20 +987,8 @@
       "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
     },
     {
-      "name": "Chips-2in1",
-      "reason": "No registered static target in the current component scope."
-    },
-    {
       "name": "ScrollBar-Phone",
       "reason": "Platform utility, not a registered reusable component in the current scope."
-    },
-    {
-      "name": "Menu-2in1",
-      "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
-    },
-    {
-      "name": "CheckboxGroup-Phone",
-      "reason": "Composite form group; current registry keeps Checkbox as the primitive."
     },
     {
       "name": ".2in1 Container",
@@ -972,11 +1000,7 @@
     },
     {
       "name": "Dialog-2in1",
-      "reason": "Dialogs are explicitly excluded from the current formal component registry."
-    },
-    {
-      "name": "ColorPicker-Tablet",
-      "reason": "No registered static target in the current component scope."
+      "reason": "Pixso component exists, but Dialog-2in1 still needs an explicit HTML contract mapping."
     },
     {
       "name": "Search-Second Page-2in1",

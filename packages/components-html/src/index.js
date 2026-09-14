@@ -5,6 +5,11 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
 
+// Titlebar branding is an image slot. The inline fallback keeps the gallery
+// deterministic while callers can replace it with a product logo via
+// `logoSrc`.
+const defaultTitlebarLogoSrc = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%230A59F7'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-family='Arial,sans-serif' font-size='14' font-weight='700' fill='white'%3ET%3C/text%3E%3C/svg%3E";
+
 import { generatedHtmlComponents } from "./generated/index.js";
 import { iconMarkup } from "./icon-map.js";
 import { advancedHtmlComponents } from "./advanced.js";
@@ -26,7 +31,6 @@ const buttonTypeName = (variant = "primary") => {
 const logicalNameForButton = ({ mode = "text", variant = "primary", iconOnly = false } = {}) => {
   if (mode === "icon-text") return `Icon Text Button/${buttonTypeName(variant)}/Default`;
   if (mode === "icon") return `Icon Button/${variant === "secondary" ? "Secondary" : "Ghost"}/Default`;
-  if (mode === "selection-dropdown") return "Selection Dropdown/Default";
   if (mode === "split-dropdown") return `Split Dropdown Button/${iconOnly ? "Icon Only" : "Icon Text"}/Default`;
   return `Button/${buttonTypeName(variant)}/Default`;
 };
@@ -34,9 +38,9 @@ const logicalNameForButton = ({ mode = "text", variant = "primary", iconOnly = f
 const buttonContent = ({ label, iconName, mode = "text", size = "standard", includeChevron = false }) => {
   const iconMarkup = iconName ? `<span data-slot="icon">${icon(iconName)}</span>` : "";
   const labelMarkup = mode === "icon" ? "" : `<span data-slot="label" data-typography-role="${size === "small" ? "body-m" : "body-l"}">${escapeHtml(label)}</span>`;
-  // The chevron is a 16px control icon. Keep the SVG's data-icon-size in
-  // sync with its CSS box so the 1px outline rule is applied consistently.
-  const chevronMarkup = includeChevron ? `<span data-slot="trigger">${icon("navigation/chevron-down", "", { size: 16 })}</span>` : "";
+  // Button dropdown chevrons use the shared 20px medium icon rule. Keep the
+  // SVG's data-icon-size in sync with its CSS box and 1.25px outline weight.
+  const chevronMarkup = includeChevron ? `<span data-slot="trigger">${icon("navigation/chevron-down", "", { size: 20 })}</span>` : "";
   return `${iconMarkup}${labelMarkup}${chevronMarkup}`;
 };
 
@@ -55,17 +59,9 @@ const renderButton = ({
   const resolvedState = state ?? (disabled ? "disabled" : "default");
   const resolvedLogicalName = logicalName ?? logicalNameForButton({ mode, variant });
   const disabledAttr = disabled ? " disabled" : "";
-  const modeClass = mode === "icon" ? " tui-button--icon" : mode === "selection-dropdown" ? " tui-button--selection" : "";
+  const modeClass = mode === "icon" ? " tui-button--icon" : "";
   const typeAttrs = mode === "icon" ? ` aria-label="${escapeHtml(label)}"` : "";
-  const menuAttrs = mode === "selection-dropdown" ? ` aria-haspopup="menu" aria-expanded="false"` : "";
-  return `<button class="tui-component tui-button${modeClass}${className ? ` ${className}` : ""}" type="button" ${attrs("button", resolvedLogicalName, variant, resolvedState, ` data-mode="${mode}" data-size="${size}"`)}${typeAttrs}${menuAttrs}${extraAttrs}${disabledAttr}>${buttonContent({ label, iconName, mode, size, includeChevron: mode === "selection-dropdown" })}</button>`;
-};
-
-const renderSelectionDropdown = ({ label = "列表视图", variant = "secondary", disabled = false, menuItems = ["列表视图", "网格视图", "紧凑视图"] } = {}) => {
-  const state = disabled ? "disabled" : "default";
-  const trigger = renderButton({ label, variant, mode: "selection-dropdown", disabled, state });
-  const menu = menuItems.map((item) => `<button class="tui-button-dropdown__item" type="button" role="menuitem">${escapeHtml(item)}</button>`).join("");
-  return `<div class="tui-component tui-button-dropdown" data-component="button" data-logical-component="Selection Dropdown/Default" data-variant="${variant}" data-state="${state}" data-mode="selection-dropdown" data-framework="html">${trigger}<div class="tui-button-dropdown__menu" role="menu" hidden>${menu}</div></div>`;
+  return `<button class="tui-component tui-button${modeClass}${className ? ` ${className}` : ""}" type="button" ${attrs("button", resolvedLogicalName, variant, resolvedState, ` data-mode="${mode}" data-size="${size}"`)}${typeAttrs}${extraAttrs}${disabledAttr}>${buttonContent({ label, iconName, mode, size })}</button>`;
 };
 
 const renderSplitDropdown = ({ label = "导出文件", iconName = "action/download", disabled = false, iconOnly = false, menuItems = ["导出为 PDF", "复制分享链接", "发送到设备"] } = {}) => {
@@ -143,7 +139,7 @@ const normalizeTitlebarActions = (actions = [], actionOverflow = {}) => {
   };
 };
 
-const titlebarState = ({ label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout = "standalone", paneRole = "global", mainDetailActions = [], actionOverflow = {} } = {}) => {
+const titlebarState = ({ label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout = "standalone", paneRole = "global", mainDetailActions = [], actionOverflow = {}, logoSrc = defaultTitlebarLogoSrc, logoAlt = "" } = {}) => {
   const controlIconSize = size === "small" ? 16 : 24;
   const actionModel = normalizeTitlebarActions(mainDetailActions, actionOverflow);
   const paneActions = layout === "three-column" && paneRole === "final-pane" && mainDetailActions.length ? `<div class="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" data-action-overflow="${escapeHtml(actionModel.strategy)}" data-action-overflow-fit="${escapeHtml(actionModel.fit)}" data-action-mode="${actionModel.mode}"${actionModel.normalized ? ` data-mode-normalized="true"` : ""} aria-label="Main Detail 栏级操作">${actionModel.business.map((action) => {
@@ -162,17 +158,25 @@ const titlebarState = ({ label = "项目空间", paneTitle = "项目内容", siz
     });
   }).join("")}<button class="tui-component tui-button tui-button--icon tui-titlebar__pane-action tui-titlebar__overflow-trigger" type="button" ${attrs("button", "Icon Button/Ghost/Default", "ghost", disabled ? "disabled" : "default", ` data-mode="icon" data-size="standard" data-slot="main-detail-action" data-action="more" data-button-type="icon" data-overflow-trigger="true" data-overflow-item="false" aria-label="${escapeHtml(actionModel.trigger.label)}" aria-haspopup="menu" aria-expanded="false"`)}${disabled ? " disabled" : ""}>${buttonContent({ label: actionModel.trigger.label, iconName: actionModel.trigger.icon, mode: "icon", size: "standard" })}</button><div class="tui-titlebar__overflow-menu" role="menu" hidden>${actionModel.business.map((action) => `<button class="tui-titlebar__overflow-item" type="button" role="menuitem" data-overflow-menu-item="true" data-action="${escapeHtml(action.id)}"${disabled || action.disabled ? " disabled" : ""}>${icon(action.icon ?? "action/more", "", { size: 20 })}<span data-slot="label">${escapeHtml(action.label ?? action.id)}</span></button>`).join("")}</div></div>` : "";
   const paneTitleSlot = layout === "two-column" && paneRole === "final-pane" ? `<strong class="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">${escapeHtml(paneTitle)}</strong>` : "";
-  const brand = paneRole === "global" || paneRole === "primary-navigation" ? `<span class="tui-titlebar__brand" data-slot="leading">${icon("navigation/grid", "", { size: 24 })}<span data-slot="label" data-typography-role="subtitle-m">${escapeHtml(label)}</span></span>` : "";
-  const windowActions = paneRole === "global" || paneRole === "final-pane" ? `<div class="tui-titlebar__actions" data-slot="actions"><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="minimize" data-button-type="icon" aria-label="最小化"${disabled ? " disabled" : ""}>${icon("window/minimize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="maximize" data-button-type="icon" aria-label="最大化"${disabled ? " disabled" : ""}>${icon("window/maximize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="close" data-button-type="icon" aria-label="关闭"${disabled ? " disabled" : ""}>${icon("window/close", "", { size: controlIconSize })}</button></div>` : "";
+  const brand = paneRole === "global" || paneRole === "primary-navigation" ? `<span class="tui-titlebar__brand" data-slot="leading"><img class="tui-titlebar__logo" src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoAlt)}" aria-hidden="${logoAlt ? "false" : "true"}" /><span data-slot="label" data-typography-role="subtitle-m">${escapeHtml(label)}</span></span>` : "";
+  const windowActions = paneRole === "global" || paneRole === "final-pane" ? `<div class="tui-titlebar__actions" data-slot="actions" data-component="titlebar-controls" data-logical-component="Titlebar Controls/Normal" data-size="medium"><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="minimize" data-button-type="icon" aria-label="最小化"${disabled ? " disabled" : ""}>${icon("window/minimize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="maximize" data-button-type="icon" aria-label="最大化"${disabled ? " disabled" : ""}>${icon("window/maximize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="close" data-button-type="icon" aria-label="关闭"${disabled ? " disabled" : ""}>${icon("window/close", "", { size: controlIconSize })}</button></div>` : "";
   return `<header class="tui-component tui-titlebar" ${attrs("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state)} data-size="${escapeHtml(size)}" data-layout="${escapeHtml(layout)}" data-pane-role="${escapeHtml(paneRole)}">${brand}${paneTitleSlot}${paneActions}${windowActions}</header>`;
 };
 
 const textareaState = ({ surface = "white", state = "default", label = "项目说明", value = "统一 HarmonyOS PC 客户端中的布局、组件与交互规则。", disabled = false } = {}) => `<label class="tui-component tui-textarea" ${attrs("textarea", "Textarea/Default", "default", disabled ? "disabled" : state, ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><textarea data-slot="value" data-typography-role="body-l" rows="3" placeholder="请输入内容"${disabled ? " disabled" : ""}${state === "error" ? " aria-invalid=\"true\"" : ""}>${escapeHtml(value)}</textarea><span data-slot="help" data-typography-role="body-s">支持多行输入，最多 500 字</span></label>`;
 
 const fieldState = ({ surface = "white", state = "default", label = "项目名称", value = "客户端设计系统", disabled = false } = {}) => `<label class="tui-component tui-field" ${attrs("field", "Field/Default", "default", disabled ? "disabled" : state, ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><span class="tui-field__control"><input data-slot="value" data-typography-role="body-l" type="text" value="${escapeHtml(value)}"${disabled ? " disabled" : ""}${state === "error" ? " aria-invalid=\"true\"" : ""}/></span><span data-slot="help" data-typography-role="body-s">这是一个必填字段</span></label>`;
+const formFieldState = ({ surface = "white", control = "input", required = false, error = "", value = "客户端设计系统" } = {}) => {
+  const label = control === "select" ? "项目状态" : "项目名称";
+  const input = `<label class="tui-component tui-input" ${attrs("input", "Input/White Surface/Default", "default", error ? "error" : "default", ` data-surface="${surface}"`)}><input data-slot="value" data-typography-role="body-l" type="text" value="${escapeHtml(value)}" aria-label="${label}"${error ? " aria-invalid=\"true\"" : ""}/></label>`;
+  const select = `<div class="tui-component tui-select tui-form-field__select" ${attrs("select", "Select/Default", "default", error ? "error" : "default", ` data-surface="${surface}"`)}><button class="tui-select__trigger" type="button" aria-label="${label}" aria-haspopup="listbox" aria-expanded="false"><span data-slot="value" data-typography-role="body-m">进行中</span>${icon("navigation/chevron-down", "", { size: 16 })}</button><div class="tui-select__menu" role="listbox" aria-label="${label}" hidden><button type="button" role="option" aria-selected="true" data-typography-role="body-l">进行中</button><button type="button" role="option" aria-selected="false" data-typography-role="body-l">已完成</button></div></div>`;
+  return `<section class="tui-component tui-form-field" ${attrs("form-field", "Form Field/Default", control, error ? "error" : "default", ` data-surface="${surface}" data-required="${required}"`)}><span data-slot="label" data-typography-role="subtitle-s">${required ? '<span class="tui-form-field__required" aria-hidden="true">*</span>' : ""}${label}</span><div class="tui-form-field__control" data-slot="control">${control === "select" ? select : input}</div>${error ? `<span class="tui-form-field__error" data-slot="error" role="alert" data-typography-role="body-s">${escapeHtml(error)}</span>` : ""}</section>`;
+};
 
 const menuItems = ["进行中", "已完成", "已归档"];
 const selectState = ({ id = "select", label = "状态", value = "进行中", open = false, disabled = false, surface = "white" } = {}) => `<div class="tui-component tui-select" ${attrs(id, `${id === "combobox" ? "Combobox" : "Select"}/Default`, "default", disabled ? "disabled" : "default", ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><button class="tui-select__trigger" type="button" role="${id === "combobox" ? "combobox" : "button"}" aria-haspopup="listbox" aria-expanded="${open}"${disabled ? " disabled" : ""}><span data-slot="value" data-typography-role="body-m">${escapeHtml(value)}</span>${icon("navigation/chevron-down", "", { size: 16 })}</button><div class="tui-select__menu" role="listbox" hidden><button type="button" role="option" aria-selected="true" data-value="${escapeHtml(value)}" data-typography-role="body-l">${escapeHtml(value)}</button>${menuItems.filter((item) => item !== value).map((item) => `<button type="button" role="option" aria-selected="false" data-value="${escapeHtml(item)}" data-typography-role="body-l">${escapeHtml(item)}</button>`).join("")}</div></div>`;
+const comboboxMenuItems = ["思源黑体", "源然雅黑", "鸿蒙黑体", "宋体", "黑体"];
+const comboboxState = ({ label = "字体", value = "思源黑体", options = comboboxMenuItems, disabled = false, surface = "white" } = {}) => `<div class="tui-component tui-select tui-combobox" ${attrs("combobox", "Combobox/Default", "default", disabled ? "disabled" : "default", ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><div class="tui-select__trigger tui-combobox__trigger"><input class="tui-combobox__input" data-slot="value" data-typography-role="body-m" type="text" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="combobox-options" aria-autocomplete="list" autocomplete="off" data-filter-active="false" value="${escapeHtml(value)}"${disabled ? " disabled" : ""} /><span class="tui-combobox__chevron" aria-hidden="true">${icon("navigation/chevron-down", "", { size: 16 })}</span></div><div id="combobox-options" class="tui-select__menu" role="listbox" aria-label="${escapeHtml(label)}" hidden>${options.map((option, index) => `<button type="button" role="option" aria-selected="${index === 0}" data-value="${escapeHtml(option)}" data-typography-role="body-l">${escapeHtml(option)}</button>`).join("")}</div></div>`;
 
 const nativeSelectState = ({ label = "视图", value = "列表视图", disabled = false, surface = "white" } = {}) => `<label class="tui-component tui-native-select" ${attrs("native-select", "Native Select/Default", "default", disabled ? "disabled" : "default", ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><span class="tui-native-select__control"><select data-slot="value" data-typography-role="body-m"${disabled ? " disabled" : ""}><option${value === "列表视图" ? " selected" : ""}>列表视图</option><option${value === "网格视图" ? " selected" : ""}>网格视图</option><option${value === "紧凑视图" ? " selected" : ""}>紧凑视图</option></select>${icon("navigation/chevron-down", "", { size: 16 })}</span></label>`;
 
@@ -181,14 +185,30 @@ const checkboxState = ({ checked = true, disabled = false, label = "同步到云
 const radioState = ({ checked = false, disabled = false, label = "邮件", name = "runtime-radio", value = "邮件", ariaLabel } = {}) => `<label class="tui-component tui-choice tui-radio" ${attrs("radio", "Radio/Unselected/Default", checked ? "selected" : "unselected", disabled ? "disabled" : checked ? "selected" : "default")}${ariaLabel ? ` aria-label="${escapeHtml(ariaLabel)}"` : ""}><input type="radio" name="${escapeHtml(name)}" value="${escapeHtml(value)}"${checked ? " checked" : ""}${disabled ? " disabled" : ""}/><span class="tui-radio__indicator" data-slot="control" aria-hidden="true"></span>${label ? `<span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span>` : ""}</label>`;
 const radioGroupState = ({ value = "邮件" } = {}) => `<fieldset class="tui-component tui-choice tui-radio-group" ${attrs("radio-group", "Radio Group/Default", "default", "default")}><legend data-slot="label" data-typography-role="body-m">通知方式</legend><label><input type="radio" name="runtime-radio" value="邮件"${value === "邮件" ? " checked" : ""}/><span class="tui-radio__indicator" aria-hidden="true"></span><span data-typography-role="body-m">邮件</span></label><label><input type="radio" name="runtime-radio" value="站内消息"${value === "站内消息" ? " checked" : ""}/><span class="tui-radio__indicator" aria-hidden="true"></span><span data-typography-role="body-m">站内消息</span></label></fieldset>`;
 const switchState = ({ checked = true, disabled = false } = {}) => `<label class="tui-component tui-choice tui-switch" ${attrs("switch", "Switch/Default", "default", disabled ? "disabled" : checked ? "selected" : "default")}><input type="checkbox" role="switch"${checked ? " checked" : ""}${disabled ? " disabled" : ""}/><span class="tui-switch__track" aria-hidden="true"></span><span data-slot="label" data-typography-role="body-m">自动同步</span><span data-slot="description" data-typography-role="body-m">已开启</span></label>`;
-const tabsState = () => `<div class="tui-component tui-tabs" ${attrs("tabs", "Tabs/Default", "default", "default")}><div class="tui-tabs__list" role="tablist" aria-label="项目视图"><button type="button" role="tab" aria-selected="true" class="is-selected" data-tab="overview" data-typography-role="body-m">概览</button><button type="button" role="tab" aria-selected="false" data-tab="projects" data-typography-role="body-m">项目</button><button type="button" role="tab" aria-selected="false" data-tab="members" data-typography-role="body-m">成员</button></div><div class="tui-tabs__panel" role="tabpanel" data-tab-panel="overview" data-typography-role="body-l">工作空间概览</div></div>`;
-const disclosureState = (id, title, detail) => {
-  const contentId = `${id}-content`;
+const segmentedButtonState = ({ label = "视图模式", options = ["列表", "看板", "时间线"], value = options[0], disabled = false } = {}) => `<div class="tui-component tui-segmented-button" ${attrs("segmented-button", "Segmented Button/Default", "default", disabled ? "disabled" : "default")} role="group" aria-label="${escapeHtml(label)}">${options.map((option) => `<button type="button" class="tui-segmented-button__item${option === value ? " is-selected" : ""}" aria-pressed="${option === value}" data-value="${escapeHtml(option)}" data-slot="option" data-typography-role="body-m"${disabled ? " disabled" : ""}>${escapeHtml(option)}</button>`).join("")}</div>`;
+const numberSelectorState = ({ label = "数量", value = 1, min = 0, max = 99, step = 1, disabled = false } = {}) => `<label class="tui-component tui-number-selector" ${attrs("number-selector", "Number Selector/Default", "default", disabled ? "disabled" : "default")}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><span class="tui-number-selector__control"><input type="number" data-slot="value" data-typography-role="body-l" value="${Number(value)}" min="${Number(min)}" max="${Number(max)}" step="${Number(step)}"${disabled ? " disabled" : ""}/><span class="tui-number-selector__stepper" aria-label="调整${escapeHtml(label)}"><button type="button" class="tui-number-selector__step" data-slot="increment" data-direction="increment" aria-label="增加${escapeHtml(label)}"${disabled ? " disabled" : ""}>${icon("navigation/chevron-up", "", { size: 16 })}</button><button type="button" class="tui-number-selector__step" data-slot="decrement" data-direction="decrement" aria-label="减少${escapeHtml(label)}"${disabled ? " disabled" : ""}>${icon("navigation/chevron-down", "", { size: 16 })}</button></span></span></label>`;
+const tabsState = () => `<div class="tui-component tui-tabs" ${attrs("tabs", "Tabs/Default", "default", "default")}><div class="tui-tabs__list" role="tablist" aria-label="项目视图"><button type="button" role="tab" aria-selected="true" class="is-selected" data-tab="overview" data-typography-role="body-l">概览</button><button type="button" role="tab" aria-selected="false" data-tab="projects" data-typography-role="body-l">项目</button><button type="button" role="tab" aria-selected="false" data-tab="members" data-typography-role="body-l">成员</button></div><div class="tui-tabs__panel" role="tabpanel" data-tab-panel="overview" data-typography-role="body-l">工作空间概览</div></div>`;
+const subTabsState = () => `<div class="tui-component tui-sub-tabs" ${attrs("sub-tabs", "Sub Tabs/Default", "default", "default")}><div class="tui-sub-tabs__list" role="tablist" aria-label="子页签"><button type="button" role="tab" id="sub-tab-overview" aria-controls="sub-tabs-panel" aria-selected="true" tabindex="0" class="is-selected" data-tab="overview" data-typography-role="subtitle-m">概览</button><button type="button" role="tab" id="sub-tab-activity" aria-controls="sub-tabs-panel" aria-selected="false" tabindex="-1" data-tab="activity" data-typography-role="body-l">活动</button><button type="button" role="tab" id="sub-tab-settings" aria-controls="sub-tabs-panel" aria-selected="false" tabindex="-1" data-tab="settings" data-typography-role="body-l">设置</button></div><div class="tui-sub-tabs__panel" id="sub-tabs-panel" role="tabpanel" aria-labelledby="sub-tab-overview" data-tab-panel="overview" data-slot="content" data-typography-role="body-l">项目概览</div></div>`;
+const treeViewNodes = [
+  { id: "workspace", label: "工作空间", trailing: "24", children: [{ id: "projects", label: "项目", trailing: "12", children: [{ id: "design-system", label: "设计系统" }, { id: "component-library", label: "组件库" }] }, { id: "members", label: "成员", trailing: "8" }] },
+  { id: "archive", label: "归档" }
+];
+const treeViewItem = (node, depth = 1, expanded = true, selected = false) => {
+  const hasChildren = Boolean(node.children?.length);
+  const childMarkup = hasChildren ? `<ul class="tui-tree-view__group" role="group"${expanded ? "" : " hidden"}>${node.children.map((child) => treeViewItem(child, depth + 1, child.id === "projects" || child.id === "design-system", child.id === "design-system")).join("")}</ul>` : "";
+  const trailingMarkup = node.trailing ? `<span class="tui-tree-view__trailing" data-slot="trailing" data-typography-role="body-m">${escapeHtml(node.trailing)}</span>` : "";
+  return `<li class="tui-tree-view__node" data-node-id="${escapeHtml(node.id)}"><button type="button" role="treeitem" class="tui-tree-view__item${selected ? " is-selected" : ""}" data-tree-toggle="${hasChildren ? "true" : "false"}" data-node-id="${escapeHtml(node.id)}" style="--tree-indent:${Math.max(0, depth - 1) * 12}px" aria-level="${depth}" aria-selected="${selected ? "true" : "false"}"${hasChildren ? ` aria-expanded="${expanded ? "true" : "false"}"` : ""}><span class="tui-tree-view__chevron${hasChildren ? " has-children" : ""}${expanded ? " is-expanded" : ""}" aria-hidden="true">${hasChildren ? icon("navigation/chevron-right", "", { size: 20 }) : ""}</span><span class="tui-tree-view__icon" data-slot="leading" aria-hidden="true">${icon(hasChildren ? "navigation/grid" : "object/file", "", { size: 20 })}</span><span class="tui-tree-view__label" data-slot="label" data-typography-role="body-l">${escapeHtml(node.label)}</span>${trailingMarkup}</button>${childMarkup}</li>`;
+};
+const treeViewState = () => `<nav class="tui-component tui-tree-view" ${attrs("tree-view", "Tree View/Default", "default", "default")} aria-label="项目结构" role="tree"><ul class="tui-tree-view__nodes" role="group">${treeViewNodes.map((node) => treeViewItem(node, 1, node.id === "workspace", node.id === "design-system")).join("")}</ul></nav>`;
+const disclosureState = (id, { title = "更多信息", detail = "点击展开查看详情", content, expanded = false, contentId = `${id}-content` } = {}) => {
   const isAccordion = id === "accordion";
   const triggerContent = isAccordion
-    ? `${icon("navigation/chevron-right", "", { size: 20 })}<span data-slot="label" data-typography-role="body-l">${escapeHtml(title)}</span>`
-    : `<span data-slot="label" data-typography-role="body-l">${escapeHtml(title)}</span>${icon("navigation/chevron-down", "", { size: 20 })}`;
-  return `<div class="tui-component tui-disclosure" ${attrs(id, `${isAccordion ? "Accordion" : "Collapsible"}/Default`, "default", "default")}><button class="tui-disclosure__trigger" type="button" aria-expanded="false" aria-controls="${contentId}" data-typography-role="body-l">${triggerContent}</button><div class="tui-disclosure__content" id="${contentId}" data-slot="content" hidden data-typography-role="body-l">${escapeHtml(detail)}</div></div>`;
+    ? `${icon("navigation/chevron-right", "", { size: 20 })}<span data-slot="label" data-typography-role="body-m">${escapeHtml(title)}</span>`
+    : `<span data-slot="label" data-typography-role="body-m">${escapeHtml(title)}</span>${icon("navigation/chevron-down", "", { size: 20 })}`;
+  const isExpanded = Boolean(expanded);
+  const contentMarkup = content === undefined ? escapeHtml(detail) : slot(content);
+  const variant = isExpanded ? "open" : "default";
+  return `<div class="tui-component tui-disclosure" ${attrs(id, `${isAccordion ? "Accordion" : "Collapsible"}/Default`, variant, isExpanded ? "open" : "default")}><button class="tui-disclosure__trigger" type="button" aria-expanded="${isExpanded}" aria-controls="${escapeHtml(contentId)}" data-typography-role="body-m">${triggerContent}</button><div class="tui-disclosure__content" id="${escapeHtml(contentId)}" data-slot="content"${isExpanded ? "" : " hidden"} data-typography-role="body-l">${contentMarkup}</div></div>`;
 };
 const avatarState = ({ initials = "H", name = "HarmonyOS", size = 40 } = {}) => {
   const resolvedSize = Number(size) === 32 ? 32 : 40;
@@ -196,7 +216,6 @@ const avatarState = ({ initials = "H", name = "HarmonyOS", size = 40 } = {}) => 
 };
 const badgeState = ({ label = "进行中", tone = "info" } = {}) => `<span class="tui-component tui-badge tui-badge--${escapeHtml(tone)}" ${attrs("badge", "Badge/Default", tone, "default")} data-typography-role="body-s">${escapeHtml(label)}</span>`;
 const badgeSpecimens = () => `<div class="tui-badge-group" aria-label="Badge 颜色示例">${badgeState({ label: "进行中", tone: "info" })}${badgeState({ label: "已完成", tone: "success" })}${badgeState({ label: "待处理", tone: "warning" })}${badgeState({ label: "错误", tone: "danger" })}${badgeState({ label: "未开始", tone: "neutral" })}</div>`;
-const cardState = ({ title = "工作空间", description = "最近更新的项目与协作动态" } = {}) => `<article class="tui-component tui-card" ${attrs("card", "Card/Default", "default", "default")}><div class="tui-card__body"><h4 data-slot="title" data-typography-role="title-s">${escapeHtml(title)}</h4><p data-slot="content" data-typography-role="body-l">${escapeHtml(description)}</p><span data-slot="description" data-typography-role="body-m">本周新增 3 个项目</span></div></article>`;
 const itemTrailing = (type = "text-arrow", value = "详情") => {
   if (type === "icon") return `<span class="tui-item__trailing tui-item__trailing--icon" data-slot="trailing">${icon("action/more", "", { size: 20 })}</span>`;
   if (type === "radio") return `<label class="tui-item__trailing tui-choice" data-slot="trailing" aria-label="已选中"><input type="radio" checked/><span class="tui-radio__indicator" aria-hidden="true"></span></label>`;
@@ -205,7 +224,7 @@ const itemTrailing = (type = "text-arrow", value = "详情") => {
   if (type === "notification-arrow") return `<span class="tui-item__trailing tui-item__trailing--notification-arrow" data-slot="trailing"><span class="tui-item__notification-dot" aria-label="有新事件"></span>${icon("navigation/chevron-right", "", { size: 20 })}</span>`;
   return `<span class="tui-item__trailing tui-item__trailing--text-arrow" data-slot="trailing" data-typography-role="body-m"><span>${escapeHtml(value)}</span>${icon("navigation/chevron-right", "", { size: 20 })}</span>`;
 };
-const itemState = ({ title = "HarmonyOS 组件规范", description = "", supporting = "", lines = description ? supporting ? 3 : 2 : 1, leadingIcon = "navigation/grid", trailing = "text-arrow", trailingText = "详情", id = "item", logicalName = "Item/Default", leading, titleSlot, descriptionSlot, supportingSlot, content, trailingSlot, actions, selected = false, disabled = false } = {}) => {
+const itemState = ({ title = "HarmonyOS 组件规范", description = "", supporting = "", lines = description ? supporting ? 3 : 2 : 1, leadingIcon = "navigation/grid", trailing = "text-arrow", trailingText = "详情", id = "list-card", logicalName = "List Item/White Surface/Default", leading, titleSlot, descriptionSlot, supportingSlot, content, trailingSlot, actions, selected = false, disabled = false } = {}) => {
   const state = disabled ? "disabled" : selected ? "selected" : "default";
   const leadingMarkup = slot(leading, `<span class="tui-item__leading" data-slot="leading">${icon(leadingIcon, "", { size: 24 })}</span>`);
   const titleMarkup = slot(titleSlot, escapeHtml(title));
@@ -261,18 +280,38 @@ const listCardState = (options = {}) => {
 };
 const tableState = (id = "table") => `<div class="tui-component tui-table" ${attrs(id, `${id === "data-table" ? "Data Table" : "Table"}/Default`, "default", "default")}><div class="tui-table__heading"><h4 data-slot="title" data-typography-role="title-s">项目列表</h4><span data-slot="description" data-typography-role="body-m">3 个项目</span></div><table><thead><tr><th data-typography-role="body-m">名称</th><th data-typography-role="body-m">负责人</th><th data-typography-role="body-m">状态</th></tr></thead><tbody><tr><td data-typography-role="body-l">客户端设计系统</td><td data-typography-role="body-l">赵博海</td><td data-typography-role="body-l"><span class="tui-badge tui-badge--info" data-typography-role="body-s">进行中</span></td></tr><tr><td data-typography-role="body-l">组件规范</td><td data-typography-role="body-l">林晓</td><td data-typography-role="body-l"><span class="tui-badge tui-badge--success" data-typography-role="body-s">已完成</span></td></tr></tbody></table></div>`;
 const paginationState = () => `<nav class="tui-component tui-pagination" ${attrs("pagination", "Pagination/Default", "default", "default")} aria-label="分页"><button class="tui-icon-button" type="button" data-page="prev" aria-label="上一页">${icon("navigation/back", "", { size: 20 })}</button><button type="button" data-page="1" aria-current="page" data-typography-role="body-l">1</button><button type="button" data-page="2" data-typography-role="body-l">2</button><button type="button" data-page="3" data-typography-role="body-l">3</button><button class="tui-icon-button" type="button" data-page="next" aria-label="下一页">${icon("navigation/forward", "", { size: 20 })}</button></nav>`;
-const breadcrumbState = () => `<nav class="tui-component tui-breadcrumb" ${attrs("breadcrumb", "Breadcrumb/Default", "default", "default")} aria-label="面包屑"><a href="#" data-typography-role="body-l">工作空间</a><span aria-hidden="true">/</span><a href="#" data-typography-role="body-l">项目</a><span aria-hidden="true">/</span><span aria-current="page" data-typography-role="subtitle-m">设置</span></nav>`;
-const progressState = ({ value = 68, label = "完成度" } = {}) => `<div class="tui-component tui-progress" ${attrs("progress", "Progress/Default", "default", "default")} role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${value}" style="--progress-value:${Math.min(100, Math.max(0, Number(value)))}%"><span class="tui-progress__label" data-typography-role="body-s">${escapeHtml(label)} · ${value}%</span><div class="tui-progress__track"><span class="tui-progress__value"></span></div></div>`;
+const breadcrumbState = () => `<nav class="tui-component tui-breadcrumb" ${attrs("breadcrumb", "Breadcrumb/Default", "default", "default")} aria-label="面包屑"><a href="#" data-typography-role="body-l">工作空间</a><span class="tui-breadcrumb__separator" aria-hidden="true">${icon("navigation/chevron-right", "", { size: 20 })}</span><a href="#" data-typography-role="body-l">项目</a><span class="tui-breadcrumb__separator" aria-hidden="true">${icon("navigation/chevron-right", "", { size: 20 })}</span><span aria-current="page" data-typography-role="subtitle-m">设置</span></nav>`;
+const progressState = ({ value = 68, label = null } = {}) => `<div class="tui-component tui-progress" ${attrs("progress", "Progress/Default", "default", "default")} role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${value}" style="--progress-value:${Math.min(100, Math.max(0, Number(value)))}%">${label ? `<span class="tui-progress__label" data-typography-role="body-s">${escapeHtml(label)} · ${value}%</span>` : ""}<div class="tui-progress__track"><span class="tui-progress__value"></span></div></div>`;
 const emptyState = ({ title = "暂无项目", description = "创建项目后会显示在这里。" } = {}) => `<section class="tui-component tui-empty" ${attrs("empty", "Empty/Default", "default", "default")} aria-live="polite"><h4 data-slot="title" data-typography-role="title-s">${escapeHtml(title)}</h4><p data-slot="description" data-typography-role="body-m">${escapeHtml(description)}</p><button class="tui-button tui-empty__action" type="button" data-variant="primary" data-typography-role="body-l">新建项目</button></section>`;
-const separatorState = () => `<hr class="tui-component tui-separator" ${attrs("separator", "Separator/Default", "default", "default")} role="separator" />`;
-const labelState = ({ text = "项目名称", forId = "project-name" } = {}) => `<label class="tui-component tui-label" ${attrs("label", "Label/Default", "default", "default")} for="${escapeHtml(forId)}" data-typography-role="body-m">${escapeHtml(text)}</label>`;
-const feedbackIcon = (id, tone) => id === "toast" && tone === "success" ? "action/check" : ({ info: "status/info", success: "status/success", warning: "status/warning", danger: "status/danger", neutral: "status/neutral" }[tone] ?? "status/info");
+const labelState = ({ text = "邮箱", forId = "project-name" } = {}) => `<label class="tui-component tui-label" ${attrs("label", "Label/Default", "default", "default")} for="${escapeHtml(forId)}" data-typography-role="body-m">${escapeHtml(text)}</label>`;
+const feedbackIcon = (id, tone) => ({ info: "status/info", success: "status/success", warning: "status/warning", danger: "status/danger", neutral: "status/neutral" }[tone] ?? "status/info");
 const feedbackRole = (id, tone) => id === "alert" && (tone === "warning" || tone === "danger") ? "alert" : "status";
-const feedbackState = (id, tone, title, message) => `<div class="tui-component tui-${id} tui-${id}--${tone}" ${attrs(id, `${id[0].toUpperCase()}${id.slice(1)}/Default`, tone, "default")} role="${feedbackRole(id, tone)}"><span class="tui-${id}__icon">${icon(feedbackIcon(id, tone), "", { size: 20 })}</span><span class="tui-${id}__message" data-slot="content" data-typography-role="${id === "toast" ? "body-m" : "subtitle-s"}">${escapeHtml(message ?? title)}</span>${id === "alert" ? `<span class="tui-alert__actions" data-slot="actions"><button class="tui-button tui-button--ghost tui-alert__action" type="button" data-slot="action" data-variant="ghost" data-size="small" data-typography-role="body-m">${escapeHtml(title)}</button><button class="tui-icon-button" data-slot="close" type="button" aria-label="关闭">${icon("action/close", "", { size: 20 })}</button></span>` : `<button class="tui-icon-button" data-slot="close" type="button" aria-label="关闭">${icon("action/close", "", { size: 20 })}</button>`}</div>`;
+const feedbackState = (id, tone, title, message) => `<div class="tui-component tui-${id} tui-${id}--${tone}" ${attrs(id, `${id[0].toUpperCase()}${id.slice(1)}/Default`, tone, "default")} role="${feedbackRole(id, tone)}"><span class="tui-${id}__icon">${icon(feedbackIcon(id, tone), "", { size: 20 })}</span><span class="tui-${id}__message" data-slot="content" data-typography-role="${id === "toast" ? "body-m" : "subtitle-s"}">${escapeHtml(message ?? title)}</span>${id === "alert" ? `<span class="tui-alert__actions" data-slot="actions"><button class="tui-button tui-button--ghost tui-alert__action" type="button" data-slot="action" data-variant="ghost" data-mode="text" data-size="small" data-button-type="small-ghost" data-typography-role="body-m">${escapeHtml(title)}</button><button class="tui-icon-button" data-slot="close" type="button" aria-label="关闭">${icon("action/close", "", { size: 20 })}</button></span>` : `<button class="tui-icon-button" data-slot="close" type="button" aria-label="关闭">${icon("action/close", "", { size: 20 })}</button>`}</div>`;
 const alertState = ({ tone = "info", title = "查看详情", message = "系统将在今晚自动完成更新。" } = {}) => feedbackState("alert", tone, title, message);
 const alertRuntimeState = ({ specimens = [] } = {}) => `<div class="tui-feedback-specimens" data-runtime-component="alert">${specimens.map((specimen) => `<div class="tui-feedback-specimen" data-specimen="${escapeHtml(specimen.id ?? specimen.variant)}"><span class="tui-runtime-surface-label">${escapeHtml(specimen.label ?? specimen.variant)}</span>${alertState({ tone: specimen.variant, title: specimen.action, message: specimen.message })}</div>`).join("")}</div>`;
 const tooltipState = () => `<div class="tui-component tui-tooltip" ${attrs("tooltip", "Tooltip/Default", "default", "default")}><button class="tui-button tui-button--ghost" type="button" data-variant="ghost" data-typography-role="body-l">刷新列表</button><span class="tui-tooltip__panel" role="tooltip" data-slot="content" data-typography-role="body-l">刷新列表</span></div>`;
-const toastState = () => feedbackState("toast", "success", "", "所有修改已经同步到云端。");
+const snackbarState = ({ title, message, subtitle = "", action = null, actionLabel = "文本按钮", leftArea, closable = true } = {}) => {
+  const resolvedTitle = title ?? message ?? "Title";
+  const titleSubtitle = Boolean(subtitle);
+  const resolvedLeftArea = titleSubtitle ? "2" : String(leftArea ?? "1");
+  const variant = titleSubtitle ? "title-subtitle" : "title-only";
+  const actionMarkup = action != null
+    ? action
+    : actionLabel
+      ? `<button class="tui-button tui-button--ghost tui-snackbar__action" type="button" data-variant="ghost" data-size="small" data-typography-role="body-m">${escapeHtml(actionLabel)}</button>`
+      : "";
+  return `<div class="tui-component tui-snackbar" ${attrs("snackbar", "Snackbar/Default", variant, "default", ` data-left-area="${escapeHtml(resolvedLeftArea)}"`)} role="status"><span class="tui-snackbar__main"><span class="tui-snackbar__leading" data-slot="leading">${icon("status/info", "", { size: 24 })}</span><span class="tui-snackbar__content"><span class="tui-snackbar__title" data-slot="title" data-typography-role="subtitle-s">${escapeHtml(resolvedTitle)}</span>${titleSubtitle ? `<span class="tui-snackbar__subtitle" data-slot="subtitle" data-typography-role="body-s">${escapeHtml(subtitle)}</span>` : ""}</span></span><span class="tui-snackbar__actions">${actionMarkup ? `<span class="tui-snackbar__action-slot" data-slot="action">${actionMarkup}</span>` : ""}${closable ? `<button class="tui-icon-button tui-snackbar__close" data-slot="close" type="button" aria-label="关闭">${icon("action/close", "", { size: 20 })}</button>` : ""}</span></div>`;
+};
+const snackbarRuntimeState = ({ specimens = [] } = {}) => `<div class="tui-feedback-specimens" data-runtime-component="snackbar">${(specimens.length ? specimens : [{ id: "title-only", leftArea: "1" }, { id: "title-subtitle", leftArea: "2" }]).map((specimen) => {
+  const titleSubtitle = specimen.leftArea === "2" || specimen.variant === "title-subtitle";
+  return `<div class="tui-feedback-specimen" data-specimen="${escapeHtml(specimen.id ?? specimen.variant)}"><span class="tui-runtime-surface-label">${titleSubtitle ? "Title + Subtitle" : "Title"}</span>${snackbarState({ title: "Title", subtitle: titleSubtitle ? "Subtitle" : "", actionLabel: "文本按钮", leftArea: specimen.leftArea })}</div>`;
+}).join("")}</div>`;
+const chipsState = ({ label = "操作块", iconName = "action/mark-important", closable = true, disabled = false, state = "default" } = {}) => {
+  const resolvedState = disabled ? "disabled" : state;
+  const variant = `${iconName ? "with-icon" : "text-only"}${closable ? "-closable" : ""}`;
+  return `<span class="tui-component tui-chip" ${attrs("chips", "Chips/Default", variant, resolvedState)}${closable ? "" : " data-close=\"false\""}${disabled ? " aria-disabled=\"true\"" : ""}><span class="tui-chip__leading" data-slot="leading">${iconName ? icon(iconName, "", { size: 16 }) : ""}</span><span class="tui-chip__label" data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span>${closable ? `<button class="tui-chip__close" data-slot="close" type="button" aria-label="移除 ${escapeHtml(label)}"${disabled ? " disabled" : ""}>${icon("action/close", "", { size: 16 })}</button>` : ""}</span>`;
+};
+const chipsRuntimeState = () => `<div class="tui-runtime-chips-gallery" data-runtime-component="chips">${chipsState()}</div>`;
 
 const stateLabel = (state) => ({ default: "Default", hover: "Hover", pressed: "Pressed", focus: "Focus", filled: "Filled", disabled: "Disabled", error: "Error" }[state] ?? state);
 
@@ -307,13 +346,20 @@ export function renderRuntimeHtmlComponent(id, options = {}) {
   if (id === "button") {
     const sample = (specimen) => {
       const mode = specimen.mode ?? "text";
-      if (mode === "selection-dropdown") return renderSelectionDropdown({ variant: specimen.variant ?? "secondary" });
-      if (mode === "split-dropdown") return renderSplitDropdown({ iconOnly: false });
+      if (mode === "split-dropdown") {
+        const iconOnly = specimen.iconOnly === true;
+        return renderSplitDropdown({
+          iconOnly,
+          label: iconOnly ? "刷新" : "导出文件",
+          iconName: iconOnly ? "action/refresh" : "action/download",
+          menuItems: iconOnly ? ["重新加载", "同步数据", "清理缓存并刷新"] : undefined
+        });
+      }
       const variant = specimen.variant ?? "primary";
       const label = mode === "icon" ? "更多操作" : variant === "danger" ? "删除项目" : variant === "secondary" ? "次要操作" : variant === "ghost" ? "文本操作" : "确认操作";
       return renderButton({ label, variant, size: specimen.size ?? "standard", mode, iconName: mode === "icon-text" ? "action/add" : mode === "icon" ? "action/more" : undefined });
     };
-    return `<div class="tui-runtime-structural-grid" data-runtime-component="button">${specimens.map((specimen) => `<div class="tui-runtime-structural-cell" data-specimen="${escapeHtml(specimen.id)}"><span class="tui-runtime-surface-label">${escapeHtml(specimen.id)}</span>${sample(specimen)}</div>`).join("")}</div>`;
+    return `<div class="tui-runtime-structural-grid tui-runtime-structural-grid--button" data-runtime-component="button">${specimens.map((specimen) => `<div class="tui-runtime-structural-cell" data-specimen="${escapeHtml(specimen.id)}"><span class="tui-runtime-surface-label">${escapeHtml(specimen.id)}</span>${sample(specimen)}</div>`).join("")}</div>`;
   }
   if (id === "input") return `<div class="tui-runtime-surface-pair"><div data-surface-context="white"><span class="tui-runtime-surface-label">白色内容面 · 灰色输入面</span>${inputState({ surface: "white", state: "default", placeholder: "项目名称" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">灰色内容面 · 白色输入面</span>${inputState({ surface: "gray", state: "default", placeholder: "项目名称" })}</div></div>`;
   if (id === "search") return `<div class="tui-runtime-surface-pair"><div data-surface-context="white"><span class="tui-runtime-surface-label">白色内容面 · 灰色搜索面 · 高级搜索槽位</span>${searchState({ surface: "white", state: "default", placeholder: "搜索项目", advancedSearch: true })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">灰色内容面 · 白色搜索面 · 高级搜索槽位</span>${searchState({ surface: "gray", state: "default", placeholder: "搜索项目", advancedSearch: true })}</div></div>`;
@@ -326,7 +372,7 @@ export function renderRuntimeHtmlComponent(id, options = {}) {
     const listItem = (options) => itemState({ id: "list-card", logicalName: "List Item/White Surface/Default", ...options });
     return `<div class="tui-list-card-group" role="list">${listItem({ title: "项目设置", lines: 1, trailing: "text-arrow", trailingText: "详情" })}${listItem({ title: "成员权限", description: "管理角色和访问范围", lines: 2, trailing: "icon" })}${listItem({ title: "通知方式", description: "邮件通知", supporting: "已同步到云端", lines: 3, trailing: "radio" })}${listItem({ title: "自动同步", lines: 1, trailing: "switch" })}${listItem({ title: "项目归档", lines: 1, trailing: "checkbox" })}${listItem({ title: "更新动态", lines: 1, trailing: "notification-arrow" })}</div>`;
   }
-  if (id === "titlebar") return `<div class="tui-runtime-titlebar-gallery"><div class="tui-runtime-titlebar-layouts"><div><span class="tui-runtime-surface-label">两栏 · 左侧品牌 / 右侧标题与窗口控制</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two">${titlebarState({ layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" })}${titlebarState({ layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large" })}</div></div><div><span class="tui-runtime-surface-label">三栏 · Main Detail 操作统一为 Icon Text；更多固定为 Icon Button</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three">${titlebarState({ layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" })}${titlebarState({ layout: "three-column", paneRole: "secondary-pane", size: "large" })}${titlebarState({ layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "reply", label: "回复", icon: "action/reply", buttonType: "icon-text-ghost" }, { id: "reply-all", label: "回复全部", icon: "action/reply-all", buttonType: "icon-text-ghost" }, { id: "forward", label: "转发", icon: "action/forward", buttonType: "icon-text-ghost" }, { id: "save", label: "保存", icon: "action/save", buttonType: "icon-text-ghost" }, { id: "more", label: "更多操作", icon: "action/more", buttonType: "icon" }] })}</div></div></div></div>${[
+  if (id === "titlebar") return `<div class="tui-runtime-titlebar-gallery"><div class="tui-runtime-titlebar-layouts"><div><span class="tui-runtime-surface-label">两栏 · 左侧品牌 / 右侧标题与窗口控制</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two">${titlebarState({ layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" })}${titlebarState({ layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large" })}</div></div><div><span class="tui-runtime-surface-label">三栏 · Main Detail 操作统一为 Icon Text；更多固定为 Icon Button</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three">${titlebarState({ layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" })}${titlebarState({ layout: "three-column", paneRole: "secondary-pane", size: "large" })}${titlebarState({ layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "reply", label: "回复", icon: "action/reply", buttonType: "icon-text-ghost" }, { id: "reply-all", label: "回复全部", icon: "action/reply-all", buttonType: "icon-text-ghost" }, { id: "forward", label: "转发", icon: "action/forward", buttonType: "icon-text-ghost" }, { id: "save", label: "保存", icon: "action/save", buttonType: "icon-text-ghost" }, { id: "more", label: "更多操作", icon: "action/more", buttonType: "icon" }] })}</div></div></div>${[
     ["small", "S · 40px"],
     ["medium", "M · 56px"],
     ["large", "L · 64px"],
@@ -334,31 +380,35 @@ export function renderRuntimeHtmlComponent(id, options = {}) {
   ].map(([size, label]) => `<div class="tui-runtime-titlebar-row"><span class="tui-runtime-surface-label">${label}</span>${titlebarState({ label: "项目空间", size })}${titlebarState({ label: "项目空间", size, state: "unfocus" })}</div>`).join("")}</div>`;
   if (id === "textarea") return `<div class="tui-runtime-surface-pair tui-runtime-textarea-pair"><div data-surface-context="white"><span class="tui-runtime-surface-label">白色内容面 · 灰色输入面</span>${textareaState({ surface: "white" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">灰色内容面 · 白色输入面</span>${textareaState({ surface: "gray" })}</div></div>`;
   if (id === "field") return fieldState({ surface: "white" });
+  if (id === "form-field") return `<div class="tui-runtime-form-field-states"><div data-surface-context="white"><span class="tui-runtime-surface-label">默认 · 白色内容面 / 灰色输入面</span>${formFieldState({ surface: "white", control: "input" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">默认 · 灰色内容面 / 白色输入面</span>${formFieldState({ surface: "gray", control: "input" })}</div><div data-surface-context="white"><span class="tui-runtime-surface-label">必填 · 白色内容面 / 灰色选择面</span>${formFieldState({ surface: "white", control: "select", required: true })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">必填 · 灰色内容面 / 白色选择面</span>${formFieldState({ surface: "gray", control: "select", required: true })}</div><div data-surface-context="white"><span class="tui-runtime-surface-label">错误 · 白色内容面 / 灰色输入面</span>${formFieldState({ surface: "white", control: "input", error: "项目名称不能为空", value: "" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">错误 · 灰色内容面 / 白色输入面</span>${formFieldState({ surface: "gray", control: "input", error: "项目名称不能为空", value: "" })}</div></div>`;
   if (id === "select") return `<div class="tui-runtime-surface-pair"><div data-surface-context="white"><span class="tui-runtime-surface-label">白色内容面 · 灰色选择面</span>${selectState({ id: "select", surface: "white" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">灰色内容面 · 白色选择面</span>${selectState({ id: "select", surface: "gray" })}</div></div>`;
-  if (id === "combobox") return selectState({ id: "combobox", label: "负责人", value: "选择成员" });
+  if (id === "combobox") return comboboxState();
   if (id === "native-select") return nativeSelectState();
   if (id === "checkbox") return checkboxState();
   if (id === "radio") return `<div class="tui-runtime-structural-grid" data-runtime-component="radio">${radioState({ checked: false, label: "未选中", value: "unselected" })}${radioState({ checked: true, label: "已选中", value: "selected" })}</div>`;
   if (id === "radio-group") return radioGroupState();
   if (id === "switch") return switchState();
+  if (id === "segmented-button") return segmentedButtonState();
+  if (id === "number-selector") return numberSelectorState();
   if (id === "tabs") return tabsState();
+  if (id === "sub-tabs") return subTabsState();
+  if (id === "tree-view") return treeViewState();
   if (id === "accordion") return disclosureState("accordion", "项目设置", "基础信息、成员与通知方式");
   if (id === "collapsible") return disclosureState("collapsible", "更多信息", "点击展开查看详情");
   if (id === "avatar") return `<div class="tui-runtime-avatar-pair"><div><span class="tui-runtime-surface-label">32 × 32</span>${avatarState({ initials: "H", name: "HarmonyOS 32", size: 32 })}</div><div><span class="tui-runtime-surface-label">40 × 40</span>${avatarState({ initials: "H", name: "HarmonyOS 40", size: 40 })}</div></div>`;
   if (id === "badge") return badgeSpecimens();
-  if (id === "card") return cardState();
-  if (id === "item") return `<div class="tui-item-group" role="list">${itemState({ title: "项目设置", lines: 1, trailing: "text-arrow", trailingText: "详情" })}${itemState({ title: "成员权限", description: "管理角色和访问范围", lines: 2, trailing: "icon" })}${itemState({ title: "通知方式", description: "邮件通知", supporting: "已同步到云端", lines: 3, trailing: "radio" })}${itemState({ title: "自动同步", lines: 1, trailing: "switch" })}${itemState({ title: "项目归档", lines: 1, trailing: "checkbox" })}${itemState({ title: "更新动态", lines: 1, trailing: "notification-arrow" })}</div>`;
   if (id === "table") return tableState("table");
   if (id === "data-table") return tableState("data-table");
   if (id === "pagination") return paginationState();
   if (id === "breadcrumb") return breadcrumbState();
   if (id === "progress") return progressState();
   if (id === "empty") return emptyState();
-  if (id === "separator") return separatorState();
   if (id === "label") return labelState();
   if (id === "alert") return alertRuntimeState({ specimens });
   if (id === "tooltip") return tooltipState();
-  if (id === "toast") return toastState();
+  if (id === "snackbar") return snackbarRuntimeState({ specimens });
+  if (id === "chips") return chipsRuntimeState({ specimens });
+  if (id === "slider") return advancedHtmlComponents.slider({ ...options, gallery: true });
   if (advancedHtmlComponents[id]) return advancedHtmlComponents[id](options);
   const renderer = generatedHtmlComponents[id];
   return renderer ? renderer() : `<p class="tui-runtime-framework-missing">HTML 适配器缺失：${escapeHtml(id)}</p>`;
@@ -415,7 +465,6 @@ export function renderButtonGallery() {
 }
 
 export const htmlComponents = {
-  "legacy-catalog": () => renderLegacyCatalog(),
   button: (options = {}) => renderButton(options),
   buttonGallery: () => renderButtonGallery(),
   input: (options = {}) => inputState(options),
@@ -429,37 +478,47 @@ export const htmlComponents = {
   primaryNavigationItemGallery: () => renderPrimaryNavigationItemGallery(),
   listCard: (options = {}) => listCardState(options),
   "list-card": (options = {}) => listCardState(options),
+  // `item` is the multi-line list-item contract. Keep it distinct from the
+  // single-purpose `list-card` adapter so page-specific list layouts can own
+  // the row geometry without being collapsed to the 48px card variant.
+  item: (options = {}) => itemState({ id: "item", logicalName: "List Item/White Surface/Default", ...options }),
   listCardGallery: () => renderListCardGallery(),
   titlebar: (options = {}) => titlebarState(options),
   textarea: (options = {}) => textareaState(options),
   field: (options = {}) => fieldState(options),
   select: (options = {}) => selectState(options),
-  combobox: (options = {}) => selectState({ id: "combobox", ...options }),
+  combobox: (options = {}) => comboboxState(options),
   nativeSelect: (options = {}) => nativeSelectState(options),
   checkbox: (options = {}) => checkboxState(options),
   radio: (options = {}) => radioState(options),
   radioGroup: (options = {}) => radioGroupState(options),
   switch: (options = {}) => switchState(options),
+  segmentedButton: (options = {}) => segmentedButtonState(options),
+  numberSelector: (options = {}) => numberSelectorState(options),
   tabs: () => tabsState(),
-  accordion: () => disclosureState("accordion", "项目设置", "基础信息、成员与通知方式"),
-  collapsible: () => disclosureState("collapsible", "更多信息", "点击展开查看详情"),
+  subTabs: () => subTabsState(),
+  treeView: () => treeViewState(),
+  accordion: (options = {}) => disclosureState("accordion", { title: "项目设置", detail: "基础信息、成员与通知方式", ...options }),
+  collapsible: (options = {}) => disclosureState("collapsible", options),
   avatar: (options = {}) => avatarState(options),
   badge: (options = {}) => badgeState(options),
-  card: (options = {}) => cardState(options),
-  item: (options = {}) => itemState(options),
   table: () => tableState("table"),
   dataTable: () => tableState("data-table"),
   pagination: () => paginationState(),
   breadcrumb: () => breadcrumbState(),
   progress: (options = {}) => progressState(options),
   empty: (options = {}) => emptyState(options),
-  separator: () => separatorState(),
   label: (options = {}) => labelState(options),
   alert: () => alertState(),
   tooltip: () => tooltipState(),
-  toast: () => toastState(),
+  snackbar: (options = {}) => snackbarState(options),
+  chips: (options = {}) => chipsState(options),
   ...advancedHtmlComponents,
-  ...generatedHtmlComponents
+  ...generatedHtmlComponents,
+  // A hand-built control has a complete interactive implementation; do not
+  // let the generated gallery placeholder shadow it at the public entry point.
+  numberSelector: (options = {}) => numberSelectorState(options),
+  "number-selector": (options = {}) => numberSelectorState(options)
 };
 
 export function renderHtmlComponent(name, options) {

@@ -91,6 +91,56 @@ export function runtimeSemanticMappingsForProfile(profile) {
   return [...semantic, ...aliases];
 }
 
+/**
+ * Mapped component content is owned by the selected Pixso Variant. When the
+ * importer replaces an icon slot with a semantic icon component, the only
+ * permitted color operation is to copy the selected Variant's existing icon
+ * paint onto that replacement. This is a derived execution policy, not a
+ * second color mapping and never reads the HTML color.
+ */
+export function iconColorSourceForMapping(mapping) {
+  if (mapping?.availability !== "mapped") return null;
+  const supportedSlots = mapping.supportedSlots ?? mapping.runtimeBinding?.supportedSlots ?? [];
+  return Array.isArray(supportedSlots) && (supportedSlots.includes("icon") || supportedSlots.includes("leading"))
+    ? "variant-content"
+    : null;
+}
+
+/**
+ * Keep the human-readable profile summary derived from the editable mapping
+ * collections and the current Pixso component-facts snapshot. The summary is
+ * useful for diagnostics, but it must never become a second source of truth.
+ */
+export function refreshMappingProfileSummary(profile, registeredPixsoTargets) {
+  if (!profile?.summary) return false;
+  const targetCount = registeredPixsoTargets instanceof Set
+    ? registeredPixsoTargets.size
+    : Array.isArray(registeredPixsoTargets)
+      ? new Set(registeredPixsoTargets.filter(Boolean)).size
+      : typeof registeredPixsoTargets === "number" && Number.isFinite(registeredPixsoTargets)
+        ? registeredPixsoTargets
+        : null;
+  if (targetCount === null) return false;
+  const before = JSON.stringify(profile.summary);
+  profile.summary = {
+    ...profile.summary,
+    canonicalTokenMappings: (profile.tokenMappings || []).length,
+    semanticTokenMappings: (profile.semanticTokenMappings || []).length,
+    runtimeSemanticAliases: (profile.runtimeSemanticAliases || []).length,
+    runtimeSemanticMappings: runtimeSemanticMappingsForProfile(profile).length,
+    semanticColorMappings: (profile.semanticColorMappings || []).length,
+    styleMappings: (profile.styleMappings || []).length,
+    htmlComponents: (profile.componentMappings || []).length,
+    endpointComponentMappings: (profile.endpointComponentMappings || []).length,
+    registeredPixsoTargets: targetCount,
+    htmlToPixsoExactMatches: (profile.componentMappings || []).filter(
+      (item) => item.pixsoTargetStatus === "registered",
+    ).length,
+    nativeSourceMappings: (profile.nativeSourceMappings || []).length,
+  };
+  return before !== JSON.stringify(profile.summary);
+}
+
 export function tokenAliasesForProfile(profile) {
   const aliases = new Map();
   for (const mapping of profile.tokenMappings || []) {

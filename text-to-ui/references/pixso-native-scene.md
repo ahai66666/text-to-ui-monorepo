@@ -75,9 +75,13 @@ Fill。填充完成后 Slot 的宽高、父级和 Auto Layout 属性必须与填
 适用于页面 SVG、NewComponents 中的图标组件和组件 Instance，不能因节点已存在而跳过
 修复或沿用旧的上对齐。
 
-动作颜色按 HTML 最终视觉证据传递，不按动作语义猜测：`action/delete` 默认使用普通
-图标色；页面若明确提供危险色，才绑定 `state/danger`/`function/danger/100`。删除按钮
-因此可以是红色，也可以是普通图标色，不能由 `delete` 这个 id 强制映射。
+映射组件的颜色由 Pixso Variant 自己控制。HTML 最终颜色仍作为兼容性证据记录，不能
+在创建 Instance 后通过 `contentColor` 或 HTML 颜色重着色覆盖组件。如果映射需要把
+语义图标替换进 Variant 的图标槽，只能通过计划中的 `iconColorSource: "variant-content"`
+读取该 Variant 已有的 Fill/Stroke，并把同一颜色转移到新图标几何；这不是 HTML 颜色
+覆盖，也不能改变文字或 Instance 外层颜色。若 HTML 与 Pixso 的组件契约确实不一致，
+应调整映射到正确 Variant，或退回 Token 化原生组合，而不是修改当前画板上的 Instance。
+只有显式授权的 native-composition 覆盖才允许使用颜色重写。
 
 布局阶段同时遵守两个跨项目规则：
 
@@ -146,6 +150,9 @@ node scripts/prepare-pixso-mcp-batches.mjs \
 `pixso-native-component-map.json` 是其中面向旧运行时的兼容投影。只有投影中
 `availability: mapped` 的逻辑组件生成 `create-instance`。映射缺失时，生成带有
 `componentRef` 和 `fallbackRecipe` 的原生 Frame 组合；这种降级仍使用共享 Token 与语义图标。
+这类组件不会阻塞整页结构导入；编译器会在 Operation Plan 与预检报告中写入
+`componentRepairItems`，记录逻辑名、选择器、原因和后续修复动作。只有没有安全
+原生兜底的非法计划或结构契约错误才会阻止发布。
 
 HTML 组件的 Pixso 目标由同一份 `packages/component-contracts/src/components.json`
 生成，不允许靠显示名称猜测。生产库默认写入 `NewComponents`；人工审核时先
@@ -217,9 +224,9 @@ node scripts/pixso-plugin-bridge.mjs publish /absolute/path/pixso-component-libr
 是 `pixso-operation-plan`，并且 `page.name` 与目标页面一致，避免上一轮组件库审核计划
 覆盖页面计划。若 `execution.targetPage` 在当前文件中不存在，运行时会按该名称创建目标
 页，再在其中生成根画板，因此页面导入不依赖用户预先手动建页。
-手动“生成当前计划”仍遵守同计划去重；“新建版本”仍是唯一显式保留多版本的入口。
-插件界面会依次报告“布局与内容”和“图标填充”；默认仍是一键完成，不要求用户手动
-点击两次。两阶段可以在调试时分别观察，但共享同一个 Scene 和 canonical Frame。
+同计划重复发布仍遵守去重；自动桥接会替换同一 canonical Frame，不保留用户可操作的多版本入口。
+插件界面会依次报告“布局与内容”和“图标填充”；默认仍是一键完成。两阶段共享同一个
+Scene 和 canonical Frame。
 Pixso 没有公开的外部静默启动插件接口，因此每个文件或会话仍需用户启动一次插件。
 
 插件未安装、未连接或版本不兼容时，正常整页任务必须停止，不得自动切换 MCP。只有

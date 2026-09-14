@@ -7,7 +7,16 @@
   const cleanStyleRef = (value) => String(value ?? "").replace(/^\$style\//, "");
 
   function create(pixso) {
-    const state = { plan: null, variables: new Map(), styles: new Map(), componentSets: new Map(), components: new Map(), nodes: new Map() };
+    const state = {
+      plan: null,
+      variables: new Map(),
+      styles: new Map(),
+      componentSets: new Map(),
+      components: new Map(),
+      nodes: new Map(),
+      iconFailures: [],
+      imageFailures: [],
+    };
     // MCP eval_script runs each batch in a fresh runtime. Pixso's ordinary
     // pluginData is available inside one call but is not reliably visible to
     // the next call, while shared plugin data survives the batch boundary.
@@ -62,6 +71,22 @@
         return "Strict HTML import plan contains mixed or missing HTML fingerprints";
       }
       return null;
+    }
+
+    function permanentExecutorPlanError(plan) {
+      if (Number(plan?.execution?.agentContract?.executorProtocol) !== 1) return null;
+      const knownOperations = new Set([
+        "ensure-font", "ensure-variable", "ensure-style", "ensure-icon", "ensure-image",
+        "create-page", "create-frame", "create-component", "create-text", "create-icon",
+        "create-icon-slot", "create-instance", "create-image", "create-rectangle",
+        "create-ellipse", "create-line", "hydrate-icon",
+      ]);
+      const unsupported = (plan.operations ?? [])
+        .map((operation) => String(operation?.op ?? ""))
+        .filter((operation) => operation && !knownOperations.has(operation));
+      return unsupported.length
+        ? `Permanent Executor v1 does not support operation(s): ${[...new Set(unsupported)].join(", ")}`
+        : null;
     }
 
     const variableName = (ref) => {
@@ -237,14 +262,24 @@
       state.styles = new Map([...textStyles, ...effectStyles].map((item) => [item.name, item]));
       const library = findPage(plan.execution?.libraryPage ?? plan.resources?.componentLibraryPage ?? "NewComponents");
       if (library) {
-        // Component pages produced by the library plan keep reusable masters as
-        // direct children. Do not scan the whole page during an import: a
-        // cooperation refresh can invalidate internal S_Guid values while an
-        // async traversal is still in flight. Missing masters are reported by
-        // preflight and must be repaired by the separate library-sync flow.
-        const reusable = Array.isArray(library.children)
-          ? library.children.filter((node) => node.type === "COMPONENT" || node.type === "COMPONENT_SET")
-          : [];
+        // Component libraries commonly place masters inside SECTION or FRAME
+        // containers. Match the component-facts sync traversal so importing a
+        // page can resolve the same NewComponents inventory that was synced.
+        // Exclude variants and helper nodes nested in a component definition.
+        const candidates = typeof library.findAllAsync === "function"
+          ? await library.findAllAsync((node) => node.type === "COMPONENT" || node.type === "COMPONENT_SET")
+          : (Array.isArray(library.children) ? library.children : [])
+            .filter((node) => node.type === "COMPONENT" || node.type === "COMPONENT_SET");
+        const reusable = candidates.filter((node) => {
+          let parent = node?.parent;
+          const visited = new Set();
+          while (parent && parent !== library && parent.id !== library.id && !visited.has(parent.id)) {
+            visited.add(parent.id);
+            if (parent.type === "COMPONENT_SET" || parent.type === "COMPONENT") return false;
+            parent = parent.parent;
+          }
+          return true;
+        });
         state.componentSets = new Map(reusable.filter((node) => node.type === "COMPONENT_SET").map((node) => [node.name, node]));
         state.components = new Map(reusable.filter((node) => node.type === "COMPONENT").map((node) => [node.name, node]));
       }
@@ -284,6 +319,18 @@
         const parsed = parseVariant(node.name);
         return requested.every(([key, value]) => variantValueMatches(key, value, parsed.get(key)));
       });
+      // Some Pixso documents expose Compact geometry for non-default states
+      // before the corresponding Default variant is materialized. Preserve
+      // the requested component instance route and reuse the closest Compact
+      // state instead of aborting the whole page import at preflight.
+      if (!candidate && requested.some(([key, value]) => key === "density" && value === "compact") && requested.some(([key, value]) => key === "state" && value === "default")) {
+        const compactFallback = (set.children ?? []).find((node) => {
+          if (node.type !== "COMPONENT") return false;
+          const parsed = parseVariant(node.name);
+          return requested.every(([key, value]) => key === "state" || variantValueMatches(key, value, parsed.get(key))) && parsed.get("density") === "compact";
+        });
+        if (compactFallback) return compactFallback;
+      }
       if (!candidate?.createInstance) throw new Error(`Missing Pixso component variant: ${setName} / ${JSON.stringify(ref?.variant ?? {})}`);
       return candidate;
     }
@@ -301,8 +348,12 @@
         if (operation.op === "create-instance") {
           try { resolveVariant(operation.componentRef); } catch (error) { missing.components.push(error.message); }
         }
-        if (operation.op === "hydrate-icon" && !iconResourceFor(operation.iconRef)?.svg) missing.icons.push(operation.iconRef?.alias ?? operation.targetNodeId);
-        if (operation.op === "create-image" && !imageResourceFor(operation.imageRef)?.dataBase64) missing.images.push(operation.imageRef?.ref ?? operation.nodeId);
+        if (operation.op === "hydrate-icon" && !iconResourceFor(operation.iconRef)?.svg && (plan.kind === "pixso-component-library-plan" || plan.execution?.mode === "component-library")) {
+          missing.icons.push(operation.iconRef?.alias ?? operation.targetNodeId);
+        }
+        // Image materialization is deliberately a late, recoverable pass. A
+        // 404 or missing binary must leave the measured image box as a visible
+        // placeholder instead of blocking the structural import here.
       }
       return Object.fromEntries(Object.entries(missing).map(([key, value]) => [key, [...new Set(value)]]));
     }
@@ -310,10 +361,23 @@
       return Object.values(missing).some((value) => value.length > 0);
     }
 
+    async function boundedFontLoad(font) {
+      let timer;
+      try {
+        await Promise.race([
+          pixso.loadFontAsync(font),
+          new Promise((_, reject) => { timer = setTimeout(() => {
+            const error = new Error(`字体加载超时：${font.family}/${font.style}`);
+            error.code = "TEXT_TO_UI_FONT_TIMEOUT";
+            reject(error);
+          }, 10000); }),
+        ]);
+      } finally { clearTimeout(timer); }
+    }
     async function loadFont() {
       if (!pixso.loadFontAsync) return;
       for (const style of ["Regular", "Medium", "Bold"]) {
-        try { await pixso.loadFontAsync({ family: "HarmonyOS Sans", style }); } catch (_) {}
+        try { await boundedFontLoad({ family: "HarmonyOS Sans", style }); } catch (error) { if (error.code === "TEXT_TO_UI_FONT_TIMEOUT") throw error; }
       }
     }
 
@@ -723,7 +787,9 @@
         const hasSolidFill = Array.isArray(target.fills) && target.fills.some((paint) => paint?.type === "SOLID");
         const hasSolidStroke = Array.isArray(target.strokes) && target.strokes.some((paint) => paint?.type === "SOLID");
         const hasImageFill = Array.isArray(target.fills) && target.fills.some((paint) => paint?.type === "IMAGE" && paint.imageHash);
-        if (style.fill?.kind === "transparent" && "fills" in target && !hasImageFill) target.fills = [];
+        const imageRenderer = readPluginMeta(target, "text-to-ui-image-renderer");
+        const preservesImagePaint = imageRenderer === "native-svg" || imageRenderer === "deferred-placeholder";
+        if (style.fill?.kind === "transparent" && "fills" in target && !hasImageFill && !preservesImagePaint) target.fills = [];
         else if (style.fill?.kind === "linear-gradient" && "fills" in target && (!deep || hasSolidFill || target === node)) {
           try {
             target.fills = [gradientPaintFor(style.fill)];
@@ -831,8 +897,11 @@
       const runId = planRunId(state.plan);
       if (runId) writePluginMeta(node, "text-to-ui-run-id", runId);
       if (operation.op === "create-instance") writePluginMeta(node, "text-to-ui-component-ref", JSON.stringify(operation.componentRef ?? {}));
-      if (operation.op === "create-instance" && operation.metadata?.iconColor) writePluginMeta(node, "text-to-ui-icon-color", operation.metadata.iconColor);
-      if (operation.op === "create-instance" && operation.componentRef?.contentColor) writePluginMeta(node, "text-to-ui-content-color", JSON.stringify(operation.componentRef.contentColor));
+      // A mapped Instance owns its visual colors through the selected Pixso
+      // Variant. HTML evidence and mapping tokens are not instance overrides;
+      // only an explicitly authored opt-in may write these audit keys.
+      if (operation.op === "create-instance" && operation.componentRef?.allowIconColorOverride === true && operation.metadata?.iconColor) writePluginMeta(node, "text-to-ui-icon-color", operation.metadata.iconColor);
+      if (operation.op === "create-instance" && operation.componentRef?.allowContentColorOverride === true && operation.componentRef?.contentColor) writePluginMeta(node, "text-to-ui-content-color", JSON.stringify(operation.componentRef.contentColor));
       if (operation.op === "create-component" && operation.componentContract) {
         const contract = operation.componentContract;
         writePluginMeta(node, "text-to-ui-component-logical-name", contract.logicalName ?? "");
@@ -883,10 +952,21 @@
         }
       }
     }
+    function isLegacyIconFontText(textNode) {
+      const family = typeof textNode?.fontName === "object" && textNode.fontName !== null
+        ? String(textNode.fontName.family ?? "")
+        : "";
+      return /^(?:HM Symbol|icon_font)$/i.test(family.trim());
+    }
     async function setInstanceText(textNode, value) {
+      // Existing HarmonyOS masters may contain HM Symbol text layers for
+      // icons. They are not business-text slots and must never be loaded or
+      // overwritten during Text-to-UI instance reconciliation; generated
+      // pages use semantic SVG icon resources instead.
+      if (isLegacyIconFontText(textNode)) return;
       if (!textNode || value === undefined || value === null || value === "") return;
       if (pixso.loadFontAsync && textNode.fontName && textNode.fontName !== pixso.mixed) {
-        try { await pixso.loadFontAsync(textNode.fontName); } catch (_) {}
+        try { await boundedFontLoad(textNode.fontName); } catch (error) { if (error.code === "TEXT_TO_UI_FONT_TIMEOUT") throw error; }
       }
       textNode.characters = String(value);
     }
@@ -1050,6 +1130,82 @@
       return names.some((name) => name.includes("icon") || name.startsWith("text-to-ui icon/") || name.includes("highlight"));
     }
 
+    function variableRefById(id) {
+      const targetId = String(id ?? "");
+      if (!targetId) return null;
+      const variable = [...state.variables.values()].find((item) => String(item?.id ?? "") === targetId);
+      return variable?.name ? `$variable/${variable.name}` : null;
+    }
+
+    function colorSourceFromPaint(node, channel, index, paint) {
+      const paintBinding = paint?.boundVariables?.color;
+      const bindings = node?.boundVariables?.[channel];
+      const nodeBinding = Array.isArray(bindings) ? bindings[index] : bindings;
+      const binding = paintBinding ?? nodeBinding;
+      const variableRef = variableRefById(binding?.id ?? binding);
+      if (variableRef) return { kind: "variable", ref: variableRef };
+      if (paint?.type !== "SOLID" || !paint.color) return null;
+      const { r, g, b } = paint.color;
+      if (![r, g, b].every((value) => Number.isFinite(Number(value)))) return null;
+      return {
+        kind: "literal",
+        type: "SOLID",
+        color: { r: Number(r), g: Number(g), b: Number(b) },
+        ...(paint.opacity === undefined ? {} : { opacity: Number(paint.opacity) }),
+      };
+    }
+
+    function variantContentPaintSource(node) {
+      const roots = [node?.mainComponent, node].filter(Boolean);
+      const iconInstances = [];
+      const seen = new Set();
+      for (const root of roots) {
+        const candidates = [
+          ...(root.type === "INSTANCE" && isIconInstance(root) ? [root] : []),
+          ...descendants(root, (item) => item.type === "INSTANCE" && isIconInstance(item)),
+        ];
+        for (const candidate of candidates) {
+          if (!seen.has(candidate)) {
+            seen.add(candidate);
+            iconInstances.push(candidate);
+          }
+        }
+      }
+      for (const icon of iconInstances) {
+        const paintNodes = [icon, ...descendants(icon, () => true)];
+        for (const paintNode of paintNodes) {
+          for (const channel of ["fills", "strokes"]) {
+            const paints = paintNode?.[channel];
+            if (!Array.isArray(paints)) continue;
+            for (let index = 0; index < paints.length; index += 1) {
+              const source = colorSourceFromPaint(paintNode, channel, index, paints[index]);
+              if (source) return source;
+            }
+          }
+        }
+      }
+      // A library Variant may expose a direct vector in a named icon slot
+      // instead of nesting an icon Component. Read only that Variant-owned
+      // geometry as a last resort; never use the HTML operation's color.
+      for (const root of roots) {
+        const vectors = [
+          ...(root.type === "VECTOR" ? [root] : []),
+          ...descendants(root, (item) => item.type === "VECTOR" && isIconHotZoneNode(item.parent)),
+        ];
+        for (const vector of vectors) {
+          for (const channel of ["fills", "strokes"]) {
+            const paints = vector?.[channel];
+            if (!Array.isArray(paints)) continue;
+            for (let index = 0; index < paints.length; index += 1) {
+              const source = colorSourceFromPaint(vector, channel, index, paints[index]);
+              if (source) return source;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
     function hasDirectTextChild(node) {
       return (node?.children ?? []).some((child) => child.type === "TEXT" && child.visible !== false);
     }
@@ -1150,26 +1306,44 @@
       normalizeIconHotZoneTree(node);
     }
 
-    function recolorInstanceIcon(node, colorRef) {
-      if (!colorRef) return;
-      for (const child of descendants(node, (item) => item.type === "INSTANCE")) {
-        if (isIconInstance(child)) {
-          paintExistingChannels(child, colorRef);
-          // A Pixso INSTANCE fill is an override layer over the component's
-          // child geometry. For stroke-authored SVG icons that layer fills the
-          // whole path silhouette and turns line icons into black/red blocks.
-          // Keep the color on the child Vector's strokes instead. Fill-authored
-          // window icons intentionally retain the instance fill override.
-          const vectors = descendants(child, (item) => item.type === "VECTOR");
-          const hasStrokeGeometry = vectors.some((vector) => Array.isArray(vector.strokes) && vector.strokes.length > 0);
-          const hasFillGeometry = vectors.some((vector) => Array.isArray(vector.fills) && vector.fills.length > 0);
-          // The instance paint is a component-level override, not the icon
-          // geometry itself. Clear it for both stroke- and fill-authored icons
-          // after transferring the semantic color to the actual Vector. This
-          // prevents a 20x20 instance box from masking thin window controls.
-          if (hasStrokeGeometry || hasFillGeometry) child.fills = [];
-        }
+    function recolorInstanceIcon(node, colorRef, options = {}) {
+      if (!colorRef) return 0;
+      const candidates = descendants(node, (item) => item.type === "INSTANCE" && isIconInstance(item));
+      const targetId = String(options.componentId ?? "");
+      const targetAlias = normalize(options.alias);
+      const matched = targetId || targetAlias
+        ? candidates.filter((child) => {
+          const ids = [child.id, child.mainComponent?.id].map((value) => String(value ?? ""));
+          const names = [
+            child.name,
+            child.mainComponent?.name,
+            readPluginMeta(child, "text-to-ui-icon-alias"),
+          ].map(normalize).filter(Boolean);
+          return (targetId && ids.includes(targetId)) || (targetAlias && names.some((name) => name === targetAlias || name.includes(targetAlias)));
+        })
+        : candidates;
+      const targets = matched.length > 0 || (!targetId && !targetAlias)
+        ? matched
+        : candidates.length === 1
+          ? candidates
+          : [];
+      for (const child of targets) {
+        paintExistingChannels(child, colorRef);
+        // A Pixso INSTANCE fill is an override layer over the component's
+        // child geometry. For stroke-authored SVG icons that layer fills the
+        // whole path silhouette and turns line icons into black/red blocks.
+        // Keep the color on the child Vector's strokes instead. Fill-authored
+        // window icons intentionally retain the instance fill override.
+        const vectors = descendants(child, (item) => item.type === "VECTOR");
+        const hasStrokeGeometry = vectors.some((vector) => Array.isArray(vector.strokes) && vector.strokes.length > 0);
+        const hasFillGeometry = vectors.some((vector) => Array.isArray(vector.fills) && vector.fills.length > 0);
+        // The instance paint is a component-level override, not the icon
+        // geometry itself. Clear it for both stroke- and fill-authored icons
+        // after transferring the semantic color to the actual Vector. This
+        // prevents a 20x20 instance box from masking thin window controls.
+        if (hasStrokeGeometry || hasFillGeometry) child.fills = [];
       }
+      return targets.length;
     }
     function applyInstanceContentColor(node, contentColor) {
       if (!contentColor) return;
@@ -1187,6 +1361,12 @@
     function recolorPageIconInstances(page) {
       if (!page) return;
       for (const node of descendants(page, (item) => item.type === "INSTANCE")) {
+        let componentRef = null;
+        try { componentRef = JSON.parse(readPluginMeta(node, "text-to-ui-component-ref") || "null"); } catch (_) {}
+        if (componentRef?.allowIconColorOverride !== true) {
+          centerIconInstanceHotZones(node);
+          continue;
+        }
         const colorRef = readPluginMeta(node, "text-to-ui-icon-color");
         if (colorRef) recolorInstanceIcon(node, colorRef);
         centerIconInstanceHotZones(node);
@@ -1195,7 +1375,7 @@
     async function instanceCopy(operation, node) {
       const primary = operation.props?.label || operation.props?.value || operation.props?.placeholder || operation.slots?.label || operation.slots?.value || "";
       const secondary = operation.props?.description || operation.slots?.description || "";
-      const texts = descendants(node, (item) => item.type === "TEXT");
+      const texts = descendants(node, (item) => item.type === "TEXT" && !isLegacyIconFontText(item));
       const used = new Set();
       const isTextSlot = (slot, value) => !["icon", "leading", "trigger"].includes(slot) && !(typeof value === "string" && /^[a-z-]+\/[a-z0-9-]+$/i.test(value));
       const hasTextSlot = Object.entries(operation.slots ?? {}).some(([slot, value]) => typeof value === "string" && value && isTextSlot(slot, value));
@@ -1207,7 +1387,12 @@
         ? instancePropertyKey(node, ["icon", "sidebar-icon", "leading", "Leading", "Icon", "trigger", "Trailing"])
         : null;
       if (expectedIconAlias && !expectedIconComponent) throw new Error(`Missing exact component icon: ${expectedIconAlias}`);
-      if (expectedIconAlias && !iconPropertyKey) throw new Error(`Component has no icon swap property: ${operation.componentRef?.logicalName ?? operation.nodeId}/${expectedIconAlias}`);
+      const variantContentColor = operation.componentRef?.iconColorSource === "variant-content" && expectedIconAlias && iconPropertyKey
+        ? variantContentPaintSource(node)
+        : null;
+      // A mapped component may own a fixed icon without exposing an instance
+      // swap property. Keep the real component instance and its native icon;
+      // one unavailable swap must not abort the whole page import.
       const findNamedText = (slot) => texts.find((item) => !used.has(item) && normalize(item.name).includes(normalize(slot)));
       const slotEntries = Object.entries(operation.slots ?? {});
       const orderedSlotEntries = operation.componentRef?.logicalName?.startsWith("Search/")
@@ -1243,15 +1428,33 @@
           }
         }
       }
-      recolorInstanceIcon(node, operation.metadata?.iconColor);
-      applyInstanceContentColor(node, operation.componentRef?.contentColor);
+      if (operation.componentRef?.iconColorSource === "variant-content" && expectedIconAlias && iconPropertyKey) {
+        const recolored = variantContentColor
+          ? recolorInstanceIcon(node, variantContentColor, {
+            componentId: expectedIconComponent?.id,
+            alias: expectedIconAlias,
+          })
+          : 0;
+        writePluginMeta(node, "text-to-ui-icon-color-source", recolored > 0 ? "pixso-variant-content" : "unavailable");
+      }
+      if (operation.componentRef?.allowIconColorOverride === true) recolorInstanceIcon(node, operation.metadata?.iconColor);
+      const contentColorOverride = operation.componentRef?.allowContentColorOverride === true
+        ? operation.componentRef?.contentColor
+        : null;
+      if (contentColorOverride) applyInstanceContentColor(node, contentColorOverride);
       centerIconInstanceHotZones(node);
       writePluginMeta(node, "text-to-ui-props", JSON.stringify(operation.props ?? {}));
       writePluginMeta(node, "text-to-ui-slots", JSON.stringify(operation.slots ?? {}));
       if (expectedIconAlias) {
         writePluginMeta(node, "text-to-ui-expected-icon-alias", expectedIconAlias);
-        writePluginMeta(node, "text-to-ui-icon-property-key", iconPropertyKey);
+        if (iconPropertyKey) writePluginMeta(node, "text-to-ui-icon-property-key", iconPropertyKey);
         writePluginMeta(node, "text-to-ui-expected-icon-component-id", expectedIconComponent.id ?? "");
+        // Some registered masters (for example Snackbar) own a fixed semantic
+        // status icon but do not expose it as an instance-swap property. Keep
+        // that genuine component instance and mark the measured native icon as
+        // an explicit fallback; visual readback remains responsible for any
+        // visible mismatch.
+        writePluginMeta(node, "text-to-ui-icon-binding-mode", iconPropertyKey ? "component-property" : "native-component-fallback");
       }
     }
     function applyInstanceContentSizing(node, layout = {}) {
@@ -1271,6 +1474,93 @@
         }
       }
       writePluginMeta(node, "text-to-ui-instance-sizing", requestedAxes.map((axis) => `${axis}:hug`).join(","));
+    }
+    function decodeUtf8(bytes) {
+      if (typeof TextDecoder === "function") {
+        try { return new TextDecoder("utf-8").decode(bytes); } catch (_) {}
+      }
+      let output = "";
+      for (const byte of bytes ?? []) output += String.fromCharCode(byte);
+      return output;
+    }
+    function isSvgImageResource(resource) {
+      const mimeType = String(resource?.mimeType ?? "").trim().toLowerCase();
+      return mimeType === "image/svg+xml" || mimeType === "image/svg" || mimeType.endsWith("+svg") || Boolean(resource?.svg);
+    }
+    function svgTextFromImageResource(resource) {
+      if (String(resource?.svg ?? "").trim()) return String(resource.svg);
+      if (typeof pixso.base64Decode !== "function") throw new Error("Current Pixso runtime does not expose base64Decode for SVG image resources");
+      return decodeUtf8(pixso.base64Decode(resource.dataBase64));
+    }
+    function createRasterImageNode(resource, operation) {
+      if (typeof pixso.createImage !== "function") throw new Error("Current Pixso runtime does not expose createImage");
+      if (typeof pixso.base64Decode !== "function") throw new Error("Current Pixso runtime does not expose base64Decode");
+      const bytes = pixso.base64Decode(resource.dataBase64);
+      const image = pixso.createImage(bytes);
+      if (!image?.hash) throw new Error("Pixso createImage returned no image hash");
+      const node = pixso.createRectangle();
+      node.fills = [{ type: "IMAGE", imageHash: image.hash, scaleMode: operation.imageRef?.fit ?? "FILL" }];
+      writePluginMeta(node, "text-to-ui-image-renderer", "native-raster");
+      return node;
+    }
+    function createSvgImageNode(resource) {
+      if (typeof pixso.createNodeFromSvg !== "function") throw new Error("Current Pixso runtime does not expose createNodeFromSvg");
+      const node = pixso.createNodeFromSvg(svgTextFromImageResource(resource));
+      if (!node) throw new Error("Pixso createNodeFromSvg returned no node");
+      writePluginMeta(node, "text-to-ui-image-renderer", "native-svg");
+      return node;
+    }
+    function createDeferredImageNode(operation, resource, error) {
+      if (typeof pixso.createRectangle !== "function") throw error;
+      const node = pixso.createRectangle();
+      // Keep the measured image box visible while the late asset repair is
+      // pending. This is intentionally a neutral diagnostic paint, not a
+      // claimed visual match; final screenshot parity still has to replace it
+      // with the real asset.
+      node.fills = [{ type: "SOLID", color: { r: 0.86, g: 0.87, b: 0.89 }, opacity: 0.45 }];
+      const failure = {
+        nodeId: operation.nodeId ?? null,
+        ref: operation.imageRef?.ref ?? null,
+        mimeType: resource?.mimeType ?? null,
+        error: String(error?.message ?? error),
+        recovery: "deferred-image-optimization",
+      };
+      state.imageFailures.push(failure);
+      writePluginMeta(node, "text-to-ui-image-renderer", "deferred-placeholder");
+      writePluginMeta(node, "text-to-ui-image-error", failure.error);
+      writePluginMeta(node, "text-to-ui-image-recovery", failure.recovery);
+      return node;
+    }
+    async function createImageNode(operation) {
+      const resource = imageResourceFor(operation.imageRef);
+      if (!resource?.dataBase64 && !resource?.svg) {
+        return createDeferredImageNode(operation, resource, new Error(`Missing image resource: ${operation.imageRef?.ref}`));
+      }
+      try {
+        return isSvgImageResource(resource)
+          ? createSvgImageNode(resource)
+          : createRasterImageNode(resource, operation);
+      } catch (error) {
+        // Image compatibility is a recoverable asset concern. The image module
+        // runs after the page structure is assembled; if this asset still
+        // cannot be materialized, keep its measured box and let the rest of the
+        // page commit. The failure is retained for the final repair/reporting
+        // pass instead of deleting the completed draft.
+        return createDeferredImageNode(operation, resource, error);
+      }
+    }
+    function appendNodeInSourceOrder(parent, node, operation) {
+      // Image assets are intentionally materialized after the structural pass.
+      // Preserve the browser's direct-child order when that late operation is
+      // attached; otherwise an image can appear in front of an earlier text
+      // sibling (for example the Coremail logo/text brand lockup).
+      const childIndex = Number(operation?.metadata?.htmlChildIndex);
+      if (Number.isInteger(childIndex) && childIndex >= 0 && typeof parent?.insertChild === "function") {
+        const childCount = Array.isArray(parent.children) ? parent.children.length : childIndex;
+        parent.insertChild(Math.min(childIndex, childCount), node);
+        return;
+      }
+      parent.appendChild(node);
     }
     async function createNode(operation) {
       if (operation.op === "create-frame") return pixso.createFrame();
@@ -1295,33 +1585,40 @@
       }
       if (operation.op === "create-instance") return resolveVariant(operation.componentRef).createInstance();
       if (operation.op === "create-image") {
-        const resource = imageResourceFor(operation.imageRef);
-        if (!resource?.dataBase64) throw new Error(`Missing raster image resource: ${operation.imageRef?.ref}`);
-        if (typeof pixso.createImage !== "function") throw new Error("Current Pixso runtime does not expose createImage");
-        if (typeof pixso.base64Decode !== "function") throw new Error("Current Pixso runtime does not expose base64Decode");
-        const bytes = pixso.base64Decode(resource.dataBase64);
-        const image = pixso.createImage(bytes);
-        const node = pixso.createRectangle();
-        node.fills = [{ type: "IMAGE", imageHash: image.hash, scaleMode: operation.imageRef?.fit ?? "FILL" }];
-        return node;
+        return createImageNode(operation);
       }
       if (operation.op === "create-rectangle") return pixso.createRectangle();
       if (operation.op === "create-ellipse") return pixso.createEllipse();
       if (operation.op === "create-line") return pixso.createLine();
       throw new Error(`Unsupported Pixso operation: ${operation.op}`);
     }
+    function paintForColorSource(source) {
+      if (!source) return null;
+      if (typeof source === "string") return paintFor(source);
+      if (source.kind === "variable" && source.ref) return paintFor(source.ref);
+      if (source.type === "SOLID" && source.color) {
+        return {
+          type: "SOLID",
+          color: { r: Number(source.color.r), g: Number(source.color.g), b: Number(source.color.b) },
+          ...(source.opacity === undefined ? {} : { opacity: Number(source.opacity) }),
+        };
+      }
+      return null;
+    }
     function paintExistingChannels(node, colorRef) {
       // A semantic icon may intentionally inherit its component color. In
       // that case the operation has no color Token; leave the SVG's existing
       // channels untouched instead of attempting to resolve an empty Variable.
       if (!colorRef) return;
+      const paint = paintForColorSource(colorRef);
+      if (!paint) return;
       const targets = [node, ...descendants(node, () => true)];
       for (const target of targets) {
         if (Array.isArray(target.fills) && target.fills.some((paint) => paint?.type === "SOLID")) {
-          target.fills = target.fills.map((paint) => paint?.type === "SOLID" ? paintFor(colorRef) : paint);
+          target.fills = target.fills.map((item) => item?.type === "SOLID" ? { ...paint } : item);
         }
         if (Array.isArray(target.strokes) && target.strokes.some((paint) => paint?.type === "SOLID")) {
-          target.strokes = target.strokes.map((paint) => paint?.type === "SOLID" ? paintFor(colorRef) : paint);
+          target.strokes = target.strokes.map((item) => item?.type === "SOLID" ? { ...paint } : item);
         }
       }
     }
@@ -1372,6 +1669,40 @@
       writePluginMeta(slot, "text-to-ui-icon-display-size", size);
       writePluginMeta(icon, "text-to-ui-icon-alias", operation.iconRef?.alias ?? "");
       return icon;
+    }
+    function deferIcon(operation, error) {
+      const slot = state.nodes.get(operation.targetNodeId);
+      if (!slot) throw error;
+      enforceIconHotZone(slot);
+      let placeholder = (slot.children ?? []).find((child) => child.name === "Icon placeholder") ?? null;
+      if (!placeholder) {
+        createIconPlaceholder(slot, {
+          iconSlot: { size: operation.iconRef?.size ?? slot.width ?? 20 },
+          style: {},
+        });
+        placeholder = (slot.children ?? []).find((child) => child.name === "Icon placeholder") ?? null;
+      }
+      if (placeholder) {
+        placeholder.fills = [{ type: "SOLID", color: { r: 0.55, g: 0.58, b: 0.64 }, opacity: 0.35 }];
+        placeholder.x = Math.max(0, (Number(slot.width) - Number(placeholder.width)) / 2);
+        placeholder.y = Math.max(0, (Number(slot.height) - Number(placeholder.height)) / 2);
+      }
+      const failure = {
+        nodeId: operation.targetNodeId ?? null,
+        ref: operation.iconRef?.alias ?? null,
+        error: String(error?.message ?? error),
+        recovery: "deferred-icon-hydration",
+      };
+      state.iconFailures.push(failure);
+      writePluginMeta(slot, "text-to-ui-icon-alias", operation.iconRef?.alias ?? "");
+      writePluginMeta(slot, "text-to-ui-icon-status", "deferred-placeholder");
+      writePluginMeta(slot, "text-to-ui-icon-error", failure.error);
+      writePluginMeta(slot, "text-to-ui-icon-recovery", failure.recovery);
+      return placeholder;
+    }
+    function hydrateIconOrDefer(operation) {
+      try { return hydrateIcon(operation); }
+      catch (error) { return deferIcon(operation, error); }
     }
     function uniqueRootName(page, requested) {
       const names = new Set((page.children ?? []).map((node) => normalize(node.name)));
@@ -1478,7 +1809,7 @@
         if (!parent) continue;
         const node = await createNode(operation);
         node.name = operation.name ?? operation.nodeId;
-        parent.appendChild(node);
+        appendNodeInSourceOrder(parent, node, operation);
         applyLayout(node, operation.layout ?? {}, parent);
         if (operation.op === "create-icon-slot") createIconPlaceholder(node, operation);
         else if (operation.op !== "create-instance") applyStyle(node, operation.style ?? {}, operation.op === "create-icon");
@@ -1670,11 +2001,17 @@
       if (hasMissing(missing)) return { ok: false, phase: "preflight", page: { id: page.id, name: page.name }, missing };
       state.nodes.clear();
       hydrateExistingLibraryComponents(page);
+      // A replacement import must start from the source plan, not reconcile a
+      // structurally incompatible older component.  Reconciliation is useful
+      // for additive slot repairs, but it leaves obsolete visual children in
+      // place when a generic placeholder is replaced by a real component.
       let repaired = 0;
-      try {
-        repaired = await repairExistingLibraryOutput(plan, page);
-      } catch (error) {
-        return { ok: false, phase: "repair", page: { id: page.id, name: page.name }, error: error.message };
+      if (!options.replaceExisting) {
+        try {
+          repaired = await repairExistingLibraryOutput(plan, page);
+        } catch (error) {
+          return { ok: false, phase: "repair", page: { id: page.id, name: page.name }, error: error.message };
+        }
       }
       const componentOperations = (plan.operations ?? []).filter((operation) => operation.op === "create-component");
       const materialOperations = (plan.operations ?? []).filter((operation) => String(operation.op).startsWith("create-") && operation.op !== "create-page");
@@ -1715,7 +2052,7 @@
           if (!parent) throw new Error(`Missing created component parent: ${original.parentId}`);
           const node = await createNode(original);
           node.name = original.name ?? original.nodeId;
-          parent.appendChild(node);
+          appendNodeInSourceOrder(parent, node, original);
           applyLayout(node, original.layout ?? {}, parent);
           if (original.op === "create-icon-slot") createIconPlaceholder(node, original);
           else if (original.op !== "create-instance") applyStyle(node, original.style ?? {}, original.op === "create-icon");
@@ -1755,6 +2092,8 @@
       const root = state.nodes.get(rootId);
       const all = root ? [root, ...descendants(root, () => true)] : [];
       const issues = [];
+      const iconFailures = [...state.iconFailures];
+      const imageFailures = [...state.imageFailures];
       for (const operation of plan.operations ?? []) {
         if (!operation.nodeId || !operation.style) continue;
         const node = state.nodes.get(operation.nodeId);
@@ -1793,7 +2132,20 @@
         if (operation.style.fill?.kind === "transparent" && !["create-instance", "create-image"].includes(operation.op) && Array.isArray(node.fills) && node.fills.length > 0) issues.push(`transparent-fill:${operation.nodeId}`);
         if (operation.op === "create-image") {
           const fills = Array.isArray(node.fills) ? node.fills : [];
-          if (!fills.some((paint) => paint?.type === "IMAGE" && paint.imageHash)) issues.push(`missing-image-fill:${operation.nodeId}`);
+          const imageRenderer = readPluginMeta(node, "text-to-ui-image-renderer");
+          if (imageRenderer === "deferred-placeholder") {
+            imageFailures.push({
+              nodeId: operation.nodeId ?? null,
+              ref: operation.imageRef?.ref ?? null,
+              mimeType: imageResourceFor(operation.imageRef)?.mimeType ?? null,
+              error: readPluginMeta(node, "text-to-ui-image-error") || "image materialization failed",
+              recovery: readPluginMeta(node, "text-to-ui-image-recovery") || "deferred-image-optimization",
+            });
+          }
+          if (!fills.some((paint) => paint?.type === "IMAGE" && paint.imageHash)
+            && !["native-svg", "deferred-placeholder"].includes(imageRenderer)) {
+            issues.push(`missing-image-fill:${operation.nodeId}`);
+          }
           if (readPluginMeta(node, "text-to-ui-image-ref") !== operation.imageRef?.ref) issues.push(`missing-image-ref:${operation.nodeId}`);
         }
         // A transparent CSS border still contributes to the browser box, but
@@ -1881,7 +2233,9 @@
           const actualSetName = node.mainComponent?.parent?.name ?? "";
           const matchesExpected = expectedName && (actualName === expectedName || actualName.startsWith(`${expectedName}/`) || actualName.includes(expectedName) || actualSetName === expectedName || actualSetName.startsWith(`${expectedName}/`) || actualSetName.includes(expectedName));
           if (expectedName && actualName && !matchesExpected) issues.push(`main-component:${operation.nodeId}:${actualName}/${expectedName}`);
-          const contentColor = operation.componentRef?.contentColor;
+          const contentColor = operation.componentRef?.allowContentColorOverride === true
+            ? operation.componentRef?.contentColor
+            : null;
           if (contentColor) {
             const textRef = typeof contentColor === "string" ? contentColor : contentColor.text ?? contentColor.label ?? null;
             const iconRef = typeof contentColor === "string" ? contentColor : contentColor.icon ?? contentColor.leading ?? null;
@@ -1986,19 +2340,33 @@
             const recordedAlias = readPluginMeta(instance, "text-to-ui-expected-icon-alias");
             const propertyKey = readPluginMeta(instance, "text-to-ui-icon-property-key");
             const expectedComponentId = readPluginMeta(instance, "text-to-ui-expected-icon-component-id");
-            if (recordedAlias !== expectedAlias || !propertyKey || !expectedComponentId) {
+            const bindingMode = readPluginMeta(instance, "text-to-ui-icon-binding-mode");
+            const nativeComponentFallback = bindingMode === "native-component-fallback";
+            if (recordedAlias !== expectedAlias || (!nativeComponentFallback && (!propertyKey || !expectedComponentId))) {
               issues.push(`component-icon-binding:${operation.nodeId}:${recordedAlias || "missing"}/${expectedAlias}`);
-            } else {
+            } else if (!nativeComponentFallback) {
               const property = instance?.componentProperties?.[propertyKey];
               const actualComponentId = property && typeof property === "object" ? property.value : property;
               if (actualComponentId && String(actualComponentId) !== String(expectedComponentId)) {
                 issues.push(`component-icon-value:${operation.nodeId}:${actualComponentId}/${expectedComponentId}`);
+              }
+              if (operation.componentRef?.iconColorSource === "variant-content" && readPluginMeta(instance, "text-to-ui-icon-color-source") !== "pixso-variant-content") {
+                issues.push(`component-icon-color-source:${operation.nodeId}:unavailable/variant-content`);
               }
             }
           }
         }
         if (operation.op !== "hydrate-icon") continue;
         const slot = state.nodes.get(operation.targetNodeId);
+        if (slot && readPluginMeta(slot, "text-to-ui-icon-status") === "deferred-placeholder") {
+          iconFailures.push({
+            nodeId: operation.targetNodeId ?? null,
+            ref: operation.iconRef?.alias ?? null,
+            error: readPluginMeta(slot, "text-to-ui-icon-error") || "icon hydration failed",
+            recovery: readPluginMeta(slot, "text-to-ui-icon-recovery") || "deferred-icon-hydration",
+          });
+          continue;
+        }
         const iconNodes = slot ? descendants(slot, () => true) : [];
         if (!slot || iconNodes.length === 0 || iconNodes.some((node) => node.name === "Icon placeholder")) {
           issues.push(`missing-hydrated-icon:${operation.targetNodeId}`);
@@ -2054,7 +2422,9 @@
         return Boolean(slot && alias && readPluginMeta(slot, "text-to-ui-icon-alias") === alias
           && descendants(slot, () => true).some((node) => readPluginMeta(node, "text-to-ui-icon-alias") === alias));
       }).length;
-      return { root: root ? { id: root.id, name: root.name, width: root.width, height: root.height } : null, nodeCount: all.length, instanceCount: all.filter((node) => node.type === "INSTANCE").length, iconSlotCount: (plan.operations ?? []).filter((operation) => operation.op === "create-icon-slot").length, hydratedIconCount, issues };
+      const uniqueIconFailures = [...new Map(iconFailures.map((failure) => [`${failure.nodeId}:${failure.ref}`, failure])).values()];
+      const uniqueImageFailures = [...new Map(imageFailures.map((failure) => [`${failure.nodeId}:${failure.ref}`, failure])).values()];
+      return { root: root ? { id: root.id, name: root.name, width: root.width, height: root.height } : null, nodeCount: all.length, instanceCount: all.filter((node) => node.type === "INSTANCE").length, iconSlotCount: (plan.operations ?? []).filter((operation) => operation.op === "create-icon-slot").length, hydratedIconCount, iconFailures: uniqueIconFailures, imageFailures: uniqueImageFailures, issues };
     }
     function operationIndexesForModule(module, operations) {
       if (Array.isArray(module?.operationIndexes)) return module.operationIndexes;
@@ -2086,6 +2456,22 @@
       }
     }
 
+    function reportOperationProgress(options, operation, completedOperations, operationCount, phase = "operation") {
+      if (typeof options.onProgress !== "function") return;
+      const moduleId = options.moduleId ?? "layout";
+      options.onProgress({
+        id: moduleId,
+        label: options.moduleLabel ?? (moduleId === "layout" ? "布局与内容" : moduleId),
+        phase,
+        operationName: operation?.name ?? null,
+        reportedAt: new Date().toISOString(),
+        operationId: operation?.nodeId ?? null,
+        operation: operation?.op ?? null,
+        completedOperations,
+        operationCount,
+      });
+    }
+
     function markDraft(root, status, options = {}) {
       if (!root) return;
       root.visible = status === "committed" || options.draftVisible !== false;
@@ -2093,12 +2479,17 @@
     }
 
     function discardOrMarkDraft(root, status, options = {}) {
-      if (!root) return;
+      if (!root) return { status: "not-created" };
+      const draftId = root.id;
       if (options.retainFailedDraft === false) {
-        root.remove?.();
-        return;
+        try {
+          if (typeof root.remove !== "function") throw new Error("Draft removal is unavailable");
+          root.remove();
+          return { status: "removed", draftId };
+        } catch (error) { return { status: "failed", draftId, error: error.message }; }
       }
       markDraft(root, status, options);
+      return { status: "retained", draftId };
     }
 
     async function executeModules(plan, options = {}) {
@@ -2128,7 +2519,8 @@
       let latest = null;
       for (const [moduleIndex, module] of modules.entries()) {
         if (options.shouldCancel?.()) {
-          return { ok: false, phase: "paused", error: "用户已暂停导入", modules: moduleResults };
+          const cleanup = discardOrMarkDraft(state.nodes.get(rootId), "paused", options);
+          return { ok: false, phase: "paused", error: "用户已暂停导入", cleanup, modules: moduleResults };
         }
         const moduleStartedAt = Date.now();
         const operations = module.operationIndexes.map((index) => sourceOperations[index]).filter(Boolean);
@@ -2153,8 +2545,18 @@
         };
         latest = await execute(modulePlan, {
           ...options,
+          moduleId: module.id,
+          moduleLabel: module.label,
           skipModules: true,
           skipReadResources: true,
+          // A plugin execution keeps every module in one runtime/transaction.
+          // Preserve the live node index between those modules; rehydrating
+          // through Pixso is only needed when a separate MCP batch starts a
+          // fresh runtime. Some Pixso builds do not expose newly-created
+          // nested icon slots to findAll() until the transaction yields,
+          // which otherwise makes a valid slot look missing in the final
+          // icon-hydration module.
+          preserveNodeState: moduleIndex > 0,
           createTargetPage: false,
           replaceExisting: Boolean(options.replaceExisting),
           commitReplacement: isFinalModule && Boolean(options.replaceExisting),
@@ -2191,6 +2593,8 @@
     }
 
     async function execute(plan, options = {}) {
+      const permanentPlanError = permanentExecutorPlanError(plan);
+      if (permanentPlanError) return { ok: false, phase: "permanent-executor-guard", error: permanentPlanError };
       if (plan.kind === "pixso-component-library-plan" || plan.execution?.mode === "component-library") {
         return executeLibrary(plan, options);
       }
@@ -2250,11 +2654,13 @@
             // duplicate artboards behind.
             isLegacyCanonicalRoot(node))
         : [];
-      state.nodes.clear();
-      // MCP batching starts a fresh runtime for every call. Rehydrate the
-      // current run before appending the next batch, even when replaceExisting
-      // is enabled for transactional replacement of the previous artboard.
-      if (!options.replaceExisting || plan.execution?.mcpBatching) hydrateExistingNodes(page, planRunId(plan));
+      if (!options.preserveNodeState) {
+        state.nodes.clear();
+        // MCP batching starts a fresh runtime for every call. Rehydrate the
+        // current run before appending the next batch, even when replaceExisting
+        // is enabled for transactional replacement of the previous artboard.
+        if (!options.replaceExisting || plan.execution?.mcpBatching) hydrateExistingNodes(page, planRunId(plan));
+      }
       const rootId = plan.execution?.rootNodeId ?? (plan.operations ?? []).find((item) => item.nodeId)?.nodeId;
       const expectedNodeCount = (plan.operations ?? []).filter((operation) => String(operation.op).startsWith("create-") && operation.op !== "create-page").length;
       if (!plan.execution?.mcpBatching && state.nodes.size > 0) {
@@ -2264,11 +2670,19 @@
       }
       let created = 0;
       let processed = 0;
+      const executableCreateCount = (plan.operations ?? []).filter((operation) => String(operation.op).startsWith("create-") && operation.op !== "create-page").length;
+      const executableHydrateCount = (plan.operations ?? []).filter((operation) => operation.op === "hydrate-icon").length;
+      const operationCount = executableCreateCount * 2 + executableHydrateCount;
       try {
-        options.onProgress?.({ id: "layout", label: "布局与内容" });
+        const moduleId = plan.execution?.moduleId ?? null;
+        const moduleLabel = plan.execution?.moduleLabel ?? null;
+        options.onProgress?.(moduleId
+          ? { id: moduleId, label: moduleLabel ?? moduleId }
+          : { id: "layout", label: "布局与内容" });
         await executionCheckpoint(options, 0, true);
         for (const original of plan.operations ?? []) {
           if (!String(original.op).startsWith("create-") || original.op === "create-page") continue;
+          reportOperationProgress(options, original, processed, operationCount, "operation-start");
           if (state.nodes.has(original.nodeId)) {
             // A plan revision can change the rendered mode of an existing
             // linked instance without changing its stable Scene id. Re-run
@@ -2283,6 +2697,7 @@
             setMetadata(existing, original);
             processed += 1;
             await executionCheckpoint(options, processed);
+            reportOperationProgress(options, original, processed, operationCount);
             continue;
           }
           const parent = original.parentId ? state.nodes.get(original.parentId) : page;
@@ -2293,7 +2708,7 @@
           const operation = original.nodeId === rootId ? { ...original, name: uniqueRootName(page, labelledName) } : { ...original, name: labelledName };
           const node = await createNode(operation);
           node.name = operation.name ?? operation.nodeId;
-          parent.appendChild(node);
+          appendNodeInSourceOrder(parent, node, operation);
           applyLayout(node, operation.layout ?? {}, parent);
           if (operation.op === "create-icon-slot") createIconPlaceholder(node, operation);
           else if (operation.op !== "create-instance") applyStyle(node, operation.style ?? {}, operation.op === "create-icon");
@@ -2307,12 +2722,14 @@
           processed += 1;
           if (operation.nodeId === rootId) markDraft(node, "in-progress", options);
           await executionCheckpoint(options, processed);
+          reportOperationProgress(options, operation, processed, operationCount);
         }
         // Pixso resolves some fill/stretched sizes only after every sibling is
         // attached. A deterministic second pass lets text measure against its
         // final parent width and keeps vertical Scene frames vertical.
         for (const operation of plan.operations ?? []) {
           if (!String(operation.op).startsWith("create-") || operation.op === "create-page") continue;
+          reportOperationProgress(options, operation, processed, operationCount, "layout-start");
           const node = state.nodes.get(operation.nodeId);
           const parent = operation.parentId ? state.nodes.get(operation.parentId) : page;
           if (node && parent) {
@@ -2321,19 +2738,22 @@
           }
           processed += 1;
           await executionCheckpoint(options, processed);
+          reportOperationProgress(options, operation, processed, operationCount);
         }
-        options.onProgress?.({ id: "icon-hydration", label: "图标填充" });
+        if (!moduleId) options.onProgress?.({ id: "icon-hydration", label: "图标填充" });
         for (const operation of plan.operations ?? []) {
-          if (operation.op === "hydrate-icon") hydrateIcon(operation);
+          if (operation.op === "hydrate-icon") reportOperationProgress(options, operation, processed, operationCount, "operation-start");
+          if (operation.op === "hydrate-icon") hydrateIconOrDefer(operation);
           if (operation.op === "hydrate-icon") {
             processed += 1;
             await executionCheckpoint(options, processed);
+            reportOperationProgress(options, operation, processed, operationCount);
           }
         }
       } catch (error) {
         const paused = error?.code === "TEXT_TO_UI_PAUSED";
-        discardOrMarkDraft(state.nodes.get(rootId), paused ? "paused" : "failed", options);
-        return { ok: false, phase: paused ? "paused" : "execution", page: { id: page.id, name: page.name }, created, error: error.message };
+        const cleanup = discardOrMarkDraft(state.nodes.get(rootId), paused ? "paused" : "failed", options);
+        return { ok: false, phase: paused ? "paused" : "execution", page: { id: page.id, name: page.name }, created, cleanup, error: error.message };
       }
       const audit = readback(plan);
       const root = state.nodes.get(rootId);
@@ -2389,9 +2809,15 @@
       const originalProgress = options.onProgress;
       const onProgress = (phase) => {
         const now = Date.now();
-        phases.push({ id: phaseId, elapsedMs: now - phaseStartedAt });
-        phaseId = phase?.id ?? "execution";
-        phaseStartedAt = now;
+        // Operation telemetry is high-frequency and is used by the Bridge's
+        // no-progress watchdog. Keep it out of the coarse phase timing array
+        // so a large page does not inflate the result payload or erase the
+        // useful module-level timings.
+        if (phase?.phase !== "operation") {
+          phases.push({ id: phaseId, elapsedMs: now - phaseStartedAt });
+          phaseId = phase?.id ?? "execution";
+          phaseStartedAt = now;
+        }
         originalProgress?.(phase);
       };
       const result = await execute(plan, { ...options, onProgress });

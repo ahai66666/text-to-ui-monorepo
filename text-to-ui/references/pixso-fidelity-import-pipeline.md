@@ -25,6 +25,15 @@ the current run, report the failing gate, and fix it in a separate diagnostic ta
 After the fix, create a new run; never regenerate the old run until it appears to
 pass.
 
+The native executor orders recoverable asset work after the page structure:
+resource preflight, layout/content, icon hydration, then image optimization. A
+failure while hydrating a page-owned icon or materializing an image must keep its
+measured box and commit the already assembled structure as a visible deferred
+placeholder; it is recorded in `audit.iconFailures` or `audit.imageFailures` for
+a subsequent repair pass. Missing structural resources, component resolution,
+layout execution, cancellation, and readback failures remain hard gates and
+must preserve the previous accepted artboard.
+
 The normal total budget is 90 seconds. Stage targets are preflight 3 seconds,
 capture 8 seconds, compile 5 seconds, execution 45 seconds, readback 10 seconds,
 visual diff 5 seconds, and cleanup 5 seconds. These are stopping signals, not
@@ -35,6 +44,31 @@ Each stage records both `workElapsedMs` and `orchestrationElapsedMs`. The 90-sec
 budget uses actual work time; bridge polling, tool round trips and human review
 remain visible as wall-clock telemetry but cannot make a 200ms collector appear
 to be a 40-second conversion.
+
+### Governed queue and retry lifecycle
+
+Before publication, the orchestrator runs a deterministic preflight over the
+current HTML source, browser capture bundle, component facts and Operation Plan
+contracts. A missing image is a warning-only repair item: its measured rectangle
+is retained as a placeholder and the structure may proceed. An optional
+component mapping problem (missing target, missing Variant, or geometry mismatch)
+is also a warning when the compiler can retain the browser-measured subtree as
+native composition; it is recorded in `componentRepairItems` and does not block
+the page. A missing capture bundle, stale fingerprint, schema mismatch, or
+malformed component contract fails before a Bridge job is created and is never
+retried.
+
+The Bridge records the lifecycle
+`PRECHECKING → READY → WAITING_FOR_PLUGIN → CLAIMED → RUNNING(module) →
+RECOVERING → COMPLETED / NEEDS_ATTENTION / FAILED`. Each transition records the
+attempt, last heartbeat, deadline, blocking reason and next action. If a plugin
+does not claim within 15 seconds, the Bridge re-dispatches once. If execution is
+not confirmed within 45 seconds, it clears the claim and releases the run lock
+as `NEEDS_ATTENTION`. The Pixso main runtime emits a module heartbeat every
+5 seconds; 60 seconds without one cancels the draft and stops automatic replay.
+Result acknowledgement has a separate 15-second deadline. Only connection
+failures may recover automatically, and at most once; old, cancelled, failed or
+attention-required runs always require a fresh run.
 
 Record each stage around the actual operation:
 
@@ -48,7 +82,10 @@ node scripts/update-pixso-import-run.mjs \
   --stage capture --status passed
 ```
 
-Normal mode permits one attempt per stage. Use `--mode diagnostic` only in the
+Normal mode permits one attempt per stage. Capture has an internal calibration
+handshake before its one committed evidence package: it may measure DPR and
+adjust the physical browser surface, but it writes exactly one accepted
+Manifest/screenshot pair. Use `--mode diagnostic` only in the
 separate diagnosis workflow; it permits bounded retries but cannot publish into
 the earlier normal run.
 
@@ -93,9 +130,38 @@ collectTextToUiVisualManifest(document, {
 })
 ```
 
-Save the returned JSON to the run's `html-visual-manifest.json`. It records every visible element's stable selector, parent relation, bounds, final Flex/Grid properties, padding, margin, gap, alignment, color, backgrounds, four border edges, radius, typography, text, and SVG/image evidence.
+Save the returned JSON to the run's `html-visual-manifest.json`. Capture the
+page root to the run's `html-reference.png` after the CSS viewport is verified;
+the comparison raster must be exactly the target CSS size, not the current
+Codex panel size or an unnormalised DPR backing surface. It records every
+visible element's stable selector, parent relation, bounds, final Flex/Grid
+properties, padding, margin, gap, alignment, color, backgrounds, four border
+edges, radius, typography, text, and SVG/image evidence.
 
 An `undefined` selector, missing geometry, wrong viewport, wrong zoom, stale fingerprint, or empty node list is blocking. Screenshot-only evidence is not sufficient because it cannot prove padding, border ownership, component identity, or Variable bindings.
+
+### Capture Bundle: the pre-Pixso hard gate
+
+Do not compile or publish directly after saving those two files. Commit them as
+one immutable evidence package:
+
+```bash
+node scripts/pixso-import-orchestrator.mjs capture \
+  --run-manifest <run-manifest.json>
+```
+
+`capture` creates `capture-bundle.json` only when all of the following agree:
+
+- current run ID, HTML fingerprint and static visible state;
+- requested CSS viewport and browser-computed `innerWidth` / `innerHeight`;
+- browser zoom `1.0` and recorded DPR;
+- the actual PNG IHDR dimensions equal the target CSS canvas exactly;
+- the visual manifest and PNG are exactly the artifact paths owned by this run.
+
+The bundle stores hashes for both artifacts. Compile and publish re-read them,
+so a stale, cropped or overwritten screenshot stops before any Pixso draft or
+plugin work begins. This is a machine gate, not a user confirmation: a valid
+capture advances automatically and normally adds only a few milliseconds.
 
 ### Text sizing contract
 
@@ -133,6 +199,11 @@ If a normal run fails for unexplained geometry or rendering reasons, stop it and
 create a new `--mode diagnostic` run. That run may create one native
 code-to-design baseline, must record the exact node id, and must remove only that
 node after diagnosis. Diagnostic artifacts never become canonical inputs.
+
+When the diagnostic cause is an image API incompatibility, reproduce it with a
+minimal image fixture first, fix the shared runtime/compiler, end the diagnostic
+run, and start a fresh normal run. Never let an image-only exception trigger a
+full-page rollback before the structural import has completed.
 
 ## 4. Compile DOM Visual IR only from the current run
 
@@ -185,17 +256,24 @@ Map a component only by canonical `logicalName`, exact Component Set/Variant, de
 - Component-owned icons stay inside the Instance and use explicit icon/instance-swap properties.
 - Page-owned icons use a fixed Token-sized Icon Slot and semantic SVG hydration.
 - If replacing a DOM subtree with an Instance changes its outer bounds, padding, gap, icon size, text wrap, or alignment, the component contract is incompatible. Update the shared component/library contract or leave the region as a Token-bound composition and report the gap. Do not distort the page to fit the old component.
-- Strict component parity forbids silent native fallback for a required mapped component.
+- Native fallback is allowed only when it is explicit, browser-measured,
+  Token-bound, and reported in `componentRepairItems`; it must never be a silent
+  substitution for a required mapped component.
 
 ### Component content-color contract
 
-The component map must carry content colors separately from the component's
-background. For every mapped variant, `contentColor.text` controls visible Text
-descendants and `contentColor.icon` controls the icon instance's existing fill or
-stroke channels. For a brand-background Primary button, both references are
-`$variable/neutral-light/100`. The compiler must include that Variable in the
-plan, and the runtime must apply it after creating the Instance because a
-library master can retain a stale literal color or a different default color.
+The selected Pixso Variant owns the visual color of a mapped Instance. Mapping
+facts may record the Variant's expected content token for audit and component
+maintenance, but HTML computed colors and mapping tokens must not be written as
+per-instance overrides during a normal import. The compiler therefore omits
+`contentColor` from the execution payload by default. When a semantic icon is
+replaced inside a mapped icon slot, the plan may carry
+`iconColorSource: "variant-content"`; the runtime copies the selected Variant's
+existing icon Fill/Stroke onto that replacement only. It never changes the
+label or the Instance's outer content color. The runtime only applies
+`allowContentColorOverride: true` when an explicitly authored plan requests an
+exception. This prevents a stale `brand/100` mapping from recoloring a Coremail
+Ghost control whose native Variant is `neutral-dark/90`.
 Readback must verify the exact Variable binding on the label and icon geometry;
 checking only the Instance's outer fill is insufficient.
 
@@ -210,13 +288,23 @@ node scripts/pixso-plugin-bridge.mjs status
 ```
 
 `recommendedExecutor` remains `plugin` for a normal whole-page run. Publish once
-after validation even when Pixso is temporarily disconnected; Bridge v4 keeps
-the plan in a durable queue and the Permanent Agent claims it after reconnect.
+after validation even when Pixso is temporarily disconnected; Bridge v7 keeps
+the plan in a durable queue, performs one bounded reconnect, and then either
+claims it after reconnect or exposes a clear `NEEDS_ATTENTION` action.
+Claiming creates only a 15-second lease. The job becomes `running` only after
+the plugin UI confirms `/start`, so a disconnected poll or stale debug request
+cannot hold the active-run lock. The installed Permanent Executor is
+self-contained and consumes only the fixed v1 data-plan vocabulary; Bridge is
+optional automatic delivery, not an executable-code update channel. A shared
+plugin can therefore import an Operation Plan directly without a local Agent.
 Capability, plan-schema, kernel, and protocol mismatches are explicit blockers.
 Never automatically prepare MCP calls or run both executors for the same run.
 
-The plugin posts its result to `/result`; the bridge stores it at the run's
-`pixso-plugin-result.json`. MCP `eval_script` is an explicit diagnostic or
+The plugin posts its result to `/result`; the UI keeps an unacknowledged result
+durably and retries after a Bridge restart. The Bridge stores it at the run's
+`pixso-plugin-result.json`, closes the execute/readback stages, and releases the
+active run lock on failure or cancellation. Cancelled and terminal publications
+cannot be reclaimed by a reloaded plugin. MCP `eval_script` is an explicit diagnostic or
 user-approved emergency executor only and must consume the same plan and runtime.
 
 Before the write, generate or read the official adapter contract:

@@ -13,54 +13,116 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const file = path.join(root, "packages/component-contracts/src/components.json");
 const registry = JSON.parse(await fs.readFile(file, "utf8"));
 
+const additions = [
+  {
+    id: "segmented-button",
+    logicalName: "Segmented Button/Default",
+    variants: ["default"],
+    states: ["default", "hover", "focus", "selected", "disabled"],
+    props: ["options", "value", "defaultValue", "label", "disabled", "onChange"],
+    slots: ["option"],
+    tokenRoles: ["color.surface", "color.text", "color.primary", "radius.tab", "spacing.padding-segmented-control", "typography.body-m"],
+    source: "canonical-custom",
+    visualAuthority: "skill-canonical",
+    sourceStrategy: "canonical-custom",
+    implementations: {
+      html: "packages/components-html/src/index.js#segmentedButton",
+      react: "packages/components-react/src/index.jsx#SegmentedButton",
+      vue: "packages/components-vue/src/SegmentedButton.vue"
+    }
+  },
+  {
+    id: "number-selector",
+    logicalName: "Number Selector/Default",
+    variants: ["default"],
+    states: ["default", "hover", "focus", "disabled"],
+    props: ["label", "value", "defaultValue", "min", "max", "step", "disabled", "onChange"],
+    slots: ["label", "decrement", "value", "increment"],
+    tokenRoles: ["color.input-bg", "color.text", "color.border", "color.primary", "size.input-height", "radius.input", "typography.body-m"],
+    source: "canonical-custom",
+    visualAuthority: "skill-canonical",
+    sourceStrategy: "canonical-custom",
+    implementations: {
+      html: "packages/components-html/src/index.js#numberSelector",
+      react: "packages/components-react/src/index.jsx#NumberSelector",
+      vue: "packages/components-vue/src/NumberSelector.vue"
+    }
+  },
+  {
+    id: "sub-tabs",
+    logicalName: "Sub Tabs/Default",
+    variants: ["default"],
+    states: ["default", "hover", "focus", "selected", "disabled"],
+    props: ["tabs", "value", "defaultValue", "disabled", "onChange"],
+    slots: ["label", "content"],
+    tokenRoles: ["color.neutral-dark-05", "color.text-muted", "color.brand-10", "color.brand-100", "spacing.gap-subtab-item", "spacing.space-5", "radius.subtab", "size.size-10", "typography.subtitle-m"],
+    source: "canonical-custom",
+    visualAuthority: "skill-canonical",
+    sourceStrategy: "canonical-custom",
+    implementations: {
+      html: "packages/components-html/src/index.js#subTabs",
+      react: "packages/components-react/src/index.jsx#SubTabs",
+      vue: "packages/components-vue/src/SubTabs.vue"
+    }
+  },
+  {
+    id: "tree-view",
+    logicalName: "Tree View/Default",
+    variants: ["default"],
+    states: ["default", "hover", "focus", "selected", "expanded", "disabled"],
+    props: ["nodes", "selectedId", "expandedIds", "defaultSelectedId", "defaultExpandedIds", "disabled", "onSelect", "onToggle"],
+    slots: ["node-leading", "node-label", "node-trailing"],
+    tokenRoles: ["color.text", "color.surface", "color.border", "color.primary", "spacing.menu-item-content", "size.tree-item-height", "radius.subtab", "typography.body-m"],
+    source: "canonical-custom",
+    visualAuthority: "skill-canonical",
+    sourceStrategy: "canonical-custom",
+    implementations: {
+      html: "packages/components-html/src/index.js#treeView",
+      react: "packages/components-react/src/index.jsx#TreeView",
+      vue: "packages/components-vue/src/TreeView.vue"
+    }
+  }
+];
+for (const component of additions) {
+  if (!registry.components.some((item) => item.id === component.id)) registry.components.push(component);
+}
+
 const sections = [
-  ["titlebars", "标题栏"],
-  ["buttons", "按钮"],
-  ["fields", "输入与字段"],
-  ["choices", "选择控件"],
-  ["navigation", "导航"],
-  ["data-display", "卡片与数据"],
-  ["disclosure", "披露与导航"],
-  ["overlays", "浮层与命令"],
-  ["form-plus", "复合表单"],
-  ["loading-data", "加载与日期"],
-  ["specialized", "专用内容"],
-  ["feedback", "提示与反馈"]
+  ["navigation", "导航类"],
+  ["actions", "操作类"],
+  ["display", "展示类"],
+  ["input", "输入类"],
+  ["choices", "选择类"],
+  ["containers", "容器类"],
+  ["specialized", "特殊组件"]
 ];
 const sectionLabels = Object.fromEntries(sections);
 const order = {
-  titlebar: 10,
-  button: 20,
-  input: 30, search: 31, textarea: 32, select: 33, field: 34,
-  checkbox: 40, radio: 41, "radio-group": 42, switch: 43,
-  "primary-navigation-item": 49, sidebar: 50, "list-card": 51, tabs: 52, breadcrumb: 53, pagination: 54,
-  avatar: 60, badge: 61, card: 62, item: 63, table: 64, "data-table": 65, progress: 66, empty: 67,
-  accordion: 70, collapsible: 71, "navigation-menu": 72, menubar: 73, separator: 74,
-  dialog: 80, "alert-dialog": 81, "semi-modal": 82, popover: 83, "hover-card": 84, "context-menu": 85, "dropdown-menu": 86,
-  label: 90, combobox: 91, "native-select": 92, slider: 93, "input-otp": 94, kbd: 95,
-  chart: 102, calendar: 103, "date-picker": 104, "time-picker": 105,
-  attachment: 110, carousel: 111, "aspect-ratio": 112, bubble: 113, typography: 114,
-  alert: 120, tooltip: 121, toast: 122
+  titlebar: 10, "primary-navigation-item": 11, sidebar: 12, tabs: 13, "sub-tabs": 13.5, "tree-view": 14.5, breadcrumb: 14, menubar: 16, pagination: 17, accordion: 18, collapsible: 19,
+  button: 110, chips: 111, "context-menu": 112, "dropdown-menu": 113,
+  alert: 210, snackbar: 211, tooltip: 212, popover: 213, "hover-card": 214, avatar: 215, badge: 216, "color-picker": 217, card: 217, table: 218, "data-table": 219, progress: 220, chart: 221, empty: 222,
+  input: 310, search: 311, textarea: 312, field: 313, label: 314, combobox: 315, "number-selector": 316,
+  checkbox: 410, radio: 411, "radio-group": 412, switch: 413, "segmented-button": 414, select: 415, "native-select": 416, slider: 417, calendar: 419, "date-picker": 420, "time-picker": 421,
+  "form-field": 509, "list-card": 510, dialog: 512, "alert-dialog": 513, "semi-modal": 514,
+  attachment: 610
 };
 const sectionFor = {
-  titlebar: "titlebars", button: "buttons",
-  input: "fields", search: "fields", textarea: "fields", select: "fields", field: "fields",
-  checkbox: "choices", radio: "choices", "radio-group": "choices", switch: "choices",
-  "primary-navigation-item": "navigation", sidebar: "navigation", "list-card": "navigation", tabs: "navigation", breadcrumb: "navigation", pagination: "navigation",
-  avatar: "data-display", badge: "data-display", card: "data-display", item: "data-display", table: "data-display", "data-table": "data-display", progress: "data-display", empty: "data-display",
-  accordion: "disclosure", collapsible: "disclosure", "navigation-menu": "disclosure", menubar: "disclosure", separator: "disclosure",
-  dialog: "overlays", "alert-dialog": "overlays", "semi-modal": "overlays", popover: "overlays", "hover-card": "overlays", "context-menu": "overlays", "dropdown-menu": "overlays",
-  label: "form-plus", combobox: "form-plus", "native-select": "form-plus", slider: "form-plus", "input-otp": "form-plus", kbd: "form-plus",
-  chart: "loading-data", calendar: "loading-data", "date-picker": "loading-data", "time-picker": "loading-data",
-  attachment: "specialized", carousel: "specialized", "aspect-ratio": "specialized", bubble: "specialized", typography: "specialized",
-  alert: "feedback", tooltip: "feedback", toast: "feedback"
+  titlebar: "navigation", "primary-navigation-item": "navigation", sidebar: "navigation", tabs: "navigation", "sub-tabs": "navigation", "tree-view": "navigation", breadcrumb: "navigation", menubar: "navigation", pagination: "navigation", accordion: "navigation", collapsible: "navigation",
+  button: "actions", chips: "actions", "context-menu": "actions", "dropdown-menu": "actions",
+  alert: "display", snackbar: "display", tooltip: "display", popover: "display", "hover-card": "display", avatar: "display", badge: "display", card: "display", table: "display", "data-table": "display", progress: "display", chart: "display", empty: "display",
+  input: "input", search: "input", textarea: "input", field: "input", label: "input", combobox: "input", "number-selector": "input",
+  "color-picker": "display",
+  checkbox: "choices", radio: "choices", "radio-group": "choices", switch: "choices", "segmented-button": "choices", select: "choices", "native-select": "choices", slider: "choices", calendar: "choices", "date-picker": "choices", "time-picker": "choices",
+  "form-field": "containers", "list-card": "containers", dialog: "containers", "alert-dialog": "containers", "semi-modal": "containers",
+  attachment: "specialized"
 };
-const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "tabs", "accordion", "collapsible", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast", "attachment", "carousel"]);
-const fillIds = new Set(["input", "search", "textarea", "sidebar", "list-card", "table", "data-table", "accordion", "collapsible"]);
+const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "form-field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "segmented-button", "number-selector", "tabs", "sub-tabs", "tree-view", "accordion", "collapsible", "avatar", "badge", "card", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "label", "alert", "tooltip", "snackbar", "attachment"]);
+const fillIds = new Set(["input", "search", "textarea", "sidebar", "list-card", "form-field", "table", "data-table", "accordion", "collapsible", "tree-view"]);
 const overlayIds = new Set(["dialog", "alert-dialog", "semi-modal", "popover", "hover-card", "context-menu", "dropdown-menu"]);
 const behaviorMap = {
   button: ["click", "keyboard-activation", "disabled"],
   input: ["input", "focus", "disabled", "error"],
+  "form-field": ["slot-control", "validation", "disabled"],
   search: ["input", "clear", "focus", "disabled"],
   radio: ["select", "keyboard-activation", "disabled"],
   textarea: ["input", "focus", "disabled", "error"],
@@ -68,6 +130,8 @@ const behaviorMap = {
   sidebar: ["select", "keyboard-activation", "disabled"],
   "list-card": ["select", "keyboard-activation", "disabled"],
   tabs: ["select", "arrow-keys", "focus"],
+  "sub-tabs": ["select", "arrow-keys", "focus"],
+  "tree-view": ["select", "toggle", "arrow-keys", "focus"],
   accordion: ["toggle", "keyboard-activation", "focus"],
   collapsible: ["toggle", "keyboard-activation", "focus"],
   combobox: ["open", "select", "escape", "arrow-keys"],
@@ -78,7 +142,12 @@ const behaviorMap = {
   calendar: ["select", "arrow-keys"],
   "date-picker": ["open", "select", "escape"],
   "time-picker": ["open", "select", "escape"],
-  attachment: ["open", "select", "preview", "download", "escape", "outside-click", "disabled"]
+  "color-picker": ["select", "input", "focus", "disabled"],
+  "segmented-button": ["select", "keyboard-activation", "disabled"],
+  "number-selector": ["input", "increment", "decrement", "focus", "disabled"],
+  menubar: ["open", "select", "escape", "arrow-keys", "hover-submenu", "focus", "disabled"],
+  attachment: ["open", "select", "preview", "download", "escape", "outside-click", "disabled"],
+  snackbar: ["action", "close"]
 };
 
 // The legacy gallery is the visual authority, but its section names do not
@@ -86,21 +155,22 @@ const behaviorMap = {
 // future renderer never guesses a baseline from a component's English name.
 const legacyVisualGroup = {
   titlebar: "titlebars", button: "buttons",
-  input: "fields", search: "fields", textarea: "fields", select: "fields", field: "fields",
-  checkbox: "choices", radio: "choices", "radio-group": "choices", switch: "choices",
-  "primary-navigation-item": "navigation", sidebar: "navigation", "list-card": "navigation", tabs: "navigation", breadcrumb: "navigation", pagination: "navigation",
-  avatar: "data-display", badge: "data-display", card: "data-display", item: "data-display", table: "data-display", "data-table": "data-display", progress: "data-display", empty: "data-display",
-  accordion: "disclosure", collapsible: "disclosure", "navigation-menu": "disclosure", menubar: "disclosure", separator: "disclosure",
+  input: "fields", search: "fields", textarea: "fields", select: "fields", field: "fields", "form-field": "fields",
+  checkbox: "choices", radio: "choices", "radio-group": "choices", switch: "choices", "segmented-button": "choices", "number-selector": "fields",
+  "primary-navigation-item": "navigation", sidebar: "navigation", "list-card": "navigation", tabs: "navigation", "sub-tabs": "navigation", "tree-view": "navigation", breadcrumb: "navigation", pagination: "navigation",
+  avatar: "data-display", badge: "data-display", card: "data-display", table: "data-display", "data-table": "data-display", progress: "data-display", empty: "data-display",
+  accordion: "disclosure", collapsible: "disclosure", menubar: "disclosure",
   dialog: "overlays", "alert-dialog": "overlays", "semi-modal": "overlays", popover: "overlays", "hover-card": "overlays", "context-menu": "overlays", "dropdown-menu": "overlays",
-  label: "form-plus", combobox: "form-plus", "native-select": "form-plus", slider: "form-plus", "input-otp": "form-plus", kbd: "form-plus",
+  label: "form-plus", combobox: "form-plus", "native-select": "form-plus", slider: "form-plus", "input-otp": "form-plus", kbd: "form-plus", "color-picker": "form-plus",
   chart: "loading-data", calendar: "loading-data", "date-picker": "loading-data", "time-picker": "loading-data",
-  attachment: "specialized", carousel: "specialized",
-  alert: "feedback", tooltip: "feedback", toast: "feedback"
+  attachment: "specialized",
+  alert: "feedback", tooltip: "feedback", snackbar: "feedback"
 };
 
 const typographyRoles = {
   button: ["label:body-l", "small-label:body-m"],
   input: ["value:body-l", "placeholder:body-l", "label:body-m", "help:body-s"],
+  "form-field": ["label:subtitle-s", "error:body-s"],
   search: ["value:body-l", "placeholder:body-l"],
   radio: ["label:body-m"],
   textarea: ["value:body-l", "placeholder:body-l", "label:body-m", "help:body-s"],
@@ -110,10 +180,14 @@ const typographyRoles = {
   table: ["header:body-m", "cell:body-l"],
   "data-table": ["header:body-m", "cell:body-l"],
   tabs: ["label:body-m"],
+  "sub-tabs": ["label:subtitle-m", "unselected-label:body-l", "content:body-l"],
+  "tree-view": ["node-label:body-l", "node-trailing:body-m"],
   attachment: ["title:subtitle-s", "content:body-m", "description:body-s", "help:body-s"],
   alert: ["content:subtitle-s"],
   tooltip: ["content:body-l"],
-  badge: ["label:body-s"]
+  snackbar: ["title:subtitle-s", "subtitle:body-s", "action:body-m"],
+  badge: ["label:body-s"],
+  "color-picker": ["title:title-s", "content:body-l", "description:body-m", "help:body-s"]
 };
 
 const explicitStates = {
@@ -130,6 +204,7 @@ const iconAliases = {
   titlebar: ["action/minimize", "action/maximize", "action/close"],
   button: ["action/add", "action/download", "action/settings", "action/close", "navigation/chevron-down", "action/refresh", "action/more"],
   input: [],
+  "form-field": [],
   search: ["field/search", "action/close"],
   textarea: [],
   select: ["navigation/chevron-down"],
@@ -142,21 +217,20 @@ const iconAliases = {
   sidebar: ["navigation/grid", "navigation/recent", "action/more"],
   "list-card": ["navigation/list"],
   tabs: ["navigation/list"],
+  "sub-tabs": [],
+  "tree-view": ["navigation/chevron-right", "navigation/grid", "object/file"],
   breadcrumb: ["navigation/chevron-down"],
   pagination: ["navigation/back", "navigation/forward"],
   avatar: [],
   badge: [],
   card: [],
-  item: [],
   table: [],
   "data-table": [],
   progress: ["status/success"],
   empty: ["action/add"],
   accordion: ["navigation/chevron-right"],
   collapsible: ["navigation/chevron-down"],
-  "navigation-menu": ["navigation/grid"],
-  menubar: ["navigation/grid"],
-  separator: [],
+  menubar: ["navigation/grid", "navigation/chevron-right"],
   dialog: [],
   "alert-dialog": ["status/warning"],
   "semi-modal": ["action/close"],
@@ -174,11 +248,11 @@ const iconAliases = {
   calendar: ["field/calendar"],
   "date-picker": ["field/calendar"],
   "time-picker": ["field/clock"],
+  "color-picker": [],
   attachment: ["navigation/chevron-down"],
-  carousel: ["navigation/chevron-down"],
   alert: ["status/info", "status/success", "status/warning", "status/danger", "status/neutral", "action/close"],
   tooltip: ["status/info"],
-  toast: ["status/success", "action/close"]
+  snackbar: ["status/info", "action/close"]
 };
 
 const coreSpecimens = {
@@ -205,12 +279,22 @@ const coreSpecimens = {
     { id: "icon-text-primary", variant: "primary", state: "default", mode: "icon-text" },
     { id: "icon-text-secondary", variant: "secondary", state: "default", mode: "icon-text" },
     { id: "icon-text-ghost", variant: "ghost", state: "default", mode: "icon-text" },
-    { id: "selection-dropdown", variant: "secondary", state: "default", mode: "selection-dropdown" },
-    { id: "split-dropdown", variant: "ghost", state: "default", mode: "split-dropdown" }
+    { id: "split-dropdown", variant: "ghost", state: "default", mode: "split-dropdown" },
+    { id: "split-dropdown-icon", variant: "ghost", state: "default", mode: "split-dropdown", iconOnly: true }
+  ],
+  chips: [
+    { id: "default", variant: "default", state: "default" },
+    { id: "hover", variant: "with-icon", state: "hover" },
+    { id: "pressed", variant: "closable", state: "pressed" },
+    { id: "disabled", variant: "closable", state: "disabled" }
   ],
   input: [
     { id: "white-surface", variant: "default", state: "default", surface: "white" },
     { id: "gray-surface", variant: "default", state: "default", surface: "gray" }
+  ],
+  snackbar: [
+    { id: "title-only", variant: "title-only", state: "default", leftArea: "1" },
+    { id: "title-subtitle", variant: "title-subtitle", state: "default", leftArea: "2" }
   ],
   search: [
     { id: "white-surface", variant: "default", state: "default", surface: "white" },
@@ -220,21 +304,23 @@ const coreSpecimens = {
     { id: "white-surface", variant: "default", state: "default", surface: "white" },
     { id: "gray-surface", variant: "default", state: "default", surface: "gray" }
   ],
+  "form-field": [
+    { id: "default-white", variant: "input", state: "default", surface: "white" },
+    { id: "default-gray", variant: "input", state: "default", surface: "gray" },
+    { id: "required-white", variant: "select", state: "default", surface: "white", required: true },
+    { id: "required-gray", variant: "select", state: "default", surface: "gray", required: true },
+    { id: "error-white", variant: "input", state: "error", surface: "white" },
+    { id: "error-gray", variant: "input", state: "error", surface: "gray" }
+  ],
   select: [
     { id: "white-surface", variant: "default", state: "default", surface: "white" },
     { id: "gray-surface", variant: "default", state: "default", surface: "gray" }
   ],
+  "sub-tabs": [{ id: "default", variant: "default", state: "default" }],
+  "tree-view": [{ id: "default", variant: "default", state: "default" }],
   radio: [
     { id: "unselected", variant: "unselected", state: "default", checked: false },
     { id: "selected", variant: "selected", state: "selected", checked: true }
-  ],
-  item: [
-    { id: "single-text-arrow", variant: "single-line", state: "default", lines: 1, trailing: "text-arrow" },
-    { id: "double-icon", variant: "double-line", state: "default", lines: 2, trailing: "icon" },
-    { id: "triple-radio", variant: "triple-line", state: "default", lines: 3, trailing: "radio" },
-    { id: "single-checkbox", variant: "single-line", state: "default", lines: 1, trailing: "checkbox" },
-    { id: "single-switch", variant: "single-line", state: "default", lines: 1, trailing: "switch" },
-    { id: "single-notification-arrow", variant: "single-line", state: "default", lines: 1, trailing: "notification-arrow" }
   ],
   "primary-navigation-item": [{ id: "default", variant: "default", state: "default", surface: "white" }],
   sidebar: [{ id: "default", variant: "default", state: "default", surface: "white" }],
@@ -252,7 +338,8 @@ const coreSpecimens = {
   ],
   dialog: [
     { id: "single-default", variant: "single", state: "closed", actionLayout: "single", intent: "default" },
-    { id: "double-default", variant: "double", state: "closed", actionLayout: "double", intent: "default" }
+    { id: "double-default", variant: "double", state: "closed", actionLayout: "double", intent: "default" },
+    { id: "triple-default", variant: "triple", state: "closed", actionLayout: "triple", intent: "default" }
   ],
   "alert-dialog": [
     { id: "danger-confirm", variant: "danger", state: "closed", actionLayout: "double", intent: "danger" }
@@ -272,7 +359,8 @@ const coreSpecimens = {
     { id: "warning", variant: "warning", state: "default", label: "Warning / 警告", message: "连接不稳定，部分内容可能暂时无法加载。", action: "重新连接" },
     { id: "danger", variant: "danger", state: "default", label: "Danger / 危险", message: "存储空间不足，请清理空间后重试。", action: "清理空间" },
     { id: "neutral", variant: "neutral", state: "default", label: "Neutral / 中性", message: "当前为只读模式，部分编辑操作暂不可用。", action: "知道了" }
-  ]
+  ],
+  "color-picker": [{ id: "default", variant: "default", state: "default" }]
 };
 
 for (const component of registry.components) {
@@ -309,8 +397,33 @@ for (const component of registry.components) {
        { slot: "previous", alias: "navigation/back", displaySizes: [16, 20, 24], kind: "regular" },
        { slot: "next", alias: "navigation/forward", displaySizes: [16, 20, 24], kind: "regular" }
      ]
-      : component.iconAliases.map((alias) => ({ alias, displaySizes: component.id === "primary-navigation-item" ? [24] : ["accordion", "collapsible"].includes(component.id) ? [20] : [16, 20, 24], kind: iconKind }));
+      : component.iconAliases.map((alias) => ({
+        slot: component.id === "menubar" ? (alias === "navigation/chevron-right" ? "item-trailing" : "item-leading") : undefined,
+        alias,
+        displaySizes: component.id === "primary-navigation-item" || component.id === "menubar" ? [24] : ["accordion", "collapsible"].includes(component.id) ? [20] : [16, 20, 24],
+        kind: iconKind
+      })).map((entry) => Object.fromEntries(Object.entries(entry).filter(([, value]) => value !== undefined)));
  component.iconSemantic = component.iconAliases[0] ?? null;
+  if (component.id === "snackbar") {
+    component.variants = ["title-only", "title-subtitle"];
+    component.allowedStates = ["default"];
+    component.props = ["title", "subtitle", "actionLabel", "leftArea", "closable", "onAction", "onClose"];
+    component.slots = ["leading", "title", "subtitle", "action", "close"];
+    component.canonicalSpecimen = "pixso:Snackbar:左侧区域=1";
+    component.iconAliases = ["status/info", "action/close"];
+    component.iconSlots = [
+      { slot: "leading", alias: "status/info", displaySizes: [24], kind: "regular" },
+      { slot: "close", alias: "action/close", displaySizes: [20], kind: "regular" }
+    ];
+    component.slotContracts = {
+      ...component.slotContracts,
+      leading: { cardinality: "1", scope: "snackbar-main", iconAlias: "status/info", iconSize: "24px", source: "lucide" },
+      title: { cardinality: "1", scope: "snackbar-content", typographyRole: "subtitle-s" },
+      subtitle: { cardinality: "0..1", scope: "snackbar-content", typographyRole: "body-s", activeWhen: "variant=title-subtitle" },
+      action: { cardinality: "0..1", scope: "snackbar-actions", control: "small-button-slot", acceptedComponentContract: "button", requiredSize: "small", accepts: "any shared Button mode and variant at small size", defaultControl: "Button/Ghost/Default" },
+      close: { cardinality: "0..1", scope: "snackbar-actions", control: "icon-button", iconAlias: "action/close", iconSize: "20px", hotZone: "40px", requiresAccessibleName: true }
+    };
+  }
   if (component.id === "primary-navigation-item") {
     component.slots = ["icon", "tooltip"];
     component.structuralAxes = {
@@ -321,6 +434,17 @@ for (const component of registry.components) {
     component.slotContracts = {
       ...component.slotContracts,
       icon: { ...component.slotContracts?.icon, cardinality: "1", scope: "primary-navigation-item", displaySize: "24px", kind: "regular", source: "lucide" }
+    };
+  }
+  if (component.id === "menubar") {
+    component.props = ["label", "value", "items", "disabled", "state", "className"];
+    component.slots = ["label", "content", "description", "item-leading", "item-label", "item-trailing"];
+    component.tokenRoles = [...new Set([...(component.tokenRoles ?? []), "icon-size-lg", "spacing.menu-item-content"])]
+    component.slotContracts = {
+      ...component.slotContracts,
+      "item-leading": { cardinality: "0..1", scope: "menubar-item", iconSize: "24px", iconToken: "icon-size-lg", gapToken: "gap-menu-item-content", gap: "8px", source: "lucide" },
+      "item-label": { cardinality: "1", scope: "menubar-item", typographyRole: "body-l" },
+      "item-trailing": { cardinality: "0..1", scope: "menubar-item", iconAlias: "navigation/chevron-right", iconSize: "24px", iconToken: "icon-size-lg", activeWhen: "hasSubmenu", placement: "trailing-end" }
     };
   }
   if (component.id === "semi-modal") {
@@ -432,12 +556,12 @@ for (const component of registry.components) {
     };
   }
   if (component.id === "dialog") {
-    component.variants = ["single", "double"];
+    component.variants = ["single", "double", "triple"];
     component.states = ["closed", "open"];
     component.allowedStates = ["closed", "open"];
-    component.structuralAxes = { actionLayout: ["single", "double"], intent: ["default", "danger"] };
+    component.structuralAxes = { actionLayout: ["single", "double", "triple"], intent: ["default", "danger"] };
     component.interactionStates = ["closed", "open"];
-    component.props = ["open", "title", "description", "intent", "actionLayout", "confirmLabel", "cancelLabel", "onConfirm", "onCancel", "onOpenChange"];
+    component.props = ["open", "title", "description", "intent", "actionLayout", "confirmLabel", "cancelLabel", "thirdActionLabel", "onConfirm", "onCancel", "onThirdAction", "onOpenChange"];
   }
   if (component.id === "alert-dialog") {
     component.variants = ["danger"];
@@ -473,30 +597,19 @@ for (const component of registry.components) {
     : "已保留旧 Skill 视觉基线和逻辑契约，但运行时适配器仍需按本组件真实结构、行为和可访问性逐批验收。";
 }
 
-const comparisonGroups = (registry.registryPolicy?.comparisonGroups ?? []).map((group) => ({
-  ...group,
-  componentIds: [...(group.componentIds ?? [])]
-}));
+const comparisonGroups = sections.map(([id, label]) => ({ id, label, componentIds: [] }));
 const comparisonGroupById = new Map(comparisonGroups.map((group) => [group.id, group]));
-for (const [id, label] of sections) {
-  if (!comparisonGroupById.has(id)) {
-    const group = { id, label, componentIds: [] };
-    comparisonGroups.push(group);
-    comparisonGroupById.set(id, group);
-  }
-}
-const registeredIds = new Set(registry.components.map((component) => component.id));
-for (const group of comparisonGroups) group.componentIds = group.componentIds.filter((componentId) => registeredIds.has(componentId));
 for (const component of registry.components) {
-  if (!comparisonGroups.some((group) => group.componentIds.includes(component.id))) {
-    comparisonGroupById.get(component.category)?.componentIds.push(component.id);
-  }
+  comparisonGroupById.get(component.category)?.componentIds.push(component.id);
 }
 const preferredComparisonOrder = {
-  navigation: ["primary-navigation-item", "tabs", "list-card"],
-  disclosure: ["breadcrumb", "accordion", "collapsible", "navigation-menu", "menubar", "separator", "sidebar", "item"],
-  fields: ["input", "search", "textarea", "select"],
-  "form-plus": ["field", "label", "combobox", "native-select", "slider", "input-otp", "kbd"]
+  navigation: ["titlebar", "primary-navigation-item", "sidebar", "tabs", "sub-tabs", "tree-view", "breadcrumb", "menubar", "pagination", "accordion", "collapsible"],
+  actions: ["button", "chips", "context-menu", "dropdown-menu"],
+  display: ["alert", "snackbar", "tooltip", "popover", "hover-card", "avatar", "badge", "color-picker", "card", "table", "data-table", "progress", "chart", "empty"],
+  input: ["input", "search", "textarea", "field", "label", "combobox", "number-selector"],
+  choices: ["checkbox", "radio", "radio-group", "switch", "segmented-button", "select", "native-select", "slider", "calendar", "date-picker", "time-picker"],
+  containers: ["form-field", "list-card", "dialog", "alert-dialog", "semi-modal"],
+  specialized: ["attachment"]
 };
 for (const [groupId, preferredIds] of Object.entries(preferredComparisonOrder)) {
   const group = comparisonGroupById.get(groupId);

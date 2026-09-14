@@ -26,7 +26,7 @@ function fixture(kind) {
     { index: 0, parentIndex: null, childIndex: 0, selector: "#app", selectorAliases: ["#app"], tag: "main", rect: { x: 0, y: 0, width: 1728, height: 1152 }, style: { ...baseStyle, backgroundColor: "rgb(255, 255, 255)", overflow: "hidden" }, semantic: { dataset: {}, component: null }, text: "", asset: null },
     { index: 1, parentIndex: 0, childIndex: 0, selector: `.${kind}-pane`, selectorAliases: [`.${kind}-pane`], tag: "section", rect: { x: 24, y: 24, width: 1680, height: 1104 }, style: { ...baseStyle, backgroundColor: "rgb(255, 255, 255)", paddingLeft: "24px", paddingRight: "24px" }, semantic: { dataset: { tuiPaneRole: kind }, component: null }, text: "", asset: null },
     { index: 2, parentIndex: 1, childIndex: 0, selector: `.${kind}-heading`, selectorAliases: [`.${kind}-heading`], tag: "h1", rect: { x: 48, y: 48, width: 240, height: 32 }, style: { ...baseStyle, fontSize: "24px", fontWeight: "700", lineHeight: "32px" }, semantic: { dataset: {}, component: null }, text: kind === "email" ? "收件箱" : kind === "settings" ? "设置" : "数据总览", asset: null },
-    { index: 3, parentIndex: 1, childIndex: 1, selector: `.tui-component.tui-button.${kind}`, selectorAliases: [`.tui-component.tui-button.${kind}`], tag: "button", rect: { x: 48, y: 96, width: 120, height: 40 }, style: { ...baseStyle, display: "flex", flexDirection: "row", gap: "8px", columnGap: "8px", paddingLeft: "16px", paddingRight: "16px", backgroundColor: "rgb(10, 89, 247)", borderTopLeftRadius: "8px", borderTopRightRadius: "8px", borderBottomRightRadius: "8px", borderBottomLeftRadius: "8px" }, semantic: { accessibleText: "新建", ariaLabel: null, component: "button", variant: "primary", dataset: { component: "button", variant: "primary" } }, text: "", asset: null },
+    { index: 3, parentIndex: 1, childIndex: 1, selector: `.tui-component.tui-button.${kind}`, selectorAliases: [`.tui-component.tui-button.${kind}`], tag: "button", rect: { x: 48, y: 96, width: 120, height: 40 }, style: { ...baseStyle, display: "flex", flexDirection: "row", gap: "8px", columnGap: "8px", paddingLeft: "8px", paddingRight: "8px", backgroundColor: "rgb(10, 89, 247)", borderTopLeftRadius: "8px", borderTopRightRadius: "8px", borderBottomRightRadius: "8px", borderBottomLeftRadius: "8px" }, semantic: { accessibleText: "新建", ariaLabel: null, component: "button", variant: "primary", dataset: { component: "button", variant: "primary" } }, text: "", asset: null },
     { index: 4, parentIndex: 3, childIndex: 0, selector: `.tui-component.tui-button.${kind} > svg`, selectorAliases: [`.tui-component.tui-button.${kind} > svg`], tag: "svg", rect: { x: 60, y: 106, width: 20, height: 20 }, style: { ...baseStyle, color: "rgb(255, 255, 255)" }, semantic: { dataset: {}, component: null }, text: "", asset: { kind: "svg", alias: "action/add", html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor"/></svg>' } },
   ];
   return { schemaVersion: 4, kind: "text-to-ui-html-visual-manifest", source: "browser-computed-visual-manifest", runId: `${kind}-run`, htmlSourceFingerprint: fingerprint, stateId: "default-visible", url: `http://fixture/${kind}/`, viewport: { width: 1728, height: 1152, zoom: 1 }, nodeCount: nodes.length, nodes };
@@ -50,6 +50,8 @@ for (const kind of ["email", "settings", "dashboard"]) {
   assert.equal(plan.execution.minimumRuntimeVersion, "5.0.0");
   assert.equal(plan.execution.agentContract.protocolVersion, 4);
   assert.equal(plan.execution.agentContract.planSchemaVersion, 5);
+  assert.equal(plan.execution.agentContract.executorProtocol, 1);
+  assert.deepEqual(plan.execution.agentContract.requiredCapabilities, ["executor.data-plan.v1", "executor.transaction.v1", "executor.assets.deferred.v1", "executor.readback.v1"]);
   assert.equal(plan.execution.outputPolicy, "single-managed-artboard");
   assert.equal(plan.execution.preserveFailedDraft, false);
   assert.equal(plan.page.htmlSourceFingerprint, manifest.htmlSourceFingerprint);
@@ -59,12 +61,72 @@ for (const kind of ["email", "settings", "dashboard"]) {
   assert.ok(plan.summary.tokenBindingCount > 0);
   const primaryButton = plan.operations.find((operation) => operation.nodeId === "dom-3");
   assert.equal(primaryButton.op, "create-instance", `${kind}: Primary button should use the mapped component instance`);
-  assert.deepEqual(primaryButton.componentRef.contentColor, {
-    text: "$variable/neutral-light/100",
-    icon: "$variable/neutral-light/100",
-  }, `${kind}: Primary button content must use the light neutral token for text and icon`);
-  assert.ok(plan.operations.some((operation) => operation.op === "ensure-variable" && operation.name === "neutral-light/100"), `${kind}: Primary button content token must be included in resources`);
+  assert.equal(primaryButton.componentRef.contentColor, undefined, `${kind}: mapped Variant must own content color without an instance override`);
+  assert.equal(primaryButton.componentRef.iconColorSource, "variant-content", `${kind}: icon replacement must inherit the selected Pixso Variant color`);
 }
+
+const badgeManifest = fixture("email");
+badgeManifest.nodes = badgeManifest.nodes.slice(0, 4);
+badgeManifest.nodeCount = badgeManifest.nodes.length;
+badgeManifest.nodes[3] = {
+  ...badgeManifest.nodes[3],
+  selector: ".tui-component.tui-badge.tui-badge--danger",
+  selectorAliases: [".tui-component.tui-badge.tui-badge--danger"],
+  tag: "span",
+  rect: { x: 48, y: 96, width: 52, height: 24 },
+  style: {
+    ...baseStyle,
+    display: "flex",
+    paddingLeft: "8px",
+    paddingRight: "8px",
+    borderTopLeftRadius: "4px",
+    borderTopRightRadius: "4px",
+    borderBottomRightRadius: "4px",
+    borderBottomLeftRadius: "4px",
+  },
+  semantic: {
+    accessibleText: "错误",
+    component: "badge",
+    logicalName: "Badge/Default",
+    variant: "danger",
+    dataset: { component: "badge", logicalComponent: "Badge/Default", variant: "danger" },
+  },
+  text: "错误",
+  asset: null,
+};
+const badgeIr = buildDomVisualIr(badgeManifest, { tokens, componentMap, componentSpecs, pageName: "badge variant fixture" });
+const badgePlan = compileDomVisualIrPlan(badgeIr, { tokens, componentMap, images: [] });
+const badgeOperation = badgePlan.operations.find((operation) => operation.nodeId === "dom-3");
+assert.equal(badgeOperation.op, "create-instance", "Badge must reuse the Pixso component set");
+assert.equal(badgeOperation.componentRef.pixsoName, "Badge");
+assert.deepEqual(badgeOperation.componentRef.variant, { "属性 1": "Error" });
+
+const imageManifest = fixture("email");
+imageManifest.nodeCount += 1;
+imageManifest.nodes.push({
+  index: 5,
+  parentIndex: 1,
+  childIndex: 1,
+  selector: ".email-pane > img",
+  selectorAliases: [".email-pane > img"],
+  tag: "img",
+  rect: { x: 300, y: 96, width: 48, height: 32 },
+  style: { ...baseStyle },
+  semantic: { dataset: {}, component: null },
+  text: "",
+  asset: { kind: "image", src: "data:image/png;base64,cG5n", fit: "contain" },
+});
+const imageIr = buildDomVisualIr(imageManifest, { tokens, componentMap, componentSpecs, pageName: "image fixture" });
+const imagePlan = compileDomVisualIrPlan(imageIr, {
+  tokens,
+  componentMap,
+  images: [{ ref: "dom-image-5", mimeType: "image/png", dataBase64: "cG5n" }],
+});
+const imageOperation = imagePlan.operations.find((operation) => operation.op === "create-image" && operation.nodeId === "dom-5");
+assert.equal(imageOperation?.phase, "image-optimization", "DOM image operations must run in the late image optimization phase");
+assert.equal(imagePlan.phases.at(-1).id, "image-optimization");
+assert.deepEqual(imagePlan.modules.map((module) => module.id).at(-1), "image-optimization");
+assert.ok(imagePlan.modules.at(-1).operationIndexes.includes(imagePlan.operations.indexOf(imageOperation)), "late image operations must be isolated in the final module");
 
 const typographyManifest = {
   schemaVersion: 4,
@@ -153,12 +215,55 @@ const incompatibleSearchManifest = {
     : node),
 };
 const incompatibleSearchPlan = compileDomVisualIrPlan(buildDomVisualIr(incompatibleSearchManifest, { tokens, componentMap, componentSpecs, pageName: "incompatible search fixture" }), { tokens, componentMap, images: [] });
-assert.equal(incompatibleSearchPlan.operations.find((operation) => operation.nodeId === "dom-6").op, "create-frame", "a component whose HTML gap differs from the shared contract must remain a tokenized composition");
-assert.ok(incompatibleSearchPlan.operations.some((operation) => operation.nodeId === "dom-8" && operation.op === "create-icon-slot"), "an incompatible component must preserve its exact page-owned SVG instead of collapsing to the library default");
-const directSearchIconSlot = incompatibleSearchPlan.operations.find((operation) => operation.nodeId === "dom-8" && operation.op === "create-icon-slot");
-const directSearchIconHydration = incompatibleSearchPlan.operations.find((operation) => operation.op === "hydrate-icon" && operation.targetNodeId === "dom-8");
-assert.deepEqual(directSearchIconSlot.iconSlot.hotZone, { alignment: "CENTER", axes: "BOTH" }, "page-owned SVGs must carry a two-axis centred hot zone");
-assert.deepEqual(directSearchIconHydration.iconRef.hotZone, { alignment: "CENTER", axes: "BOTH" }, "icon hydration must preserve the two-axis centred hot zone");
+const incompatibleSearchOperation = incompatibleSearchPlan.operations.find((operation) => operation.nodeId === "dom-6");
+assert.equal(incompatibleSearchOperation.op, "create-frame", "a geometry-incompatible mapping must preserve the page structure with native composition");
+assert.equal(incompatibleSearchOperation.metadata.componentFallback.reason, "geometry-incompatible", "a geometry mismatch must become a repair item");
+assert.ok(incompatibleSearchPlan.operations.some((operation) => operation.nodeId === "dom-8"), "native fallback must retain the browser-owned icon subtree");
+assert.equal(incompatibleSearchPlan.summary.componentRepairCount, 1, "the incompatible mapping must be reported without blocking the import");
+
+const itemManifest = {
+  ...directTextManifest,
+  runId: "item-fallback-run",
+  htmlSourceFingerprint: "item-fallback-fingerprint",
+  nodeCount: 3,
+  nodes: [
+    directTextManifest.nodes[0],
+    { index: 9, parentIndex: 0, childIndex: 3, selector: ".tui-component.tui-item", selectorAliases: [".tui-component.tui-item"], tag: "article", rect: { x: 24, y: 140, width: 420, height: 72 }, style: { ...baseStyle, display: "flex", flexDirection: "column", gap: "4px", paddingLeft: "16px", paddingRight: "16px" }, semantic: { accessibleText: "邮件标题", logicalName: "List Item/White Surface/Default", component: "item", dataset: { component: "item" } }, text: "", asset: null },
+    { index: 10, parentIndex: 9, childIndex: 0, selector: ".tui-component.tui-item__title", selectorAliases: [".tui-component.tui-item__title"], tag: "span", rect: { x: 40, y: 156, width: 180, height: 20 }, style: { ...baseStyle, fontSize: "16px", lineHeight: "20px" }, semantic: { dataset: {} }, text: "邮件标题", asset: null },
+  ],
+};
+const itemIr = buildDomVisualIr(itemManifest, { tokens, componentMap, componentSpecs, pageName: "item fallback fixture" });
+const itemPlan = compileDomVisualIrPlan(itemIr, { tokens, componentMap, images: [] });
+assert.equal(itemIr.summary.componentFallbackCount, 1, "Item must be recognized as a repairable native fallback");
+assert.equal(itemIr.summary.componentRepairItems[0].logicalName, "List Item/White Surface/Default");
+assert.ok(!itemPlan.operations.some((operation) => operation.op === "create-instance" && operation.nodeId === "dom-9"), "unmapped Item must never block or emit a broken component instance");
+assert.equal(itemPlan.operations.find((operation) => operation.nodeId === "dom-9").op, "create-frame");
+assert.equal(itemPlan.operations.find((operation) => operation.nodeId === "dom-10").op, "create-text");
+
+const sidebarManifest = {
+  ...directTextManifest,
+  runId: "sidebar-instance-run",
+  htmlSourceFingerprint: "sidebar-instance-fingerprint",
+  nodeCount: 6,
+  nodes: [
+    directTextManifest.nodes[0],
+    { index: 20, parentIndex: 0, childIndex: 0, selector: ".tui-component.tui-sidebar", selectorAliases: [".tui-component.tui-sidebar"], tag: "nav", rect: { x: 24, y: 140, width: 240, height: 40 }, style: { ...baseStyle, display: "flex", flexDirection: "row", gap: "8px", columnGap: "8px", paddingLeft: "8px", paddingRight: "8px" }, semantic: { ariaLabel: "邮件文件夹", component: "sidebar", logicalName: "Sidebar Item/Default", dataset: { component: "sidebar", logicalComponent: "Sidebar Item/Default" } }, text: "", asset: null },
+    { index: 21, parentIndex: 20, childIndex: 0, selector: ".tui-sidebar-item", selectorAliases: [".tui-sidebar-item"], tag: "button", rect: { x: 24, y: 140, width: 240, height: 40 }, style: { ...baseStyle, display: "flex", flexDirection: "row", gap: "8px", columnGap: "8px", paddingLeft: "8px", paddingRight: "8px" }, semantic: { dataset: { state: "selected" }, variant: "selected" }, text: "", asset: null },
+    { index: 22, parentIndex: 21, childIndex: 0, selector: ".tui-sidebar-item [data-slot='leading']", selectorAliases: [".tui-sidebar-item [data-slot='leading']"], tag: "span", rect: { x: 32, y: 150, width: 20, height: 20 }, style: { ...baseStyle }, semantic: { dataset: { slot: "leading" } }, text: "", asset: null },
+    { index: 23, parentIndex: 22, childIndex: 0, selector: ".tui-sidebar-item [data-slot='leading'] > svg", selectorAliases: [], tag: "svg", rect: { x: 32, y: 150, width: 20, height: 20 }, style: { ...baseStyle }, semantic: { dataset: {} }, text: "", asset: { kind: "svg", alias: "navigation/inbox", html: '<svg viewBox="0 0 24 24"><path d="M2 12h20" stroke="currentColor"/></svg>' } },
+    { index: 24, parentIndex: 21, childIndex: 1, selector: ".tui-sidebar-item [data-slot='label']", selectorAliases: [".tui-sidebar-item [data-slot='label']"], tag: "span", rect: { x: 60, y: 152, width: 48, height: 20 }, style: { ...baseStyle, fontSize: "16px", lineHeight: "20px" }, semantic: { dataset: { slot: "label" } }, text: "收件箱", asset: null },
+    { index: 25, parentIndex: 21, childIndex: 2, selector: ".tui-sidebar-item [data-slot='trailing']", selectorAliases: [".tui-sidebar-item [data-slot='trailing']"], tag: "span", rect: { x: 220, y: 152, width: 20, height: 20 }, style: { ...baseStyle, fontSize: "14px", lineHeight: "20px" }, semantic: { dataset: { slot: "trailing" } }, text: "28", asset: null },
+  ],
+};
+sidebarManifest.nodeCount = sidebarManifest.nodes.length;
+const sidebarIr = buildDomVisualIr(sidebarManifest, { tokens, componentMap, componentSpecs, pageName: "sidebar fixture" });
+const sidebarPlan = compileDomVisualIrPlan(sidebarIr, { tokens, componentMap, images: [] });
+const sidebarOperation = sidebarPlan.operations.find((operation) => operation.nodeId === "dom-21");
+assert.equal(sidebarOperation.op, "create-instance", "the Coremail navigation child must resolve to Sidebar Item");
+assert.equal(sidebarOperation.componentRef.logicalName, "Sidebar Item/Default");
+assert.equal(sidebarOperation.componentRef.variant.state, "selected");
+assert.deepEqual(sidebarOperation.slots, { leading: "navigation/inbox", trailing: "28", label: "收件箱", value: "收件箱" });
+assert.equal(sidebarPlan.operations.find((operation) => operation.nodeId === "dom-20").op, "create-frame", "the Sidebar collection container must remain a layout frame");
 
 // A live CSS gap is a layout property, not a prerequisite variable name. The
 // compiler should bind the captured value to the existing spacing scale and

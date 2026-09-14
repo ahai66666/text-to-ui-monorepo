@@ -4,7 +4,7 @@
     { "logicalName": "Titlebar/Default", "usage": "任务详情全局标题", "region": "detail", "expectedRuntimeCount": 1 },
     { "logicalName": "Sidebar Item/Default", "usage": "任务分类导航", "region": "navigation", "expectedRuntimeCount": 1 },
     { "logicalName": "Search/White Surface/Default", "usage": "任务搜索", "region": "list", "expectedRuntimeCount": 1 },
-    { "logicalName": "Item/Default", "usage": "任务列表行", "region": "list", "expectedRuntimeCount": 2 },
+    { "logicalName": "List Item/White Surface/Default", "usage": "任务列表行", "region": "list", "expectedRuntimeCount": 2 },
     { "logicalName": "Button/Primary/Default", "usage": "新增任务", "region": "navigation", "expectedRuntimeCount": 1 },
     { "logicalName": "Checkbox/Default", "usage": "任务完成状态", "region": "detail", "expectedRuntimeCount": 1 }
   ]

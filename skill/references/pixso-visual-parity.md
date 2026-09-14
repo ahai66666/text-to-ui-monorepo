@@ -22,6 +22,12 @@ physicalHeight = round(targetCssHeight × devicePixelRatio)
 
 当前目标为 `1728 × 1152 CSS px`。例如设备倍率约为 `1.12` 时，应尝试物理视口约 `1935 × 1290`，然后以页面实际 `innerWidth/innerHeight` 为准记录校准结果。
 
+截图还必须是已归一化的比较栅格：PNG 的真实宽高必须等于目标 CSS
+画布（当前为 `1728 × 1152`），不能是浏览器侧栏后的可见面板宽度，也
+不能直接使用 DPR 放大的 backing surface。采集完成后通过
+`pixso-import-orchestrator.mjs capture` 提交 `capture-bundle.json`；没有该
+Bundle 时，编译和 Pixso 发布必须失败且不得创建草稿画板。
+
 ## 3. 先验收几何，再判断样式
 
 桌面三栏页面至少记录并核验：

@@ -35,6 +35,20 @@
         "hotZone": { "$ref": "#/$defs/hotZone" }
       },
       "additionalProperties": false
+    },
+    "componentRef": {
+      "type": "object",
+      "properties": {
+        "logicalName": { "type": "string", "minLength": 1 },
+        "pixsoName": { "type": ["string", "null"] },
+        "componentSetName": { "type": ["string", "null"] },
+        "variant": { "type": ["object", "null"] },
+        "iconColorSource": { "const": "variant-content" },
+        "contentColor": { "type": ["string", "object"] },
+        "allowIconColorOverride": { "const": true },
+        "allowContentColorOverride": { "const": true }
+      },
+      "additionalProperties": true
     }
   },
   "properties": {
@@ -55,7 +69,7 @@
         "type": "object",
         "required": ["id", "operationCount"],
         "properties": {
-          "id": { "enum": ["resources", "layout", "icon-hydration"] },
+          "id": { "enum": ["resources", "layout", "icon-hydration", "image-optimization"] },
           "label": { "type": "string" },
           "operationCount": { "type": "integer", "minimum": 0 }
         }
@@ -67,7 +81,7 @@
         "type": "object",
         "required": ["id", "operationCount"],
         "properties": {
-          "id": { "enum": ["shell", "primary-navigation", "secondary-list", "main-detail", "icon-hydration"] },
+          "id": { "enum": ["shell", "primary-navigation", "secondary-list", "main-detail", "icon-hydration", "image-optimization"] },
           "label": { "type": "string" },
           "dependsOn": { "type": "array", "items": { "type": "string" } },
           "operationIds": { "type": "array", "items": { "type": "string" } },
@@ -84,11 +98,12 @@
         "required": ["op"],
         "properties": {
           "op": { "type": "string" },
-          "phase": { "enum": ["resources", "layout", "icon-hydration"] },
+          "phase": { "enum": ["resources", "layout", "icon-hydration", "image-optimization"] },
           "targetNodeId": { "type": "string" },
           "imageRef": { "type": "object" },
           "iconSlot": { "$ref": "#/$defs/iconSlot" },
-          "iconRef": { "$ref": "#/$defs/iconRef" }
+          "iconRef": { "$ref": "#/$defs/iconRef" },
+          "componentRef": { "$ref": "#/$defs/componentRef" }
         }
       }
     },

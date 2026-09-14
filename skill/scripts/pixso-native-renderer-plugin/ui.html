@@ -29,7 +29,7 @@
     <div class="bridge">
       <div class="bridge-line"><span><span id="bridge-dot" class="dot"></span> 本地自动桥接</span><span id="bridge-state">等待连接</span></div>
       <label><input id="auto" type="checkbox" checked /> 自动接收并替换当前画板</label>
-      <small>插件保持在右侧栏时，Text-to-UI 发布新计划后会自动执行。</small>
+      <small>插件可独立打开本地 Operation Plan；保持在右侧栏时，本地 Bridge 仅负责自动投递，不参与执行代码升级。</small>
       <button id="pause" class="secondary" disabled>暂停当前导入</button>
     </div>
     <input id="file" type="file" accept="application/json,.json" />
@@ -47,11 +47,19 @@
       let plan = null;
       let bridgeRevision = "";
       let bridgeBusy = false;
+      let executionProgress = null;
+      let pendingBridgeStart = null;
       let blockedRevision = "";
       let runtimeVersion = "unknown";
       const protocolVersion = 4;
       let operationPlanVersions = [1, 5];
       let capabilities = [];
+      let pendingBridgeResult = null;
+      let bridgeResultBusy = false;
+      let pendingBridgeProgress = null;
+      let bridgeProgressBusy = false;
+      const pendingResultStorageKey = "text-to-ui-pending-bridge-result-v1";
+      try { pendingBridgeResult = JSON.parse(localStorage.getItem(pendingResultStorageKey) || "null"); } catch (_) {}
       const bridgeSessionId = `pixso-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
       const bridgeUrl = "http://127.0.0.1:43982";
       const status = (message) => { document.querySelector("#status").textContent = message; };
@@ -69,10 +77,42 @@
           "native-plugin-required": "等待插件就绪",
           "plugin-plan-schema-mismatch": "计划版本不兼容",
           "plugin-capability-mismatch": "执行能力不足",
+          "publication-cancelled": "计划已取消",
+          "plugin-start-timeout": "插件启动超时",
+          "module-heartbeat-timeout": "模块心跳超时",
+          "result-ack-timeout": "结果确认超时",
         };
         bridgeState(true, labels[payload.reason] ?? "计划已阻断");
         status(payload.error ?? "当前计划暂时不能执行，请由 Text-to-UI 发布一份新计划。");
       };
+      const rememberBridgeResult = (payload) => {
+        pendingBridgeResult = payload;
+        try { localStorage.setItem(pendingResultStorageKey, JSON.stringify(payload)); } catch (_) {}
+      };
+      async function flushBridgeResult() {
+        if (!pendingBridgeResult || bridgeResultBusy) return;
+        bridgeResultBusy = true;
+        try {
+          const response = await fetch(`${bridgeUrl}/result`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(pendingBridgeResult)
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (response.ok && payload.ok) {
+            pendingBridgeResult = null;
+            try { localStorage.removeItem(pendingResultStorageKey); } catch (_) {}
+          } else if (response.status === 409 && /revision|runId/.test(String(payload.error ?? ""))) {
+            pendingBridgeResult = null;
+            try { localStorage.removeItem(pendingResultStorageKey); } catch (_) {}
+            status(`执行结果对应的旧计划已被新计划取代：${payload.error}`);
+          }
+        } catch (_) {
+          // Keep the durable pending result and retry after the Bridge returns.
+        } finally {
+          bridgeResultBusy = false;
+        }
+      }
       document.querySelector("#open").addEventListener("click", () => document.querySelector("#file").click());
       document.querySelector("#file").addEventListener("change", async (event) => {
         const file = event.target.files?.[0];
@@ -110,25 +150,35 @@
           capabilities = message.capabilities ?? capabilities;
           blockedRevision = "";
           bridgeRevision = "";
-          document.querySelector("#runtime-version").textContent = `Kernel v${runtimeVersion}`;
+          document.querySelector("#runtime-version").textContent = `Kernel v${runtimeVersion} · 固定执行器 v${message.executorVersion ?? "1"}`;
         }
         if (message?.type === "STATUS") status(message.message);
         if (message?.type === "RUN_STATE") {
           document.querySelector("#pause").disabled = !message.running;
-          if (message.running) bridgeState(true, "正在导入，可暂停");
+          if (message.running) {
+            bridgeBusy = true;
+            bridgeState(true, "正在导入，可暂停");
+            void confirmBridgeStart();
+          }
         }
         if (message?.type === "EXECUTION_PROGRESS") {
-          fetch(`${bridgeUrl}/progress`, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ revision: message.revision, progress: message.progress })
-          }).catch(() => {});
+          executionProgress = message.progress ?? executionProgress;
+          postBridgeProgress(message.progress);
         }
         if (message?.type === "AUTO_PLAN_RESULT") {
+          void postBridgeProgress({
+            ...(executionProgress ?? { id: "result", label: "等待结果确认" }),
+            phase: "result-ready",
+            resultReadyAt: new Date().toISOString(),
+          }, true);
           bridgeBusy = false;
           bridgeRevision = message.revision ?? bridgeRevision;
           if (message.ok) {
-            bridgeState(true, "已同步");
+            const iconFailures = message.result?.audit?.iconFailures?.length ?? 0;
+            const imageFailures = message.result?.audit?.imageFailures?.length ?? 0;
+            const assetFailures = iconFailures + imageFailures;
+            bridgeState(true, assetFailures ? `结构已同步，${assetFailures} 项资源待优化` : "已同步");
+            if (assetFailures) status(`主体结构已完成并提交；${iconFailures} 项图标、${imageFailures} 项图片进入后续优化，不会回滚已导入内容。`);
           } else if (message.result?.phase === "paused") {
             bridgeState(true, "已暂停");
             status("导入已暂停。旧正式画板已保留，未完成草稿已清理；发布新计划后可重新导入。");
@@ -136,17 +186,68 @@
             bridgeState(true, "执行失败，已停止重试");
             status(`自动生成失败：${message.error ?? "未知错误"}\n当前计划不会自动重试；Text-to-UI 发布新版本后再执行。`);
           }
-          fetch(`${bridgeUrl}/result`, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ revision: message.revision, runId: message.runId, runtimeVersion: message.runtimeVersion ?? runtimeVersion, protocolVersion: message.protocolVersion ?? protocolVersion, ok: message.ok, result: message.result, error: message.error })
-          }).catch(() => {});
+          rememberBridgeResult({ revision: message.revision, runId: message.runId, runtimeVersion: message.runtimeVersion ?? runtimeVersion, protocolVersion: message.protocolVersion ?? protocolVersion, ok: message.ok, result: message.result, error: message.error });
+          flushBridgeResult();
         }
       };
+      function postBridgeProgress(progress, resultReady = false) {
+        if (!bridgeRevision) return;
+        pendingBridgeProgress = {
+          progress,
+          resultReady: Boolean(resultReady) || Boolean(pendingBridgeProgress?.resultReady),
+        };
+        void flushBridgeProgress();
+      }
+      async function flushBridgeProgress() {
+        if (bridgeProgressBusy || !pendingBridgeProgress || !bridgeRevision) return;
+        bridgeProgressBusy = true;
+        try {
+          while (pendingBridgeProgress && bridgeRevision) {
+            const payload = pendingBridgeProgress;
+            pendingBridgeProgress = null;
+            try {
+              const response = await fetch(`${bridgeUrl}/progress`, {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ revision: bridgeRevision, progress: payload.progress, resultReady: payload.resultReady }),
+              });
+              if (!response.ok) {
+                pendingBridgeProgress = payload;
+                break;
+              }
+            } catch (_) {
+              pendingBridgeProgress = payload;
+              break;
+            }
+          }
+        } finally {
+          bridgeProgressBusy = false;
+        }
+      }
+      async function confirmBridgeStart() {
+        const pending = pendingBridgeStart;
+        if (!pending) return;
+        pendingBridgeStart = null;
+        try {
+          const response = await fetch(`${bridgeUrl}/start`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(pending),
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || !payload.ok) throw new Error(payload.error ?? "领取计划后无法确认执行启动");
+          bridgeRevision = pending.revision ?? bridgeRevision;
+        } catch (error) {
+          bridgeBusy = false;
+          bridgeState(false, "等待连接");
+          status(`插件启动确认失败：${error.message ?? "网络请求失败"}`);
+          parent.postMessage({ pluginMessage: { type: "CANCEL_GENERATION" } }, "*");
+        }
+      }
       async function pollBridge() {
         if (!document.querySelector("#auto").checked || bridgeBusy || runtimeVersion === "unknown") return;
         try {
-          const response = await fetch(`${bridgeUrl}/claim?after=${encodeURIComponent(bridgeRevision)}&session=${encodeURIComponent(bridgeSessionId)}&runtime=${encodeURIComponent(runtimeVersion)}&protocol=${protocolVersion}`, { cache: "no-store" });
+          const response = await fetch(`${bridgeUrl}/claim?after=${encodeURIComponent(bridgeRevision)}&session=${encodeURIComponent(bridgeSessionId)}&runtime=${encodeURIComponent(runtimeVersion)}&protocol=${protocolVersion}&capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`, { cache: "no-store" });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const payload = await response.json();
           if (payload.blocked) {
@@ -158,15 +259,18 @@
           bridgeState(true, payload.changed ? "收到新计划" : "已连接");
           if (payload.changed && payload.plan) {
             bridgeBusy = true;
-            // A revision is consumed when execution starts, not only after it
-            // succeeds. Otherwise one failed plan is fetched and regenerated
-            // every second forever.
+            executionProgress = { id: "startup", label: "等待插件执行器启动" };
+            // Keep CLAIMED until the main Pixso executor posts RUN_STATE.
+            // Otherwise a frozen module would be misreported as RUNNING.
+            pendingBridgeStart = { revision: payload.revision, claimToken: payload.claimToken, sessionId: bridgeSessionId };
             bridgeRevision = payload.revision ?? bridgeRevision;
             plan = payload.plan;
             parent.postMessage({ pluginMessage: { type: "AUTO_PLAN", plan, revision: payload.revision } }, "*");
           }
-        } catch (_) {
+        } catch (error) {
+          bridgeBusy = false;
           bridgeState(false, "等待连接");
+          status(`桥接暂不可用：${error.message ?? "网络请求失败"}`);
         }
       }
       async function heartbeatBridge() {
@@ -193,10 +297,11 @@
       }
       setInterval(pollBridge, 1000);
       setInterval(heartbeatBridge, 1000);
-      window.addEventListener("focus", () => { heartbeatBridge(); pollBridge(); });
-      document.addEventListener("visibilitychange", () => { if (!document.hidden) { heartbeatBridge(); pollBridge(); } });
-      heartbeatBridge();
-      pollBridge();
+      setInterval(flushBridgeResult, 1500);
+      window.addEventListener("focus", () => { heartbeatBridge(); pollBridge(); flushBridgeResult(); });
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) { heartbeatBridge(); pollBridge(); flushBridgeResult(); } });
+      (async () => { await heartbeatBridge(); await pollBridge(); })();
+      flushBridgeResult();
     </script>
   </body>
 </html>

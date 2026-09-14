@@ -103,7 +103,7 @@
         "variant": {
           "size": "Medium",
           "state": "Default",
-          "type": "Primary"
+          "type": "primary"
         }
       },
       "pixsoVariant": {
@@ -126,7 +126,7 @@
         "height": "size/40",
         "iconSize": "size/20",
         "radius": "radius/08",
-        "paddingX": "space/5"
+        "paddingX": "space/3"
       }
     },
     {
@@ -135,7 +135,7 @@
         "variant": {
           "size": "Medium",
           "state": "Default",
-          "type": "Ghost"
+          "type": "ghost"
         }
       },
       "pixsoVariant": {
@@ -153,12 +153,12 @@
         "Leading": "action/add"
       },
       "tokens": {
-        "content": "brand/100",
+        "content": "neutral-dark/90",
         "gap": "space/3",
         "height": "size/40",
         "iconSize": "size/20",
         "radius": "radius/08",
-        "paddingX": "space/5"
+        "paddingX": "space/3"
       },
       "sourceVariantAliases": [
         {
@@ -171,7 +171,7 @@
         }
       ],
       "notes": [
-        "Exact live source match: icon-text / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."
+        "Exact live source match: icon-text / size=Medium / type=ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."
       ]
     },
     {
@@ -180,12 +180,17 @@
         "variant": {
           "size": "Medium",
           "state": "Default",
-          "type": "Primary"
+          "type": "secondary"
         }
+      },
+      "pixsoVariant": {
+        "size": "Medium",
+        "state": "Default",
+        "type": "secondary"
       },
       "target": "Icon Text Button/Secondary/Default",
       "reuse": "structure",
-      "takeoverStatus": "needs-rebuild",
+      "takeoverStatus": "adapting",
       "textStyles": {
         "Label": "Typography/Body_L"
       },
@@ -199,10 +204,10 @@
         "height": "size/40",
         "iconSize": "size/20",
         "radius": "radius/08",
-        "paddingX": "space/5"
+        "paddingX": "space/3"
       },
       "notes": [
-        "The live icon-text set currently exposes Primary and Ghost only. Do not treat Primary as a Secondary match; add a Secondary variant before strict delivery."
+        "Exact live source match: icon-text / size=Medium / type=secondary / state=Default. Keep this variant linked, then verify the editable Label and Leading slots before strict delivery."
       ]
     },
     {
@@ -270,41 +275,15 @@
     },
     {
       "source": {
-        "componentSet": "Selection Dropdown",
-        "variant": {
-          "size": "Medium",
-          "state": "Default"
-        }
-      },
-      "target": "Selection Dropdown/Default",
-      "reuse": "structure",
-      "takeoverStatus": "adapting",
-      "textStyles": {
-        "Label": "Typography/Body_L"
-      },
-      "icons": {
-        "Trailing": "navigation/chevron-down"
-      },
-      "tokens": {
-        "background": "neutral-dark/05",
-        "content": "neutral-dark/90",
-        "gap": "space/3",
-        "height": "size/40",
-        "iconSize": "size/16",
-        "radius": "radius/08",
-        "paddingX": "space/4"
-      },
-      "notes": [
-        "Expose the label as instance-safe content and replace the icon-font arrow with the registered semantic SVG."
-      ]
-    },
-    {
-      "source": {
         "componentSet": "Search",
         "variant": {
           "surface": "white",
           "state": "Default"
         }
+      },
+      "pixsoVariant": {
+        "surface": "bg-white",
+        "state": "Default"
       },
       "target": "Search/White Surface/Default",
       "reuse": "structure",
@@ -324,7 +303,8 @@
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
-        "paddingX": "space/4"
+        "paddingLeft": "space/4",
+        "paddingRight": "space/2"
       }
     },
     {
@@ -334,6 +314,10 @@
           "surface": "dark",
           "state": "Default"
         }
+      },
+      "pixsoVariant": {
+        "surface": "gb-gray",
+        "state": "Default"
       },
       "target": "Search/Gray Surface/Default",
       "reuse": "structure",
@@ -354,7 +338,8 @@
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
-        "paddingX": "space/4"
+        "paddingLeft": "space/4",
+        "paddingRight": "space/2"
       },
       "notes": [
         "Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."
@@ -383,7 +368,8 @@
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
-        "paddingX": "space/4"
+        "paddingLeft": "space/5",
+        "paddingRight": "space/3"
       }
     },
     {
@@ -409,7 +395,8 @@
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
-        "paddingX": "space/4"
+        "paddingLeft": "space/5",
+        "paddingRight": "space/3"
       }
     },
     {
@@ -419,6 +406,10 @@
           "surface": "white",
           "state": "Default"
         }
+      },
+      "pixsoVariant": {
+        "surface": "bg-white",
+        "state": "Default"
       },
       "target": "Input/White Surface/Default",
       "reuse": "structure",
@@ -431,7 +422,8 @@
         "placeholder": "neutral-dark/40",
         "height": "size/40",
         "radius": "radius/08",
-        "paddingX": "space/4"
+        "paddingLeft": "space/4",
+        "paddingRight": "space/2"
       }
     },
     {
@@ -441,6 +433,10 @@
           "surface": "dark",
           "state": "Default"
         }
+      },
+      "pixsoVariant": {
+        "surface": "gb-gray",
+        "state": "Default"
       },
       "target": "Input/Gray Surface/Default",
       "reuse": "structure",
@@ -453,55 +449,8 @@
         "placeholder": "neutral-dark/40",
         "height": "size/40",
         "radius": "radius/08",
-        "paddingX": "space/4"
-      }
-    },
-    {
-      "source": {
-        "componentSet": "TextInput-Muti-2in1",
-        "variant": {
-          "灰色场景": "OFF",
-          "状态": "Normal"
-        }
-      },
-      "target": "Textarea/White Surface/Default",
-      "reuse": "structure",
-      "textStyles": {
-        "Placeholder": "Typography/Body_L",
-        "Counter": "Typography/Body_S"
-      },
-      "tokens": {
-        "background": "neutral-dark/05",
-        "content": "neutral-dark/90",
-        "placeholder": "neutral-dark/40",
-        "counter": "neutral-dark/60",
-        "radius": "radius/08",
-        "paddingX": "space/4",
-        "paddingY": "space/3"
-      }
-    },
-    {
-      "source": {
-        "componentSet": "TextInput-Muti-2in1",
-        "variant": {
-          "灰色场景": "ON",
-          "状态": "Normal"
-        }
-      },
-      "target": "Textarea/Gray Surface/Default",
-      "reuse": "structure",
-      "textStyles": {
-        "Placeholder": "Typography/Body_L",
-        "Counter": "Typography/Body_S"
-      },
-      "tokens": {
-        "background": "neutral-light/100",
-        "content": "neutral-dark/90",
-        "placeholder": "neutral-dark/40",
-        "counter": "neutral-dark/60",
-        "radius": "radius/08",
-        "paddingX": "space/4",
-        "paddingY": "space/3"
+        "paddingLeft": "space/4",
+        "paddingRight": "space/2"
       }
     },
     {
@@ -520,7 +469,7 @@
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
-        "gap": "space/3"
+        "gap": "space/0"
       },
       "deltas": [
         "Native control is 24px; Text to UI desktop control remains 20px."
@@ -542,7 +491,7 @@
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
-        "gap": "space/3"
+        "gap": "space/0"
       },
       "deltas": [
         "Native control is 24px; Text to UI desktop control remains 20px."
@@ -565,11 +514,55 @@
         "track": "neutral-dark/05",
         "thumb": "neutral-light/100",
         "content": "neutral-dark/90",
-        "gap": "space/3"
+        "gap": "space/0"
       },
       "deltas": [
         "Native track is 36x20; Text to UI desktop track remains 44x24."
       ]
+    },
+    {
+      "source": {
+        "componentSet": "Snackbar/ColorPicker-Tablet",
+        "variant": {}
+      },
+      "target": "ColorPicker/Tablet",
+      "reuse": "structure",
+      "takeoverStatus": "adapting",
+      "textStyles": {
+        "Title": "Typography/Title_S",
+        "Label": "Typography/Body_M",
+        "Value": "Typography/Body_S"
+      },
+      "tokens": {
+        "background": "neutral-light/100",
+        "content": "neutral-dark/90",
+        "radius": "radius/16",
+        "paddingX": "space/6",
+        "paddingY": "space/4"
+      }
+    },
+    {
+      "source": {
+        "componentSet": "Chips",
+        "variant": {
+          "状态": "Default"
+        }
+      },
+      "target": "Chips/Default",
+      "reuse": "structure",
+      "textStyles": {
+        "Label": "Typography/Body_M"
+      },
+      "tokens": {
+        "background": "neutral-dark/05",
+        "content": "neutral-dark/90",
+        "height": "size/28",
+        "radius": "radius/08",
+        "paddingLeft": "space/4",
+        "paddingRight": "space/3",
+        "gap": "space/2",
+        "iconSize": "size/16"
+      }
     },
     {
       "source": {
@@ -581,13 +574,18 @@
       "target": "Snackbar/Default",
       "reuse": "structure",
       "textStyles": {
-        "Message": "Typography/Body_L"
+        "Title": "Typography/Subtitle_S",
+        "Subtitle": "Typography/Body_S",
+        "Text Action": "Typography/Body_M"
       },
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
         "height": "size/48",
-        "radius": "radius/08"
+        "radius": "radius/16",
+        "paddingLeft": "space/4",
+        "contentGap": "space/1",
+        "closeIconSize": "size/20"
       },
       "effectStyle": "Effect/Foundation/shadow-3"
     }
@@ -598,20 +596,8 @@
       "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
     },
     {
-      "name": "Chips",
-      "reason": "Pixso component exists, but the current HTML contract has no direct Chips identity."
-    },
-    {
       "name": "ScrollBar-Phone",
       "reason": "Platform utility, not a registered reusable component in the current scope."
-    },
-    {
-      "name": "Menu-2in1",
-      "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
-    },
-    {
-      "name": "CheckboxGroup",
-      "reason": "Pixso component exists, but the current HTML contract has no direct CheckboxGroup identity."
     },
     {
       "name": ".2in1 Container",
@@ -624,10 +610,6 @@
     {
       "name": "Dialog-2in1",
       "reason": "Pixso component exists, but Dialog-2in1 still needs an explicit HTML contract mapping."
-    },
-    {
-      "name": "ColorPicker-Tablet",
-      "reason": "Pixso component exists, but the current HTML contract has no direct ColorPicker identity."
     },
     {
       "name": "Search-Second Page-2in1",

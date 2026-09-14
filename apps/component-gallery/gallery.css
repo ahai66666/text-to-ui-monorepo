@@ -1,2 +1,61 @@
 /* Gallery-shell rules only. Canonical component and runtime CSS are imported
    as module dependencies by preview.js so Vite emits a self-contained bundle. */
+
+/* Pattern is a flat baseline surface. Each complete Pattern owns one row so
+   its title, controls and preview can be read as a single horizontal unit. */
+.pattern-baseline-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+
+.pattern-baseline-grid > .pattern-baseline-card {
+  min-width: 0;
+  margin: 0;
+  display: block;
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section {
+  margin: 0;
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .section-head {
+  margin-bottom: var(--space-3);
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .section-head h3 {
+  font-size: var(--type-subtitle-l-size);
+  line-height: var(--type-subtitle-l-leading);
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .section-head .section-note {
+  max-width: 56ch;
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .pattern-preview-controls {
+  margin-bottom: var(--space-3);
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .pattern-sample,
+.pattern-baseline-grid > .pattern-baseline-card > .section > [data-secondary-page-mode-panel] > .pattern-sample {
+  max-width: 100%;
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .pattern-sample {
+  overflow: auto;
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .three-pane-pattern-viewport {
+  overflow-x: auto;
+}
+
+.pattern-baseline-grid > .pattern-baseline-card > .section > .secondary-page-mode-switch {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 720px) {
+  .pattern-baseline-grid {
+    gap: var(--space-4);
+  }
+}

@@ -3,7 +3,8 @@
 import assert from "node:assert/strict";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildCoremailScene, collectSceneStats, compileOperationPlan, loadComponentMap, loadTokenResources, readJson, validateCoremailSecondaryListScene } from "./pixso-native-scene-lib.mjs";
+import { collectSceneStats, compileOperationPlan, loadComponentMap, loadTokenResources, readJson } from "./pixso-native-scene-lib.mjs";
+import { buildCoremailScene, validateCoremailSecondaryListScene } from "./coremail-semantic-adapter.mjs";
 
 const repo = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const pageSpec = readJson(path.join(repo, "apps/coremail-workbench/page-spec.json"));
@@ -133,6 +134,8 @@ assert.equal(plan.execution.targetPage, "coremail");
 assert.equal(plan.execution.preserveExistingFrames, true);
 assert.equal(plan.execution.minimumRuntimeVersion, "5.0.0");
 assert.equal(plan.execution.agentContract.protocolVersion, 4);
+assert.equal(plan.execution.agentContract.executorProtocol, 1);
+assert.deepEqual(plan.execution.agentContract.requiredCapabilities, ["executor.data-plan.v1", "executor.transaction.v1", "executor.assets.deferred.v1", "executor.readback.v1"]);
 assert.equal(plan.execution.outputPolicy, "single-managed-artboard");
 assert.equal(plan.execution.preserveFailedDraft, false);
 assert.equal(plan.execution.cleanupPolicy, "single-canonical-output-after-readback");
@@ -145,13 +148,14 @@ assert.deepEqual(searchOperation?.componentRef, {
   pixsoName: searchMapping.pixsoName,
   componentSetName: searchMapping.componentSetName,
   variant: searchMapping.variant,
-  contentColor: searchMapping.contentColor,
+  iconColorSource: "variant-content",
 }, "mail search must reuse the existing Search component variant");
 const composeOperation = plan.operations.find((operation) => operation.nodeId === "compose-button");
 assert.equal(composeOperation?.componentRef?.pixsoName, "icon-text", "Primary icon-text button must use the current Pixso component-set name");
 assert.equal(composeOperation?.componentRef?.variant?.type, componentMap.map.get("Icon Text Button/Primary/Default")?.variant?.type, "Primary icon-text button must use the current Pixso variant value");
 assert.equal(composeOperation?.props?.variant, componentMap.map.get("Icon Text Button/Primary/Default")?.variant?.type, "Primary icon-text props must carry the exact live variant value");
-assert.deepEqual(composeOperation?.componentRef?.contentColor, { text: "$variable/neutral-light/100", icon: "$variable/neutral-light/100" }, "Primary icon-text content must bind neutral-light/100");
+assert.equal(composeOperation?.componentRef?.contentColor, undefined, "Primary icon-text content must remain owned by its Pixso Variant");
+assert.equal(composeOperation?.componentRef?.iconColorSource, "variant-content", "Primary icon replacement must inherit the selected Pixso Variant color");
 assert.equal(plan.operations.some((operation) => operation.componentRef?.logicalName === "Search/White Surface/Advanced"), false, "page plans must not create a Search Advanced component");
 assert.equal(plan.operations.some((operation) => /^mail-\d+-checkbox$/.test(operation.nodeId ?? "")), false, "default-visible Pixso snapshots must omit hover/row-selection checkboxes");
 assert.equal(plan.operations.some((operation) => operation.nodeId === "select-all"), false, "legacy list-toolbar select-all must not be regenerated");
@@ -166,9 +170,9 @@ assert.ok(plan.operations.some((operation) => operation.op === "ensure-image" &&
 assert.ok(plan.operations.some((operation) => operation.op === "create-image" && operation.nodeId === "brand-logo"));
 assert.ok(plan.operations.some((operation) => operation.nodeId === "detail-titlebar-reply" && operation.op === "create-instance"));
 assert.ok(plan.operations.some((operation) => operation.nodeId === "window-close" && operation.op === "create-instance"));
-assert.equal(plan.execution.pipeline, "layout-then-icon-hydration");
-assert.deepEqual(plan.phases.map((phase) => phase.id), ["resources", "layout", "icon-hydration"]);
-assert.deepEqual(plan.modules.map((module) => module.id), ["shell", "primary-navigation", "secondary-list", "main-detail", "icon-hydration"]);
+assert.equal(plan.execution.pipeline, "layout-then-icon-hydration-then-image-optimization");
+assert.deepEqual(plan.phases.map((phase) => phase.id), ["resources", "layout", "icon-hydration", "image-optimization"]);
+assert.deepEqual(plan.modules.map((module) => module.id), ["shell", "primary-navigation", "secondary-list", "main-detail", "icon-hydration", "image-optimization"]);
 const moduleOperationIndexes = plan.modules.flatMap((module) => module.operationIndexes);
 assert.deepEqual([...moduleOperationIndexes].sort((a, b) => a - b), plan.operations.map((_, index) => index), "every operation must belong to exactly one import module");
 const moduleById = new Map(plan.modules.map((module) => [module.id, module]));
@@ -177,6 +181,7 @@ assert.ok(moduleById.get("primary-navigation")?.operationIds.includes("me-folder
 assert.ok(moduleById.get("secondary-list")?.operationIds.includes("mail-list-content"), "secondary list must be isolated from the detail pane");
 assert.ok(moduleById.get("main-detail")?.operationIds.includes("meeting-card"), "detail content must be isolated from the navigation panes");
 assert.ok(moduleById.get("icon-hydration")?.operationIds.length === 0, "icon hydration is operation-index based because hydrate-icon has no nodeId");
+assert.ok(moduleById.get("image-optimization")?.operationIds.includes("brand-logo"), "images must be deferred until the final optimization module");
 const iconSlots = plan.operations.filter((operation) => operation.op === "create-icon-slot");
 const iconHydration = plan.operations.filter((operation) => operation.op === "hydrate-icon");
 assert.ok(iconSlots.length > 10);

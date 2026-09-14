@@ -10,10 +10,10 @@
     "strictParityRequiresEveryUsedTargetVerified": true
   },
   "summary": {
-    "total": 76,
+    "total": 83,
     "mapped-pending-verification": 16,
-    "mapped-needs-rebuild": 5,
-    "missing-target": 55
+    "mapped-needs-rebuild": 4,
+    "missing-target": 63
   },
   "rows": [
     {
@@ -69,7 +69,7 @@
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
-        "type": "Primary"
+        "type": "primary"
       },
       "sourceVariantAliases": [],
       "reuse": "structure",
@@ -79,17 +79,17 @@
     {
       "category": "01 Actions",
       "target": "Icon Text Button/Secondary/Default",
-      "status": "mapped-needs-rebuild",
+      "status": "mapped-pending-verification",
       "sourceComponentSet": "icon-text",
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
-        "type": "Primary"
+        "type": "secondary"
       },
       "sourceVariantAliases": [],
       "reuse": "structure",
       "strictEligible": false,
-      "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
     },
     {
       "category": "01 Actions",
@@ -99,7 +99,7 @@
       "sourceVariant": {
         "size": "Medium",
         "state": "Default",
-        "type": "Ghost"
+        "type": "ghost"
       },
       "sourceVariantAliases": [
         {
@@ -156,20 +156,6 @@
     },
     {
       "category": "01 Actions",
-      "target": "Selection Dropdown/Default",
-      "status": "mapped-pending-verification",
-      "sourceComponentSet": "Selection Dropdown",
-      "sourceVariant": {
-        "size": "Medium",
-        "state": "Default"
-      },
-      "sourceVariantAliases": [],
-      "reuse": "structure",
-      "strictEligible": false,
-      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
-    },
-    {
-      "category": "01 Actions",
       "target": "Split Dropdown Button/Icon Text/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
@@ -193,6 +179,30 @@
     {
       "category": "01 Actions",
       "target": "Toggle/Off/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Chips",
+      "target": "Chips/Default",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Chips",
+      "sourceVariant": {
+        "状态": "Default"
+      },
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Form Field/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
       "sourceVariant": null,
@@ -282,30 +292,24 @@
     {
       "category": "02 Forms",
       "target": "Textarea/White Surface/Default",
-      "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput-Muti-2in1",
-      "sourceVariant": {
-        "灰色场景": "OFF",
-        "状态": "Normal"
-      },
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
       "sourceVariantAliases": [],
-      "reuse": "structure",
+      "reuse": null,
       "strictEligible": false,
-      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
     },
     {
       "category": "02 Forms",
       "target": "Textarea/Gray Surface/Default",
-      "status": "mapped-pending-verification",
-      "sourceComponentSet": "TextInput-Muti-2in1",
-      "sourceVariant": {
-        "灰色场景": "ON",
-        "状态": "Normal"
-      },
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
       "sourceVariantAliases": [],
-      "reuse": "structure",
+      "reuse": null,
       "strictEligible": false,
-      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
     },
     {
       "category": "02 Forms",
@@ -370,6 +374,17 @@
     },
     {
       "category": "02 Forms",
+      "target": "Number Selector/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
       "target": "Checkbox/Unchecked/Default",
       "status": "mapped-pending-verification",
       "sourceComponentSet": "CheckBox",
@@ -413,6 +428,39 @@
     {
       "category": "02 Forms",
       "target": "Slider/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Segmented Button/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
+      "target": "ColorPicker/Tablet",
+      "status": "mapped-pending-verification",
+      "sourceComponentSet": "Snackbar/ColorPicker-Tablet",
+      "sourceVariant": {},
+      "sourceVariantAliases": [],
+      "reuse": "structure",
+      "strictEligible": false,
+      "nextAction": "Finish the registered target and verify it live in Pixso before strict delivery."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Selection Dropdown/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
       "sourceVariant": null,
@@ -522,6 +570,17 @@
     },
     {
       "category": "03 Navigation",
+      "target": "Menubar/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
       "target": "Tabs/Filled/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
@@ -566,7 +625,29 @@
     },
     {
       "category": "03 Navigation",
+      "target": "Pagination/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
       "target": "Pagination Item/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "03 Navigation",
+      "target": "Sub Tabs/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
       "sourceVariant": null,
@@ -589,28 +670,6 @@
     {
       "category": "03 Navigation",
       "target": "Collapsible/Collapsed",
-      "status": "missing-target",
-      "sourceComponentSet": null,
-      "sourceVariant": null,
-      "sourceVariantAliases": [],
-      "reuse": null,
-      "strictEligible": false,
-      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
-    },
-    {
-      "category": "04 Data Display",
-      "target": "Card/Default",
-      "status": "missing-target",
-      "sourceComponentSet": null,
-      "sourceVariant": null,
-      "sourceVariantAliases": [],
-      "reuse": null,
-      "strictEligible": false,
-      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
-    },
-    {
-      "category": "04 Data Display",
-      "target": "Card/Header Body Footer",
       "status": "missing-target",
       "sourceComponentSet": null,
       "sourceVariant": null,
@@ -931,6 +990,17 @@
     },
     {
       "category": "05 Feedback",
+      "target": "Dialog/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "05 Feedback",
       "target": "Tooltip/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
@@ -947,20 +1017,8 @@
       "reason": "Its segmented 72x28 behavior does not match the registered desktop Toggle/Off component."
     },
     {
-      "name": "Chips",
-      "reason": "Pixso component exists, but the current HTML contract has no direct Chips identity."
-    },
-    {
       "name": "ScrollBar-Phone",
       "reason": "Platform utility, not a registered reusable component in the current scope."
-    },
-    {
-      "name": "Menu-2in1",
-      "reason": "Expanded menus are Open-state overlays and are outside the current static component scope."
-    },
-    {
-      "name": "CheckboxGroup",
-      "reason": "Pixso component exists, but the current HTML contract has no direct CheckboxGroup identity."
     },
     {
       "name": ".2in1 Container",
@@ -973,10 +1031,6 @@
     {
       "name": "Dialog-2in1",
       "reason": "Pixso component exists, but Dialog-2in1 still needs an explicit HTML contract mapping."
-    },
-    {
-      "name": "ColorPicker-Tablet",
-      "reason": "Pixso component exists, but the current HTML contract has no direct ColorPicker identity."
     },
     {
       "name": "Search-Second Page-2in1",

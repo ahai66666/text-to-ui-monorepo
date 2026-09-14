@@ -31,8 +31,8 @@ export function renderTaskWorkbench(root) {
   );
   list.append(
     component("search", { placeholder: "搜索任务" }),
-    component("item", { title: "完成技能严格复用", description: "今天", trailingText: "进行中" }),
-    component("item", { title: "整理设计系统文档", description: "明天", trailingText: "待处理" })
+    component("list-card", { title: "完成技能严格复用", description: "今天", trailingText: "进行中" }),
+    component("list-card", { title: "整理设计系统文档", description: "明天", trailingText: "待处理" })
   );
   detail.append(
     component("titlebar", { paneTitle: "任务详情", layout: "three-column", paneRole: "final-pane", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save", buttonType: "icon" }], size: "medium" }),

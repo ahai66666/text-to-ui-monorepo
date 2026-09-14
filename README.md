@@ -170,11 +170,13 @@ HTML / React / Vue 运行时与自动校验
 
 `apps/component-gallery/` 是唯一正式组件画廊，用于：
 
-- 设计师查看真实视觉、完整状态和交互表现。
-- HTML、React、Vue 在相同位置逐项对照。
+- 设计师查看 Pattern 组合规则与真实组件视觉、状态和交互表现。
+- HTML、React、Vue 在相同位置逐项对照，并通过卡片标题栏右侧的“组件规范”弹窗查看契约。
 - 开发者调试组件结构和行为。
 - 验收 Token、样式和框架适配是否一致。
 - 为 Skill 和 Pixso 映射提供可检查的组件目录。
+
+组件契约不是第二套视觉画廊。`packages/component-contracts/src/components.json` 是唯一可编辑的契约源；生成的运行时模块、验收 manifest 和交付镜像只能通过构建更新。对外组件身份使用 `logicalName`，运行时 `id`、fixture 与选择器仅用于内部渲染和测试。
 
 开发服务器启动后，可在浏览器中切换 HTML、React、Vue 运行时。推荐通过 HTTP 访问；`file://` 只支持静态 HTML fallback，不能验证真实 React/Vue 入口。
 

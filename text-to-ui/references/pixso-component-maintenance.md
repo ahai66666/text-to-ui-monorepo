@@ -10,12 +10,16 @@ authority layers:
 
 0. `assets/design-system/mapping-registry.json` owns the selected HTML/Token ↔
    Pixso/native component relationships and profile boundaries. Its generated
-   maps and coverage tables are projections.
+   maps, coverage tables, and profile summary counts are projections.
 1. `assets/design-system/tokens.*.json` owns primitive and semantic values.
 2. `assets/design-system/design.md` and component references own semantic rules.
-3. `preview/component-gallery.html` plus its CSS and approved SVG sources own the
-   rendered component structure and visual regression result.
-4. Pixso is a generated reusable representation of those rules.
+3. The real framework component implementations and their imported component
+   CSS in `packages/components-*` and `packages/component-styles` own the
+   rendered production structure, variants, and visual result.
+4. `preview/component-gallery.html` plus its CSS is a review/regression
+   surface. It must not override a framework component's shape or omit a
+   framework-supported variant during Pixso component construction.
+5. Pixso is a generated reusable representation of the framework rules.
 
 Do not infer a Pixso component from its name alone. Build and check the
 machine-readable contract first:
@@ -26,6 +30,12 @@ node scripts/build-pixso-component-specs.mjs
 node scripts/build-pixso-component-specs.mjs --check
 node scripts/validate-pixso-component-specs.mjs
 ```
+
+When a live Pixso facts snapshot changes the component count, apply the facts
+sync before validation. It refreshes `profiles[].summary` in the same
+transaction; a `registeredPixsoTargets` mismatch should be repaired by
+`node scripts/sync-mapping-registry.mjs --write`, not by editing the count by
+hand.
 
 For HTML-to-Pixso synchronization, the contract is also executable. Generate a
 library plan from `packages/component-contracts/src/components.json`:
@@ -137,34 +147,66 @@ active-document change.
 
 ### Plugin artifact delivery
 
-The canonical plugin source remains under
-`text-to-ui/scripts/pixso-component-registry-sync-plugin/`. Every Pixso plugin
-release must also be copied to the local plugin delivery directory configured
-by `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT` (or the user's local plugin folder). Keep
-each plugin in its own named subfolder containing its `manifest.json`, entry
-script, and a short installation note. Do not make a temporary workspace path
-the only upload location.
+The canonical unified plugin source remains under
+`text-to-ui/scripts/pixso-unified-agent-plugin/`. Every Pixso plugin release
+must also be copied to the local plugin delivery directory configured by
+`TEXT_TO_UI_PLUGIN_DELIVERY_ROOT` (or the user's local plugin folder). Keep the
+plugin in its own named subfolder containing its `manifest.json`, entry script,
+and a short installation note. Do not make a temporary workspace path the only
+upload location.
+
+### One-click component synchronization
+
+Once the Text-to-UI Pixso Unified Agent is installed, a component edit does not
+require rebuilding or reinstalling the plugin. Start the managed local services
+and choose **同步当前组件事实与导入映射** in Pixso, or click **同步组件映射**
+in the unified right panel:
+
+```bash
+node scripts/start-text-to-ui-services.mjs start
+```
+
+The plugin reads the current `variantProperties` and component geometry from
+`NewComponents`, omits all Pixso IDs, and posts the snapshot to
+`http://127.0.0.1:43982/component-sync`. The Bridge writes a proposal first,
+then applies exact variant and Token changes, regenerates projections, and
+runs validation. Unknown, missing, asymmetric, or non-token geometry is
+reported as review/blocking detail for that mapping only; it must not cancel an
+otherwise usable page import. A complete snapshot changes a missing registered
+target to `pending-review`: its symbolic name stays in the registry for repair,
+but imports use Token-native composition until a later snapshot restores it.
+Run `node scripts/validate-mapping-registry.mjs --strict-component-gates` only
+for shared-library release acceptance; ordinary page imports do not use this
+release-wide gate. The sync never mutates the Pixso canvas.
+
+For `icon-text`, the accepted identity is `type + size + state`; `density` is
+not inferred from a stale layer name. The current 8px horizontal inset resolves
+to `padding/button-sm-x` in component specs and `space/3` in native mappings.
+Changes to the plugin's own code may still require loading a new delivery
+package because Pixso caches plugin code; ordinary Pixso component edits only
+need the sync command.
 
 ### Coremail registration helper
 
-For the Coremail validation path, load
-`scripts/pixso-component-registry-sync-plugin/manifest.json` as a Pixso
-development plugin after the source component names and Variant axes have been
-normalized. The current manifest is `Text-to-UI Component Registry Sync v4 Safe`;
-install it as a new local plugin so Pixso cannot reuse the old cached plugin
-ID. Run **自检 Pixso 连接（只读）** first. Coremail 审计由 Codex MCP
+For the Coremail validation path, use
+`scripts/pixso-unified-agent-plugin/manifest.json` as a Pixso development
+plugin after the source component names and Variant axes have been normalized.
+The current manifest is `Text-to-UI Pixso Unified Agent v2`; load it once as a
+new local plugin so Pixso cannot reuse the old cached plugin ID. Run
+**自检服务与 Pixso 连接（只读）** first. Coremail 审计由 Codex MCP
 实时读取，不再由插件执行长时扫描；MCP resolves the five
 Coremail-priority logical components by exact component-set name and Variant,
 then reports missing components, unexposed text slots, and `icon_font` layers.
 
-The helper targets Pixso API 2.x. Pixso API 2 deprecates the synchronous
+The unified plugin targets Pixso API 2.x. Pixso API 2 deprecates the synchronous
 `findAll`/`findOne` node methods, so the helper must use `findAllAsync` and
 scope library reads to the `NewComponents` page. Semantic SVG helper components
 are created only on `NewComponents`; the older
 `Text-to-UI Registered Icons` page is not the authoritative library page, and
-the helper never moves nodes across pages. If the helper source changes, remove
-the old local plugin and upload the new v4 Safe manifest before running a
-command; otherwise Pixso may execute a cached copy.
+the unified plugin never moves nodes across pages. If its source changes, load
+the new versioned manifest once before running a command; otherwise Pixso may
+execute a cached copy. Subsequent component edits use the sync command and do
+not require another plugin install.
 A command failure must show the original error message and stop before any page
 outside `NewComponents` is written. The plugin's audit menu is intentionally a
 no-op safety notice; it does not scan Coremail or hold a Pixso login session
@@ -176,7 +218,7 @@ avoids touching Pixso's undo state during a stale-document health check.
 
 Run **补齐 NewComponents 文字槽位** only after reviewing the audit. It may
 expose existing text as a component Text property, but it does not promote a
-component to `verified`. v4 Safe deliberately does not run icon creation or
+component to `verified`. v5 deliberately does not run icon creation or
 component swapping from the plugin: those writes previously caused Pixso to
 resolve stale `S_Guid` values. Re-run the audit and create a
 temporary linked instance to prove content overrides before changing an

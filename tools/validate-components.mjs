@@ -14,14 +14,24 @@ const failures = [];
 const warnings = [];
 const comparisonGroups = contracts.registryPolicy?.comparisonGroups ?? [];
 const comparisonIds = comparisonGroups.flatMap((group) => group.componentIds ?? []);
-if (comparisonGroups.length !== 12) failures.push("Component gallery comparison order must define 12 contract sections");
+if (comparisonGroups.length !== 7) failures.push("Component gallery comparison order must define 7 functional sections");
 if (comparisonIds.length !== contracts.components.length || new Set(comparisonIds).size !== contracts.components.length) failures.push("Component gallery comparison order must include every registered component exactly once");
+if (new Set(contracts.components.map((component) => component.logicalName)).size !== contracts.components.length) failures.push("Component logicalName values must be unique; use logicalName as the public component identity");
+if (new Set(contracts.components.map((component) => component.id)).size !== contracts.components.length) failures.push("Component runtime IDs must be unique");
 
 const exists = async (relativePath) => {
   try { await fs.access(path.join(root, relativePath)); return true; } catch { return false; }
 };
 const read = async (relativePath) => fs.readFile(path.join(root, relativePath), "utf8");
 const implementationPath = (component, framework) => String(component.frameworks?.[framework]?.source ?? component.implementations?.[framework] ?? "").split("#")[0];
+const runtimeModulePath = "packages/component-contracts/src/components-runtime.js";
+const expectedRuntimeModule = [
+  "// Generated from components.json. Do not edit by hand.",
+  `export default ${JSON.stringify(contracts, null, 2)};`,
+  ""
+].join("\n");
+if (!(await exists(runtimeModulePath))) failures.push("Generated component runtime registry is missing");
+else if (await read(runtimeModulePath) !== expectedRuntimeModule) failures.push("components-runtime.js must be regenerated from components.json; do not edit the generated registry directly");
 
 for (const component of contracts.components) {
   if (!component.sourceStrategy || !component.visualAuthority) failures.push(`${component.logicalName}: sourceStrategy and visualAuthority are required`);
@@ -85,6 +95,26 @@ if (!primaryNavigation?.slots?.includes("icon") || primaryNavigation?.slotContra
 if (primaryNavigation?.slotContracts?.icon?.displaySize !== "24px" || primaryNavigation?.slotContracts?.icon?.source !== "lucide") failures.push("Primary Navigation Item: icon slot must use the 24px Lucide Regular contract");
 if (JSON.stringify(primaryNavigation?.iconAliases) !== JSON.stringify(expectedPrimaryNavigationAliases)) failures.push("Primary Navigation Item: icon aliases must use the approved Lucide Regular semantic aliases");
 
+const menubar = contracts.components.find((component) => component.id === "menubar");
+if (!menubar?.props?.includes("items")) failures.push("Menubar/Default: menu item data must be exposed through the items prop");
+for (const slotName of ["item-leading", "item-label", "item-trailing"]) {
+  if (!menubar?.slots?.includes(slotName)) failures.push(`Menubar/Default: ${slotName} slot is required`);
+}
+if (menubar?.slotContracts?.["item-leading"]?.iconSize !== "24px" || menubar?.slotContracts?.["item-leading"]?.gapToken !== "gap-menu-item-content") failures.push("Menubar/Default: leading icon slot must use a 24px icon and the 8px menu-item gap token");
+if (menubar?.slotContracts?.["item-trailing"]?.iconAlias !== "navigation/chevron-right" || menubar?.slotContracts?.["item-trailing"]?.activeWhen !== "hasSubmenu") failures.push("Menubar/Default: trailing submenu slot must use a conditional right chevron");
+if (JSON.stringify(menubar?.iconSlots?.map((slot) => slot.displaySizes)) !== JSON.stringify([[24], [24]])) failures.push("Menubar/Default: leading and trailing icons must be restricted to 24px");
+for (const [framework, sourcePath] of Object.entries({
+  html: "packages/components-html/src/advanced.js",
+  react: "packages/components-react/src/advanced.jsx",
+  vue: "packages/components-vue/src/advanced.js"
+})) {
+  const source = await read(sourcePath);
+  if (!source.includes('data-slot="leading"') && !source.includes('"data-slot": "leading"')) failures.push(`Menubar/Default: ${framework} adapter is missing the leading icon slot marker`);
+  if (!source.includes('data-slot="trailing"') && !source.includes('"data-slot": "trailing"')) failures.push(`Menubar/Default: ${framework} adapter is missing the trailing submenu slot marker`);
+  if (!source.includes("navigation/chevron-right")) failures.push(`Menubar/Default: ${framework} adapter is missing the submenu right-chevron alias`);
+  if (!source.includes("size={24}") && !source.includes(", 24)") && !source.includes("size: 24")) failures.push(`Menubar/Default: ${framework} adapter is missing the 24px icon size`);
+}
+
 const semiModal = contracts.components.find((component) => component.id === "semi-modal");
 const semiModalClose = semiModal?.slotContracts?.close;
 if (!semiModal?.slots?.includes("close") || semiModalClose?.iconAlias !== "action/close") failures.push("Semi-modal/Default: close slot must be declared in the header");
@@ -122,8 +152,11 @@ else {
   for (const frameworkEntry of ["framework-html.html", "framework-react.html", "framework-vue.html"]) {
     if (!(await exists(`apps/component-gallery/${frameworkEntry}`))) failures.push(`Missing framework runtime entry ${frameworkEntry}`);
   }
-  if (!gallery.includes('class="contract-visual-frame"') || !gallery.includes('/legacy-skill/preview/component-gallery.html')) failures.push("Gallery must embed the old Skill full visual baseline as the single contract source");
-  if (gallery.includes("核心五类视觉规则") || gallery.includes("全量契约样例")) failures.push("Gallery must not split the contract visual source into core-five and full-catalog sections");
+  if (gallery.includes('data-view="contract"') || gallery.includes('data-view-link="contract"') || gallery.includes('data-view-tab="contract"')) failures.push("Gallery must not expose the contract as a separate visual-preview route");
+  if (gallery.includes('class="contract-visual-frame"') || gallery.includes('data-legacy-lazy="true"')) failures.push("Gallery must not embed a separate contract visual baseline iframe");
+  if (!gallery.includes('data-view="pattern"') || !gallery.includes('data-view="runtime"')) failures.push("Gallery must expose Pattern and framework runtime as the daily preview routes");
+  if (!htmlRuntime.includes("renderContractDialogHtml") || !reactRuntime.includes("ContractDialog") || !vueRuntime.includes("ContractDialog")) failures.push("Each framework runtime card must expose its component specification dialog");
+  if (!(await exists("apps/component-gallery/contract-inspector.js"))) failures.push("Shared contract inspector projection is missing");
 }
 const result = {
   ok: failures.length === 0,

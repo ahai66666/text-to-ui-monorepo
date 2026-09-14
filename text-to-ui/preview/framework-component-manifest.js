@@ -53,7 +53,7 @@
     }),
     disclosure: Object.freeze({
       logicalName: "Disclosure Navigation/Module/Complete", coverageScope: "module", hostSelector: "#disclosure", runtimeKey: "catalog-module", moduleId: "disclosure", frameTitle: "披露与导航完整模块真实组件",
-      coverageLogicalNames: Object.freeze(["Breadcrumb", "Accordion", "Collapsible", "Navigation Menu", "Menubar", "Separator", "Sidebar", "Item"])
+      coverageLogicalNames: Object.freeze(["Breadcrumb", "Accordion", "Collapsible", "Menubar", "Separator", "Sidebar", "Item"])
     }),
     overlays: Object.freeze({
       logicalName: "Overlay Command/Module/Complete", coverageScope: "module", hostSelector: "#overlays", runtimeKey: "catalog-module", moduleId: "overlays", frameTitle: "浮层与命令完整模块真实组件",
@@ -69,11 +69,11 @@
     }),
     specialized: Object.freeze({
       logicalName: "Specialized Content/Module/Complete", coverageScope: "module", hostSelector: "#specialized", runtimeKey: "catalog-module", moduleId: "specialized", frameTitle: "专用内容完整模块真实组件",
-      coverageLogicalNames: Object.freeze(["Aspect Ratio", "Attachment", "Carousel", "Bubble", "Typography"])
+      coverageLogicalNames: Object.freeze(["Attachment", "Carousel"])
     }),
     feedback: Object.freeze({
       logicalName: "Feedback/Module/Complete", coverageScope: "module", hostSelector: "#feedback", runtimeKey: "catalog-module", moduleId: "feedback", frameTitle: "提示与反馈完整模块真实组件",
-      coverageLogicalNames: Object.freeze(["Alert", "Tooltip", "Toast"])
+      coverageLogicalNames: Object.freeze(["Alert", "Tooltip", "Snackbar"])
     })
   });
 })(window);

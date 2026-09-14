@@ -1,7 +1,7 @@
 import contracts from "../../packages/component-contracts/src/components-runtime.js";
 
-export const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "tabs", "accordion", "collapsible", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast", "dialog", "alert-dialog", "semi-modal", "navigation-menu", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment", "carousel"]);
-const fullWidthPreviewIds = new Set(["titlebar"]);
+export const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "form-field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "segmented-button", "number-selector", "chips", "tabs", "sub-tabs", "tree-view", "accordion", "collapsible", "avatar", "badge", "table", "pagination", "breadcrumb", "progress", "label", "alert", "tooltip", "toast", "dialog", "alert-dialog", "semi-modal", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "color-picker", "calendar", "date-picker", "time-picker", "attachment"]);
+const fullWidthPreviewIds = new Set(["titlebar", "button"]);
 
 export const frameworkLabels = { html: "HTML", react: "React", vue: "Vue" };
 export const frameworkSources = {
@@ -11,21 +11,16 @@ export const frameworkSources = {
 };
 
 export const categoryOrder = contracts.registryPolicy?.categoryOrder ?? [
-  "titlebars", "buttons", "fields", "choices", "navigation", "data-display", "disclosure", "overlays", "form-plus", "loading-data", "specialized", "feedback"
+  "navigation", "actions", "display", "input", "choices", "containers", "specialized"
 ];
 export const categoryLabels = {
-  titlebars: "标题栏",
-  buttons: "按钮",
-  fields: "输入与字段",
-  choices: "选择控件",
-  navigation: "导航",
-  "data-display": "卡片与数据",
-  disclosure: "披露与导航",
-  overlays: "浮层与命令",
-  "form-plus": "复合表单",
-  "loading-data": "加载与日期",
-  specialized: "专用内容",
-  feedback: "提示与反馈"
+  navigation: "导航类",
+  actions: "操作类",
+  display: "展示类",
+  input: "输入类",
+  choices: "选择类",
+  containers: "容器类",
+  specialized: "特殊组件"
 };
 
 const componentById = new Map(contracts.components.map((component) => [component.id, component]));

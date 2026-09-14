@@ -17,8 +17,10 @@ export function defaultEditQueue() {
 
 ### HTML Component ↔ Pixso Component 变更
 
-| state | action | profile | htmlLogicalName | htmlRendererKey | pixsoTarget | pixsoSpecKey | pixsoTargetStatus | nativeSourceStatus | note |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+这是唯一的组件映射入口。\`htmlLogicalName\` 是正式身份；\`runtimeComponentId\` 仅在代码组件库需要用实际 ID 调用时填写（例如 \`icon-text-primary\`），否则留空。它不是另一类组件。
+
+| state | action | profile | htmlLogicalName | runtimeComponentId（可选） | contractId（仅 ID 行） | htmlRendererKey | pixsoTarget | pixsoSpecKey | pixsoTargetStatus | pixsoVariant（仅 ID 行） | mappingStatus（仅 ID 行） | nativeSourceStatus | note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ### HTML Component Slot / 子组件映射变更
 
@@ -38,9 +40,9 @@ export function defaultEditQueue() {
 
 ### 填写示例（不会同步）
 
-| state | action | profile | htmlLogicalName | htmlRendererKey | pixsoTarget | pixsoSpecKey | pixsoTargetStatus | nativeSourceStatus | note |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| example | update | html-to-pixso-harmonyos-client | Button/Primary/Default |  | Button | Button/Primary/Default | registered |  | 仅示例；不要把 state 改成 pending，除非确实要提交 |
+| state | action | profile | htmlLogicalName | runtimeComponentId（可选） | contractId（仅 ID 行） | htmlRendererKey | pixsoTarget | pixsoSpecKey | pixsoTargetStatus | pixsoVariant（仅 ID 行） | mappingStatus（仅 ID 行） | nativeSourceStatus | note |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| example | update | html-to-pixso-harmonyos-client | Button/Primary/Default |  |  | button | Button | Button/Primary/Default | registered |  |  |  | 仅示例；不要把 state 改成 pending，除非确实要提交 |
 
 ${EDIT_QUEUE_END}`;
 }
@@ -62,7 +64,18 @@ export function extractEditQueue(markdown) {
 
 export function preserveEditQueue(markdown, fallback = defaultEditQueue()) {
   try {
-    return extractEditQueue(markdown).block;
+    let block = extractEditQueue(markdown).block;
+    // Legacy workbooks exposed a separate endpoint-ID table. It is now folded
+    // into the HTML Component table. Do not discard old pending intent.
+    if (block.includes("endpointComponentId")) {
+      const pendingLegacyRows = parseEditQueue(markdown).rows.filter(
+        (row) => row.type === "endpoint-component" && row.state === "pending",
+      );
+      if (pendingLegacyRows.length) return block;
+      return fallback;
+    }
+    block = block.replace("只修改下面四张表。", "只修改下面三张表。");
+    return block;
   } catch {
     return fallback;
   }
@@ -158,10 +171,14 @@ function tableColumns(header, type) {
   if (type === "component") {
     Object.assign(columns, {
       htmlLogicalName: findColumn(header, ["htmlLogicalName"]),
+      runtimeComponentId: findColumn(header, ["runtimeComponentId", "runtimeComponentId（可选）", "运行时组件 ID", "componentId"]),
+      contractId: findColumn(header, ["contractId", "contractId（仅 ID 行）", "contract"]),
       htmlRendererKey: findColumn(header, ["htmlRendererKey"]),
       pixsoTarget: findColumn(header, ["pixsoTarget"]),
       pixsoSpecKey: findColumn(header, ["pixsoSpecKey"]),
       pixsoTargetStatus: findColumn(header, ["pixsoTargetStatus"]),
+      pixsoVariant: findColumn(header, ["pixsoVariant", "pixsoVariant（仅 ID 行）", "variant"]),
+      mappingStatus: findColumn(header, ["mappingStatus", "mappingStatus（仅 ID 行）", "映射状态"]),
       nativeSourceStatus: findColumn(header, ["nativeSourceStatus"]),
       note: findColumn(header, ["note", "备注"]),
     });
@@ -175,6 +192,18 @@ function tableColumns(header, type) {
       textToUiSpecKey: findColumn(header, ["textToUiSpecKey"]),
       variantByHtmlSize: findColumn(header, ["variantByHtmlSize"]),
       actions: findColumn(header, ["actions", "actionMappings"]),
+      note: findColumn(header, ["note", "备注"]),
+    });
+  } else if (type === "endpoint-component") {
+    Object.assign(columns, {
+      endpointComponentId: findColumn(header, ["endpointComponentId", "端侧组件 ID", "componentId"]),
+      contractId: findColumn(header, ["contractId", "contract"]),
+      htmlLogicalName: findColumn(header, ["htmlLogicalName"]),
+      pixsoTarget: findColumn(header, ["pixsoTarget"]),
+      pixsoTargetStatus: findColumn(header, ["pixsoTargetStatus"]),
+      pixsoVariant: findColumn(header, ["pixsoVariant", "variant"]),
+      mappingStatus: findColumn(header, ["mappingStatus", "映射状态"]),
+      sourceMappingTarget: findColumn(header, ["sourceMappingTarget", "nativeSourceMappingTarget"]),
       note: findColumn(header, ["note", "备注"]),
     });
   } else {
@@ -194,10 +223,12 @@ function tableColumns(header, type) {
 
 function hasRequiredColumns(columns, type) {
   const common = ["state", "action", "profile"];
- const specific = type === "component"
+  const specific = type === "component"
    ? ["htmlLogicalName"]
     : type === "component-slot"
     ? ["htmlParent", "htmlSlot", "htmlRole"]
+    : type === "endpoint-component"
+    ? ["endpointComponentId", "contractId", "htmlLogicalName"]
    : ["mappingType", "htmlIdentity"];
   return [...common, ...specific].every((key) => columns[key] >= 0);
 }
@@ -210,7 +241,8 @@ export function parseEditQueue(markdown) {
     if (!isTableLine(lines[lineIndex])) continue;
     const header = splitMarkdownRow(lines[lineIndex]);
     let type = null;
-   if (header.some((cell) => normalizedHeader(cell) === "htmllogicalname")) type = "component";
+   if (header.some((cell) => normalizedHeader(cell) === "endpointcomponentid")) type = "endpoint-component";
+    else if (header.some((cell) => normalizedHeader(cell) === "htmllogicalname")) type = "component";
     if (header.some((cell) => normalizedHeader(cell) === "htmlparent")) type = "component-slot";
    if (header.some((cell) => normalizedHeader(cell) === "mappingtype")) type = "token";
     if (!type) continue;
@@ -237,6 +269,9 @@ export function parseEditQueue(markdown) {
         action: (optionalCell(get("action")) || "").toLowerCase(),
         profile: optionalCell(get("profile")),
         htmlLogicalName: optionalCell(get("htmlLogicalName")),
+        runtimeComponentId: optionalCell(get("runtimeComponentId")),
+        endpointComponentId: optionalCell(get("endpointComponentId")),
+        contractId: optionalCell(get("contractId")),
         htmlRendererKey: optionalCell(get("htmlRendererKey")),
         pixsoTarget: optionalCell(get("pixsoTarget")),
         pixsoSpecKey: optionalCell(get("pixsoSpecKey")),
@@ -249,6 +284,9 @@ export function parseEditQueue(markdown) {
         textToUiSpecKey: optionalCell(get("textToUiSpecKey")),
         variantByHtmlSize: optionalCell(get("variantByHtmlSize")),
         actions: optionalCell(get("actions")),
+        pixsoVariant: optionalCell(get("pixsoVariant")),
+        mappingStatus: optionalCell(get("mappingStatus")),
+        sourceMappingTarget: optionalCell(get("sourceMappingTarget")),
        mappingType: (optionalCell(get("mappingType")) || "").toLowerCase(),
         htmlIdentity: optionalCell(get("htmlIdentity")),
         htmlCssVariable: optionalCell(get("htmlCssVariable")),

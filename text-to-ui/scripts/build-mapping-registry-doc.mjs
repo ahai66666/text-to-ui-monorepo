@@ -54,6 +54,42 @@ const componentInventory = componentFactsEntries(targetFacts).filter(
 const targetNames = targetFacts
   ? componentFactsNames(targetFacts)
   : new Set();
+const endpointComponentMappings = profile.endpointComponentMappings || [];
+const runtimeAliasLogicalNames = new Set(
+  endpointComponentMappings
+    .filter((mapping) => mapping.pixsoTargetStatus === "registered" && mapping.pixsoTarget)
+    .map((mapping) => mapping.htmlLogicalName),
+);
+const unifiedComponentMappings = [
+  ...(profile.componentMappings || [])
+    .filter((mapping) =>
+      mapping.pixsoTargetStatus === "registered" &&
+      mapping.pixsoTarget &&
+      !runtimeAliasLogicalNames.has(mapping.htmlLogicalName),
+    )
+    .map((mapping) => ({
+      runtimeComponentId: null,
+      htmlLogicalName: mapping.htmlLogicalName,
+      htmlRendererKey: mapping.htmlRendererKey,
+      pixsoTarget: mapping.pixsoTarget,
+      pixsoSpecKey: mapping.pixsoSpecKey,
+      variant: mapping.runtimeBinding?.variant || null,
+      mappingStatus: mapping.nativeSourceStatus,
+      notes: null,
+    })),
+  ...endpointComponentMappings
+    .filter((mapping) => mapping.pixsoTargetStatus === "registered" && mapping.pixsoTarget)
+    .map((mapping) => ({
+      runtimeComponentId: mapping.endpointComponentId,
+      htmlLogicalName: mapping.htmlLogicalName,
+      htmlRendererKey: mapping.contractId,
+      pixsoTarget: mapping.pixsoTarget,
+      pixsoSpecKey: mapping.sourceMappingTarget || mapping.htmlLogicalName,
+      variant: mapping.pixsoVariant,
+      mappingStatus: mapping.mappingStatus,
+      notes: mapping.notes,
+    })),
+];
 const formalMappingsByTarget = new Map();
 for (const mapping of profile.componentMappings || []) {
   if (mapping.pixsoTargetStatus !== "registered" || !mapping.pixsoTarget) continue;
@@ -68,6 +104,12 @@ for (const mapping of profile.componentMappings || []) {
     names.push(`${mapping.htmlLogicalName} · ${submapping.htmlSlot}/${submapping.htmlRole}`);
     subcomponentMappingsByTarget.set(submapping.pixsoTarget, names);
   }
+}
+const endpointMappingsByTarget = new Map();
+for (const mapping of endpointComponentMappings) {
+  const names = endpointMappingsByTarget.get(mapping.pixsoTarget) || [];
+  names.push(`${mapping.endpointComponentId} → ${mapping.htmlLogicalName}`);
+  endpointMappingsByTarget.set(mapping.pixsoTarget, names);
 }
 const nativeSpecsByTarget = new Map();
 for (const mapping of profile.nativeSourceMappings || []) {
@@ -98,6 +140,8 @@ out.push("# Text-to-UI：跨源 Token / Component 映射表");
 out.push("");
 out.push("> 日常维护请使用 Obsidian 的 `Text-to-UI-映射维护台`，本文件只作为详细结果报告。");
 out.push("");
+out.push("所有组件都以 HTML logicalName 为正式身份。运行时组件 ID（如有）只是同一行中的代码调用别名，不是另一类组件映射。");
+out.push("");
 out.push(
   "当前 profile：" + code(profile.id) + " · " + esc(profile.label) +
     "。本文件是详细可读视图；日常修改请填写 Obsidian 映射维护台的人工编辑区，由同步脚本回写 registry，不要直接编辑本文件。",
@@ -111,7 +155,7 @@ out.push("| runtime semantic mappings (generated index) | " + runtimeSemanticMap
 out.push("| runtime-only semantic aliases | " + runtimeSemanticAliases.length + " |");
 out.push("| semantic color mappings | " + (profile.semanticColorMappings?.length || 0) + " |");
 out.push("| Style mappings | " + (profile.styleMappings?.length || 0) + " |");
-out.push("| HTML Component mappings | " + (profile.componentMappings?.length || 0) + " |");
+out.push("| HTML formal Component mappings | " + unifiedComponentMappings.length + " |");
 out.push("| current Pixso business components | " + componentInventory.filter((item) => item.classification === "business").length + " |");
 out.push("| current Pixso exact target names | " + targetNames.size + " |");
 out.push("| native source mappings | " + (profile.nativeSourceMappings?.length || 0) + " |");
@@ -221,6 +265,8 @@ if (targetFacts) {
             ? htmlMappings.map(code).join("<br>")
             : subcomponentMappings.length
               ? "已关联内部子映射：" + subcomponentMappings.map(code).join("<br>")
+            : (endpointMappingsByTarget.get(item.name) || []).length
+              ? "HTML 正式映射：" + endpointMappingsByTarget.get(item.name).map(code).join("<br>")
             : nativeSpecs.length
               ? "已关联 spec：" + nativeSpecs.map(code).join("<br>") + "<br>未建立 HTML 一对一映射"
               : "未建立 HTML 映射（待确认）") + " |",
@@ -231,21 +277,17 @@ if (targetFacts) {
 out.push("");
 out.push("### 正式映射");
 out.push("");
-out.push("| HTML logicalName | Renderer | Pixso exact component | Text-to-UI spec key | Target status | Native source status | Runtime binding |");
-out.push("| --- | --- | --- | --- | --- | --- | --- |");
-for (const mapping of (profile.componentMappings || []).filter((item) => item.pixsoTargetStatus === "registered" && item.pixsoTarget)) {
-  const runtime = mapping.runtimeBinding
-    ? (mapping.runtimeBinding.componentSetName || mapping.runtimeBinding.pixsoName || "—") +
-      " · " + JSON.stringify(mapping.runtimeBinding.variant || {})
-    : "—";
+out.push("| Runtime component ID (optional) | HTML logicalName | Renderer / contract | Pixso exact component | Text-to-UI spec key | Pixso Variant | Mapping status | Notes |");
+out.push("| --- | --- | --- | --- | --- | --- | --- | --- |");
+for (const mapping of unifiedComponentMappings) {
+  const notes = Array.isArray(mapping.notes) ? mapping.notes.join("<br>") : mapping.notes;
   out.push(
-      "| " + code(mapping.htmlLogicalName) + " | " +
+      "| " + code(mapping.runtimeComponentId || "—") + " | " + code(mapping.htmlLogicalName) + " | " +
       code(mapping.htmlRendererKey) + " | " +
       (mapping.pixsoTarget ? code(mapping.pixsoTarget) : "—") + " | " +
       (mapping.pixsoSpecKey ? code(mapping.pixsoSpecKey) : "—") + " | " +
-      esc(mapping.pixsoTargetStatus) + " | " +
-      esc(mapping.nativeSourceStatus) + " | " +
-      esc(runtime) + " |",
+      esc(JSON.stringify(mapping.variant || {})) + " | " +
+      esc(mapping.mappingStatus) + " | " + esc(notes || "—") + " |",
   );
 }
 out.push("");
@@ -277,13 +319,33 @@ if (subcomponentMappings.length) {
   }
   out.push("");
 }
+const excludedComponentMappings = (profile.componentMappings || []).filter(
+  (item) => item.pixsoMappingPolicy === "excluded",
+);
+out.push("### 明确不映射");
+out.push("");
+out.push("这些组件保留框架实现，但不会自动创建或解析 Pixso 组件，也不属于待补映射。");
+out.push("");
+out.push("| HTML logicalName | Renderer | Policy | Reason |");
+out.push("| --- | --- | --- | --- |");
+for (const mapping of excludedComponentMappings) {
+  out.push(
+    "| " + code(mapping.htmlLogicalName) + " | " +
+      code(mapping.htmlRendererKey) + " | " +
+      esc(mapping.pixsoMappingPolicy) + " | " +
+      esc(mapping.pixsoMappingReason) + " |",
+  );
+}
+out.push("");
 out.push("### 尚未正式映射");
 out.push("");
 out.push("这些行目前不能自动实例化；请在 Obsidian 维护台确认 Pixso exact name 后提交 `state=pending` 的组件变更。");
 out.push("");
 out.push("| HTML logicalName | Renderer | Pixso target | Target status | Native source status |");
 out.push("| --- | --- | --- | --- | --- |");
-for (const mapping of (profile.componentMappings || []).filter((item) => item.pixsoTargetStatus !== "registered" || !item.pixsoTarget)) {
+for (const mapping of (profile.componentMappings || []).filter((item) =>
+  item.pixsoMappingPolicy !== "excluded" && (item.pixsoTargetStatus !== "registered" || !item.pixsoTarget)
+)) {
   out.push(
     "| " + code(mapping.htmlLogicalName) + " | " +
       code(mapping.htmlRendererKey) + " | — | " +
@@ -310,13 +372,13 @@ out.push("## 维护规则");
 out.push("");
 out.push("- 编辑入口：assets/design-system/mapping-registry.json 的 profiles；运行时专用别名维护在 runtimeSemanticAliases，完整 runtime semantic index 由 semanticTokenMappings + runtimeSemanticAliases 自动生成。");
 out.push("- 同一个 HTML 源对接不同 Pixso 文件或组件库时，新建 profile；不要覆盖已有 profile。");
-out.push("- HTML Component 以 logicalName 为身份，Pixso Component 以当前文件中的 exact Component Set/COMPONENT name 为身份；Variant 单独记录在 runtimeBinding.variant。父组件内部的复合结构使用 componentMappings[].subcomponentMappings，不把内部组误记成独立 HTML Component。");
+out.push("- HTML Component 以 logicalName 为身份，运行时组件 ID（例如 button contract 的 icon-text-primary、icon）只是可选实现别名，统一从 Obsidian 的 HTML Component 表维护；Pixso Component 以当前文件中的 exact Component Set/COMPONENT name 为身份，Variant 记录在正式映射行中。父组件内部的复合结构使用 componentMappings[].subcomponentMappings，不把内部组误记成独立 HTML Component。");
 out.push("- Pixso GUID、node ID、file key 不进入 registry；运行时重新解析。");
 out.push("- Obsidian 变更先填写人工编辑区并运行 scripts/sync-obsidian-mapping-edits.mjs --check/--write；不要直接改生成的完整报告。");
 out.push("- 修改后依次运行 pnpm mappings:validate、相关 projection build/check，再重新生成本文件。");
 out.push("");
 
-const markdown = out.join("\n") + "\n";
+const markdown = out.join("\n").replace(/\n+$/, "\n");
 if (args.out) {
   const output = path.resolve(args.out);
   fs.mkdirSync(path.dirname(output), { recursive: true });

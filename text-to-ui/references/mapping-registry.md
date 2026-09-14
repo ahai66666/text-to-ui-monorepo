@@ -6,13 +6,15 @@ tags:
   - text-to-ui
   - pixso
   - mapping-registry
-verified: 2026-08-28
+verified: 2026-09-02
 source: assets/design-system/mapping-registry.json
 ---
 
 # Text-to-UI：跨源 Token / Component 映射表
 
 > 日常维护请使用 Obsidian 的 `Text-to-UI-映射维护台`，本文件只作为详细结果报告。
+
+所有组件都以 HTML logicalName 为正式身份。运行时组件 ID（如有）只是同一行中的代码调用别名，不是另一类组件映射。
 
 当前 profile：<code>html-to-pixso-harmonyos-client</code> · Text-to-UI HTML → 鸿蒙客户端设计规范。本文件是详细可读视图；日常修改请填写 Obsidian 映射维护台的人工编辑区，由同步脚本回写 registry，不要直接编辑本文件。
 
@@ -24,9 +26,9 @@ source: assets/design-system/mapping-registry.json
 | runtime-only semantic aliases | 25 |
 | semantic color mappings | 99 |
 | Style mappings | 19 |
-| HTML Component mappings | 55 |
-| current Pixso business components | 17 |
-| current Pixso exact target names | 19 |
+| HTML formal Component mappings | 20 |
+| current Pixso business components | 21 |
+| current Pixso exact target names | 24 |
 | native source mappings | 21 |
 
 ## Token ↔ Pixso Variable
@@ -627,43 +629,61 @@ source: assets/design-system/mapping-registry.json
 
 ### 当前 Pixso 组件清单（事实快照）
 
-来源：Pixso MCP read_component_config_data()，仅保留无 GUID 的组件名称和 Variant 轴；采集时间：2026-08-27；目标页：<code>NewComponents</code>。
-当前快照包含 17 个业务组件、2 个辅助 Component Set；Pixso 回读总数还包含支持性图标等对象，它们不自动进入业务组件映射。
+来源：Pixso Plugin API read-only component facts; Variant 轴来自 variantProperties；几何来自当前 COMPONENT；采集时间：2026-09-02T13:27:17.539Z；目标页：<code>NewComponents</code>。
+当前快照包含 21 个业务组件、3 个辅助 Component Set；Pixso 回读总数还包含支持性图标等对象，它们不自动进入业务组件映射。
 
 | Pixso exact name | Pixso object | 分类 | Variant 轴 | HTML 映射 |
 | --- | --- | --- | --- | --- |
-| <code>Button</code> | Component Set | business | size=Medium / Small；state=Hover / Pressed / Disable / Default；type=Primary / Secondary / Danger / Ghost | <code>Button/Primary/Default</code> |
-| <code>icon-text</code> | Component Set | business | size=Medium；state=Hover / Pressed / Disable / Default；type=primary / ghost | 已关联 spec：<code>Icon Text Button/Primary/Default</code><br><code>Icon Text Button/Ghost/Default</code><br><code>Icon Text Button/Secondary/Default</code><br>未建立 HTML 一对一映射 |
-| <code>Icon Button</code> | Component Set | business | size=Medium；state=Hover / Pressed / Disable / Default；type=Ghost | 已关联 spec：<code>Icon Button/Secondary/Default</code><br><code>Icon Button/Ghost/Default</code><br>未建立 HTML 一对一映射 |
-| <code>Selection Dropdown</code> | Component Set | business | size=small / Medium；state=Hover / Disabled / Pressed / Default | 已关联 spec：<code>Selection Dropdown/Default</code><br><code>Select/White Surface/Default</code><br><code>Select/Gray Surface/Default</code><br>未建立 HTML 一对一映射 |
-| <code>Chips</code> | Component Set | business | 状态=Hover / Pressed / Disabled / Default | 未建立 HTML 映射（待确认） |
-| <code>Menu-2in1</code> | Component Set | business | 菜单类型=Text with icon / Text with subtitle / subMenu | 未建立 HTML 映射（待确认） |
-| <code>Snackbar</code> | Component Set | business | 左侧区域=1 / 2 | 已关联 spec：<code>Snackbar/Default</code><br>未建立 HTML 一对一映射 |
-| <code>Search</code> | Component Set | business | state=Actived / Typing / Hover / Output / Default / Pressed；surface=bg-white / gb-gray | <code>Search/White Surface/Default</code> |
-| <code>Input</code> | Component Set | business | state=Hover / Typing / Actived / Error / Disable / Default；surface=gb-gray / bg-white | <code>Input/White Surface/Default</code> |
-| <code>CheckBox</code> | Component Set | business | checked=false / true；state=Hover / Disabled / Default | <code>Checkbox/Default</code> |
-| <code>Radio</code> | Component Set | business | checked=false / true；state=Hover / Disabled / Default | <code>Radio/Unselected/Default</code> |
-| <code>Switch</code> | Component Set | business | checked=false / true；state=Hover / Disabled / pressed / Default | <code>Switch/Default</code> |
-| <code>CheckboxGroup</code> | Component Set | business | Hyperlink=ON / OFF；state=Default / Hover / Pressed | 未建立 HTML 映射（待确认） |
-| <code>.2in1 Container</code> | Component Set | helper | 属性 1=Dialog；属性 2=PC；属性 3=Items；属性 4=button；属性 5=3_emphasize_port / 2_emphasize / 2_normal / 1_normal | Dialog 内部依赖 |
-| <code>.text</code> | Component Set | helper | 属性 1=默认 | Dialog 内部依赖 |
-| <code>Dialog-2in1</code> | Component Set | business | 属性 1=1button / title+2 button / title+2lines / content / title+single line / title+3 button | 未建立 HTML 映射（待确认） |
+| <code>.Dialog_Container</code> | Component Set | business | quantity=1_normal / 2_emphasize / 2_normal / 3_emphasize_port | 未建立 HTML 映射（待确认） |
+| <code>.Dialog_title</code> | Component Set | business | 属性 1=.Titl1e / .Title | 未建立 HTML 映射（待确认） |
+| <code>Button</code> | Component Set | business | size=Medium / Small；state=Default / Disable / Hover / Pressed；type=Danger / Ghost / Primary / Secondary | <code>Button/Primary/Default</code> |
+| <code>CheckBox</code> | Component Set | business | checked=false / true；state=Default / Disabled / Hover | <code>Checkbox/Default</code> |
+| <code>Chips</code> | Component Set | business | 状态=Default / Disabled / Hover / Pressed | <code>Chips/Default</code> |
 | <code>control button</code> | Component Set | business | 状态=Normal size / Small size | 已关联内部子映射：<code>Titlebar/Default · actions/window-controls</code> |
-| <code>Sidebar Item</code> | Component Set | business | state=default / 变体2 / selected | <code>Sidebar Item/Default</code> |
-| <code>ColorPicker-Tablet</code> | COMPONENT | business | — | 未建立 HTML 映射（待确认） |
+| <code>Dialog-2in1</code> | Component Set | business | 属性 1=1button / content / title+2 button / title+2lines / title+3 button / title+single line | <code>Dialog/Default</code> |
+| <code>Icon Button</code> | Component Set | business | size=Medium；state=Default / Disable / Hover / Pressed；type=Ghost | HTML 正式映射：<code>icon → Icon Button/Ghost/Default</code> |
+| <code>icon-text</code> | Component Set | business | size=Medium；state=Default / Disable / Hover / Pressed；type=ghost / primary / secondary | HTML 正式映射：<code>icon-text-primary → Icon Text Button/Primary/Default</code><br><code>icon-text-secondary → Icon Text Button/Secondary/Default</code><br><code>icon-text-ghost → Icon Text Button/Ghost/Default</code> |
+| <code>Input</code> | Component Set | business | state=Actived / Default / Disable / Error / Hover / Typing；surface=bg-white / gb-gray | <code>Input/White Surface/Default</code> |
+| <code>Menu-2in1</code> | Component Set | business | quantity=1 / 2 / 3 / 4 | <code>Menubar/Default</code> |
+| <code>Radio</code> | Component Set | business | checked=false / true；state=Default / Disabled / Hover | <code>Radio/Unselected/Default</code> |
+| <code>Search</code> | Component Set | business | state=Actived / Default / Hover / Output / Pressed / Typing；surface=bg-white / gb-gray | <code>Search/White Surface/Default</code> |
+| <code>Selection Dropdown</code> | Component Set | business | size=Medium / small；state=Default / Disabled / Hover / Pressed | HTML 正式映射：<code>selection-dropdown → Selection Dropdown/Default</code> |
+| <code>Sidebar Item</code> | Component Set | business | state=default / selected / 变体2 | <code>Sidebar Item/Default</code> |
+| <code>Snackbar</code> | Component Set | business | 左侧区域=1 / 2 | <code>Snackbar/Default</code> |
+| <code>split-dropdown</code> | Component Set | business | state=Default / Disable / Hover-left / Hover-right / Pressed-left / Pressed-right；type=ghost / icon | HTML 正式映射：<code>split-dropdown → Split Dropdown Button/Icon Text/Default</code><br><code>split-dropdown-icon → Split Dropdown Button/Icon Only/Default</code> |
+| <code>Switch</code> | Component Set | business | checked=false / true；state=Default / Disabled / Hover / pressed | <code>Switch/Default</code> |
+| <code>Textarea</code> | Component Set | business | state=Default；surface=bg-white / gb-gray | <code>Textarea/Default</code> |
+| <code>.Arrow-down</code> | COMPONENT | helper | — | Dialog 内部依赖 |
+| <code>.search</code> | COMPONENT | helper | — | Dialog 内部依赖 |
+| <code>.single line</code> | COMPONENT | helper | — | Dialog 内部依赖 |
+| <code>ColorPicker-Tablet</code> | COMPONENT | business | — | <code>ColorPicker/Tablet</code> |
+| <code>Selection Dropdown/.icon</code> | COMPONENT | business | — | 未建立 HTML 映射（待确认） |
 
 
 ### 正式映射
 
-| HTML logicalName | Renderer | Pixso exact component | Text-to-UI spec key | Target status | Native source status | Runtime binding |
-| --- | --- | --- | --- | --- | --- | --- |
-| <code>Button/Primary/Default</code> | <code>button</code> | <code>Button</code> | <code>Button/Primary/Default</code> | registered | mapped-pending-verification | Button · {"type":"Primary","size":"Medium","state":"Default"} |
-| <code>Checkbox/Default</code> | <code>checkbox</code> | <code>CheckBox</code> | <code>Checkbox/Unchecked/Default</code> | registered | mapped-pending-verification | CheckBox · {"checked":"false","state":"Default"} |
-| <code>Radio/Unselected/Default</code> | <code>radio</code> | <code>Radio</code> | <code>Radio/Unselected/Default</code> | registered | mapped-pending-verification | Radio · {"checked":"false","state":"Default"} |
-| <code>Input/White Surface/Default</code> | <code>input</code> | <code>Input</code> | <code>Input/White Surface/Default</code> | registered | mapped-pending-verification | Input · {"surface":"bg-white","state":"Default"} |
-| <code>Search/White Surface/Default</code> | <code>search</code> | <code>Search</code> | <code>Search/White Surface/Default</code> | registered | mapped-pending-verification | Search · {"surface":"bg-white","state":"Default"} |
-| <code>Sidebar Item/Default</code> | <code>sidebar</code> | <code>Sidebar Item</code> | <code>Sidebar Item/Default</code> | registered | missing-target | Sidebar Item · {"state":"default"} |
-| <code>Switch/Default</code> | <code>switch</code> | <code>Switch</code> | <code>Switch/Off/Default</code> | registered | mapped-pending-verification | Switch · {"checked":"false","state":"Default"} |
+| Runtime component ID (optional) | HTML logicalName | Renderer / contract | Pixso exact component | Text-to-UI spec key | Pixso Variant | Mapping status | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| <code>—</code> | <code>Chips/Default</code> | <code>chips</code> | <code>Chips</code> | <code>Chips/Default</code> | {"状态":"Default"} | mapped-pending-verification | — |
+| <code>—</code> | <code>Dialog/Default</code> | <code>dialog</code> | <code>Dialog-2in1</code> | <code>Dialog/Default</code> | {"titlebar":"title-only","actions":"one-button"} | mapped-pending-verification | — |
+| <code>—</code> | <code>Snackbar/Default</code> | <code>snackbar</code> | <code>Snackbar</code> | <code>Snackbar/Default</code> | {"左侧区域":"1"} | mapped-pending-verification | — |
+| <code>menubar</code> | <code>Menubar/Default</code> | <code>menubar</code> | <code>Menu-2in1</code> | <code>Menubar/Default</code> | {"quantity":"1"} | mapped-pending-verification | HTML menubar 组件契约的默认运行时 ID；Pixso Menu-2in1 以 quantity=1 作为默认菜单项数量。 |
+| <code>button</code> | <code>Button/Primary/Default</code> | <code>button</code> | <code>Button</code> | <code>Button/Primary/Default</code> | {"type":"Primary","size":"Medium","state":"Default"} | mapped-pending-verification | HTML button 组件契约的默认运行时 ID；对应 Pixso Button/Primary/Default。 |
+| <code>checkbox</code> | <code>Checkbox/Default</code> | <code>checkbox</code> | <code>CheckBox</code> | <code>Checkbox/Unchecked/Default</code> | {"checked":"false","state":"Default"} | mapped-pending-verification | HTML checkbox 组件契约的默认运行时 ID；checked=false 对应未选中。 |
+| <code>radio</code> | <code>Radio/Unselected/Default</code> | <code>radio</code> | <code>Radio</code> | <code>Radio/Unselected/Default</code> | {"checked":"false","state":"Default"} | mapped-pending-verification | HTML radio 组件契约的默认运行时 ID；checked=false 对应未选中。 |
+| <code>input</code> | <code>Input/White Surface/Default</code> | <code>input</code> | <code>Input</code> | <code>Input/White Surface/Default</code> | {"surface":"bg-white","state":"Default"} | mapped-pending-verification | HTML input 组件契约的默认运行时 ID。 |
+| <code>search</code> | <code>Search/White Surface/Default</code> | <code>search</code> | <code>Search</code> | <code>Search/White Surface/Default</code> | {"surface":"bg-white","state":"Default"} | mapped-pending-verification | HTML search 组件契约的默认运行时 ID。 |
+| <code>textarea</code> | <code>Textarea/Default</code> | <code>textarea</code> | <code>Textarea</code> | <code>Textarea/White Surface/Default</code> | {"surface":"bg-white","state":"Default"} | mapped-pending-verification | HTML textarea 组件契约的默认运行时 ID；白色宿主场景使用 surface=bg-white，灰色宿主场景切换为 surface=gb-gray。 |
+| <code>sidebar</code> | <code>Sidebar Item/Default</code> | <code>sidebar</code> | <code>Sidebar Item</code> | <code>Sidebar Item/Default</code> | {"state":"default"} | mapped-pending-verification | HTML sidebar 组件契约的默认运行时 ID；Pixso 目标已登记，原生来源适配状态另行验收。 |
+| <code>switch</code> | <code>Switch/Default</code> | <code>switch</code> | <code>Switch</code> | <code>Switch/Off/Default</code> | {"checked":"false","state":"Default"} | mapped-pending-verification | HTML switch 组件契约的默认运行时 ID；checked=false 对应 Off。 |
+| <code>color-picker</code> | <code>ColorPicker/Tablet</code> | <code>color-picker</code> | <code>ColorPicker-Tablet</code> | <code>ColorPicker/Tablet</code> | {} | mapped-pending-verification | HTML ColorPicker 组件契约的默认运行时 ID；对应 Pixso ColorPicker-Tablet。 |
+| <code>icon-text-primary</code> | <code>Icon Text Button/Primary/Default</code> | <code>button</code> | <code>icon-text</code> | <code>Icon Text Button/Primary/Default</code> | {"size":"Medium","state":"Default","type":"primary"} | mapped-pending-verification | 端侧 button contract 的 icon-text-primary specimen；Pixso exact Component Set 为 icon-text，变体值保持 Pixso 的小写命名。 |
+| <code>icon-text-secondary</code> | <code>Icon Text Button/Secondary/Default</code> | <code>button</code> | <code>icon-text</code> | <code>Icon Text Button/Secondary/Default</code> | {"size":"Medium","state":"Default","type":"secondary"} | mapped-pending-verification | 端侧 button contract 的 icon-text-secondary specimen；已由当前 Pixso 文件实时事实确认 icon-text/type=secondary 存在。 |
+| <code>icon-text-ghost</code> | <code>Icon Text Button/Ghost/Default</code> | <code>button</code> | <code>icon-text</code> | <code>Icon Text Button/Ghost/Default</code> | {"size":"Medium","state":"Default","type":"ghost"} | mapped-pending-verification | 端侧 button contract 的 icon-text-ghost specimen；Pixso exact Component Set 为 icon-text。 |
+| <code>icon</code> | <code>Icon Button/Ghost/Default</code> | <code>button</code> | <code>Icon Button</code> | <code>Icon Button/Ghost/Default</code> | {"size":"Medium","state":"Default","type":"Ghost"} | mapped-pending-verification | 端侧 button contract 的 icon specimen；Pixso exact Component Set 为 Icon Button，当前唯一 type 为 Ghost。 |
+| <code>selection-dropdown</code> | <code>Selection Dropdown/Default</code> | <code>button</code> | <code>Selection Dropdown</code> | <code>Selection Dropdown/Default</code> | {"size":"Medium","state":"Default"} | mapped-pending-verification | 端侧 button contract 的 selection-dropdown specimen；它是选择型下拉按钮，不等同于表单字段 Select/Default。 |
+| <code>split-dropdown</code> | <code>Split Dropdown Button/Icon Text/Default</code> | <code>button</code> | <code>split-dropdown</code> | <code>Split Dropdown Button/Icon Text/Default</code> | {"type":"ghost","state":"Default"} | mapped-pending-verification | 端侧 button contract 的 split-dropdown specimen；Pixso 同名默认变体中选择带 label 的 128×40 实例（Icon + Text）。 |
+| <code>split-dropdown-icon</code> | <code>Split Dropdown Button/Icon Only/Default</code> | <code>button</code> | <code>split-dropdown</code> | <code>Split Dropdown Button/Icon Only/Default</code> | {"type":"icon","state":"Default"} | mapped-pending-verification | 端侧 button contract 的 split-dropdown-icon specimen；对应 Pixso type=icon、state=Default 的无 label 60×40 实例（Icon Only）。 |
 
 ### 组件内部子映射 / Slot Mapping
 
@@ -671,7 +691,7 @@ source: assets/design-system/mapping-registry.json
 
 | HTML parent | HTML slot / role | 稳定 DOM 选择器 | 数量 | Pixso exact Component Set | Text-to-UI spec context | HTML size → Pixso variant | 子动作 / Pixso layer / icon |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| <code>Titlebar/Default</code> | <code>actions / window-controls</code> | <code>.tui-titlebar__actions > [data-slot="titlebar-action"]</code> | 3 | <code>control button</code> | <code>Titlebar/L/Normal</code> | small → {"状态":"Small size"}<br>medium → {"状态":"Normal size"}<br>large → {"状态":"Normal size"}<br>xlarge → {"状态":"Normal size"} | minimize → 最小化 → window/minimize<br>maximize → 最大化 → window/maximize<br>close → 关闭 → window/close |
+| <code>Titlebar/Default</code> | <code>actions / window-controls</code> | <code>.tui-titlebar__actions</code> | 1 | <code>control button</code> | <code>Titlebar/L/Normal</code> | small → {"状态":"Small size"}<br>medium → {"状态":"Normal size"}<br>large → {"状态":"Normal size"}<br>xlarge → {"状态":"Normal size"} | minimize → 最小化 → window/minimize<br>maximize → 最大化 → window/maximize<br>close → 关闭 → window/close |
 
 ### 尚未正式映射
 
@@ -682,12 +702,10 @@ source: assets/design-system/mapping-registry.json
 | <code>Accordion/Default</code> | <code>accordion</code> | — | unregistered | not-applicable |
 | <code>Alert/Default</code> | <code>alert</code> | — | unregistered | not-applicable |
 | <code>Alert Dialog/Default</code> | <code>alert-dialog</code> | — | unregistered | not-applicable |
-| <code>Aspect Ratio/Default</code> | <code>aspect-ratio</code> | — | unregistered | not-applicable |
 | <code>Attachment/Default</code> | <code>attachment</code> | — | unregistered | not-applicable |
 | <code>Avatar/Default</code> | <code>avatar</code> | — | unregistered | not-applicable |
 | <code>Badge/Default</code> | <code>badge</code> | — | unregistered | not-applicable |
 | <code>Breadcrumb/Default</code> | <code>breadcrumb</code> | — | unregistered | missing-target |
-| <code>Bubble/Default</code> | <code>bubble</code> | — | unregistered | not-applicable |
 | <code>Calendar/Default</code> | <code>calendar</code> | — | unregistered | not-applicable |
 | <code>Card/Default</code> | <code>card</code> | — | unregistered | missing-target |
 | <code>Carousel/Default</code> | <code>carousel</code> | — | unregistered | not-applicable |
@@ -697,7 +715,6 @@ source: assets/design-system/mapping-registry.json
 | <code>Context Menu/Default</code> | <code>context-menu</code> | — | unregistered | not-applicable |
 | <code>Data Table/Default</code> | <code>data-table</code> | — | unregistered | not-applicable |
 | <code>Date Picker/Default</code> | <code>date-picker</code> | — | unregistered | missing-target |
-| <code>Dialog/Default</code> | <code>dialog</code> | — | unregistered | not-applicable |
 | <code>Dropdown Menu/Default</code> | <code>dropdown-menu</code> | — | unregistered | not-applicable |
 | <code>Empty/Default</code> | <code>empty</code> | — | unregistered | not-applicable |
 | <code>Field/Default</code> | <code>field</code> | — | unregistered | missing-target |
@@ -707,7 +724,6 @@ source: assets/design-system/mapping-registry.json
 | <code>Kbd/Default</code> | <code>kbd</code> | — | unregistered | not-applicable |
 | <code>Label/Default</code> | <code>label</code> | — | unregistered | not-applicable |
 | <code>List Item/White Surface/Default</code> | <code>list-card</code> | — | unregistered | missing-target |
-| <code>Menubar/Default</code> | <code>menubar</code> | — | unregistered | not-applicable |
 | <code>Native Select/Default</code> | <code>native-select</code> | — | unregistered | not-applicable |
 | <code>Navigation Menu/Default</code> | <code>navigation-menu</code> | — | unregistered | not-applicable |
 | <code>Pagination/Default</code> | <code>pagination</code> | — | unregistered | not-applicable |
@@ -721,12 +737,9 @@ source: assets/design-system/mapping-registry.json
 | <code>Slider/Default</code> | <code>slider</code> | — | unregistered | missing-target |
 | <code>Table/Default</code> | <code>table</code> | — | unregistered | missing-target |
 | <code>Tabs/Default</code> | <code>tabs</code> | — | unregistered | not-applicable |
-| <code>Textarea/Default</code> | <code>textarea</code> | — | unregistered | not-applicable |
 | <code>Time Picker/Default</code> | <code>time-picker</code> | — | unregistered | missing-target |
 | <code>Titlebar/Default</code> | <code>titlebar</code> | — | unregistered | not-applicable |
-| <code>Toast/Default</code> | <code>toast</code> | — | unregistered | not-applicable |
 | <code>Tooltip/Default</code> | <code>tooltip</code> | — | unregistered | missing-target |
-| <code>Typography/Default</code> | <code>typography</code> | — | unregistered | not-applicable |
 
 ## Native / External Component Source
 
@@ -735,9 +748,9 @@ source: assets/design-system/mapping-registry.json
 | <code>harmonyos-native-source</code> | <code>Button</code> | {"size":"Medium","state":"Default","type":"Primary"} | <code>Button/Primary/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Button</code> | {"size":"Medium","state":"Default","type":"Secondary"} | <code>Button/Secondary/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Button</code> | {"size":"Medium","state":"Default","type":"Ghost"} | <code>Button/Ghost/Default</code> |
-| <code>harmonyos-native-source</code> | <code>icon-text</code> | {"size":"Medium","state":"Default","type":"Primary"} | <code>Icon Text Button/Primary/Default</code> |
-| <code>harmonyos-native-source</code> | <code>icon-text</code> | {"size":"Medium","state":"Default","type":"Ghost"} | <code>Icon Text Button/Ghost/Default</code> |
-| <code>harmonyos-native-source</code> | <code>icon-text</code> | {"size":"Medium","state":"Default","type":"Primary"} | <code>Icon Text Button/Secondary/Default</code> |
+| <code>harmonyos-native-source</code> | <code>icon-text</code> | {"size":"Medium","state":"Default","type":"primary"} | <code>Icon Text Button/Primary/Default</code> |
+| <code>harmonyos-native-source</code> | <code>icon-text</code> | {"size":"Medium","state":"Default","type":"ghost"} | <code>Icon Text Button/Ghost/Default</code> |
+| <code>harmonyos-native-source</code> | <code>icon-text</code> | {"size":"Medium","state":"Default","type":"secondary"} | <code>Icon Text Button/Secondary/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Icon Button</code> | {"size":"Medium","state":"Default","type":"Ghost"} | <code>Icon Button/Secondary/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Icon Button</code> | {"size":"Medium","state":"Default","type":"Ghost"} | <code>Icon Button/Ghost/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Selection Dropdown</code> | {"size":"Medium","state":"Default"} | <code>Selection Dropdown/Default</code> |
@@ -747,18 +760,18 @@ source: assets/design-system/mapping-registry.json
 | <code>harmonyos-native-source</code> | <code>Selection Dropdown</code> | {"size":"Medium","state":"Default"} | <code>Select/Gray Surface/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Input</code> | {"surface":"white","state":"Default"} | <code>Input/White Surface/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Input</code> | {"surface":"dark","state":"Default"} | <code>Input/Gray Surface/Default</code> |
-| <code>harmonyos-native-source</code> | <code>TextInput-Muti-2in1</code> | {"灰色场景":"OFF","状态":"Normal"} | <code>Textarea/White Surface/Default</code> |
-| <code>harmonyos-native-source</code> | <code>TextInput-Muti-2in1</code> | {"灰色场景":"ON","状态":"Normal"} | <code>Textarea/Gray Surface/Default</code> |
 | <code>harmonyos-native-source</code> | <code>CheckBox</code> | {"checked":"false","state":"Default"} | <code>Checkbox/Unchecked/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Radio</code> | {"checked":"false","state":"Default"} | <code>Radio/Unselected/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Switch</code> | {"checked":"false","state":"Default"} | <code>Switch/Off/Default</code> |
+| <code>harmonyos-native-source</code> | <code>ColorPicker-Tablet</code> | {} | <code>ColorPicker/Tablet</code> |
+| <code>harmonyos-native-source</code> | <code>Chips</code> | {"状态":"Default"} | <code>Chips/Default</code> |
 | <code>harmonyos-native-source</code> | <code>Snackbar</code> | {"左侧区域":"1"} | <code>Snackbar/Default</code> |
 
 ## 维护规则
 
 - 编辑入口：assets/design-system/mapping-registry.json 的 profiles；运行时专用别名维护在 runtimeSemanticAliases，完整 runtime semantic index 由 semanticTokenMappings + runtimeSemanticAliases 自动生成。
 - 同一个 HTML 源对接不同 Pixso 文件或组件库时，新建 profile；不要覆盖已有 profile。
-- HTML Component 以 logicalName 为身份，Pixso Component 以当前文件中的 exact Component Set/COMPONENT name 为身份；Variant 单独记录在 runtimeBinding.variant。父组件内部的复合结构使用 componentMappings[].subcomponentMappings，不把内部组误记成独立 HTML Component。
+- HTML Component 以 logicalName 为身份，运行时组件 ID（例如 button contract 的 icon-text-primary、icon）只是可选实现别名，统一从 Obsidian 的 HTML Component 表维护；Pixso Component 以当前文件中的 exact Component Set/COMPONENT name 为身份，Variant 记录在正式映射行中。父组件内部的复合结构使用 componentMappings[].subcomponentMappings，不把内部组误记成独立 HTML Component。
 - Pixso GUID、node ID、file key 不进入 registry；运行时重新解析。
 - Obsidian 变更先填写人工编辑区并运行 scripts/sync-obsidian-mapping-edits.mjs --check/--write；不要直接改生成的完整报告。
 - 修改后依次运行 pnpm mappings:validate、相关 projection build/check，再重新生成本文件。

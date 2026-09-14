@@ -5,7 +5,7 @@
   "name": "Text-to-UI Cross-Source Mapping Registry",
   "purpose": "Single editable relationship layer between HTML contracts, design Tokens, Pixso Variables/Styles, Pixso Components, and external/native component libraries.",
   "policy": {
-    "editSurface": "The committed source of truth is profiles[].tokenMappings, profiles[].semanticTokenMappings, profiles[].runtimeSemanticAliases, profiles[].semanticColorMappings, profiles[].styleMappings, profiles[].componentMappings, and profiles[].nativeSourceMappings here. The full runtime semantic index is generated from semanticTokenMappings plus runtimeSemanticAliases. An Obsidian workbook pending queue may be applied only through scripts/sync-obsidian-mapping-edits.mjs.",
+    "editSurface": "The committed source of truth is profiles[].tokenMappings, profiles[].semanticTokenMappings, profiles[].runtimeSemanticAliases, profiles[].semanticColorMappings, profiles[].styleMappings, profiles[].componentMappings, profiles[].endpointComponentMappings, and profiles[].nativeSourceMappings here. The full runtime semantic index is generated from semanticTokenMappings plus runtimeSemanticAliases. An Obsidian workbook pending queue may be applied only through scripts/sync-obsidian-mapping-edits.mjs.",
     "identity": {
       "htmlToken": "canonical CSS variable or semantic role",
       "htmlComponent": "HTML logicalName",
@@ -4489,33 +4489,85 @@
         {
           "htmlLogicalName": "Accordion/Default",
           "htmlRendererKey": "accordion",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Accordion",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Accordion/Collapsed",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "accordion",
+            "pixsoName": "Accordion",
+            "componentSetName": "Accordion",
+            "availability": "mapped",
+            "variant": {
+              "State": "Collapsed"
+            },
+            "supportedProps": [
+              "label",
+              "size",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Alert/Default",
           "htmlRendererKey": "alert",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Alert",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Alert/Info",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "alert",
+            "pixsoName": "Alert",
+            "componentSetName": "Alert",
+            "availability": "mapped",
+            "variant": {
+              "属性 1": "Info"
+            },
+            "variantByHtml": {
+              "info": {
+                "属性 1": "Info"
+              },
+              "success": {
+                "属性 1": "Success"
+              },
+              "warning": {
+                "属性 1": "Warning"
+              },
+              "danger": {
+                "属性 1": "Error"
+              },
+              "neutral": {
+                "属性 1": "Neutral"
+              }
+            },
+            "supportedProps": [
+              "title",
+              "detail",
+              "expanded",
+              "contentId",
+              "label",
+              "value",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Alert Dialog/Default",
           "htmlRendererKey": "alert-dialog",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Aspect Ratio/Default",
-          "htmlRendererKey": "aspect-ratio",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
           "pixsoSpecKey": null,
@@ -4552,6 +4604,8 @@
           "htmlRendererKey": "avatar",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4559,29 +4613,77 @@
         {
           "htmlLogicalName": "Badge/Default",
           "htmlRendererKey": "badge",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Badge",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Badge/Neutral",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "badge",
+            "pixsoName": "Badge",
+            "componentSetName": "Badge",
+            "availability": "mapped",
+            "variant": {
+              "属性 1": "Neutral"
+            },
+            "variantByHtml": {
+              "default": {
+                "属性 1": "Neutral"
+              },
+              "info": {
+                "属性 1": "Info"
+              },
+              "success": {
+                "属性 1": "Success"
+              },
+              "warning": {
+                "属性 1": "Warning"
+              },
+              "danger": {
+                "属性 1": "Error"
+              },
+              "neutral": {
+                "属性 1": "Neutral"
+              }
+            },
+            "supportedProps": [
+              "label",
+              "tone",
+              "disabled",
+              "className"
+            ],
+            "supportedSlots": [
+              "label"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Breadcrumb/Default",
           "htmlRendererKey": "breadcrumb",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Bubble/Default",
-          "htmlRendererKey": "bubble",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Breadcrumb",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Breadcrumb/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "breadcrumb",
+            "pixsoName": "Breadcrumb",
+            "componentSetName": "Breadcrumb",
+            "availability": "mapped",
+            "variant": {
+              "level": "3"
+            },
+            "supportedProps": [
+              "label",
+              "value",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Button/Primary/Default",
@@ -4605,12 +4707,20 @@
               "variant",
               "size",
               "mode",
+              "iconOnly",
+              "menuItems",
               "disabled"
             ],
             "supportedSlots": [
               "icon",
-              "label"
-            ]
+              "label",
+              "trigger",
+              "menu"
+            ],
+            "contentColor": {
+              "text": "$variable/neutral-light/100",
+              "icon": "$variable/neutral-light/100"
+            }
           }
         },
         {
@@ -4623,39 +4733,12 @@
           "runtimeBinding": null
         },
         {
-          "htmlLogicalName": "Card/Default",
-          "htmlRendererKey": "card",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Carousel/Default",
-          "htmlRendererKey": "carousel",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Chart/Default",
-          "htmlRendererKey": "chart",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
-        },
-        {
           "htmlLogicalName": "Checkbox/Default",
           "htmlRendererKey": "checkbox",
           "pixsoTarget": "CheckBox",
           "pixsoTargetStatus": "registered",
           "pixsoSpecKey": "Checkbox/Unchecked/Default",
-          "nativeSourceStatus": "mapped-pending-verification",
+          "nativeSourceStatus": "mapped-needs-rebuild",
           "runtimeBinding": {
             "rendererKey": "checkbox",
             "pixsoName": "CheckBox",
@@ -4670,11 +4753,45 @@
               "label",
               "description",
               "ariaLabel",
+              "value",
+              "state",
+              "className",
               "disabled"
             ],
             "supportedSlots": [
               "label",
-              "description"
+              "description",
+              "content"
+            ]
+          }
+        },
+        {
+          "htmlLogicalName": "Chips/Default",
+          "htmlRendererKey": "chips",
+          "pixsoTarget": "Chips",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Chips/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "chips",
+            "pixsoName": "Chips",
+            "componentSetName": "Chips",
+            "availability": "mapped",
+            "variant": {
+              "状态": "Default"
+            },
+            "supportedProps": [
+              "label",
+              "icon",
+              "closable",
+              "disabled",
+              "state",
+              "onClose"
+            ],
+            "supportedSlots": [
+              "leading",
+              "label",
+              "close"
             ]
           }
         },
@@ -4684,7 +4801,7 @@
           "pixsoTarget": "Radio",
           "pixsoTargetStatus": "registered",
           "pixsoSpecKey": "Radio/Unselected/Default",
-          "nativeSourceStatus": "mapped-pending-verification",
+          "nativeSourceStatus": "mapped-needs-rebuild",
           "runtimeBinding": {
             "rendererKey": "radio",
             "pixsoName": "Radio",
@@ -4696,9 +4813,12 @@
             },
             "supportedProps": [
               "checked",
+              "defaultChecked",
               "label",
               "name",
               "value",
+              "state",
+              "className",
               "disabled"
             ],
             "supportedSlots": [
@@ -4710,17 +4830,49 @@
         {
           "htmlLogicalName": "Collapsible/Default",
           "htmlRendererKey": "collapsible",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Collapsible",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Collapsible/Collapsed",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "collapsible",
+            "pixsoName": "Collapsible",
+            "componentSetName": "Collapsible",
+            "availability": "mapped",
+            "variant": {
+              "State": "Collapsed"
+            },
+            "variantByHtml": {
+              "default": {
+                "State": "Collapsed"
+              },
+              "open": {
+                "State": "Expanded"
+              }
+            },
+            "supportedProps": [
+              "title",
+              "detail",
+              "expanded",
+              "contentId",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Combobox/Default",
           "htmlRendererKey": "combobox",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前输入类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4730,15 +4882,8 @@
           "htmlRendererKey": "context-menu",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Data Table/Default",
-          "htmlRendererKey": "data-table",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前操作类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4755,26 +4900,86 @@
         {
           "htmlLogicalName": "Dialog/Default",
           "htmlRendererKey": "dialog",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Dialog-2in1",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Dialog/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "dialog",
+            "pixsoName": "Dialog-2in1",
+            "componentSetName": "Dialog-2in1",
+            "availability": "mapped",
+            "variant": {
+              "style": "1button"
+            },
+            "variantByHtml": {
+              "single": {
+                "style": "1button"
+              },
+              "double": {
+                "style": "title+2 button"
+              },
+              "triple": {
+                "style": "title+3 button"
+              }
+            },
+            "slots": {
+              "titlebar": {
+                "cardinality": "1",
+                "pixsoComponent": ".Title",
+                "variants": {
+                  "title-only": "属性 1=title+single line",
+                  "title-subtitle": "属性 1=title+2lines"
+                }
+              },
+              "actions": {
+                "cardinality": "1",
+                "acceptedComponent": "Button",
+                "buttonCount": "1..3",
+                "variants": {
+                  "one-button": "style=1button",
+                  "two-buttons": "style=title+2 button",
+                  "three-buttons": "style=title+3 button"
+                },
+                "internalPixsoVariants": {
+                  "one-button": "quantity=1_normal",
+                  "two-buttons": [
+                    "quantity=2_normal",
+                    "quantity=2_emphasize"
+                  ],
+                  "three-buttons": "quantity=3_emphasize_port"
+                }
+              }
+            },
+            "supportedProps": [
+              "open",
+              "title",
+              "description",
+              "intent",
+              "actionLayout",
+              "confirmLabel",
+              "cancelLabel",
+              "thirdActionLabel",
+              "onConfirm",
+              "onCancel",
+              "onThirdAction",
+              "onOpenChange"
+            ],
+            "supportedSlots": [
+              "titlebar",
+              "description",
+              "content",
+              "actions"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Dropdown Menu/Default",
           "htmlRendererKey": "dropdown-menu",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Empty/Default",
-          "htmlRendererKey": "empty",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前 Text-to-UI 映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4784,15 +4989,97 @@
           "htmlRendererKey": "field",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前输入类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
+          "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
+        },
+        {
+          "htmlLogicalName": "Form Field/Default",
+          "htmlRendererKey": "form-field",
+          "pixsoTarget": "Form Field",
+          "pixsoTargetStatus": "registered",
+          "pixsoMappingPolicy": "required",
+          "pixsoMappingReason": "Form Field 已作为包含标题、控件槽位与错误信息的正式 Pixso 组件维护。",
+          "pixsoSpecKey": "Form Field/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "form-field",
+            "pixsoName": "Form Field",
+            "componentSetName": "Form Field",
+            "availability": "mapped",
+            "variant": {
+              "surface": "White",
+              "state": "Default"
+            },
+            "variantByProp": {
+              "surface": {
+                "white": {
+                  "surface": "White"
+                },
+                "gray": {
+                  "surface": "Gray"
+                },
+                "grey": {
+                  "surface": "Gray"
+                }
+              },
+              "state": {
+                "default": {
+                  "state": "Default"
+                },
+                "hover": {
+                  "state": "Hover"
+                },
+                "focus": {
+                  "state": "Focus"
+                },
+                "disabled": {
+                  "state": "Disabled"
+                },
+                "error": {
+                  "state": "Error"
+                }
+              }
+            },
+            "slots": {
+              "label": {
+                "cardinality": "1",
+                "pixsoLayer": "#label"
+              },
+              "control": {
+                "cardinality": "1",
+                "pixsoLayer": "#control"
+              },
+              "error": {
+                "cardinality": "0..1",
+                "pixsoLayer": "#error"
+              }
+            },
+            "supportedProps": [
+              "label",
+              "required",
+              "error",
+              "disabled",
+              "state",
+              "surface",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "control",
+              "error"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Hover Card/Default",
           "htmlRendererKey": "hover-card",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4817,6 +5104,7 @@
               "value",
               "placeholder",
               "surface",
+              "error",
               "disabled"
             ],
             "supportedSlots": [
@@ -4824,41 +5112,20 @@
               "value",
               "trailing",
               "help"
-            ]
+            ],
+            "contentColor": {
+              "text": "$variable/neutral-dark/90",
+              "icon": "$variable/neutral-dark/90"
+            }
           }
-        },
-        {
-          "htmlLogicalName": "Input OTP/Default",
-          "htmlRendererKey": "input-otp",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Item/Default",
-          "htmlRendererKey": "item",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
-        },
-        {
-          "htmlLogicalName": "Kbd/Default",
-          "htmlRendererKey": "kbd",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
         },
         {
           "htmlLogicalName": "Label/Default",
           "htmlRendererKey": "label",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前输入类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4868,35 +5135,45 @@
           "htmlRendererKey": "list-card",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "List Item 样例结构复杂，按当前容器类范围保留框架实现，不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": {
-            "rendererKey": "item",
-            "pixsoName": null,
-            "availability": "native-only",
-            "supportedProps": [
-              "title",
-              "description",
-              "leading",
-              "trailing",
-              "state"
-            ],
-            "supportedSlots": [
-              "leading",
-              "title",
-              "description",
-              "trailing"
-            ]
-          }
+          "nativeSourceStatus": "not-applicable",
+          "runtimeBinding": null
         },
         {
           "htmlLogicalName": "Menubar/Default",
           "htmlRendererKey": "menubar",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Menubar",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Menubar/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "menubar",
+            "pixsoName": "Menubar",
+            "componentSetName": "Menubar",
+            "availability": "mapped",
+            "variant": {
+              "state": "Default",
+              "surface": "bg-white"
+            },
+            "supportedProps": [
+              "label",
+              "value",
+              "items",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description",
+              "item-leading",
+              "item-label",
+              "item-trailing"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Native Select/Default",
@@ -4908,28 +5185,69 @@
           "runtimeBinding": null
         },
         {
-          "htmlLogicalName": "Navigation Menu/Default",
-          "htmlRendererKey": "navigation-menu",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "htmlLogicalName": "Number Selector/Default",
+          "htmlRendererKey": "number-selector",
+          "pixsoTarget": "Number Selector/Default",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Number Selector/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "number-selector",
+            "pixsoName": "Number Selector/Default",
+            "componentSetName": "Number Selector/Default",
+            "availability": "mapped",
+            "supportedProps": [
+              "label",
+              "value",
+              "defaultValue",
+              "min",
+              "max",
+              "step",
+              "disabled",
+              "onChange"
+            ],
+            "supportedSlots": [
+              "label",
+              "decrement",
+              "value",
+              "increment"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Pagination/Default",
           "htmlRendererKey": "pagination",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "pixsoTarget": "Pagination/Default",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Pagination/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "pagination",
+            "pixsoName": "Pagination/Default",
+            "componentSetName": "Pagination/Default",
+            "availability": "mapped",
+            "variant": {},
+            "supportedProps": [
+              "label",
+              "value",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Popover/Default",
           "htmlRendererKey": "popover",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -4960,11 +5278,28 @@
         {
           "htmlLogicalName": "Progress/Default",
           "htmlRendererKey": "progress",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": null
+          "pixsoTarget": "Progress/Default",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Progress/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "progress",
+            "pixsoName": "Progress/Default",
+            "componentSetName": "Progress/Default",
+            "availability": "mapped",
+            "supportedProps": [
+              "label",
+              "value",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "content",
+              "description"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Radio Group/Default",
@@ -4993,10 +5328,15 @@
             },
             "supportedProps": [
               "value",
+              "defaultValue",
               "placeholder",
               "surface",
               "advancedSearch",
               "advancedSearchLabel",
+              "state",
+              "onAdvancedSearch",
+              "onChange",
+              "onClear",
               "disabled"
             ],
             "supportedSlots": [
@@ -5004,7 +5344,11 @@
               "value",
               "clear",
               "advanced-search"
-            ]
+            ],
+            "contentColor": {
+              "text": "$variable/neutral-dark/90",
+              "icon": "$variable/neutral-dark/90"
+            }
           }
         },
         {
@@ -5026,13 +5370,32 @@
           "runtimeBinding": null
         },
         {
-          "htmlLogicalName": "Separator/Default",
-          "htmlRendererKey": "separator",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "htmlLogicalName": "Segmented Button/Default",
+          "htmlRendererKey": "segmented-button",
+          "pixsoTarget": "Segmented Button",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Segmented Button/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "segmented-button",
+            "pixsoName": "Segmented Button",
+            "componentSetName": "Segmented Button",
+            "variant": {
+              "count": "3"
+            },
+            "availability": "mapped",
+            "supportedProps": [
+              "options",
+              "value",
+              "defaultValue",
+              "label",
+              "disabled",
+              "onChange"
+            ],
+            "supportedSlots": [
+              "option"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Sidebar Item/Default",
@@ -5044,33 +5407,102 @@
           "runtimeBinding": {
             "rendererKey": "sidebar",
             "pixsoName": "Sidebar Item",
-            "componentSetName": "Sidebar Item",
             "availability": "mapped",
-            "variant": {
-              "state": "default"
-            },
             "supportedProps": [
               "label",
               "icon",
               "count",
               "selected",
+              "collapsed",
               "disabled"
             ],
             "supportedSlots": [
               "leading",
               "label",
               "trailing"
-            ]
+            ],
+            "componentSetName": "Sidebar Item",
+            "variant": {
+              "state": "default"
+            },
+            "cardinality": "many",
+            "mappingScope": "every child .tui-sidebar-item",
+            "childMapping": {
+              "htmlSelector": ".tui-sidebar > .tui-sidebar-item",
+              "pixsoTarget": "Sidebar Item",
+              "textToUiSpecKey": "Sidebar Item/Default",
+              "states": [
+                "default",
+                "hover",
+                "selected"
+              ],
+              "rule": "Each rendered sidebar child is one Sidebar Item instance; the parent Sidebar only provides the collection container. The current Pixso set supplies default, hover, and selected only; other interaction states retain their code-side behavior."
+            }
           }
         },
         {
           "htmlLogicalName": "Slider/Default",
           "htmlRendererKey": "slider",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": null
+          "pixsoTarget": "Slider",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Slider/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "slider",
+            "pixsoName": "Slider",
+            "componentSetName": "Slider",
+            "variant": {
+              "style": "style-1"
+            },
+            "availability": "mapped",
+            "supportedProps": [
+              "label",
+              "value",
+              "disabled",
+              "state",
+              "className"
+            ],
+            "supportedSlots": [
+              "label",
+              "control",
+              "value"
+            ]
+          }
+        },
+        {
+          "htmlLogicalName": "ColorPicker/Tablet",
+          "htmlRendererKey": "color-picker",
+          "pixsoTarget": "Snackbar/ColorPicker-Tablet",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "ColorPicker/Tablet",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "color-picker",
+            "pixsoName": "Snackbar/ColorPicker-Tablet",
+            "componentSetName": "Snackbar/ColorPicker-Tablet",
+            "availability": "mapped",
+            "supportedProps": [
+              "value",
+              "defaultValue",
+              "disabled",
+              "state",
+              "className",
+              "onChange"
+            ],
+            "supportedSlots": [
+              "title",
+              "tabs",
+              "mode",
+              "hue",
+              "saturation",
+              "brightness",
+              "alpha",
+              "preview",
+              "eyedropper",
+              "hex",
+              "favorites"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Switch/Default",
@@ -5078,7 +5510,7 @@
           "pixsoTarget": "Switch",
           "pixsoTargetStatus": "registered",
           "pixsoSpecKey": "Switch/Off/Default",
-          "nativeSourceStatus": "mapped-pending-verification",
+          "nativeSourceStatus": "mapped-needs-rebuild",
           "runtimeBinding": {
             "rendererKey": "switch",
             "pixsoName": "Switch",
@@ -5092,11 +5524,15 @@
               "checked",
               "label",
               "description",
+              "value",
+              "state",
+              "className",
               "disabled"
             ],
             "supportedSlots": [
               "label",
-              "description"
+              "description",
+              "content"
             ]
           }
         },
@@ -5105,8 +5541,10 @@
           "htmlRendererKey": "table",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
           "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
+          "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
         },
         {
@@ -5119,13 +5557,90 @@
           "runtimeBinding": null
         },
         {
-          "htmlLogicalName": "Textarea/Default",
-          "htmlRendererKey": "textarea",
+          "htmlLogicalName": "Sub Tabs/Default",
+          "htmlRendererKey": "sub-tabs",
+          "pixsoTarget": "Sub Tabs Item",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Sub Tabs/Default",
+          "nativeSourceStatus": "not-applicable",
+          "runtimeBinding": {
+            "rendererKey": "sub-tabs",
+            "pixsoName": "Sub Tabs Item",
+            "availability": "mapped",
+            "supportedProps": [
+              "tabs",
+              "value",
+              "defaultValue",
+              "onChange",
+              "disabled"
+            ],
+            "supportedSlots": [
+              "label",
+              "content"
+            ],
+            "componentSetName": "Sub Tabs Item",
+            "variant": {
+              "state": "Unselected"
+            },
+            "cardinality": "many",
+            "mappingScope": "every child .tui-sub-tabs__list [role=tab]",
+            "childMapping": {
+              "htmlSelector": ".tui-sub-tabs__list > [role=tab]",
+              "pixsoTarget": "Sub Tabs Item",
+              "textToUiSpecKey": "Sub Tabs/Default",
+              "states": [
+                "Unselected",
+                "Selected"
+              ],
+              "stateResolution": {
+                "default": "Unselected",
+                "selected": "Selected"
+              },
+              "rule": "Each rendered sub-tab is one Sub Tabs Item instance; the parent Sub Tabs retains the tablist and content-panel structure."
+            }
+          }
+        },
+        {
+          "htmlLogicalName": "Tree View/Default",
+          "htmlRendererKey": "tree-view",
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
+        },
+        {
+          "htmlLogicalName": "Textarea/Default",
+          "htmlRendererKey": "textarea",
+          "pixsoTarget": "Textarea",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Textarea/White Surface/Default",
+          "nativeSourceStatus": "not-applicable",
+          "runtimeBinding": {
+            "rendererKey": "textarea",
+            "pixsoName": "Textarea",
+            "componentSetName": "Textarea",
+            "availability": "mapped",
+            "variant": {
+              "surface": "bg-white",
+              "state": "Default"
+            },
+            "supportedProps": [
+              "label",
+              "value",
+              "disabled",
+              "state",
+              "className",
+              "surface"
+            ],
+            "supportedSlots": [
+              "label",
+              "leading",
+              "value",
+              "trailing",
+              "help"
+            ]
+          }
         },
         {
           "htmlLogicalName": "Time Picker/Default",
@@ -5148,8 +5663,9 @@
             {
               "htmlRole": "window-controls",
               "htmlSlot": "actions",
-              "htmlSelector": ".tui-titlebar__actions > [data-slot=\"titlebar-action\"]",
-              "cardinality": "3",
+              "htmlSelector": ".tui-titlebar__actions",
+              "cardinality": "1",
+              "htmlLogicalName": "Titlebar Controls/Normal",
               "pixsoTarget": "control button",
               "textToUiSpecKey": "Titlebar/L/Normal",
               "variantByHtmlSize": {
@@ -5163,6 +5679,317 @@
                   "状态": "Normal size"
                 },
                 "xlarge": {
+                  "状态": "Normal size"
+                }
+              },
+              "runtimeBinding": {
+                "rendererKey": "titlebar-controls",
+                "pixsoName": "control button",
+                "componentSetName": "control button",
+                "availability": "mapped",
+                "variant": {
+                  "状态": "Normal size"
+                }
+              },
+              "actions": [
+                {
+                  "htmlAction": "minimize",
+                  "pixsoLayer": "最小化",
+                  "iconAlias": "window/minimize"
+                },
+                {
+                  "htmlAction": "maximize",
+                  "pixsoLayer": "最大化",
+                  "iconAlias": "window/maximize"
+                },
+                {
+                  "htmlAction": "close",
+                  "pixsoLayer": "关闭",
+                  "iconAlias": "window/close"
+                }
+              ],
+              "sourceEvidence": "Titlebar 窗口控制按钮必须复用 Pixso control button；以语义 data-slot/data-action 为稳定身份。",
+              "notes": "所有 Titlebar 最小化、最大化、关闭按钮均实例化为 control button 的对应子层。"
+            }
+          ]
+        },
+        {
+          "htmlLogicalName": "Snackbar/Default",
+          "htmlRendererKey": "snackbar",
+          "pixsoTarget": "Snackbar",
+          "pixsoTargetStatus": "registered",
+          "pixsoSpecKey": "Snackbar/Default",
+          "nativeSourceStatus": "mapped-pending-verification",
+          "runtimeBinding": {
+            "rendererKey": "snackbar",
+            "pixsoName": "Snackbar",
+            "componentSetName": "Snackbar",
+            "availability": "mapped",
+            "variant": {
+              "左侧区域": "1"
+            },
+            "supportedProps": [
+              "title",
+              "subtitle",
+              "actionLabel",
+              "leftArea",
+              "closable",
+              "onAction",
+              "onClose"
+            ],
+            "supportedSlots": [
+              "leading",
+              "title",
+              "subtitle",
+              "action",
+              "close"
+            ]
+          }
+        },
+        {
+          "htmlLogicalName": "Tooltip/Default",
+          "htmlRendererKey": "tooltip",
+          "pixsoTarget": null,
+          "pixsoTargetStatus": "unregistered",
+          "pixsoMappingPolicy": "excluded",
+          "pixsoMappingReason": "按当前展示类组件映射范围保留框架实现，但不映射为 Pixso 组件。",
+          "pixsoSpecKey": null,
+          "nativeSourceStatus": "not-applicable",
+          "runtimeBinding": null
+        }
+      ],
+      "componentAliases": [
+        {
+          "logicalName": "Selection Dropdown/Default",
+          "rendererKey": "selection-dropdown",
+          "pixsoName": "Selection Dropdown",
+          "componentSetName": "Selection Dropdown",
+          "pixsoSpecKey": "Selection Dropdown/Default",
+          "availability": "mapped",
+          "variant": {
+            "size": "Medium",
+            "state": "Default"
+          },
+          "supportedProps": [
+            "label",
+            "variant",
+            "menuItems",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "label",
+            "trigger"
+          ]
+        },
+        {
+          "logicalName": "Icon Text Button/Primary/Default",
+          "rendererKey": "button",
+          "pixsoName": "icon-text",
+          "componentSetName": "icon-text",
+          "availability": "mapped",
+          "variant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "primary"
+          },
+          "supportedProps": [
+            "label",
+            "variant",
+            "size",
+            "mode",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "icon",
+            "label"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-light/100",
+            "icon": "$variable/neutral-light/100"
+          }
+        },
+        {
+          "logicalName": "Icon Text Button/Ghost/Default",
+          "rendererKey": "button",
+          "pixsoName": "icon-text",
+          "componentSetName": "icon-text",
+          "availability": "mapped",
+          "variant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "ghost"
+          },
+          "supportedProps": [
+            "label",
+            "variant",
+            "size",
+            "mode",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "icon",
+            "label"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Icon Button/Ghost/Default",
+          "rendererKey": "button",
+          "pixsoName": "Icon Button",
+          "componentSetName": "Icon Button",
+          "availability": "mapped",
+          "variant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "Ghost"
+          },
+          "supportedProps": [
+            "label",
+            "variant",
+            "size",
+            "mode",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "icon"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Input/Gray Surface/Default",
+          "rendererKey": "input",
+          "pixsoName": "Input",
+          "componentSetName": "Input",
+          "availability": "mapped",
+          "variant": {
+            "surface": "gb-gray",
+            "state": "Default"
+          },
+          "supportedProps": [
+            "value",
+            "placeholder",
+            "surface",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "leading",
+            "value",
+            "trailing",
+            "help"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Search/Gray Surface/Default",
+          "rendererKey": "search",
+          "pixsoName": "Search",
+          "componentSetName": "Search",
+          "availability": "mapped",
+          "variant": {
+            "surface": "gb-gray",
+            "state": "Default"
+          },
+          "supportedProps": [
+            "value",
+            "placeholder",
+            "surface",
+            "advancedSearch",
+            "advancedSearchLabel",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "leading",
+            "value",
+            "clear",
+            "advanced-search"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Checkbox/Unchecked/Default",
+          "rendererKey": "checkbox",
+          "pixsoName": "CheckBox",
+          "componentSetName": "CheckBox",
+          "availability": "mapped",
+          "variant": {
+            "checked": "false",
+            "state": "Default"
+          },
+          "supportedProps": [
+            "checked",
+            "label",
+            "description",
+            "ariaLabel",
+            "disabled"
+          ],
+          "supportedSlots": [
+            "label",
+            "description"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Titlebar/L/Normal",
+          "rendererKey": "titlebar",
+          "pixsoName": null,
+          "availability": "native-only",
+          "supportedProps": [
+            "label",
+            "paneRole",
+            "size",
+            "layout",
+            "mainDetailActions",
+            "actionOverflow"
+          ],
+          "supportedSlots": [
+            "leading",
+            "label",
+            "main-detail-actions"
+          ],
+          "subcomponentMappings": [
+            {
+              "htmlRole": "window-controls",
+              "htmlSlot": "actions",
+              "htmlSelector": ".tui-titlebar__actions",
+              "cardinality": "1",
+              "htmlLogicalName": "Titlebar Controls/Normal",
+              "pixsoTarget": "control button",
+              "textToUiSpecKey": "Titlebar/L/Normal",
+              "variantByHtmlSize": {
+                "small": {
+                  "状态": "Small size"
+                },
+                "medium": {
+                  "状态": "Normal size"
+                },
+                "large": {
+                  "状态": "Normal size"
+                },
+                "xlarge": {
+                  "状态": "Normal size"
+                }
+              },
+              "runtimeBinding": {
+                "rendererKey": "titlebar-controls",
+                "pixsoName": "control button",
+                "componentSetName": "control button",
+                "availability": "mapped",
+                "variant": {
                   "状态": "Normal size"
                 }
               },
@@ -5190,31 +6017,280 @@
           ]
         },
         {
-          "htmlLogicalName": "Toast/Default",
-          "htmlRendererKey": "toast",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "logicalName": "Avatar/40/Fallback",
+          "rendererKey": "avatar",
+          "pixsoName": null,
+          "availability": "native-only",
+          "supportedProps": [
+            "initials",
+            "name",
+            "size"
+          ],
+          "supportedSlots": [
+            "content"
+          ]
         },
         {
-          "htmlLogicalName": "Tooltip/Default",
-          "htmlRendererKey": "tooltip",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "missing-target",
-          "runtimeBinding": null
+          "logicalName": "Badge/Success/Default",
+          "rendererKey": "badge",
+          "pixsoName": null,
+          "availability": "native-only",
+          "supportedProps": [
+            "label",
+            "tone"
+          ],
+          "supportedSlots": [
+            "label"
+          ]
+        }
+      ],
+      "endpointComponentMappings": [
+        {
+          "endpointComponentId": "menubar",
+          "contractId": "menubar",
+          "htmlLogicalName": "Menubar/Default",
+          "pixsoTarget": "Menubar",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "state": "Default",
+            "surface": "bg-white"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Menubar/Default",
+          "notes": "HTML menubar 组件契约的默认运行时 ID；复用当前 Pixso Menubar 的白色表面默认状态。"
         },
         {
-          "htmlLogicalName": "Typography/Default",
-          "htmlRendererKey": "typography",
-          "pixsoTarget": null,
-          "pixsoTargetStatus": "unregistered",
-          "pixsoSpecKey": null,
-          "nativeSourceStatus": "not-applicable",
-          "runtimeBinding": null
+          "endpointComponentId": "button",
+          "contractId": "button",
+          "htmlLogicalName": "Button/Primary/Default",
+          "pixsoTarget": "Button",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "type": "Primary",
+            "size": "Medium",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Button/Primary/Default",
+          "notes": "HTML button 组件契约的默认运行时 ID；对应 Pixso Button/Primary/Default。"
+        },
+        {
+          "endpointComponentId": "checkbox",
+          "contractId": "checkbox",
+          "htmlLogicalName": "Checkbox/Default",
+          "pixsoTarget": "CheckBox",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "checked": "false",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Checkbox/Unchecked/Default",
+          "notes": "HTML checkbox 组件契约的默认运行时 ID；checked=false 对应未选中。"
+        },
+        {
+          "endpointComponentId": "radio",
+          "contractId": "radio",
+          "htmlLogicalName": "Radio/Unselected/Default",
+          "pixsoTarget": "Radio",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "checked": "false",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Radio/Unselected/Default",
+          "notes": "HTML radio 组件契约的默认运行时 ID；checked=false 对应未选中。"
+        },
+        {
+          "endpointComponentId": "input",
+          "contractId": "input",
+          "htmlLogicalName": "Input/White Surface/Default",
+          "pixsoTarget": "Input",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "surface": "bg-white",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Input/White Surface/Default",
+          "notes": "HTML input 组件契约的默认运行时 ID。"
+        },
+        {
+          "endpointComponentId": "search",
+          "contractId": "search",
+          "htmlLogicalName": "Search/White Surface/Default",
+          "pixsoTarget": "Search",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "surface": "bg-white",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Search/White Surface/Default",
+          "notes": "HTML search 组件契约的默认运行时 ID。"
+        },
+        {
+          "endpointComponentId": "textarea",
+          "contractId": "textarea",
+          "htmlLogicalName": "Textarea/Default",
+          "pixsoTarget": "Textarea",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "surface": "bg-white",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Textarea/White Surface/Default",
+          "notes": "HTML textarea 组件契约的默认运行时 ID；白色宿主场景使用 surface=bg-white，灰色宿主场景切换为 surface=gb-gray。"
+        },
+        {
+          "endpointComponentId": "number-selector",
+          "contractId": "number-selector",
+          "htmlLogicalName": "Number Selector/Default",
+          "pixsoTarget": "Number Selector/Default",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {},
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Number Selector/Default",
+          "notes": "HTML number-selector 组件契约的默认运行时 ID；对应输入类分区中新建的 Pixso 可复用主组件。"
+        },
+        {
+          "endpointComponentId": "progress",
+          "contractId": "progress",
+          "htmlLogicalName": "Progress/Default",
+          "pixsoTarget": "Progress/Default",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {},
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Progress/Default",
+          "notes": "HTML progress 组件契约的默认运行时 ID；对应展示类分区中新建的 Pixso 可复用主组件。"
+        },
+        {
+          "endpointComponentId": "sidebar",
+          "contractId": "sidebar",
+          "htmlLogicalName": "Sidebar Item/Default",
+          "pixsoTarget": "Sidebar Item",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "state": "default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Sidebar Item/Default",
+          "notes": "HTML sidebar 组件契约的默认运行时 ID；Pixso 目标已登记，原生来源适配状态另行验收。"
+        },
+        {
+          "endpointComponentId": "switch",
+          "contractId": "switch",
+          "htmlLogicalName": "Switch/Default",
+          "pixsoTarget": "Switch",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "checked": "false",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Switch/Off/Default",
+          "notes": "HTML switch 组件契约的默认运行时 ID；checked=false 对应 Off。"
+        },
+        {
+          "endpointComponentId": "color-picker",
+          "contractId": "color-picker",
+          "htmlLogicalName": "ColorPicker/Tablet",
+          "pixsoTarget": "Snackbar/ColorPicker-Tablet",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {},
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "ColorPicker/Tablet",
+          "notes": "HTML ColorPicker 组件契约的默认运行时 ID；对应当前 Pixso 的 Snackbar/ColorPicker-Tablet。"
+        },
+        {
+          "endpointComponentId": "icon-text-primary",
+          "contractId": "button",
+          "htmlLogicalName": "Icon Text Button/Primary/Default",
+          "pixsoTarget": "icon-text",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "primary"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Icon Text Button/Primary/Default",
+          "notes": "端侧 button contract 的 icon-text-primary specimen；Pixso exact Component Set 为 icon-text，变体值保持 Pixso 的小写命名。"
+        },
+        {
+          "endpointComponentId": "icon-text-secondary",
+          "contractId": "button",
+          "htmlLogicalName": "Icon Text Button/Secondary/Default",
+          "pixsoTarget": "icon-text",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "secondary"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Icon Text Button/Secondary/Default",
+          "notes": "端侧 button contract 的 icon-text-secondary specimen；已由当前 Pixso 文件实时事实确认 icon-text/type=secondary 存在。"
+        },
+        {
+          "endpointComponentId": "icon-text-ghost",
+          "contractId": "button",
+          "htmlLogicalName": "Icon Text Button/Ghost/Default",
+          "pixsoTarget": "icon-text",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "ghost"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Icon Text Button/Ghost/Default",
+          "notes": "端侧 button contract 的 icon-text-ghost specimen；Pixso exact Component Set 为 icon-text。"
+        },
+        {
+          "endpointComponentId": "icon",
+          "contractId": "button",
+          "htmlLogicalName": "Icon Button/Ghost/Default",
+          "pixsoTarget": "Icon Button",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "Ghost"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Icon Button/Ghost/Default",
+          "notes": "端侧 button contract 的 icon specimen；Pixso exact Component Set 为 Icon Button，当前唯一 type 为 Ghost。"
+        },
+        {
+          "endpointComponentId": "split-dropdown",
+          "contractId": "button",
+          "htmlLogicalName": "Split Dropdown Button/Icon Text/Default",
+          "pixsoTarget": "split-dropdown",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "type": "ghost",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Split Dropdown Button/Icon Text/Default",
+          "notes": "端侧 button contract 的 split-dropdown specimen；Pixso 同名默认变体中选择带 label 的 128×40 实例（Icon + Text）。"
+        },
+        {
+          "endpointComponentId": "split-dropdown-icon",
+          "contractId": "button",
+          "htmlLogicalName": "Split Dropdown Button/Icon Only/Default",
+          "pixsoTarget": "split-dropdown",
+          "pixsoTargetStatus": "registered",
+          "pixsoVariant": {
+            "type": "icon",
+            "state": "Default"
+          },
+          "mappingStatus": "mapped-pending-verification",
+          "sourceMappingTarget": "Split Dropdown Button/Icon Only/Default",
+          "notes": "端侧 button contract 的 split-dropdown-icon specimen；对应 Pixso type=icon、state=Default 的无 label 60×40 实例（Icon Only）。"
         }
       ],
       "nativeSourceMappings": [
@@ -5301,7 +6377,7 @@
             "variant": {
               "size": "Medium",
               "state": "Default",
-              "type": "Primary"
+              "type": "primary"
             }
           },
           "pixsoVariant": {
@@ -5324,7 +6400,7 @@
             "height": "size/40",
             "iconSize": "size/20",
             "radius": "radius/08",
-            "paddingX": "space/5"
+            "paddingX": "space/3"
           },
           "targetHtmlLogicalName": "Icon Text Button/Primary/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5335,7 +6411,7 @@
             "variant": {
               "size": "Medium",
               "state": "Default",
-              "type": "Ghost"
+              "type": "ghost"
             }
           },
           "pixsoVariant": {
@@ -5353,12 +6429,12 @@
             "Leading": "action/add"
           },
           "tokens": {
-            "content": "brand/100",
+            "content": "neutral-dark/90",
             "gap": "space/3",
             "height": "size/40",
             "iconSize": "size/20",
             "radius": "radius/08",
-            "paddingX": "space/5"
+            "paddingX": "space/3"
           },
           "sourceVariantAliases": [
             {
@@ -5371,7 +6447,7 @@
             }
           ],
           "notes": [
-            "Exact live source match: icon-text / size=Medium / type=Ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."
+            "Exact live source match: icon-text / size=Medium / type=ghost / state=Default. Keep this variant linked, then replace the icon-font descendant with the registered semantic SVG and expose the editable Label and Leading slots."
           ],
           "targetHtmlLogicalName": "Icon Text Button/Ghost/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5382,12 +6458,17 @@
             "variant": {
               "size": "Medium",
               "state": "Default",
-              "type": "Primary"
+              "type": "secondary"
             }
+          },
+          "pixsoVariant": {
+            "size": "Medium",
+            "state": "Default",
+            "type": "secondary"
           },
           "target": "Icon Text Button/Secondary/Default",
           "reuse": "structure",
-          "takeoverStatus": "needs-rebuild",
+          "takeoverStatus": "adapting",
           "textStyles": {
             "Label": "Typography/Body_L"
           },
@@ -5401,10 +6482,10 @@
             "height": "size/40",
             "iconSize": "size/20",
             "radius": "radius/08",
-            "paddingX": "space/5"
+            "paddingX": "space/3"
           },
           "notes": [
-            "The live icon-text set currently exposes Primary and Ghost only. Do not treat Primary as a Secondary match; add a Secondary variant before strict delivery."
+            "Exact live source match: icon-text / size=Medium / type=secondary / state=Default. Keep this variant linked, then verify the editable Label and Leading slots before strict delivery."
           ],
           "targetHtmlLogicalName": "Icon Text Button/Secondary/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5478,43 +6559,15 @@
         },
         {
           "source": {
-            "componentSet": "Selection Dropdown",
-            "variant": {
-              "size": "Medium",
-              "state": "Default"
-            }
-          },
-          "target": "Selection Dropdown/Default",
-          "reuse": "structure",
-          "takeoverStatus": "adapting",
-          "textStyles": {
-            "Label": "Typography/Body_L"
-          },
-          "icons": {
-            "Trailing": "navigation/chevron-down"
-          },
-          "tokens": {
-            "background": "neutral-dark/05",
-            "content": "neutral-dark/90",
-            "gap": "space/3",
-            "height": "size/40",
-            "iconSize": "size/16",
-            "radius": "radius/08",
-            "paddingX": "space/4"
-          },
-          "notes": [
-            "Expose the label as instance-safe content and replace the icon-font arrow with the registered semantic SVG."
-          ],
-          "targetHtmlLogicalName": "Selection Dropdown/Default",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
-          "source": {
             "componentSet": "Search",
             "variant": {
               "surface": "white",
               "state": "Default"
             }
+          },
+          "pixsoVariant": {
+            "surface": "bg-white",
+            "state": "Default"
           },
           "target": "Search/White Surface/Default",
           "reuse": "structure",
@@ -5534,7 +6587,8 @@
             "height": "size/40",
             "iconSize": "size/16",
             "radius": "radius/08",
-            "paddingX": "space/4"
+            "paddingLeft": "space/4",
+            "paddingRight": "space/2"
           },
           "targetHtmlLogicalName": "Search/White Surface/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5546,6 +6600,10 @@
               "surface": "dark",
               "state": "Default"
             }
+          },
+          "pixsoVariant": {
+            "surface": "gb-gray",
+            "state": "Default"
           },
           "target": "Search/Gray Surface/Default",
           "reuse": "structure",
@@ -5566,7 +6624,8 @@
             "height": "size/40",
             "iconSize": "size/16",
             "radius": "radius/08",
-            "paddingX": "space/4"
+            "paddingLeft": "space/4",
+            "paddingRight": "space/2"
           },
           "notes": [
             "Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."
@@ -5597,7 +6656,8 @@
             "height": "size/40",
             "iconSize": "size/16",
             "radius": "radius/08",
-            "paddingX": "space/4"
+            "paddingLeft": "space/5",
+            "paddingRight": "space/3"
           },
           "targetHtmlLogicalName": "Select/White Surface/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5625,7 +6685,8 @@
             "height": "size/40",
             "iconSize": "size/16",
             "radius": "radius/08",
-            "paddingX": "space/4"
+            "paddingLeft": "space/5",
+            "paddingRight": "space/3"
           },
           "targetHtmlLogicalName": "Select/Gray Surface/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5638,6 +6699,10 @@
               "state": "Default"
             }
           },
+          "pixsoVariant": {
+            "surface": "bg-white",
+            "state": "Default"
+          },
           "target": "Input/White Surface/Default",
           "reuse": "structure",
           "textStyles": {
@@ -5649,7 +6714,8 @@
             "placeholder": "neutral-dark/40",
             "height": "size/40",
             "radius": "radius/08",
-            "paddingX": "space/4"
+            "paddingLeft": "space/4",
+            "paddingRight": "space/2"
           },
           "targetHtmlLogicalName": "Input/White Surface/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -5662,6 +6728,10 @@
               "state": "Default"
             }
           },
+          "pixsoVariant": {
+            "surface": "gb-gray",
+            "state": "Default"
+          },
           "target": "Input/Gray Surface/Default",
           "reuse": "structure",
           "textStyles": {
@@ -5673,61 +6743,10 @@
             "placeholder": "neutral-dark/40",
             "height": "size/40",
             "radius": "radius/08",
-            "paddingX": "space/4"
+            "paddingLeft": "space/4",
+            "paddingRight": "space/2"
           },
           "targetHtmlLogicalName": "Input/Gray Surface/Default",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
-          "source": {
-            "componentSet": "TextInput-Muti-2in1",
-            "variant": {
-              "灰色场景": "OFF",
-              "状态": "Normal"
-            }
-          },
-          "target": "Textarea/White Surface/Default",
-          "reuse": "structure",
-          "textStyles": {
-            "Placeholder": "Typography/Body_L",
-            "Counter": "Typography/Body_S"
-          },
-          "tokens": {
-            "background": "neutral-dark/05",
-            "content": "neutral-dark/90",
-            "placeholder": "neutral-dark/40",
-            "counter": "neutral-dark/60",
-            "radius": "radius/08",
-            "paddingX": "space/4",
-            "paddingY": "space/3"
-          },
-          "targetHtmlLogicalName": "Textarea/White Surface/Default",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
-          "source": {
-            "componentSet": "TextInput-Muti-2in1",
-            "variant": {
-              "灰色场景": "ON",
-              "状态": "Normal"
-            }
-          },
-          "target": "Textarea/Gray Surface/Default",
-          "reuse": "structure",
-          "textStyles": {
-            "Placeholder": "Typography/Body_L",
-            "Counter": "Typography/Body_S"
-          },
-          "tokens": {
-            "background": "neutral-light/100",
-            "content": "neutral-dark/90",
-            "placeholder": "neutral-dark/40",
-            "counter": "neutral-dark/60",
-            "radius": "radius/08",
-            "paddingX": "space/4",
-            "paddingY": "space/3"
-          },
-          "targetHtmlLogicalName": "Textarea/Gray Surface/Default",
           "sourceLibrary": "harmonyos-native-source"
         },
         {
@@ -5746,7 +6765,7 @@
           "tokens": {
             "background": "neutral-light/100",
             "content": "neutral-dark/90",
-            "gap": "space/3"
+            "gap": "space/0"
           },
           "deltas": [
             "Native control is 24px; Text to UI desktop control remains 20px."
@@ -5770,7 +6789,7 @@
           "tokens": {
             "background": "neutral-light/100",
             "content": "neutral-dark/90",
-            "gap": "space/3"
+            "gap": "space/0"
           },
           "deltas": [
             "Native control is 24px; Text to UI desktop control remains 20px."
@@ -5795,12 +6814,60 @@
             "track": "neutral-dark/05",
             "thumb": "neutral-light/100",
             "content": "neutral-dark/90",
-            "gap": "space/3"
+            "gap": "space/0"
           },
           "deltas": [
             "Native track is 36x20; Text to UI desktop track remains 44x24."
           ],
           "targetHtmlLogicalName": "Switch/Off/Default",
+          "sourceLibrary": "harmonyos-native-source"
+        },
+        {
+          "source": {
+            "componentSet": "Snackbar/ColorPicker-Tablet",
+            "variant": {}
+          },
+          "target": "ColorPicker/Tablet",
+          "reuse": "structure",
+          "takeoverStatus": "adapting",
+          "textStyles": {
+            "Title": "Typography/Title_S",
+            "Label": "Typography/Body_M",
+            "Value": "Typography/Body_S"
+          },
+          "tokens": {
+            "background": "neutral-light/100",
+            "content": "neutral-dark/90",
+            "radius": "radius/16",
+            "paddingX": "space/6",
+            "paddingY": "space/4"
+          },
+          "targetHtmlLogicalName": "ColorPicker/Tablet",
+          "sourceLibrary": "harmonyos-native-source"
+        },
+        {
+          "source": {
+            "componentSet": "Chips",
+            "variant": {
+              "状态": "Default"
+            }
+          },
+          "target": "Chips/Default",
+          "reuse": "structure",
+          "textStyles": {
+            "Label": "Typography/Body_M"
+          },
+          "tokens": {
+            "background": "neutral-dark/05",
+            "content": "neutral-dark/90",
+            "height": "size/28",
+            "radius": "radius/08",
+            "paddingLeft": "space/4",
+            "paddingRight": "space/3",
+            "gap": "space/2",
+            "iconSize": "size/16"
+          },
+          "targetHtmlLogicalName": "Chips/Default",
           "sourceLibrary": "harmonyos-native-source"
         },
         {
@@ -5813,13 +6880,18 @@
           "target": "Snackbar/Default",
           "reuse": "structure",
           "textStyles": {
-            "Message": "Typography/Body_L"
+            "Title": "Typography/Subtitle_S",
+            "Subtitle": "Typography/Body_S",
+            "Text Action": "Typography/Body_M"
           },
           "tokens": {
             "background": "neutral-light/100",
             "content": "neutral-dark/90",
             "height": "size/48",
-            "radius": "radius/08"
+            "radius": "radius/16",
+            "paddingLeft": "space/4",
+            "contentGap": "space/1",
+            "closeIconSize": "size/20"
           },
           "effectStyle": "Effect/Foundation/shadow-3",
           "targetHtmlLogicalName": "Snackbar/Default",
@@ -5833,23 +6905,8 @@
           "sourceLibrary": "harmonyos-native-source"
         },
         {
-          "name": "Chips",
-          "reason": "Pixso component exists, but the current HTML contract has no direct Chips identity.",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
           "name": "ScrollBar-Phone",
           "reason": "Platform utility, not a registered reusable component in the current scope.",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
-          "name": "Menu-2in1",
-          "reason": "Expanded menus are Open-state overlays and are outside the current static component scope.",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
-          "name": "CheckboxGroup",
-          "reason": "Pixso component exists, but the current HTML contract has no direct CheckboxGroup identity.",
           "sourceLibrary": "harmonyos-native-source"
         },
         {
@@ -5868,11 +6925,6 @@
           "sourceLibrary": "harmonyos-native-source"
         },
         {
-          "name": "ColorPicker-Tablet",
-          "reason": "Pixso component exists, but the current HTML contract has no direct ColorPicker identity.",
-          "sourceLibrary": "harmonyos-native-source"
-        },
-        {
           "name": "Search-Second Page-2in1",
           "reason": "Composite secondary-page pattern, not a primitive Search component.",
           "sourceLibrary": "harmonyos-native-source"
@@ -5884,10 +6936,11 @@
         "runtimeSemanticMappings": 315,
         "semanticColorMappings": 99,
         "styleMappings": 19,
-          "htmlComponents": 55,
-          "registeredPixsoTargets": 19,
-          "htmlToPixsoExactMatches": 7,
-        "nativeSourceMappings": 21,
+        "htmlComponents": 49,
+        "endpointComponentMappings": 18,
+        "registeredPixsoTargets": 39,
+        "htmlToPixsoExactMatches": 25,
+        "nativeSourceMappings": 20,
         "runtimeSemanticAliases": 25
       }
     }

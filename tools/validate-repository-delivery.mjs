@@ -1,9 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { verifySkill } from "../text-to-ui/scripts/skill-delivery.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
+try { verifySkill(path.join(root, "text-to-ui"), path.join(root, "skill")); }
+catch (error) { errors.push(error.message); }
 
 function absolute(relativePath) {
   return path.join(root, relativePath);
@@ -108,7 +111,7 @@ const requirementSpec = readText("text-to-ui/references/requirement-spec.md");
 assert(rootPackage.private === true, "root package must remain private");
 assert(rootPackage.packageManager === "pnpm@10.0.0", "root package must pin pnpm@10.0.0");
 assert(
-  rootPackage.scripts?.["delivery:validate"] === "node tools/validate-repository-delivery.mjs",
+  rootPackage.scripts?.["delivery:validate"]?.split("&&").map(command => command.trim()).includes("node tools/validate-repository-delivery.mjs"),
   "root package must expose delivery:validate",
 );
 assert(
@@ -141,71 +144,7 @@ for (const [index, component] of components.entries()) {
   }
 }
 
-const mirroredFiles = [
-  "SKILL.md",
-  "README.md",
-  "package.json",
-  "references/component-package-integration.md",
-  "references/requirement-spec.md",
-  "references/progressive-review-gates.md",
-  "references/components/source-resolution.md",
-  "references/layouts/framework-layout-routing.md",
-  "references/harmonyos-layout-patterns.md",
-  "references/workflows/fast-preview.md",
-  "references/workflows/release-validation.md",
-  "references/index/generated/task-router.json",
-  "references/index/generated/layout-index.json",
-  "references/index/generated/component-index.json",
-  "references/index/generated/token-index.json",
-  "references/index/generated/validation-index.json",
-  "scripts/locate-monorepo.mjs",
-  "scripts/query-layouts.mjs",
-  "scripts/query-components.mjs",
-  "scripts/query-tokens.mjs",
-  "scripts/resolve-context.mjs",
-  "scripts/framework-renderer-contract.mjs",
-  "scripts/pattern-contract-lib.mjs",
-  "scripts/ui-scene-core.mjs",
-  "scripts/resolve-pattern-contract.mjs",
-  "scripts/validate-pattern-contracts.mjs",
-  "scripts/test-pattern-contract-resolution.mjs",
-  "assets/design-system/pattern-contracts.schema.json",
-  "assets/design-system/pattern-contracts.json",
-  "assets/design-system/page-spec.schema.json",
-  "assets/design-system/page-spec.example.json",
-  "assets/design-system/ui-scene.schema.json",
-  "scripts/generate-layout-contract.mjs",
-  "scripts/validate-navigation-index.mjs",
-  "scripts/verify-fast-preview.mjs",
-  "scripts/validate-page-layout-binding.mjs",
-  "scripts/validate-layout-markers.mjs",
-  "scripts/generate-html-component-skeleton.mjs",
-  "scripts/generate-framework-page.mjs",
-  "scripts/validate-ui-scene-pattern-binding.mjs",
-  "scripts/test-framework-page-generation.mjs",
-  "scripts/test-ui-scene-pattern-binding.mjs",
-  "scripts/validate-page-token-usage.mjs",
-  "scripts/validate-runtime-component-reuse.mjs",
-  "scripts/validate-web-component-reuse.mjs",
-  "scripts/test-html-strict-reuse-pipeline.mjs",
-  "scripts/test-validate-page-token-usage.mjs",
-  "scripts/test-validate-page-layout-binding.mjs",
-  "scripts/test-validate-layout-markers.mjs",
-  "scripts/test-resolve-context-pattern-gate.mjs",
-  "scripts/test-validate-web-component-reuse.mjs",
-  "references/web-component-reuse-gate.md",
-];
-for (const relativePath of mirroredFiles) {
-  const canonicalPath = path.join("text-to-ui", relativePath);
-  const mirrorPath = path.join("skill", relativePath);
-  requirePath(canonicalPath, "canonical Skill file");
-  requirePath(mirrorPath, "Skill mirror file");
-  if (exists(canonicalPath) && exists(mirrorPath)) {
-    const canonical = fs.readFileSync(absolute(canonicalPath));
-    const mirror = fs.readFileSync(absolute(mirrorPath));
-    if (!canonical.equals(mirror)) errors.push(`Skill mirror differs: ${relativePath}`);
-  }
-}
+
 
 if (errors.length > 0) {
   console.error("repository delivery validation failed");
@@ -219,7 +158,7 @@ if (errors.length > 0) {
         repositoryRoot: root,
         componentCount: components.length,
         frameworks,
-        mirroredFiles,
+        mirrorVerification: "all canonical files and module imports",
       },
       null,
       2,

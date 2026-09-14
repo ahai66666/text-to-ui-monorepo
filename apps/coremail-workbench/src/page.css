@@ -154,8 +154,8 @@ button { color: inherit; }
 .compose-form input, .compose-form textarea { width: 100%; padding: var(--padding-textarea-y) var(--padding-textarea-x); border: var(--coremail-divider-width) solid var(--coremail-border); border-radius: var(--radius-input); outline: none; background: var(--color-input-bg-on-default); color: var(--coremail-primary-text); resize: vertical; }
 .compose-form input:focus, .compose-form textarea:focus { border-color: var(--color-focus-ring); box-shadow: 0 0 0 var(--space-2) var(--color-brand-10); background: var(--coremail-shell-bg); }
 .toast-host { position: fixed; right: var(--space-7); bottom: var(--space-7); z-index: 50; }
-.workbench-toast { opacity: 0; transform: translateY(var(--space-2)); transition: .18s ease; box-shadow: var(--shadow-3); }
-.workbench-toast.is-visible { opacity: 1; transform: translateY(0); }
+.workbench-snackbar { opacity: 0; transform: translateY(var(--space-2)); transition: .18s ease; }
+.workbench-snackbar.is-visible { opacity: 1; transform: translateY(0); }
 
 .nav-collapsed .brand-titlebar [data-slot="leading"], .nav-collapsed .account-copy, .nav-collapsed .account-switch > svg, .nav-collapsed .nav-section-label, .nav-collapsed .tui-sidebar-item [data-slot="label"], .nav-collapsed .app-entry [data-slot="label"] { display: none; }
 .nav-collapsed .brand-titlebar { padding: 0 var(--space-2) !important; }

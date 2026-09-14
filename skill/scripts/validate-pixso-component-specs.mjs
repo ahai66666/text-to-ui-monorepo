@@ -9,16 +9,83 @@ const registry = JSON.parse(
 const specs = JSON.parse(
   fs.readFileSync(path.join(root, "assets/design-system/pixso-component-specs.json"), "utf8"),
 );
+const mappingRegistry = JSON.parse(
+  fs.readFileSync(path.join(root, "assets/design-system/mapping-registry.json"), "utf8"),
+);
 const aliases = JSON.parse(
   fs.readFileSync(path.join(root, "assets/icons/icon-aliases.json"), "utf8"),
 ).aliases;
-const css = fs.readFileSync(path.join(root, "preview/component-gallery.css"), "utf8");
+const css = [
+  fs.readFileSync(path.join(root, "preview/component-gallery.css"), "utf8"),
+  fs.readFileSync(path.join(root, "..", "packages/component-styles/src/index.css"), "utf8"),
+].join("\n");
+const frameworkComponentCss = fs.readFileSync(
+  path.join(root, "..", "packages/component-styles/src/index.css"),
+  "utf8",
+);
+const frameworkComponentContract = JSON.parse(fs.readFileSync(
+  path.join(root, "..", "packages/component-contracts/src/components.json"),
+  "utf8",
+));
 
 const names = Object.values(registry.categories).flat();
+const mappingProfile = mappingRegistry.profiles?.find(
+  (profile) => profile.id === mappingRegistry.defaultProfile,
+) ?? mappingRegistry.profiles?.[0];
+// A mapping may introduce a Pixso-specific spec that is not listed directly
+// in the physical component registry. This includes repeated-child mappings
+// (for example Sub Tabs -> Sub Tabs Item) and fully mapped variants such as
+// Coremail's Context Menu/quantity=3. The canonical mapping registry owns
+// those registrations; childMapping is optional runtime metadata.
+const mappedSpecNames = [
+  ...(mappingProfile?.componentMappings ?? []),
+  ...(mappingProfile?.endpointComponentMappings ?? []),
+]
+  .filter((mapping) => (
+    mapping?.pixsoTargetStatus === "registered" &&
+    mapping?.pixsoSpecKey
+  ))
+  .map((mapping) => mapping.pixsoSpecKey);
+const expectedSpecNames = [...new Set([...names, ...mappedSpecNames])];
 const specNames = Object.keys(specs.components);
 const errors = [];
 
-for (const name of names) {
+// The framework implementation is the source used by imports.  The gallery
+// remains useful for review, but it must never silently override a framework
+// component's shape or supported semantic variants.
+const badgeContract = (frameworkComponentContract.components ?? frameworkComponentContract)
+  .find((component) => component.id === "badge" || component.logicalName === "Badge/Default");
+const badgeRadiusMatch = frameworkComponentCss.match(
+  /\.tui-badge\s*\{[^}]*\bborder-radius:\s*var\((--[^)]+)\)/s,
+);
+if (!badgeContract) {
+  errors.push("Framework component contract is missing Badge/Default.");
+} else {
+  const expectedBadgeVariants = ["default", "info", "success", "warning", "danger", "neutral"];
+  for (const variant of expectedBadgeVariants) {
+    if (!(badgeContract.variants ?? []).includes(variant)) {
+      errors.push(`Framework Badge contract is missing the ${variant} variant.`);
+    }
+  }
+}
+if (!badgeRadiusMatch) {
+  errors.push("Framework Badge CSS must declare its border-radius token.");
+} else {
+  const radiusCssVariable = badgeRadiusMatch[1];
+  const radiusMapping = (mappingProfile?.tokenMappings ?? [])
+    .find((mapping) => mapping.htmlCssVariable === radiusCssVariable)?.pixsoVariable;
+  if (!radiusMapping) {
+    errors.push(`Framework Badge radius token ${radiusCssVariable} has no Pixso Variable mapping.`);
+  } else {
+    for (const [name, item] of Object.entries(specs.components)) {
+      if (name.startsWith("Badge/") && item.radiusToken !== radiusMapping) {
+        errors.push(`Badge spec ${name} must use ${radiusMapping}, matching framework CSS ${radiusCssVariable}.`);
+      }
+    }
+  }
+}
+
+for (const name of expectedSpecNames) {
   const item = specs.components[name];
   if (!item) {
     errors.push(`Missing component spec: ${name}`);
@@ -41,7 +108,7 @@ for (const name of names) {
 }
 
 for (const name of specNames) {
-  if (!names.includes(name)) errors.push(`Orphan component spec: ${name}`);
+  if (!expectedSpecNames.includes(name)) errors.push(`Orphan component spec: ${name}`);
 }
 
 for (const [pattern, value] of Object.entries(registry.semanticIcons)) {

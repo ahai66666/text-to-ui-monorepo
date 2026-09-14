@@ -82,4 +82,7 @@ reuse it without reconfiguring its internal style.
 Strict completion requires the planner to pass with `--strict`, all Web
 components to use source or first-party wrapper connections, all Pixso
 components to remain linked, and the live Pixso audit to report no hardcoded
-styles or blocked component content.
+styles or blocked component content. Also run
+`node scripts/validate-mapping-registry.mjs --strict-component-gates`; a
+`pending-review` mapping is acceptable during page import but cannot pass the
+shared-library release gate.

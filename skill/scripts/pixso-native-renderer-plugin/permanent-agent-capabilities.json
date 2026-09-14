@@ -4,6 +4,7 @@
   "kernelVersion": "5.0.0",
   "protocolVersions": [3, 4],
   "operationPlanVersions": [1, 5],
+  "executorProtocol": 1,
   "capabilities": [
     "node.create",
     "node.update",
@@ -20,14 +21,21 @@
     "component.properties",
     "asset.svg",
     "asset.svg.stroke-by-display-size",
+    "asset.icon.deferred",
     "asset.image",
+    "asset.image.deferred",
     "transaction.draft",
     "transaction.rollback",
     "transaction.commit",
     "execution.progress",
+    "execution.operation-progress",
     "execution.cancel",
     "readback.structure",
     "readback.bindings",
-    "readback.screenshot"
+    "readback.screenshot",
+    "executor.data-plan.v1",
+    "executor.transaction.v1",
+    "executor.assets.deferred.v1",
+    "executor.readback.v1"
   ]
 }

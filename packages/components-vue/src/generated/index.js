@@ -1,3 +1,3 @@
-export { default as AspectRatio } from "./AspectRatio.vue";
-export { default as Bubble } from "./Bubble.vue";
-export { default as Typography } from "./Typography.vue";
+export { default as ColorPicker } from "./ColorPicker.vue";
+export { default as SegmentedButton } from "./SegmentedButton.vue";
+export { default as NumberSelector } from "./NumberSelector.vue";

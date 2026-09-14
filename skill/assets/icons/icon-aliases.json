@@ -31,6 +31,7 @@
     "navigation/back": { "source": "lucide", "name": "arrow-left" },
     "navigation/chevron-down": { "source": "lucide", "name": "chevron-down" },
     "navigation/chevron-right": { "source": "lucide", "name": "chevron-right" },
+    "navigation/chevron-up": { "source": "lucide", "name": "chevron-up" },
     "navigation/deleted": { "source": "lucide", "name": "trash-2" },
     "navigation/drafts": { "source": "lucide", "name": "file-pen-line" },
     "navigation/forward": { "source": "lucide", "name": "arrow-right" },

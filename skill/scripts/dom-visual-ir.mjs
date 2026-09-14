@@ -1,5 +1,7 @@
 import { tokenNameForCssColor, tokenNameForCssLength } from "./html-visual-contract.mjs";
-import { permanentAgentContract, PIXSO_PLUGIN_RUNTIME_VERSION } from "./pixso-native-scene-lib.mjs";
+import { derivePixsoImportModules, permanentAgentContract, PIXSO_PLUGIN_RUNTIME_VERSION } from "./pixso-native-scene-lib.mjs";
+import { iconColorSourceForMapping } from "./mapping-registry-lib.mjs";
+import { resolveComponentVariant } from "./component-mapping-resolver.mjs";
 
 const EDGES = ["top", "right", "bottom", "left"];
 const cap = (value) => value[0].toUpperCase() + value.slice(1);
@@ -239,9 +241,27 @@ function componentGeometryCompatibility(node, descendants, spec, tokens) {
   return { ok: reasons.length === 0, reasons };
 }
 
+function nativeComponentFallback(logicalName, rendererKey, mapping, reason, details = []) {
+  return {
+    nativeFallback: true,
+    logicalName: logicalName ?? rendererKey ?? "component",
+    rendererKey: rendererKey ?? null,
+    availability: mapping?.availability ?? "unmapped",
+    reason,
+    details: [...new Set(details.map((detail) => String(detail)).filter(Boolean))],
+    fallback: "native-composition",
+    blocksImport: false,
+  };
+}
+
 function logicalComponent(node, descendants, componentMap, tokens, componentSpecs = null) {
   const rendererKey = node.semantic?.component;
-  if (!rendererKey) return null;
+  const explicitLogicalName = node.semantic?.logicalName ?? node.semantic?.dataset?.logicalComponent ?? null;
+  const selectorCandidates = [node.selector, ...(node.selectorAliases ?? [])];
+  const selectorLogicalName = selectorCandidates.map((selector) => componentMap.selectorMap?.get(selector)).find(Boolean) ?? null;
+  const sidebarItemChild = node.isSidebarItemChild === true || selectorCandidates.some((selector) => String(selector).trim() === ".tui-sidebar-item");
+  const deterministicRenderer = ["button", "checkbox", "input", "search"].includes(rendererKey);
+  if (!explicitLogicalName && !selectorLogicalName && !sidebarItemChild && !deterministicRenderer) return null;
   const variant = String(node.semantic?.variant ?? node.semantic?.dataset?.variant ?? "default").toLowerCase();
   const surface = String(node.semantic?.surface ?? node.semantic?.dataset?.surface ?? "white").toLowerCase();
   const surfaceName = ["gray", "grey", "gb-gray", "gb-grey"].includes(surface) ? "Gray" : "White";
@@ -257,30 +277,83 @@ function logicalComponent(node, descendants, componentMap, tokens, componentSpec
   const advancedLabel = rendererKey === "search"
     ? String(descendants.find((entry) => entry.selector?.includes(".tui-search__advanced") && entry.semantic?.accessibleText)?.semantic?.accessibleText || node.semantic?.accessibleText || "").trim()
     : "";
-  const label = String((rendererKey === "search" ? advancedLabel : node.semantic?.accessibleText) || descendants.find((entry) => entry.text)?.text || node.semantic?.ariaLabel || "").trim();
+  const sidebarLabel = sidebarItemChild
+    ? String(descendants.find((entry) => entry.semantic?.dataset?.slot === "label" && entry.text)?.text || "").trim()
+    : "";
+  const sidebarCount = sidebarItemChild
+    ? String(descendants.find((entry) => entry.semantic?.dataset?.slot === "trailing" && entry.text)?.text || "").trim()
+    : "";
+  const label = String((sidebarItemChild ? sidebarLabel : rendererKey === "search" ? advancedLabel : node.semantic?.accessibleText) || descendants.find((entry) => entry.text)?.text || node.semantic?.ariaLabel || "").trim();
   const iconOnly = !label || (node.semantic?.ariaLabel && !node.semantic?.accessibleText);
-  let logicalName = null;
+  // A legacy page can annotate the whole sidebar container with the item
+  // identity. Keep the container as a layout frame; only its direct items may
+  // resolve to the Sidebar Item component.
+  if (rendererKey === "sidebar" && explicitLogicalName === "Sidebar Item/Default") return null;
+  // Prefer an authored identity only when it is registered. Older exported
+  // pages may carry a legacy alias (for example Button/Icon Text/Default); in
+  // that case retain the deterministic renderer inference below instead of
+  // letting a stale annotation suppress a valid current mapping.
+  let logicalName = explicitLogicalName && componentMap.map.has(explicitLogicalName) ? explicitLogicalName : selectorLogicalName;
   if (rendererKey === "input") logicalName = `Input/${surfaceName} Surface/Default`;
   if (rendererKey === "search") logicalName = `Search/${surfaceName} Surface/Default`;
   if (rendererKey === "checkbox") logicalName = "Checkbox/Unchecked/Default";
+  if (sidebarItemChild) logicalName = "Sidebar Item/Default";
   if (rendererKey === "button") {
     if (variant === "primary") logicalName = icon ? "Icon Text Button/Primary/Default" : "Button/Primary/Default";
     else logicalName = iconOnly ? "Icon Button/Ghost/Default" : "Icon Text Button/Ghost/Default";
   }
   const mapping = logicalName ? componentMap.map.get(logicalName) : null;
-  if (!mapping || mapping.availability !== "mapped") return null;
-  const expectedHeight = rendererKey === "checkbox" ? null : lengthToken(tokens, node.rect.height, ["size/"], 0.55);
-  if (rendererKey !== "checkbox" && (!expectedHeight || Math.abs(Number(expectedHeight.value) - Number(node.rect.height)) > 0.55)) return null;
-  const specification = componentSpecs?.components?.[logicalName] ?? null;
+  if (!mapping || mapping.availability !== "mapped") {
+    return nativeComponentFallback(
+      logicalName,
+      rendererKey,
+      mapping,
+      "mapping-unavailable",
+      [mapping ? `availability:${mapping.availability}` : "mapping-not-registered"],
+    );
+  }
+  const iconSlot = sidebarItemChild && mapping.supportedSlots?.includes("leading")
+    ? "leading"
+    : mapping.supportedSlots?.includes("icon") || mapping.supportedSlots?.includes("leading")
+      ? "icon"
+      : null;
+  const componentIcon = iconSlot ? icon : null;
+  const sidebarState = sidebarItemChild ? String(node.semantic?.dataset?.state ?? variant ?? "default").toLowerCase() : null;
+  const resolvedVariant = resolveComponentVariant(mapping, {
+    htmlVariant: variant,
+    state: node.semantic?.state ?? node.semantic?.dataset?.state,
+    surface,
+  });
+  if (sidebarState) resolvedVariant.state = sidebarState;
+  const requestedSize = String(node.semantic?.dataset?.size ?? "").toLowerCase();
+  const compactSmallIconText = requestedSize === "small" && logicalName === "Icon Text Button/Ghost/Default";
+  const compactGeometry = compactSmallIconText
+    ? {
+        paddingXToken: "padding/button-sm-x",
+        ...(compactSmallIconText ? { sizing: { height: 28 } } : {}),
+      }
+    : null;
+  const specificationKey = mapping.pixsoSpecKey ?? logicalName;
+  const specification = componentSpecs?.components?.[specificationKey]
+    ? { ...componentSpecs.components[specificationKey], ...(compactGeometry ?? {}) }
+    : null;
   const geometryCompatibility = componentSpecs ? componentGeometryCompatibility(node, descendants, specification, tokens) : { ok: true, reasons: [] };
-  if (!geometryCompatibility.ok) return null;
+  if (!geometryCompatibility.ok) {
+    return nativeComponentFallback(logicalName, rendererKey, mapping, "geometry-incompatible", geometryCompatibility.reasons);
+  }
   return {
     logicalName,
     rendererKey,
     pixsoName: mapping.pixsoName,
     componentSetName: mapping.componentSetName ?? mapping.pixsoName,
-    variant: mapping.variant ?? null,
-    ...(mapping.contentColor ? { contentColor: mapping.contentColor } : {}),
+    // Icon-text resolution is fixed to type + size + state. A Small HTML
+    // control keeps the mapped Medium source variant until a native Small
+    // variant is available; its measured outer bounds remain browser evidence.
+    variant: resolvedVariant,
+    ...(iconColorSourceForMapping(mapping) ? { iconColorSource: iconColorSourceForMapping(mapping) } : {}),
+    ...(node.semantic?.allowContentColorOverride === true && node.semantic?.contentColor
+      ? { contentColor: node.semantic.contentColor, allowContentColorOverride: true }
+      : {}),
     props: {
       label,
       ...(rendererKey === "search" && searchValue ? { placeholder: searchValue } : {}),
@@ -289,11 +362,13 @@ function logicalComponent(node, descendants, componentMap, tokens, componentSpec
       ...(rendererKey === "input" ? { surface: mapping.variant?.surface ?? surface } : {}),
       ...(rendererKey === "search" ? { surface: mapping.variant?.surface ?? surface } : {}),
       variant,
-      mode: iconOnly ? "icon" : icon ? "icon-text" : "text",
+      mode: iconOnly ? "icon" : componentIcon ? "icon-text" : "text",
+      ...(sidebarItemChild ? { selected: sidebarState === "selected", ...(sidebarCount ? { count: sidebarCount } : {}) } : {}),
       size: "standard"
     },
     slots: {
-      ...(icon ? { icon } : {}),
+      ...(componentIcon ? { [iconSlot]: componentIcon } : {}),
+      ...(sidebarItemChild && sidebarCount ? { trailing: sidebarCount } : {}),
       ...(rendererKey === "search"
         ? { ...(searchValue ? { value: searchValue } : {}), ...(label ? { label } : {}) }
         : rendererKey === "input"
@@ -304,7 +379,7 @@ function logicalComponent(node, descendants, componentMap, tokens, componentSpec
     // tree. Preserve the browser-owned SVG payload alongside the semantic
     // slot so the Pixso runtime can create/resolve the exact icon component
     // without falling back to a guessed master icon.
-    iconResource: icon && descendants.find((entry) => entry.asset?.kind === "svg" && entry.asset?.alias === icon)?.asset
+    iconResource: componentIcon && descendants.find((entry) => entry.asset?.kind === "svg" && entry.asset?.alias === componentIcon)?.asset
       ? {
           alias: icon,
           source: "browser-svg",
@@ -315,7 +390,7 @@ function logicalComponent(node, descendants, componentMap, tokens, componentSpec
           ),
         }
       : null,
-    geometryCompatibility,
+    geometryCompatibility: specification ? geometryCompatibility : { ok: true, reasons: [] },
   };
 }
 
@@ -411,11 +486,16 @@ export function buildDomVisualIr(visualManifest, { tokens, componentMap, compone
   const scaleX = Number(visualManifest.viewport.width) / Number(root.rect.width || visualManifest.viewport.width);
   const scaleY = Number(visualManifest.viewport.height) / Number(root.rect.height || visualManifest.viewport.height);
   const normalizedRect = (node) => ({ x: rounded(node.rect.x * scaleX), y: rounded(node.rect.y * scaleY), width: rounded(node.rect.width * scaleX), height: rounded(node.rect.height * scaleY) });
+  const sidebarContainerIndices = new Set(visualManifest.nodes
+    .filter((node) => node.semantic?.component === "sidebar" && (node.semantic?.logicalName ?? node.semantic?.dataset?.logicalComponent) === "Sidebar Item/Default")
+    .map((node) => node.index));
   const componentRoots = new Map();
+  const componentFallbacks = new Map();
   for (const node of visualManifest.nodes) {
     const descendants = descendantsFor(node.index, children, byIndex);
-    const component = logicalComponent({ ...node, rect: normalizedRect(node) }, descendants, componentMap, tokens, componentSpecs);
-    if (component) componentRoots.set(node.index, component);
+    const component = logicalComponent({ ...node, rect: normalizedRect(node), isSidebarItemChild: sidebarContainerIndices.has(node.parentIndex) }, descendants, componentMap, tokens, componentSpecs);
+    if (component?.nativeFallback) componentFallbacks.set(node.index, component);
+    else if (component) componentRoots.set(node.index, component);
   }
   const skipped = new Set();
   for (const node of visualManifest.nodes) {
@@ -439,11 +519,17 @@ export function buildDomVisualIr(visualManifest, { tokens, componentMap, compone
     }
     return "page";
   };
+  const componentRepairItems = [...componentFallbacks.entries()].map(([sourceIndex, fallback]) => ({
+    ...fallback,
+    sourceIndex,
+    selector: byIndex.get(sourceIndex)?.selector ?? null,
+  }));
   const irNodes = retained.map((node) => {
     const rect = normalizedRect(node);
     const parentIndex = nearestRetainedParent(node);
     const parentRect = parentIndex === null || parentIndex === undefined ? { x: 0, y: 0 } : normalizedRect(byIndex.get(parentIndex));
     const component = componentRoots.get(node.index) ?? null;
+    const componentFallback = componentFallbacks.get(node.index) ?? null;
     const isSvg = node.asset?.kind === "svg";
     const isImage = node.asset?.kind === "image";
     const isText = Boolean(node.text) && !component && !isSvg && !isImage;
@@ -494,6 +580,7 @@ export function buildDomVisualIr(visualManifest, { tokens, componentMap, compone
         htmlChildIndex: node.childIndex,
         componentGeometryLocked: Boolean(component),
         ...(component ? { componentGeometryCompatibility: component.geometryCompatibility } : {}),
+        ...(componentFallback ? { componentFallback } : {}),
         ...(isText ? { textSizingMode: textAutoResize } : {}),
       },
     };
@@ -504,9 +591,22 @@ export function buildDomVisualIr(visualManifest, { tokens, componentMap, compone
     source: { runId: visualManifest.runId, htmlSourceFingerprint: visualManifest.htmlSourceFingerprint, visualManifestSource: visualManifest.source },
     page: { name: pageName ?? `HTML Import / ${visualManifest.htmlSourceFingerprint}`, targetPage, viewport: { width: visualManifest.viewport.width, height: visualManifest.viewport.height }, stateId: visualManifest.stateId },
     geometryPolicy: "browser-absolute-bounds-only",
-    componentPolicy: "geometry-lock-then-compatible-instance",
+    componentPolicy: "mapping-first-component-instance-with-repairable-native-fallback",
     nodes: irNodes,
-    summary: { sourceNodeCount: visualManifest.nodes.length, retainedNodeCount: irNodes.length, collapsedNodeCount: skipped.size, componentCandidateCount: componentRoots.size, selectorCoverage: 1, geometryCoverage: 1 },
+    componentRepairItems,
+    summary: {
+      sourceNodeCount: visualManifest.nodes.length,
+      retainedNodeCount: irNodes.length,
+      collapsedNodeCount: skipped.size,
+      componentCandidateCount: irNodes.filter((node) => node.kind === "component").length,
+      mappedInstanceCount: irNodes.filter((node) => node.kind === "component").length,
+      mappedConformanceIssueCount: irNodes.filter((node) => node.kind === "component" && !node.component.geometryCompatibility.ok).length,
+      componentFallbackCount: componentRepairItems.length,
+      componentRepairCount: componentRepairItems.length,
+      componentRepairItems,
+      selectorCoverage: 1,
+      geometryCoverage: 1,
+    },
   };
 }
 
@@ -526,20 +626,33 @@ export function compileDomVisualIrPlan(ir, { tokens, componentMap, images = [] }
   };
   const layoutOperations = [];
   const hydrationOperations = [];
+  const imageOperations = [];
   for (const node of ir.nodes) {
     rememberRefs(node.layout);
     rememberRefs(node.style);
     rememberRefs(node.component);
-    const common = { phase: node.kind === "component" ? "component-enrichment" : "layout", nodeId: node.id, parentId: node.parentId, name: node.selector, region: node.region, layout: node.layout, style: node.style, metadata: node.metadata };
+    const componentLayout = node.kind === "component"
+      ? Object.fromEntries(Object.entries(node.layout).filter(([key]) => !["padding", "gap", "primaryAlign", "counterAlign", "distribution"].includes(key)))
+      : node.layout;
+    const common = { phase: node.kind === "component" ? "component-enrichment" : "layout", nodeId: node.id, parentId: node.parentId, name: node.selector, region: node.region, layout: componentLayout, style: node.style, metadata: node.metadata };
     if (node.kind === "component") {
       if (node.component.iconResource?.alias && node.component.iconResource.svg) {
         icons.set(node.component.iconResource.alias, node.component.iconResource);
       }
-      layoutOperations.push({ op: "create-instance", ...common, componentRef: { logicalName: node.component.logicalName, pixsoName: node.component.pixsoName, componentSetName: node.component.componentSetName, variant: node.component.variant, ...(node.component.contentColor ? { contentColor: node.component.contentColor } : {}) }, props: node.component.props, slots: node.component.slots });
+      layoutOperations.push({ op: "create-instance", ...common, componentRef: {
+        logicalName: node.component.logicalName,
+        pixsoName: node.component.pixsoName,
+        componentSetName: node.component.componentSetName,
+        variant: node.component.variant,
+        ...(node.component.iconColorSource ? { iconColorSource: node.component.iconColorSource } : {}),
+        ...(node.component.allowContentColorOverride === true && node.component.contentColor
+          ? { contentColor: node.component.contentColor, allowContentColorOverride: true }
+          : {}),
+      }, props: node.component.props, slots: node.component.slots });
       continue;
     }
     if (node.kind === "text") layoutOperations.push({ op: "create-text", ...common, characters: node.text });
-    else if (node.kind === "image") layoutOperations.push({ op: "create-image", ...common, imageRef: { ref: `dom-image-${node.sourceIndex}`, fit: String(node.asset?.fit ?? "FILL").toUpperCase() } });
+    else if (node.kind === "image") imageOperations.push({ op: "create-image", ...common, phase: "image-optimization", imageRef: { ref: `dom-image-${node.sourceIndex}`, fit: String(node.asset?.fit ?? "FILL").toUpperCase() } });
     else if (node.kind === "svg") {
       const alias = node.asset?.alias || `dom-svg-${node.sourceIndex}`;
       const size = Math.min(node.rect.width, node.rect.height);
@@ -561,7 +674,8 @@ export function compileDomVisualIrPlan(ir, { tokens, componentMap, images = [] }
   for (const icon of icons.values()) resourceOperations.push({ op: "ensure-icon", phase: "resources", iconRef: { alias: icon.alias } });
   for (const image of images) resourceOperations.push({ op: "ensure-image", phase: "resources", imageRef: { ref: image.ref, mimeType: image.mimeType } });
   resourceOperations.push({ op: "ensure-font", phase: "resources", variableRef: "font/family/sans", family: "HarmonyOS Sans" });
-  const operations = [...resourceOperations, ...layoutOperations.filter((operation) => operation.phase === "layout"), ...layoutOperations.filter((operation) => operation.phase === "component-enrichment"), ...hydrationOperations];
+  const operations = [...resourceOperations, ...layoutOperations.filter((operation) => operation.phase === "layout"), ...layoutOperations.filter((operation) => operation.phase === "component-enrichment"), ...hydrationOperations, ...imageOperations];
+  const modules = imageOperations.length ? derivePixsoImportModules(operations) : null;
   return {
     schemaVersion: 1,
     kind: "pixso-operation-plan",
@@ -570,10 +684,12 @@ export function compileDomVisualIrPlan(ir, { tokens, componentMap, images = [] }
       libraryPage: componentMap.libraryPage ?? "NewComponents",
       targetPage: ir.page.targetPage,
       canonicalKey: ir.page.name,
-      pipeline: "dom-visual-ir-geometry-lock-then-component-enrichment",
+      pipeline: imageOperations.length
+        ? "dom-visual-ir-geometry-lock-then-component-enrichment-then-image-optimization"
+        : "dom-visual-ir-geometry-lock-then-component-enrichment",
       geometryAuthority: "browser-computed-visual-manifest",
-      componentReplacement: "compatible-after-geometry-lock",
-      fallback: "fail-closed",
+      componentReplacement: "mapping-first-with-repairable-native-fallback",
+      fallback: "native-composition-for-repairable-components",
       destructive: false,
       preserveExistingFrames: true,
       cleanupPolicy: "single-canonical-output-after-readback",
@@ -590,8 +706,10 @@ export function compileDomVisualIrPlan(ir, { tokens, componentMap, images = [] }
       { id: "layout", label: "DOM 几何锁定", operationCount: layoutOperations.filter((operation) => operation.phase === "layout").length },
       { id: "component-enrichment", label: "兼容组件替换", operationCount: layoutOperations.filter((operation) => operation.phase === "component-enrichment").length },
       { id: "icon-hydration", label: "图标填充", operationCount: hydrationOperations.length },
+      ...(imageOperations.length ? [{ id: "image-optimization", label: "图片资源优化", operationCount: imageOperations.length }] : []),
     ],
+    ...(modules ? { modules } : {}),
     operations,
-    summary: { ...ir.summary, operationCount: operations.length, nodeCount: layoutOperations.length, instanceCount: layoutOperations.filter((operation) => operation.op === "create-instance").length, tokenBindingCount: usedVariables.size, styleBindingCount: usedStyles.size, iconSlotCount: hydrationOperations.length },
+    summary: { ...ir.summary, operationCount: operations.length, nodeCount: layoutOperations.length + imageOperations.length, instanceCount: layoutOperations.filter((operation) => operation.op === "create-instance").length, tokenBindingCount: usedVariables.size, styleBindingCount: usedStyles.size, iconSlotCount: hydrationOperations.length },
   };
 }

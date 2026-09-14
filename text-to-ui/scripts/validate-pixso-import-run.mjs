@@ -6,13 +6,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { computeHtmlSourceFingerprint } from "./html-visual-contract.mjs";
 import { parseArgs, readJson, writeJson } from "./pixso-native-scene-lib.mjs";
+import { validateCaptureBundle } from "./pixso-capture-bundle.mjs";
 
 const digestFile = (file) => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex").slice(0, 24);
 
-export function validateImportRun({ runManifest, visualManifest, operationPlan = null, pluginResult = null }) {
+export function validateImportRun({ runManifest, visualManifest, operationPlan = null, pluginResult = null, captureBundle = null, captureBundlePath = null }) {
   const failures = [];
   const warnings = [];
-  if (runManifest?.kind !== "text-to-ui-pixso-import-run" || runManifest.schemaVersion !== 1) failures.push("invalid run manifest");
+  if (runManifest?.kind !== "text-to-ui-pixso-import-run" || Number(runManifest.schemaVersion ?? 0) < 1) failures.push("invalid run manifest");
   const expectedRunId = runManifest?.runId;
   const expectedFingerprint = runManifest?.source?.htmlSourceFingerprint;
   const expectedViewport = runManifest?.viewport ?? {};
@@ -52,6 +53,11 @@ export function validateImportRun({ runManifest, visualManifest, operationPlan =
     for (const selector of [node?.selector, ...(Array.isArray(node?.selectorAliases) ? node.selectorAliases : [])]) {
       if (selector) selectors.add(selector);
     }
+  }
+  if (runManifest?.executionPolicy?.captureBundle === "required") {
+    const capture = validateCaptureBundle({ runManifest, visualManifest, bundle: captureBundle, bundlePath: captureBundlePath });
+    if (!capture.ok) failures.push(...capture.failures.map((failure) => `capture bundle: ${failure}`));
+    warnings.push(...capture.warnings.map((warning) => `capture bundle: ${warning}`));
   }
   if (operationPlan) {
     if (operationPlan.kind !== "pixso-operation-plan") failures.push("invalid operation plan");
@@ -95,6 +101,14 @@ export function validateImportRun({ runManifest, visualManifest, operationPlan =
       if (operation.layout?.gap === null && ["HORIZONTAL", "VERTICAL"].includes(operation.layout?.direction) && (operationPlan.operations ?? []).filter((candidate) => candidate.parentId === operation.nodeId).length > 1) failures.push(`layout gap is unresolved: ${operation.nodeId}`);
       if (operation.style?.stroke && !Array.isArray(operation.style.strokeEdges)) failures.push(`stroke edges are not explicit: ${operation.nodeId}`);
     }
+    const mappedInstances = layoutOperations.filter((operation) => operation.op === "create-instance");
+    const mappedConformanceIssues = mappedInstances.filter((operation) => operation.metadata?.componentGeometryCompatibility?.ok === false);
+    const repairableMappedConformanceIssues = mappedConformanceIssues.filter((operation) => operation.componentRef?.fallbackPolicy === "native-composition" || operation.metadata?.componentFallback?.fallback === "native-composition");
+    const hardMappedConformanceIssues = mappedConformanceIssues.filter((operation) => !repairableMappedConformanceIssues.includes(operation));
+    if (Number(operationPlan.summary?.mappedInstanceCount ?? mappedInstances.length) !== mappedInstances.length) failures.push("mapped component instance summary mismatch");
+    if (repairableMappedConformanceIssues.length) warnings.push(`${repairableMappedConformanceIssues.length} mapped components will use native composition until their Pixso contract is repaired`);
+    if (hardMappedConformanceIssues.length) failures.push(`${hardMappedConformanceIssues.length} mapped components require component-contract repair and have no safe native fallback`);
+    if (Number(operationPlan.summary?.componentRepairCount ?? 0) > 0) warnings.push(`${operationPlan.summary.componentRepairCount} component mapping issue(s) recorded as post-import repair items`);
   }
   if (pluginResult) {
     if (pluginResult.runId !== expectedRunId) failures.push("plugin result runId mismatch");
@@ -109,7 +123,7 @@ export function validateImportRun({ runManifest, visualManifest, operationPlan =
 const isCli = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCli) {
   const args = parseArgs(process.argv.slice(2));
-  const usage = "Usage: validate-pixso-import-run.mjs --run-manifest <json> --visual-manifest <json> [--operation-plan <json>] [--plugin-result <json>] [--out <json>]";
+  const usage = "Usage: validate-pixso-import-run.mjs --run-manifest <json> --visual-manifest <json> [--capture-bundle <json>] [--operation-plan <json>] [--plugin-result <json>] [--out <json>]";
   if (args.help || !args["run-manifest"] || !args["visual-manifest"]) {
     if (!args.help) console.error(usage);
     process.exit(args.help ? 0 : 2);
@@ -117,6 +131,8 @@ if (isCli) {
   const report = validateImportRun({
     runManifest: readJson(args["run-manifest"]),
     visualManifest: readJson(args["visual-manifest"]),
+    captureBundle: args["capture-bundle"] ? readJson(args["capture-bundle"]) : null,
+    captureBundlePath: args["capture-bundle"] ? args["capture-bundle"] : null,
     operationPlan: args["operation-plan"] ? readJson(args["operation-plan"]) : null,
     pluginResult: args["plugin-result"] ? readJson(args["plugin-result"]) : null
   });

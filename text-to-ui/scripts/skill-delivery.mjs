@@ -1,0 +1,83 @@
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import crypto from "node:crypto";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { spawnSync } from "node:child_process";
+
+const excluded = new Set(["node_modules", "dist", "outputs", ".git", ".text-to-ui", "__pycache__", ".DS_Store", ".delivery-manifest.json"]);
+export function skillFiles(root, relative = "") {
+  return fs.readdirSync(path.join(root, relative), { withFileTypes: true }).flatMap(entry => {
+    if (excluded.has(entry.name)) return [];
+    const file = path.join(relative, entry.name);
+    return entry.isDirectory() ? skillFiles(root, file) : entry.isFile() ? [file] : [];
+  }).sort();
+}
+const hash = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
+export function deliveryManifest(root) {
+  const files = Object.fromEntries(skillFiles(root).map(file => [file, hash(fs.readFileSync(path.join(root, file)))]));
+  return { schemaVersion: 1, version: JSON.parse(fs.readFileSync(path.join(root, "package.json"))).version, sourceDigest: hash(JSON.stringify(files)), files };
+}
+export function verifySkill(source, target) {
+  const manifest = deliveryManifest(source);
+  const failures = [];
+  for (const [file, expected] of Object.entries(manifest.files)) {
+    const actual = path.join(target, file);
+    if (!fs.existsSync(actual) || hash(fs.readFileSync(actual)) !== expected) failures.push(file);
+  }
+  if (failures.length) throw new Error(`Skill mirror ${target} differs: ${failures.join(", ")}`);
+  for (const file of ["scripts/pixso-native-scene-lib.mjs", "scripts/component-mapping-resolver.mjs", "scripts/coremail-semantic-adapter.mjs"]) {
+    const result = spawnSync(process.execPath, ["--input-type=module", "-e", `await import(${JSON.stringify(pathToFileURL(path.join(target, file)).href)})`], { encoding: "utf8" });
+    if (result.status !== 0) throw new Error(`Skill entry cannot load: ${target}/${file}\n${result.stderr}`);
+  }
+  return manifest;
+}
+export function syncSkill(source, target, backupRoot) {
+  const manifest = deliveryManifest(source);
+  syncFiles(source, target, manifest.files, backupRoot);
+  fs.writeFileSync(path.join(target, ".delivery-manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
+  verifySkill(source, target);
+}
+function syncFiles(source, target, files, backupRoot) {
+  for (const file of Object.keys(files)) {
+    const from = path.join(source, file), to = path.join(target, file);
+    if (fs.existsSync(to) && hash(fs.readFileSync(to)) === files[file]) continue;
+    if (fs.existsSync(to)) {
+      const backup = path.join(backupRoot, file);
+      fs.mkdirSync(path.dirname(backup), { recursive: true });
+      fs.copyFileSync(to, backup);
+    }
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.copyFileSync(from, to);
+  }
+}
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const source = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+  const repository = path.dirname(source);
+  const targets = [path.join(repository, "skill")];
+  const installed = process.env.TEXT_TO_UI_INSTALLED_SKILL_ROOT ?? path.join(os.homedir(), ".codex/skills/text-to-ui");
+  if (fs.existsSync(installed) && path.resolve(installed) !== source) targets.push(installed);
+  const write = process.argv.includes("--write");
+  if (!write && !process.argv.includes("--check")) throw new Error("Use --check or --write");
+  const backup = write ? fs.mkdtempSync(path.join(os.tmpdir(), "text-to-ui-delivery-")) : null;
+  for (const [index, target] of targets.entries()) {
+    if (write) syncSkill(source, target, path.join(backup, String(index)));
+    else verifySkill(source, target);
+  }
+  const pluginSource = path.join(source, "scripts/pixso-unified-agent-plugin");
+  const pluginTarget = process.env.TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT
+    ?? process.env.TEXT_TO_UI_PLUGIN_DELIVERY_ROOT
+    ?? path.join(os.homedir(), "Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2");
+  const pluginExists = fs.existsSync(pluginTarget);
+  if (pluginExists) {
+    const pluginFiles = Object.fromEntries(skillFiles(pluginSource).map(file => [file, hash(fs.readFileSync(path.join(pluginSource, file)))]));
+    if (write) syncFiles(pluginSource, pluginTarget, pluginFiles, path.join(backup, "plugin"));
+    for (const [file, expected] of Object.entries(pluginFiles)) {
+      const targetFile = path.join(pluginTarget, file);
+      if (!fs.existsSync(targetFile) || hash(fs.readFileSync(targetFile)) !== expected) {
+        throw new Error(`Plugin delivery differs: ${targetFile}`);
+      }
+    }
+  }
+  console.log(JSON.stringify({ ok: true, targets, pluginTarget: pluginExists ? pluginTarget : null, files: skillFiles(source).length, backup }, null, 2));
+}

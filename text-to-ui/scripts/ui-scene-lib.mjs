@@ -1,5 +1,7 @@
 import { compileOperationPlan, loadComponentMap, loadTokenResources, readJson, resolvePixsoIcon, writeJson } from "./pixso-native-scene-lib.mjs";
 import { normalizeUiScene } from "./ui-scene-core.mjs";
+import { iconColorSourceForMapping } from "./mapping-registry-lib.mjs";
+import { resolveComponentVariant } from "./component-mapping-resolver.mjs";
 
 function ownKeys(value) {
   return Object.keys(value ?? {}).filter((key) => value[key] !== undefined && value[key] !== null && value[key] !== "");
@@ -102,6 +104,16 @@ export function compileUiScene(uiScene, { componentMap, tokens = loadTokenResour
     const unsupportedSlots = ownKeys(request.slots).filter((key) => !(mapping?.supportedSlots ?? []).includes(key));
     const capabilityMatch = unsupportedProps.length === 0 && unsupportedSlots.length === 0;
     const canReuse = request.reuse !== "native" && mapping?.availability === "mapped" && capabilityMatch;
+    const requestedHtmlVariant = String(
+      request.props?.tone ?? request.props?.variant ?? request.variant ?? "default",
+    ).toLowerCase();
+    const resolvedVariant = canReuse
+      ? resolveComponentVariant(mapping, {
+          htmlVariant: requestedHtmlVariant,
+          props: request.props ?? {},
+          state: request.state,
+        })
+      : null;
     if (request.reuse === "required" && !canReuse) {
       throw new Error(`Required Pixso Instance cannot be resolved for ${request.logicalName}; props=${unsupportedProps.join(",") || "ok"}; slots=${unsupportedSlots.join(",") || "ok"}`);
     }
@@ -113,7 +125,8 @@ export function compileUiScene(uiScene, { componentMap, tokens = loadTokenResour
         rendererKey: request.rendererKey,
         pixsoName: canReuse ? mapping.pixsoName : null,
         componentSetName: canReuse ? mapping.componentSetName ?? mapping.pixsoName : null,
-        variant: canReuse ? mapping.variant ?? null : null,
+        variant: resolvedVariant,
+        ...(canReuse && iconColorSourceForMapping(mapping) ? { iconColorSource: iconColorSourceForMapping(mapping) } : {}),
         availability: canReuse ? "mapped" : "native-fallback",
         props: request.props ?? {},
         slots: request.slots ?? {},

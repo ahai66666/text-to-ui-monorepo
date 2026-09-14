@@ -4,12 +4,14 @@ function normalize(value) {
   return String(value ?? "").trim().toLowerCase();
 }
 
-export function createResolutionPlan({ liveComponents = [], requested = Object.keys(mapping.components), libraryPage = "NewComponents" } = {}) {
+export function createResolutionPlan({ liveComponents = [], requested = Object.keys(mapping.components), libraryPage = mapping.policy.libraryPage } = {}) {
   const candidates = liveComponents.filter((component) => normalize(component.pageName ?? component.containingPage) === normalize(libraryPage));
   return requested.map((logicalName) => {
     const rule = mapping.components[logicalName];
     if (!rule) return { logicalName, status: "missing-mapping" };
-    const matches = candidates.filter((component) => normalize(component.logicalName ?? component.name) === normalize(logicalName));
+    if (rule.availability === "excluded") return { logicalName, status: "excluded", libraryPage, reason: rule.mappingReason ?? null };
+    if (!rule.pixsoTarget || rule.availability !== "mapped") return { logicalName, status: "unregistered-target", libraryPage };
+    const matches = candidates.filter((component) => normalize(component.componentSetName ?? component.name ?? component.logicalName) === normalize(rule.pixsoTarget) && Object.entries(rule.variant ?? {}).every(([axis, value]) => String(component.variantProperties?.[axis] ?? component.variant?.[axis] ?? "") === String(value)));
     if (matches.length === 0) return { logicalName, status: "missing-target", libraryPage };
     if (matches.length > 1) return { logicalName, status: "ambiguous-target", libraryPage, candidateCount: matches.length };
     const source = matches[0];
@@ -21,7 +23,8 @@ export function createResolutionPlan({ liveComponents = [], requested = Object.k
       variantGuid: source.variantGuid ?? source.guid ?? null,
       variantAxes: rule.variantAxes,
       slots: rule.slots,
-      colorVariables: rule.colorVariables,
+      pixsoTarget: rule.pixsoTarget,
+      variant: rule.variant,
       requiresReadback: true
     };
   });

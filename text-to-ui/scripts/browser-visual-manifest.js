@@ -114,7 +114,7 @@
   function semanticRecord(element) {
     const dataset = {};
     for (const [key, value] of Object.entries(element.dataset || {})) {
-      if (/^(tui|px|component|state|variant|slot|action|icon|surface)/i.test(key)) dataset[key] = value;
+      if (/^(tui|px|component|state|variant|slot|action|icon|surface|logical|density|size)/i.test(key)) dataset[key] = value;
     }
     return {
       role: element.getAttribute("role"),
@@ -123,6 +123,7 @@
       placeholder: element.getAttribute("placeholder") || null,
       value: "value" in element ? String(element.value ?? "") : element.getAttribute("value") || null,
       component: element.getAttribute("data-component"),
+      logicalName: element.getAttribute("data-logical-component") || null,
       variant: element.getAttribute("data-variant") || element.getAttribute("data-state"),
       surface: element.getAttribute("data-surface") || null,
       dataset

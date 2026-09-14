@@ -1,5 +1,5 @@
 import { createApp, h, ref } from "vue";
-import { Alert, Attachment, Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Radio, Toast, Tooltip } from "../../packages/components-vue/src/index.js?rev=20260812-1";
+import { Alert, Attachment, Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Radio, Toast, Tooltip, SubTabs, TreeView } from "../../packages/components-vue/src/index.js?rev=20260907-1";
 import * as Generated from "../../packages/components-vue/src/generated/index.js?rev=20260807-1";
 import contracts from "../../packages/component-contracts/src/components-runtime.js";
 import { feedbackSpecimensFor } from "./runtime-catalog.js";
@@ -9,7 +9,7 @@ const pascal = (value) => value.split(/[-_]/g).map((part) => part[0].toUpperCase
 const stateLabels = { default: "Default", hover: "Hover", pressed: "Pressed", focus: "Focus", disabled: "Disabled", selected: "Selected", error: "Error", open: "Open" };
 const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card"]);
 const stateTags = (component) => (component.states ?? ["default"]).map((state) => h("span", { key: state }, stateLabels[state] ?? state));
-const directComponents = { alert: Alert, attachment: Attachment, radio: Radio, toast: Toast, tooltip: Tooltip };
+const directComponents = { alert: Alert, attachment: Attachment, radio: Radio, toast: Toast, tooltip: Tooltip, "sub-tabs": SubTabs, "tree-view": TreeView };
 
 const ButtonPreview = (props) => {
   const variants = [["primary", "确认操作"], ["secondary", "次要操作"], ["ghost", "文本操作"], ["danger", "删除项目"]];

@@ -39,11 +39,12 @@ function makeNode(type) {
 }
 
 const page = { ...makeNode("PAGE"), id: "page-1", name: "coremail" };
+const secondaryPage = { ...makeNode("PAGE"), id: "page-2", name: "secondary" };
 let decoded = false;
 let createdImage = false;
 const pixso = {
   currentPage: page,
-  root: { children: [page] },
+  root: { children: [page, secondaryPage] },
   variables: { getLocalVariablesAsync: async () => [
     { id: "icon-stroke-16", name: "icon/stroke/16", resolvedType: "FLOAT", value: 1 },
     { id: "icon-stroke-20", name: "icon/stroke/20", resolvedType: "FLOAT", value: 1.25 },
@@ -63,7 +64,7 @@ const plan = {
   resources: { variableAliases: {}, images: [{ ref: "brand/logo", mimeType: "image/png", dataBase64: "iVBORw0KGgo=" }] },
   operations: [
     { op: "create-frame", phase: "layout", nodeId: "root", parentId: null, name: "Image runtime test", region: "test", layout: { direction: "VERTICAL", width: "hug", height: "hug" }, style: {} },
-    { op: "create-image", phase: "layout", nodeId: "logo", parentId: "root", name: "Brand logo", region: "test", layout: { width: 36, height: 36 }, style: { fill: { kind: "transparent" } }, imageRef: { ref: "brand/logo", fit: "FILL" } },
+    { op: "create-image", phase: "image-optimization", nodeId: "logo", parentId: "root", name: "Brand logo", region: "test", layout: { width: 36, height: 36 }, style: { fill: { kind: "transparent" } }, imageRef: { ref: "brand/logo", fit: "FILL" } },
   ],
 };
 
@@ -88,7 +89,7 @@ const modularPlan = {
   execution: { ...plan.execution, canonicalKey: "image-runtime-test", runId: undefined },
   modules: [
     { id: "shell", label: "shell", operationIndexes: [0] },
-    { id: "main-detail", label: "detail", operationIndexes: [1] },
+    { id: "image-optimization", label: "images", operationIndexes: [1] },
   ],
 };
 const modularResult = await globalThis.TextToUiPixsoRuntime.create(pixso).execute(modularPlan, { replaceExisting: true });
@@ -98,6 +99,82 @@ assert.equal(page.children.length, 1, "transactional modular import must remove 
 assert.equal(page.children[0].name, "Image runtime test", "final modular commit must strip MCP-only name prefixes");
 assert.equal(page.children[0].visible, true, "final modular commit must reveal the accepted root");
 assert.equal(page.children[0].children[0].getPluginData("text-to-ui-image-ref"), "brand/logo");
+
+// An image API failure must not roll back the completed page structure. The
+// image module keeps the measured box as a deferred placeholder and exposes
+// the failure for a later repair pass.
+page.children = [];
+const failingPixso = { ...pixso, createImage() { throw new Error("SVG image unsupported"); }, createNodeFromSvg: undefined };
+const deferredPlan = {
+  execution: { rootNodeId: "deferred-root", canonicalKey: "deferred-image-test", runId: undefined },
+  page: { name: "Deferred image test" },
+  resources: { variableAliases: {}, images: [{ ref: "broken/image", mimeType: "image/svg+xml", dataBase64: "c3Zn" }] },
+  modules: [
+    { id: "shell", label: "shell", operationIndexes: [0, 1] },
+    { id: "image-optimization", label: "images", operationIndexes: [2] },
+  ],
+  operations: [
+    { op: "create-frame", phase: "layout", nodeId: "deferred-root", parentId: null, name: "Deferred image test", region: "test", layout: { direction: "VERTICAL", width: 120, height: 80, align: "MIN" }, style: {} },
+    { op: "create-rectangle", phase: "layout", nodeId: "normal-content", parentId: "deferred-root", name: "Normal content", region: "test", layout: { width: 40, height: 20 }, style: { fill: { kind: "transparent" } } },
+    { op: "create-image", phase: "image-optimization", nodeId: "deferred-image", parentId: "deferred-root", name: "Broken image", region: "test", layout: { width: 24, height: 24 }, style: { fill: { kind: "transparent" } }, imageRef: { ref: "broken/image", fit: "FILL" } },
+  ],
+};
+const deferredResult = await globalThis.TextToUiPixsoRuntime.create(failingPixso).execute(deferredPlan, { replaceExisting: true });
+assert.equal(deferredResult.ok, true, JSON.stringify(deferredResult));
+assert.equal(deferredResult.phase, "modular-readback");
+assert.equal(deferredResult.audit.imageFailures.length, 1, "image failure must be reported without failing the page import");
+assert.equal(page.children.length, 1, "image failure must not remove the committed page root");
+const deferredRoot = page.children[0];
+assert.equal(deferredRoot.getPluginData("text-to-ui-draft-status"), "committed");
+assert.ok(deferredRoot.children.some((child) => child.getPluginData("text-to-ui-scene-id") === "normal-content"), "normal content must survive an image failure");
+const deferredImage = deferredRoot.children.find((child) => child.getPluginData("text-to-ui-scene-id") === "deferred-image");
+assert.equal(deferredImage?.getPluginData("text-to-ui-image-renderer"), "deferred-placeholder");
+assert.equal(deferredImage?.getPluginData("text-to-ui-image-recovery"), "deferred-image-optimization");
+assert.equal(deferredImage?.fills?.[0]?.type, "SOLID", "deferred image boxes must remain visibly inspectable");
+const deferredReadback = await globalThis.TextToUiPixsoRuntime.create(failingPixso).verify(deferredPlan);
+assert.equal(deferredReadback.ok, true, JSON.stringify(deferredReadback));
+assert.equal(deferredReadback.audit.imageFailures.length, 1, "deferred image failures must survive a fresh readback runtime");
+
+// An SVG image is optimized in the same late module through Pixso's vector
+// importer, so the normal page path preserves the real SVG instead of sending
+// SVG bytes to the raster createImage API.
+page.children = [];
+let importedSvg = "";
+const svgPixso = {
+  ...pixso,
+  currentPage: secondaryPage,
+  createImage() { throw new Error("SVG bytes are not raster data"); },
+  createNodeFromSvg(svg) {
+    importedSvg = svg;
+    const frame = makeNode("FRAME");
+    frame.resize(24, 24);
+    const shape = makeNode("RECTANGLE");
+    shape.resize(24, 24);
+    frame.appendChild(shape);
+    return frame;
+  },
+};
+const svgSource = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect width="24" height="24" fill="#0A59F7"/></svg>';
+const svgPlan = {
+  execution: { rootNodeId: "svg-root", canonicalKey: "svg-image-test", runId: undefined },
+  page: { name: "SVG image test" },
+  resources: { variableAliases: {}, images: [{ ref: "brand/svg", mimeType: "image/svg+xml", dataBase64: "c3Zn", svg: svgSource }] },
+  modules: [
+    { id: "shell", label: "shell", operationIndexes: [0] },
+    { id: "image-optimization", label: "images", operationIndexes: [1] },
+  ],
+  operations: [
+    { op: "create-frame", phase: "layout", nodeId: "svg-root", parentId: null, name: "SVG image test", region: "test", layout: { direction: "VERTICAL", width: 80, height: 60, align: "MIN" }, style: {} },
+    { op: "create-image", phase: "image-optimization", nodeId: "svg-image", parentId: "svg-root", name: "SVG logo", region: "test", layout: { width: 24, height: 24 }, style: { fill: { kind: "transparent" } }, imageRef: { ref: "brand/svg", fit: "FILL" } },
+  ],
+};
+const svgResult = await globalThis.TextToUiPixsoRuntime.create(svgPixso).execute(svgPlan, { replaceExisting: true });
+assert.equal(svgResult.ok, true, JSON.stringify(svgResult));
+assert.equal(svgResult.audit.imageFailures.length, 0);
+assert.equal(importedSvg, svgSource);
+const svgNode = secondaryPage.children[0].children.find((child) => child.getPluginData("text-to-ui-scene-id") === "svg-image");
+assert.equal(svgNode?.getPluginData("text-to-ui-image-renderer"), "native-svg");
+pixso.currentPage = page;
 
 // A cooperative pause must never hide or delete either side of the comparison.
 // The draft remains visible for inspection and the accepted root remains intact.
@@ -171,4 +248,24 @@ for (const [slotId, expectedStroke] of expectedStrokeWeights) {
   assert.equal(icon.boundVariables?.strokeWeight?.id, `icon-stroke-${slotId.slice("icon-slot-".length)}`);
   assert.deepEqual(icon.vectorPaths.map((path) => path.data), ["M12 5v14M5 12h14"]);
 }
-console.log("Pixso image runtime test passed: raster bytes become a native IMAGE fill with stable symbolic metadata.");
+
+// A page-owned icon renderer failure is another late visual-asset concern. It
+// must preserve the measured hot zone and commit the rest of the page instead
+// of turning one unsupported SVG path into a full-page rollback.
+page.children = [];
+const failingIconPixso = { ...pixso, createVector() { throw new Error("unsupported SVG vector command"); } };
+const deferredIconResult = await globalThis.TextToUiPixsoRuntime.create(failingIconPixso).execute(iconPlan, { replaceExisting: true });
+assert.equal(deferredIconResult.ok, true, JSON.stringify(deferredIconResult));
+assert.equal(deferredIconResult.audit.iconFailures.length, 3, "page-owned icon failures must be deferred without failing structural import");
+assert.equal(page.children.length, 1, "icon failure must preserve the committed page root");
+for (const slotId of expectedStrokeWeights.keys()) {
+  const slot = page.children[0].children.find((child) => child.getPluginData("text-to-ui-scene-id") === slotId);
+  assert.equal(slot?.getPluginData("text-to-ui-icon-status"), "deferred-placeholder");
+  assert.equal(slot?.getPluginData("text-to-ui-icon-recovery"), "deferred-icon-hydration");
+  assert.equal(slot?.children?.[0]?.name, "Icon placeholder");
+}
+const deferredIconReadback = await globalThis.TextToUiPixsoRuntime.create(failingIconPixso).verify(iconPlan);
+assert.equal(deferredIconReadback.ok, true, JSON.stringify(deferredIconReadback));
+assert.equal(deferredIconReadback.audit.iconFailures.length, 3, "deferred icon failures must survive a fresh readback runtime");
+
+console.log("Pixso asset runtime tests passed: raster, SVG and icons use native renderers, while failed late asset optimization preserves the committed structure.");

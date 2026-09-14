@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const scripts = path.dirname(fileURLToPath(import.meta.url));
 const resolve = (route) => spawnSync(process.execPath, [path.join(scripts, "resolve-workflow-route.mjs"), "--route", route], { encoding: "utf8" });
-for (const route of ["existing-html-to-pixso", "new-page", "micro-revision", "pixso-component-library", "converter-diagnosis"]) {
+for (const route of ["existing-html-to-pixso", "new-page", "micro-revision", "pixso-component-library", "converter-diagnosis", "skill-maintenance"]) {
   const result = resolve(route);
   assert.equal(result.status, 0, result.stderr);
   const payload = JSON.parse(result.stdout);

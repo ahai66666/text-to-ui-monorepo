@@ -29,7 +29,7 @@ const rendererOptions = {
   "Titlebar/Default": { paneTitle: "任务详情", layout: "three-column", paneRole: "final-pane", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save", buttonType: "icon" }], size: "medium" },
   "Sidebar Item/Default": { items: [{ label: "我的任务", selected: true }] },
   "Search/White Surface/Default": { placeholder: "搜索任务" },
-  "Item/Default": { title: "任务", description: "今天" },
+  "List Item/White Surface/Default": { title: "任务", description: "今天" },
   "Button/Primary/Default": { label: "新增任务", variant: "primary" },
   "Checkbox/Default": { label: "标记为完成", description: "同步到任务记录", checked: false }
 };

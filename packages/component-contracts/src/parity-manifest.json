@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "source": "packages/component-contracts/src/components.json",
-  "componentCount": 55,
-  "categoryCount": 12,
+  "componentCount": 49,
+  "categoryCount": 7,
   "visualAuthority": [
     "Component/Design MD",
     "text-to-ui/preview/component-gallery.html",
@@ -20,11 +20,11 @@
     {
       "id": "titlebar",
       "logicalName": "Titlebar/Default",
-      "category": "titlebars",
-      "categoryLabel": "标题栏",
+      "category": "navigation",
+      "categoryLabel": "导航类",
       "order": 10,
       "legacyVisualGroup": "titlebars",
-      "canonicalSelector": "section#titlebars [data-component=\"Titlebar/Default\"]",
+      "canonicalSelector": "section#navigation [data-component=\"Titlebar/Default\"]",
       "canonicalSpecimen": "legacy:titlebars:titlebar",
       "fixtureId": "fixture-titlebar",
       "surface": "white",
@@ -263,13 +263,952 @@
       }
     },
     {
+      "id": "primary-navigation-item",
+      "logicalName": "Primary Navigation Item/Level 1",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 11,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Primary Navigation Item/Level 1\"]",
+      "canonicalSpecimen": "legacy:navigation:primary-navigation-item",
+      "fixtureId": "fixture-primary-navigation-item",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default",
+          "surface": "white"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [],
+      "iconSlots": [
+        {
+          "alias": "navigation/grid",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "field/calendar",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "navigation/mail-unread",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "action/settings",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.primary-level-unselected",
+        "color.sidebar-accent",
+        "color.sidebar-selected-text",
+        "color.focus-ring",
+        "size.icon-button",
+        "icon-size-lg",
+        "radius.icon-button"
+      ],
+      "props": [
+        "label",
+        "ariaLabel",
+        "icon",
+        "selected",
+        "disabled",
+        "state",
+        "onSelect",
+        "className"
+      ],
+      "slots": [
+        "icon",
+        "tooltip"
+      ],
+      "slotContracts": {
+        "icon": {
+          "cardinality": "1",
+          "scope": "primary-navigation-item",
+          "displaySize": "24px",
+          "kind": "regular",
+          "source": "lucide"
+        }
+      },
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/primary-navigation-item.html",
+        "react": "packages/components-react/src/index.jsx#PrimaryNavigationItem",
+        "vue": "packages/components-vue/src/PrimaryNavigationItem.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "sidebar",
+      "logicalName": "Sidebar Item/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 12,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Sidebar Item/Default\"]",
+      "canonicalSpecimen": "legacy:navigation:sidebar",
+      "fixtureId": "fixture-sidebar",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "hover",
+        "pressed",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default",
+          "surface": "white"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:body-l",
+        "count:body-m"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/grid",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "navigation/recent",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "action/more",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.sidebar-bg",
+        "color.sidebar-selected",
+        "color.text",
+        "color.primary",
+        "size.list-item-height",
+        "radius.list-item",
+        "typography.body-l"
+      ],
+      "props": [
+        "label",
+        "icon",
+        "selected",
+        "collapsed",
+        "count"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/sidebar.html",
+        "react": "packages/components-react/src/index.jsx#Sidebar",
+        "vue": "packages/components-vue/src/Sidebar.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "tabs",
+      "logicalName": "Tabs/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 13,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Tabs/Default\"]",
+      "canonicalSpecimen": "legacy:navigation:tabs",
+      "fixtureId": "fixture-tabs",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "arrow-keys",
+        "focus"
+      ],
+      "textRoles": [
+        "label:body-m"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/list",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "color.primary"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#tabs",
+        "react": "packages/components-react/src/index.jsx#Tabs",
+        "vue": "packages/components-vue/src/Tabs.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "sub-tabs",
+      "logicalName": "Sub Tabs/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 13.5,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Sub Tabs/Default\"]",
+      "canonicalSpecimen": "legacy:navigation:sub-tabs",
+      "fixtureId": "fixture-sub-tabs",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "arrow-keys",
+        "focus"
+      ],
+      "textRoles": [
+        "label:subtitle-m",
+        "unselected-label:body-l",
+        "content:body-l"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.neutral-dark-05",
+        "color.text-muted",
+        "color.brand-10",
+        "color.brand-100",
+        "spacing.gap-subtab-item",
+        "spacing.space-5",
+        "radius.subtab",
+        "size.size-10",
+        "typography.subtitle-m"
+      ],
+      "props": [
+        "tabs",
+        "value",
+        "defaultValue",
+        "disabled",
+        "onChange"
+      ],
+      "slots": [
+        "label",
+        "content"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#subTabs",
+        "react": "packages/components-react/src/index.jsx#SubTabs",
+        "vue": "packages/components-vue/src/SubTabs.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "breadcrumb",
+      "logicalName": "Breadcrumb/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 14,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Breadcrumb/Default\"]",
+      "canonicalSpecimen": "legacy:navigation:breadcrumb",
+      "fixtureId": "fixture-breadcrumb",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-down",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#breadcrumb",
+        "react": "packages/components-react/src/index.jsx#Breadcrumb",
+        "vue": "packages/components-vue/src/Breadcrumb.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "tree-view",
+      "logicalName": "Tree View/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 14.5,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Tree View/Default\"]",
+      "canonicalSpecimen": "legacy:navigation:tree-view",
+      "fixtureId": "fixture-tree-view",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "expanded",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "toggle",
+        "arrow-keys",
+        "focus"
+      ],
+      "textRoles": [
+        "node-label:body-l",
+        "node-trailing:body-m"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-right",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "navigation/grid",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "object/file",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.text-muted",
+        "color.surface",
+        "color.border",
+        "color.primary",
+        "spacing.menu-item-content",
+        "size.tree-item-height",
+        "radius.subtab",
+        "typography.body-l",
+        "typography.body-m"
+      ],
+      "props": [
+        "nodes",
+        "selectedId",
+        "expandedIds",
+        "defaultSelectedId",
+        "defaultExpandedIds",
+        "disabled",
+        "onSelect",
+        "onToggle"
+      ],
+      "slots": [
+        "node-leading",
+        "node-label",
+        "node-trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#treeView",
+        "react": "packages/components-react/src/index.jsx#TreeView",
+        "vue": "packages/components-vue/src/TreeView.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "menubar",
+      "logicalName": "Menubar/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 16,
+      "legacyVisualGroup": "disclosure",
+      "canonicalSelector": "section#navigation [data-component=\"Menubar/Default\"]",
+      "canonicalSpecimen": "legacy:disclosure:menubar",
+      "fixtureId": "fixture-menubar",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "open",
+        "select",
+        "escape",
+        "arrow-keys",
+        "hover-submenu",
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "slot": "item-leading",
+          "alias": "navigation/grid",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "slot": "item-trailing",
+          "alias": "navigation/chevron-right",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "icon-size-lg",
+        "spacing.menu-item-content"
+      ],
+      "props": [
+        "label",
+        "value",
+        "items",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description",
+        "item-leading",
+        "item-label",
+        "item-trailing"
+      ],
+      "slotContracts": {
+        "item-leading": {
+          "cardinality": "0..1",
+          "scope": "menubar-item",
+          "iconSize": "24px",
+          "iconToken": "icon-size-lg",
+          "gapToken": "gap-menu-item-content",
+          "gap": "8px",
+          "source": "lucide"
+        },
+        "item-label": {
+          "cardinality": "1",
+          "scope": "menubar-item",
+          "typographyRole": "body-l"
+        },
+        "item-trailing": {
+          "cardinality": "0..1",
+          "scope": "menubar-item",
+          "iconAlias": "navigation/chevron-right",
+          "iconSize": "24px",
+          "iconToken": "icon-size-lg",
+          "activeWhen": "hasSubmenu",
+          "placement": "trailing-end"
+        }
+      },
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#menubar",
+        "react": "packages/components-react/src/advanced.jsx#Menubar",
+        "vue": "packages/components-vue/src/advanced.js#Menubar"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "pagination",
+      "logicalName": "Pagination/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 17,
+      "legacyVisualGroup": "navigation",
+      "canonicalSelector": "section#navigation [data-component=\"Pagination/Default\"]",
+      "canonicalSpecimen": "legacy:navigation:pagination",
+      "fixtureId": "fixture-pagination",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "slot": "previous",
+          "alias": "navigation/back",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "slot": "next",
+          "alias": "navigation/forward",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "spacing.content-inset"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#pagination",
+        "react": "packages/components-react/src/index.jsx#Pagination",
+        "vue": "packages/components-vue/src/Pagination.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "accordion",
+      "logicalName": "Accordion/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 18,
+      "legacyVisualGroup": "disclosure",
+      "canonicalSelector": "section#navigation [data-component=\"Accordion/Default\"]",
+      "canonicalSpecimen": "legacy:disclosure:accordion",
+      "fixtureId": "fixture-accordion",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "unfocus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "toggle",
+        "keyboard-activation",
+        "focus"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-right",
+          "displaySizes": [
+            20
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "size",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#accordion",
+        "react": "packages/components-react/src/index.jsx#Accordion",
+        "vue": "packages/components-vue/src/Accordion.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "collapsible",
+      "logicalName": "Collapsible/Default",
+      "category": "navigation",
+      "categoryLabel": "导航类",
+      "order": 19,
+      "legacyVisualGroup": "disclosure",
+      "canonicalSelector": "section#navigation [data-component=\"Collapsible/Default\"]",
+      "canonicalSpecimen": "legacy:disclosure:collapsible",
+      "fixtureId": "fixture-collapsible",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "toggle",
+        "keyboard-activation",
+        "focus"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-down",
+          "displaySizes": [
+            20
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "title",
+        "detail",
+        "expanded",
+        "contentId",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#collapsible",
+        "react": "packages/components-react/src/index.jsx#Collapsible",
+        "vue": "packages/components-vue/src/Collapsible.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
       "id": "button",
       "logicalName": "Button/Primary/Default",
-      "category": "buttons",
-      "categoryLabel": "按钮",
-      "order": 20,
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 110,
       "legacyVisualGroup": "buttons",
-      "canonicalSelector": "section#buttons [data-component=\"Button/Primary/Default\"]",
+      "canonicalSelector": "section#actions [data-component=\"Button/Primary/Default\"]",
       "canonicalSpecimen": "legacy:buttons:button",
       "fixtureId": "fixture-button",
       "surface": "white",
@@ -359,16 +1298,17 @@
           "mode": "icon-text"
         },
         {
-          "id": "selection-dropdown",
-          "variant": "secondary",
-          "state": "default",
-          "mode": "selection-dropdown"
-        },
-        {
           "id": "split-dropdown",
           "variant": "ghost",
           "state": "default",
           "mode": "split-dropdown"
+        },
+        {
+          "id": "split-dropdown-icon",
+          "variant": "ghost",
+          "state": "default",
+          "mode": "split-dropdown",
+          "iconOnly": true
         }
       ],
       "behaviorChecks": [
@@ -462,6 +1402,7 @@
         "variant",
         "size",
         "mode",
+        "iconOnly",
         "disabled",
         "menuItems"
       ],
@@ -488,13 +1429,1249 @@
       }
     },
     {
+      "id": "chips",
+      "logicalName": "Chips/Default",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 111,
+      "legacyVisualGroup": "actions",
+      "canonicalSelector": "section#actions [data-component=\"Chips/Default\"]",
+      "canonicalSpecimen": "legacy:actions:chips",
+      "fixtureId": "fixture-chips",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "pressed",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        },
+        {
+          "id": "hover",
+          "variant": "with-icon",
+          "state": "hover"
+        },
+        {
+          "id": "pressed",
+          "variant": "closable",
+          "state": "pressed"
+        },
+        {
+          "id": "disabled",
+          "variant": "closable",
+          "state": "disabled"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface-muted",
+        "color.state-layer-hover",
+        "color.state-layer-pressed",
+        "size.tag-height",
+        "spacing.padding-tag-x",
+        "typography.body-m",
+        "radius.tag"
+      ],
+      "props": [
+        "label",
+        "icon",
+        "closable",
+        "disabled",
+        "state",
+        "onClose"
+      ],
+      "slots": [
+        "leading",
+        "label",
+        "close"
+      ],
+      "slotContracts": {
+        "leading": {
+          "cardinality": "0..1",
+          "scope": "chips",
+          "iconSize": "16px"
+        },
+        "label": {
+          "cardinality": "1",
+          "scope": "chips",
+          "typographyRole": "body-m"
+        },
+        "close": {
+          "cardinality": "0..1",
+          "scope": "chips",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "16px",
+          "requiresAccessibleName": true
+        }
+      },
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#chips",
+        "react": "packages/components-react/src/Chips.jsx#Chips",
+        "vue": "packages/components-vue/src/Chips.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "context-menu",
+      "logicalName": "Context Menu/Default",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 112,
+      "legacyVisualGroup": "overlays",
+      "canonicalSelector": "section#actions [data-component=\"Context Menu/Default\"]",
+      "canonicalSpecimen": "legacy:overlays:context-menu",
+      "fixtureId": "fixture-context-menu",
+      "surface": [
+        "white",
+        "gray"
+      ],
+      "sizing": "overlay",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "action/more",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "shadow.overlay",
+        "radius.card"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#context-menu",
+        "react": "packages/components-react/src/advanced.jsx#ContextMenu",
+        "vue": "packages/components-vue/src/advanced.js#ContextMenu"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "dropdown-menu",
+      "logicalName": "Dropdown Menu/Default",
+      "category": "actions",
+      "categoryLabel": "操作类",
+      "order": 113,
+      "legacyVisualGroup": "overlays",
+      "canonicalSelector": "section#actions [data-component=\"Dropdown Menu/Default\"]",
+      "canonicalSpecimen": "legacy:overlays:dropdown-menu",
+      "fixtureId": "fixture-dropdown-menu",
+      "surface": [
+        "white",
+        "gray"
+      ],
+      "sizing": "overlay",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "open",
+        "select",
+        "escape",
+        "arrow-keys"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "action/more",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "shadow.overlay",
+        "radius.card"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#dropdown-menu",
+        "react": "packages/components-react/src/advanced.jsx#DropdownMenu",
+        "vue": "packages/components-vue/src/advanced.js#DropdownMenu"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "alert",
+      "logicalName": "Alert/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 210,
+      "legacyVisualGroup": "feedback",
+      "canonicalSelector": "section#display [data-component=\"Alert/Default\"]",
+      "canonicalSpecimen": "legacy:feedback:alert",
+      "fixtureId": "fixture-alert",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "info",
+          "variant": "info",
+          "state": "default",
+          "label": "Info / 信息",
+          "message": "系统将在今晚自动完成更新。",
+          "action": "查看详情"
+        },
+        {
+          "id": "success",
+          "variant": "success",
+          "state": "default",
+          "label": "Success / 成功",
+          "message": "所有修改已经同步到云端。",
+          "action": "查看详情"
+        },
+        {
+          "id": "warning",
+          "variant": "warning",
+          "state": "default",
+          "label": "Warning / 警告",
+          "message": "连接不稳定，部分内容可能暂时无法加载。",
+          "action": "重新连接"
+        },
+        {
+          "id": "danger",
+          "variant": "danger",
+          "state": "default",
+          "label": "Danger / 危险",
+          "message": "存储空间不足，请清理空间后重试。",
+          "action": "清理空间"
+        },
+        {
+          "id": "neutral",
+          "variant": "neutral",
+          "state": "default",
+          "label": "Neutral / 中性",
+          "message": "当前为只读模式，部分编辑操作暂不可用。",
+          "action": "知道了"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "content:subtitle-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "status/info",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "status/success",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "status/warning",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "status/danger",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "status/neutral",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "alias": "action/close",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.subtitle-s",
+        "typography.body-m",
+        "spacing.component-gap",
+        "spacing.padding-alert-left",
+        "spacing.padding-alert-right",
+        "spacing.padding-button-sm-x",
+        "size.button-sm-height",
+        "size.icon-md",
+        "size.icon-sm",
+        "color.icon",
+        "color.primary"
+      ],
+      "props": [
+        "title",
+        "detail",
+        "expanded",
+        "contentId",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#alert",
+        "react": "packages/components-react/src/index.jsx#Alert",
+        "vue": "packages/components-vue/src/Alert.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "snackbar",
+      "logicalName": "Snackbar/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 211,
+      "legacyVisualGroup": "feedback",
+      "canonicalSelector": "section#display [data-component=\"Snackbar/Default\"]",
+      "canonicalSpecimen": "pixso:Snackbar:左侧区域=1",
+      "fixtureId": "fixture-snackbar",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default"
+      ],
+      "requiredVariants": [
+        {
+          "id": "title-only",
+          "variant": "title-only",
+          "state": "default",
+          "leftArea": "1"
+        },
+        {
+          "id": "title-subtitle",
+          "variant": "title-subtitle",
+          "state": "default",
+          "leftArea": "2"
+        }
+      ],
+      "behaviorChecks": [
+        "action",
+        "close"
+      ],
+      "textRoles": [
+        "title:subtitle-s",
+        "subtitle:body-s",
+        "action:body-m"
+      ],
+      "iconSlots": [
+        {
+          "slot": "leading",
+          "alias": "status/info",
+          "displaySizes": [
+            24
+          ],
+          "kind": "regular"
+        },
+        {
+          "slot": "close",
+          "alias": "action/close",
+          "displaySizes": [
+            20
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "typography.subtitle-s",
+        "typography.body-s",
+        "typography.body-m",
+        "spacing.component-gap",
+        "color.primary",
+        "shadow.3",
+        "radius.5"
+      ],
+      "props": [
+        "title",
+        "subtitle",
+        "actionLabel",
+        "leftArea",
+        "closable",
+        "onAction",
+        "onClose"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "subtitle",
+        "action",
+        "close"
+      ],
+      "slotContracts": {
+        "leading": {
+          "cardinality": "1",
+          "scope": "snackbar-main",
+          "iconAlias": "status/info",
+          "iconSize": "24px",
+          "source": "lucide"
+        },
+        "title": {
+          "cardinality": "1",
+          "scope": "snackbar-content",
+          "typographyRole": "subtitle-s"
+        },
+        "subtitle": {
+          "cardinality": "0..1",
+          "scope": "snackbar-content",
+          "typographyRole": "body-s",
+          "activeWhen": "variant=title-subtitle"
+        },
+        "action": {
+          "cardinality": "0..1",
+          "scope": "snackbar-actions",
+          "control": "small-button-slot",
+          "acceptedComponentContract": "button",
+          "requiredSize": "small",
+          "accepts": "any shared Button mode and variant at small size",
+          "defaultControl": "Button/Ghost/Default"
+        },
+        "close": {
+          "cardinality": "0..1",
+          "scope": "snackbar-actions",
+          "control": "icon-button",
+          "iconAlias": "action/close",
+          "iconSize": "20px",
+          "hotZone": "40px",
+          "requiresAccessibleName": true
+        }
+      },
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#snackbar",
+        "react": "packages/components-react/src/index.jsx#Snackbar",
+        "vue": "packages/components-vue/src/Snackbar.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "tooltip",
+      "logicalName": "Tooltip/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 212,
+      "legacyVisualGroup": "feedback",
+      "canonicalSelector": "section#display [data-component=\"Tooltip/Default\"]",
+      "canonicalSpecimen": "legacy:feedback:tooltip",
+      "fixtureId": "fixture-tooltip",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "content:body-l"
+      ],
+      "iconSlots": [
+        {
+          "alias": "status/info",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.padding-tooltip",
+        "shadow.1",
+        "radius.tooltip"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#tooltip",
+        "react": "packages/components-react/src/index.jsx#Tooltip",
+        "vue": "packages/components-vue/src/Tooltip.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "popover",
+      "logicalName": "Popover/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 213,
+      "legacyVisualGroup": "overlays",
+      "canonicalSelector": "section#display [data-component=\"Popover/Default\"]",
+      "canonicalSpecimen": "legacy:overlays:popover",
+      "fixtureId": "fixture-popover",
+      "surface": [
+        "white",
+        "gray"
+      ],
+      "sizing": "overlay",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "action/more",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "shadow.overlay",
+        "radius.card"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#popover",
+        "react": "packages/components-react/src/advanced.jsx#Popover",
+        "vue": "packages/components-vue/src/advanced.js#Popover"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "hover-card",
+      "logicalName": "Hover Card/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 214,
+      "legacyVisualGroup": "overlays",
+      "canonicalSelector": "section#display [data-component=\"Hover Card/Default\"]",
+      "canonicalSpecimen": "legacy:overlays:hover-card",
+      "fixtureId": "fixture-hover-card",
+      "surface": [
+        "white",
+        "gray"
+      ],
+      "sizing": "overlay",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "action/more",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "shadow.overlay",
+        "radius.card"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "title",
+        "description",
+        "content",
+        "actions"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#hover-card",
+        "react": "packages/components-react/src/advanced.jsx#HoverCard",
+        "vue": "packages/components-vue/src/advanced.js#HoverCard"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "avatar",
+      "logicalName": "Avatar/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 215,
+      "legacyVisualGroup": "data-display",
+      "canonicalSelector": "section#display [data-component=\"Avatar/Default\"]",
+      "canonicalSpecimen": "legacy:data-display:avatar",
+      "fixtureId": "fixture-avatar",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "fallback-32",
+          "variant": "size-32",
+          "state": "default",
+          "size": 32,
+          "content": "initials"
+        },
+        {
+          "id": "fallback-40",
+          "variant": "size-40",
+          "state": "default",
+          "size": 40,
+          "content": "initials"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "description",
+        "checked",
+        "name",
+        "ariaLabel",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#avatar",
+        "react": "packages/components-react/src/index.jsx#Avatar",
+        "vue": "packages/components-vue/src/Avatar.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "badge",
+      "logicalName": "Badge/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 216,
+      "legacyVisualGroup": "data-display",
+      "canonicalSelector": "section#display [data-component=\"Badge/Default\"]",
+      "canonicalSpecimen": "legacy:data-display:badge",
+      "fixtureId": "fixture-badge",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "color.primary"
+      ],
+      "props": [
+        "label",
+        "tone",
+        "disabled",
+        "className"
+      ],
+      "slots": [
+        "label"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#badge",
+        "react": "packages/components-react/src/index.jsx#Badge",
+        "vue": "packages/components-vue/src/Badge.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "color-picker",
+      "logicalName": "ColorPicker/Tablet",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 217,
+      "legacyVisualGroup": "form-plus",
+      "canonicalSelector": "section#display [data-component=\"ColorPicker/Tablet\"]",
+      "canonicalSpecimen": "legacy:form-plus:color-picker",
+      "fixtureId": "fixture-color-picker",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "input",
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.title-s",
+        "typography.body-l",
+        "typography.body-m",
+        "typography.body-s",
+        "spacing.component-gap",
+        "radius.card"
+      ],
+      "props": [
+        "value",
+        "defaultValue",
+        "disabled",
+        "state",
+        "className",
+        "onChange"
+      ],
+      "slots": [
+        "title",
+        "tabs",
+        "mode",
+        "hue",
+        "saturation",
+        "brightness",
+        "alpha",
+        "preview",
+        "eyedropper",
+        "hex",
+        "favorites"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/advanced.js#color-picker",
+        "react": "packages/components-react/src/advanced.jsx#ColorPicker",
+        "vue": "packages/components-vue/src/advanced.js#ColorPicker"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "table",
+      "logicalName": "Table/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 218,
+      "legacyVisualGroup": "data-display",
+      "canonicalSelector": "section#display [data-component=\"Table/Default\"]",
+      "canonicalSpecimen": "legacy:data-display:table",
+      "fixtureId": "fixture-table",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "header:body-m",
+        "cell:body-l"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "spacing.content-inset"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "leading",
+        "title",
+        "description",
+        "content",
+        "trailing"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#table",
+        "react": "packages/components-react/src/index.jsx#Table",
+        "vue": "packages/components-vue/src/Table.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "progress",
+      "logicalName": "Progress/Default",
+      "category": "display",
+      "categoryLabel": "展示类",
+      "order": 220,
+      "legacyVisualGroup": "data-display",
+      "canonicalSelector": "section#display [data-component=\"Progress/Default\"]",
+      "canonicalSpecimen": "legacy:data-display:progress",
+      "fixtureId": "fixture-progress",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "status/success",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "color.primary"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#progress",
+        "react": "packages/components-react/src/index.jsx#Progress",
+        "vue": "packages/components-vue/src/Progress.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
       "id": "input",
       "logicalName": "Input/White Surface/Default",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 30,
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 310,
       "legacyVisualGroup": "fields",
-      "canonicalSelector": "section#fields [data-component=\"Input/White Surface/Default\"]",
+      "canonicalSelector": "section#input [data-component=\"Input/White Surface/Default\"]",
       "canonicalSpecimen": "legacy:fields:input",
       "fixtureId": "fixture-input",
       "surface": [
@@ -576,11 +2753,11 @@
     {
       "id": "search",
       "logicalName": "Search/White Surface/Default",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 31,
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 311,
       "legacyVisualGroup": "fields",
-      "canonicalSelector": "section#fields [data-component=\"Search/White Surface/Default\"]",
+      "canonicalSelector": "section#input [data-component=\"Search/White Surface/Default\"]",
       "canonicalSpecimen": "legacy:fields:search",
       "fixtureId": "fixture-search",
       "surface": [
@@ -706,11 +2883,11 @@
     {
       "id": "textarea",
       "logicalName": "Textarea/Default",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 32,
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 312,
       "legacyVisualGroup": "fields",
-      "canonicalSelector": "section#fields [data-component=\"Textarea/Default\"]",
+      "canonicalSelector": "section#input [data-component=\"Textarea/Default\"]",
       "canonicalSpecimen": "legacy:fields:textarea",
       "fixtureId": "fixture-textarea",
       "surface": [
@@ -791,13 +2968,740 @@
       }
     },
     {
+      "id": "field",
+      "logicalName": "Field/Default",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 313,
+      "legacyVisualGroup": "fields",
+      "canonicalSelector": "section#input [data-component=\"Field/Default\"]",
+      "canonicalSpecimen": "legacy:fields:field",
+      "fixtureId": "fixture-field",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "error"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#field",
+        "react": "packages/components-react/src/index.jsx#Field",
+        "vue": "packages/components-vue/src/Field.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "label",
+      "logicalName": "Label/Default",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 314,
+      "legacyVisualGroup": "form-plus",
+      "canonicalSelector": "section#input [data-component=\"Label/Default\"]",
+      "canonicalSpecimen": "legacy:form-plus:label",
+      "fixtureId": "fixture-label",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "field/search",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-m",
+        "spacing.component-gap",
+        "spacing.padding-tag-x",
+        "size.tag-height"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#label",
+        "react": "packages/components-react/src/index.jsx#Label",
+        "vue": "packages/components-vue/src/Label.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "combobox",
+      "logicalName": "Combobox/Default",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 315,
+      "legacyVisualGroup": "form-plus",
+      "canonicalSelector": "section#input [data-component=\"Combobox/Default\"]",
+      "canonicalSpecimen": "legacy:form-plus:combobox",
+      "fixtureId": "fixture-combobox",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "open",
+        "error"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "open",
+        "select",
+        "escape",
+        "arrow-keys"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-down",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#combobox",
+        "react": "packages/components-react/src/index.jsx#Combobox",
+        "vue": "packages/components-vue/src/Combobox.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "number-selector",
+      "logicalName": "Number Selector/Default",
+      "category": "input",
+      "categoryLabel": "输入类",
+      "order": 316,
+      "legacyVisualGroup": "fields",
+      "canonicalSelector": "section#input [data-component=\"Number Selector/Default\"]",
+      "canonicalSpecimen": "legacy:fields:number-selector",
+      "fixtureId": "fixture-number-selector",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "input",
+        "increment",
+        "decrement",
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.surface",
+        "color.text",
+        "color.border",
+        "color.primary",
+        "size.input-height",
+        "radius.input",
+        "typography.body-l"
+      ],
+      "props": [
+        "label",
+        "value",
+        "defaultValue",
+        "min",
+        "max",
+        "step",
+        "disabled",
+        "onChange"
+      ],
+      "slots": [
+        "label",
+        "decrement",
+        "value",
+        "increment"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#numberSelector",
+        "react": "packages/components-react/src/index.jsx#NumberSelector",
+        "vue": "packages/components-vue/src/NumberSelector.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "checkbox",
+      "logicalName": "Checkbox/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 410,
+      "legacyVisualGroup": "choices",
+      "canonicalSelector": "section#choices [data-component=\"Checkbox/Default\"]",
+      "canonicalSpecimen": "legacy:choices:checkbox",
+      "fixtureId": "fixture-checkbox",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "choice/check",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#checkbox",
+        "react": "packages/components-react/src/index.jsx#Checkbox",
+        "vue": "packages/components-vue/src/Checkbox.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "radio",
+      "logicalName": "Radio/Unselected/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 411,
+      "legacyVisualGroup": "choices",
+      "canonicalSelector": "section#choices [data-component=\"Radio/Unselected/Default\"]",
+      "canonicalSpecimen": "legacy:choices:radio",
+      "fixtureId": "fixture-radio",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "unselected",
+          "variant": "unselected",
+          "state": "default",
+          "checked": false
+        },
+        {
+          "id": "selected",
+          "variant": "selected",
+          "state": "selected",
+          "checked": true
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:body-m"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "color.primary",
+        "color.primary-text",
+        "size.indicator.radio-size",
+        "radius.full",
+        "spacing.gap.choice-label",
+        "typography.body-m"
+      ],
+      "props": [
+        "checked",
+        "defaultChecked",
+        "label",
+        "name",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "control",
+        "label"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#radio",
+        "react": "packages/components-react/src/index.jsx#Radio",
+        "vue": "packages/components-vue/src/Radio.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "radio-group",
+      "logicalName": "Radio Group/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 412,
+      "legacyVisualGroup": "choices",
+      "canonicalSelector": "section#choices [data-component=\"Radio Group/Default\"]",
+      "canonicalSpecimen": "legacy:choices:radio-group",
+      "fixtureId": "fixture-radio-group",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "action/check",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#radioGroup",
+        "react": "packages/components-react/src/index.jsx#RadioGroup",
+        "vue": "packages/components-vue/src/RadioGroup.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "switch",
+      "logicalName": "Switch/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 413,
+      "legacyVisualGroup": "choices",
+      "canonicalSelector": "section#choices [data-component=\"Switch/Default\"]",
+      "canonicalSpecimen": "legacy:choices:switch",
+      "fixtureId": "fixture-switch",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "selected"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "focus",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [
+        {
+          "alias": "action/check",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
+      "tokenRoles": [
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "color.primary"
+      ],
+      "props": [
+        "label",
+        "value",
+        "disabled",
+        "state",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "content",
+        "description"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#switch",
+        "react": "packages/components-react/src/index.jsx#Switch",
+        "vue": "packages/components-vue/src/Switch.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "segmented-button",
+      "logicalName": "Segmented Button/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 414,
+      "legacyVisualGroup": "choices",
+      "canonicalSelector": "section#choices [data-component=\"Segmented Button/Default\"]",
+      "canonicalSpecimen": "legacy:choices:segmented-button",
+      "fixtureId": "fixture-segmented-button",
+      "surface": "white",
+      "sizing": "intrinsic",
+      "allowedStates": [
+        "default",
+        "hover",
+        "focus",
+        "selected",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default",
+          "variant": "default",
+          "state": "default"
+        }
+      ],
+      "behaviorChecks": [
+        "select",
+        "keyboard-activation",
+        "disabled"
+      ],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.surface",
+        "color.text",
+        "color.primary",
+        "radius.tab",
+        "spacing.padding-segmented-control",
+        "typography.body-m"
+      ],
+      "props": [
+        "options",
+        "value",
+        "defaultValue",
+        "label",
+        "disabled",
+        "onChange"
+      ],
+      "slots": [
+        "option"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#segmentedButton",
+        "react": "packages/components-react/src/index.jsx#SegmentedButton",
+        "vue": "packages/components-vue/src/SegmentedButton.vue"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
       "id": "select",
       "logicalName": "Select/Default",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 33,
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 415,
       "legacyVisualGroup": "fields",
-      "canonicalSelector": "section#fields [data-component=\"Select/Default\"]",
+      "canonicalSelector": "section#choices [data-component=\"Select/Default\"]",
       "canonicalSpecimen": "legacy:fields:select",
       "fixtureId": "fixture-select",
       "surface": "white",
@@ -883,23 +3787,22 @@
       }
     },
     {
-      "id": "field",
-      "logicalName": "Field/Default",
-      "category": "fields",
-      "categoryLabel": "输入与字段",
-      "order": 34,
-      "legacyVisualGroup": "fields",
-      "canonicalSelector": "section#fields [data-component=\"Field/Default\"]",
-      "canonicalSpecimen": "legacy:fields:field",
-      "fixtureId": "fixture-field",
+      "id": "native-select",
+      "logicalName": "Native Select/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 416,
+      "legacyVisualGroup": "form-plus",
+      "canonicalSelector": "section#choices [data-component=\"Native Select/Default\"]",
+      "canonicalSpecimen": "legacy:form-plus:native-select",
+      "fixtureId": "fixture-native-select",
       "surface": "white",
       "sizing": "intrinsic",
       "allowedStates": [
         "default",
         "hover",
         "focus",
-        "disabled",
-        "error"
+        "disabled"
       ],
       "requiredVariants": [
         {
@@ -918,7 +3821,17 @@
         "description:body-m",
         "help:body-s"
       ],
-      "iconSlots": [],
+      "iconSlots": [
+        {
+          "alias": "navigation/chevron-down",
+          "displaySizes": [
+            16,
+            20,
+            24
+          ],
+          "kind": "regular"
+        }
+      ],
       "tokenRoles": [
         "color.text",
         "color.surface",
@@ -943,9 +3856,9 @@
       "slotContracts": {},
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/index.js#field",
-        "react": "packages/components-react/src/index.jsx#Field",
-        "vue": "packages/components-vue/src/Field.vue"
+        "html": "packages/components-html/src/index.js#nativeSelect",
+        "react": "packages/components-react/src/index.jsx#NativeSelect",
+        "vue": "packages/components-vue/src/NativeSelect.vue"
       },
       "readiness": {
         "sourceReady": true,
@@ -957,28 +3870,27 @@
       }
     },
     {
-      "id": "checkbox",
-      "logicalName": "Checkbox/Default",
+      "id": "slider",
+      "logicalName": "Slider/Default",
       "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 40,
-      "legacyVisualGroup": "choices",
-      "canonicalSelector": "section#choices [data-component=\"Checkbox/Default\"]",
-      "canonicalSpecimen": "legacy:choices:checkbox",
-      "fixtureId": "fixture-checkbox",
+      "categoryLabel": "选择类",
+      "order": 417,
+      "legacyVisualGroup": "form-plus",
+      "canonicalSelector": "section#choices [data-component=\"Slider/Default\"]",
+      "canonicalSpecimen": "legacy:form-plus:slider",
+      "fixtureId": "fixture-slider",
       "surface": "white",
       "sizing": "intrinsic",
       "allowedStates": [
         "default",
         "hover",
         "focus",
-        "disabled",
-        "selected"
+        "disabled"
       ],
       "requiredVariants": [
         {
           "id": "default",
-          "variant": "default",
+          "variant": "style-1",
           "state": "default"
         }
       ],
@@ -994,7 +3906,7 @@
       ],
       "iconSlots": [
         {
-          "alias": "choice/check",
+          "alias": "action/more",
           "displaySizes": [
             16,
             20,
@@ -1019,15 +3931,15 @@
       ],
       "slots": [
         "label",
-        "content",
-        "description"
+        "control",
+        "value"
       ],
       "slotContracts": {},
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/index.js#checkbox",
-        "react": "packages/components-react/src/index.jsx#Checkbox",
-        "vue": "packages/components-vue/src/Checkbox.vue"
+        "html": "packages/components-html/src/advanced.js#slider",
+        "react": "packages/components-react/src/advanced.jsx#Slider",
+        "vue": "packages/components-vue/src/advanced.js#Slider"
       },
       "readiness": {
         "sourceReady": true,
@@ -1039,117 +3951,33 @@
       }
     },
     {
-      "id": "radio",
-      "logicalName": "Radio/Unselected/Default",
+      "id": "calendar",
+      "logicalName": "Calendar/Default",
       "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 41,
-      "legacyVisualGroup": "choices",
-      "canonicalSelector": "section#choices [data-component=\"Radio/Unselected/Default\"]",
-      "canonicalSpecimen": "legacy:choices:radio",
-      "fixtureId": "fixture-radio",
+      "categoryLabel": "选择类",
+      "order": 419,
+      "legacyVisualGroup": "loading-data",
+      "canonicalSelector": "section#choices [data-component=\"Calendar/Default\"]",
+      "canonicalSpecimen": "legacy:loading-data:calendar",
+      "fixtureId": "fixture-calendar",
       "surface": "white",
       "sizing": "intrinsic",
       "allowedStates": [
         "default",
         "hover",
         "focus",
-        "disabled",
-        "selected"
+        "disabled"
       ],
       "requiredVariants": [
         {
-          "id": "unselected",
-          "variant": "unselected",
-          "state": "default",
-          "checked": false
-        },
-        {
-          "id": "selected",
-          "variant": "selected",
-          "state": "selected",
-          "checked": true
+          "id": "default",
+          "variant": "default",
+          "state": "default"
         }
       ],
       "behaviorChecks": [
         "select",
-        "keyboard-activation",
-        "disabled"
-      ],
-      "textRoles": [
-        "label:body-m"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "color.primary",
-        "color.primary-text",
-        "size.indicator.radio-size",
-        "radius.full",
-        "spacing.gap.choice-label",
-        "typography.body-m"
-      ],
-      "props": [
-        "checked",
-        "defaultChecked",
-        "label",
-        "name",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "control",
-        "label"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#radio",
-        "react": "packages/components-react/src/index.jsx#Radio",
-        "vue": "packages/components-vue/src/Radio.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "radio-group",
-      "logicalName": "Radio Group/Default",
-      "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 42,
-      "legacyVisualGroup": "choices",
-      "canonicalSelector": "section#choices [data-component=\"Radio Group/Default\"]",
-      "canonicalSpecimen": "legacy:choices:radio-group",
-      "fixtureId": "fixture-radio-group",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
+        "arrow-keys"
       ],
       "textRoles": [
         "title:title-s",
@@ -1159,89 +3987,7 @@
       ],
       "iconSlots": [
         {
-          "alias": "action/check",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#radioGroup",
-        "react": "packages/components-react/src/index.jsx#RadioGroup",
-        "vue": "packages/components-vue/src/RadioGroup.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "switch",
-      "logicalName": "Switch/Default",
-      "category": "choices",
-      "categoryLabel": "选择控件",
-      "order": 43,
-      "legacyVisualGroup": "choices",
-      "canonicalSelector": "section#choices [data-component=\"Switch/Default\"]",
-      "canonicalSpecimen": "legacy:choices:switch",
-      "fixtureId": "fixture-switch",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/check",
+          "alias": "field/calendar",
           "displaySizes": [
             16,
             20,
@@ -1256,7 +4002,7 @@
         "color.border",
         "typography.body-l",
         "spacing.component-gap",
-        "color.primary"
+        "spacing.content-inset"
       ],
       "props": [
         "label",
@@ -1273,9 +4019,9 @@
       "slotContracts": {},
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/index.js#switch",
-        "react": "packages/components-react/src/index.jsx#Switch",
-        "vue": "packages/components-vue/src/Switch.vue"
+        "html": "packages/components-html/src/advanced.js#calendar",
+        "react": "packages/components-react/src/advanced.jsx#Calendar",
+        "vue": "packages/components-vue/src/advanced.js#Calendar"
       },
       "readiness": {
         "sourceReady": true,
@@ -1287,106 +4033,82 @@
       }
     },
     {
-      "id": "primary-navigation-item",
-      "logicalName": "Primary Navigation Item/Level 1",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 49,
-      "legacyVisualGroup": "navigation",
-      "canonicalSelector": "section#navigation [data-component=\"Primary Navigation Item/Level 1\"]",
-      "canonicalSpecimen": "legacy:navigation:primary-navigation-item",
-      "fixtureId": "fixture-primary-navigation-item",
+      "id": "date-picker",
+      "logicalName": "Date Picker/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 420,
+      "legacyVisualGroup": "loading-data",
+      "canonicalSelector": "section#choices [data-component=\"Date Picker/Default\"]",
+      "canonicalSpecimen": "legacy:loading-data:date-picker",
+      "fixtureId": "fixture-date-picker",
       "surface": "white",
       "sizing": "intrinsic",
       "allowedStates": [
         "default",
         "hover",
-        "pressed",
         "focus",
-        "selected",
-        "disabled"
+        "disabled",
+        "open",
+        "error"
       ],
       "requiredVariants": [
         {
           "id": "default",
           "variant": "default",
-          "state": "default",
-          "surface": "white"
+          "state": "default"
         }
       ],
       "behaviorChecks": [
+        "open",
         "select",
-        "keyboard-activation",
-        "disabled"
+        "escape"
       ],
-      "textRoles": [],
+      "textRoles": [
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
+      ],
       "iconSlots": [
-        {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            24
-          ],
-          "kind": "regular"
-        },
         {
           "alias": "field/calendar",
           "displaySizes": [
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "navigation/mail-unread",
-          "displaySizes": [
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "action/settings",
-          "displaySizes": [
+            16,
+            20,
             24
           ],
           "kind": "regular"
         }
       ],
       "tokenRoles": [
-        "color.primary-level-unselected",
-        "color.sidebar-accent",
-        "color.sidebar-selected-text",
-        "color.focus-ring",
-        "size.icon-button",
-        "icon-size-lg",
-        "radius.icon-button"
+        "color.text",
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "spacing.content-inset"
       ],
       "props": [
         "label",
-        "ariaLabel",
-        "icon",
-        "selected",
+        "value",
         "disabled",
         "state",
-        "onSelect",
         "className"
       ],
       "slots": [
-        "icon",
-        "tooltip"
+        "label",
+        "leading",
+        "value",
+        "trailing",
+        "help"
       ],
-      "slotContracts": {
-        "icon": {
-          "cardinality": "1",
-          "scope": "primary-navigation-item",
-          "displaySize": "24px",
-          "kind": "regular",
-          "source": "lucide"
-        }
-      },
+      "slotContracts": {},
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/primary-navigation-item.html",
-        "react": "packages/components-react/src/index.jsx#PrimaryNavigationItem",
-        "vue": "packages/components-vue/src/PrimaryNavigationItem.vue"
+        "html": "packages/components-html/src/advanced.js#date-picker",
+        "react": "packages/components-react/src/advanced.jsx#DatePicker",
+        "vue": "packages/components-vue/src/advanced.js#DatePicker"
       },
       "readiness": {
         "sourceReady": true,
@@ -1398,63 +4120,46 @@
       }
     },
     {
-      "id": "sidebar",
-      "logicalName": "Sidebar Item/Default",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 50,
-      "legacyVisualGroup": "navigation",
-      "canonicalSelector": "section#navigation [data-component=\"Sidebar Item/Default\"]",
-      "canonicalSpecimen": "legacy:navigation:sidebar",
-      "fixtureId": "fixture-sidebar",
+      "id": "time-picker",
+      "logicalName": "Time Picker/Default",
+      "category": "choices",
+      "categoryLabel": "选择类",
+      "order": 421,
+      "legacyVisualGroup": "loading-data",
+      "canonicalSelector": "section#choices [data-component=\"Time Picker/Default\"]",
+      "canonicalSpecimen": "legacy:loading-data:time-picker",
+      "fixtureId": "fixture-time-picker",
       "surface": "white",
-      "sizing": "fill",
+      "sizing": "intrinsic",
       "allowedStates": [
         "default",
         "hover",
-        "pressed",
         "focus",
-        "selected",
-        "disabled"
+        "disabled",
+        "open",
+        "error"
       ],
       "requiredVariants": [
         {
           "id": "default",
           "variant": "default",
-          "state": "default",
-          "surface": "white"
+          "state": "default"
         }
       ],
       "behaviorChecks": [
+        "open",
         "select",
-        "keyboard-activation",
-        "disabled"
+        "escape"
       ],
       "textRoles": [
-        "label:body-l",
-        "count:body-m"
+        "title:title-s",
+        "content:body-l",
+        "description:body-m",
+        "help:body-s"
       ],
       "iconSlots": [
         {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "navigation/recent",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "action/more",
+          "alias": "field/clock",
           "displaySizes": [
             16,
             20,
@@ -1464,32 +4169,137 @@
         }
       ],
       "tokenRoles": [
-        "color.sidebar-bg",
-        "color.sidebar-selected",
         "color.text",
-        "color.primary",
-        "size.list-item-height",
-        "radius.list-item",
-        "typography.body-l"
+        "color.surface",
+        "color.border",
+        "typography.body-l",
+        "spacing.component-gap",
+        "spacing.content-inset"
       ],
       "props": [
         "label",
-        "icon",
-        "selected",
-        "collapsed",
-        "count"
+        "value",
+        "disabled",
+        "state",
+        "className"
       ],
       "slots": [
-        "leading",
         "label",
-        "trailing"
+        "leading",
+        "value",
+        "trailing",
+        "help"
       ],
       "slotContracts": {},
       "layoutRules": {},
       "implementations": {
-        "html": "packages/components-html/src/sidebar.html",
-        "react": "packages/components-react/src/index.jsx#Sidebar",
-        "vue": "packages/components-vue/src/Sidebar.vue"
+        "html": "packages/components-html/src/advanced.js#time-picker",
+        "react": "packages/components-react/src/advanced.jsx#TimePicker",
+        "vue": "packages/components-vue/src/advanced.js#TimePicker"
+      },
+      "readiness": {
+        "sourceReady": true,
+        "contractReady": true,
+        "visualParity": false,
+        "behaviorParity": false,
+        "accessibilityParity": false,
+        "tokenParity": true
+      }
+    },
+    {
+      "id": "form-field",
+      "logicalName": "Form Field/Default",
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 509,
+      "legacyVisualGroup": "fields",
+      "canonicalSelector": "section#containers [data-component=\"Form Field/Default\"]",
+      "canonicalSpecimen": "legacy:fields:form-field",
+      "fixtureId": "fixture-form-field",
+      "surface": "white",
+      "sizing": "fill",
+      "allowedStates": [
+        "default",
+        "error",
+        "disabled"
+      ],
+      "requiredVariants": [
+        {
+          "id": "default-white",
+          "variant": "input",
+          "state": "default",
+          "surface": "white"
+        },
+        {
+          "id": "default-gray",
+          "variant": "input",
+          "state": "default",
+          "surface": "gray"
+        },
+        {
+          "id": "required-white",
+          "variant": "select",
+          "state": "default",
+          "surface": "white",
+          "required": true
+        },
+        {
+          "id": "required-gray",
+          "variant": "select",
+          "state": "default",
+          "surface": "gray",
+          "required": true
+        },
+        {
+          "id": "error-white",
+          "variant": "input",
+          "state": "error",
+          "surface": "white"
+        },
+        {
+          "id": "error-gray",
+          "variant": "input",
+          "state": "error",
+          "surface": "gray"
+        }
+      ],
+      "behaviorChecks": [
+        "slot-control",
+        "validation",
+        "disabled"
+      ],
+      "textRoles": [
+        "label:subtitle-s",
+        "error:body-s"
+      ],
+      "iconSlots": [],
+      "tokenRoles": [
+        "color.text",
+        "color.alert",
+        "typography.subtitle-s",
+        "typography.body-s",
+        "spacing.component-gap"
+      ],
+      "props": [
+        "label",
+        "required",
+        "error",
+        "disabled",
+        "state",
+        "surface",
+        "className"
+      ],
+      "slots": [
+        "label",
+        "control",
+        "error"
+      ],
+      "slotContracts": {},
+      "layoutRules": {},
+      "implementations": {
+        "html": "packages/components-html/src/index.js#form-field",
+        "react": "packages/components-react/src/index.jsx#FormField",
+        "vue": "packages/components-vue/src/FormField.vue"
       },
       "readiness": {
         "sourceReady": true,
@@ -1503,11 +4313,11 @@
     {
       "id": "list-card",
       "logicalName": "List Item/White Surface/Default",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 51,
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 510,
       "legacyVisualGroup": "navigation",
-      "canonicalSelector": "section#navigation [data-component=\"List Item/White Surface/Default\"]",
+      "canonicalSelector": "section#containers [data-component=\"List Item/White Surface/Default\"]",
       "canonicalSpecimen": "legacy:navigation:list-card",
       "fixtureId": "fixture-list-card",
       "surface": "white",
@@ -1625,1324 +4435,13 @@
       }
     },
     {
-      "id": "tabs",
-      "logicalName": "Tabs/Default",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 52,
-      "legacyVisualGroup": "navigation",
-      "canonicalSelector": "section#navigation [data-component=\"Tabs/Default\"]",
-      "canonicalSpecimen": "legacy:navigation:tabs",
-      "fixtureId": "fixture-tabs",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "select",
-        "arrow-keys",
-        "focus"
-      ],
-      "textRoles": [
-        "label:body-m"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/list",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "color.primary"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#tabs",
-        "react": "packages/components-react/src/index.jsx#Tabs",
-        "vue": "packages/components-vue/src/Tabs.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "breadcrumb",
-      "logicalName": "Breadcrumb/Default",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 53,
-      "legacyVisualGroup": "navigation",
-      "canonicalSelector": "section#navigation [data-component=\"Breadcrumb/Default\"]",
-      "canonicalSpecimen": "legacy:navigation:breadcrumb",
-      "fixtureId": "fixture-breadcrumb",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-down",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#breadcrumb",
-        "react": "packages/components-react/src/index.jsx#Breadcrumb",
-        "vue": "packages/components-vue/src/Breadcrumb.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "pagination",
-      "logicalName": "Pagination/Default",
-      "category": "navigation",
-      "categoryLabel": "导航",
-      "order": 54,
-      "legacyVisualGroup": "navigation",
-      "canonicalSelector": "section#navigation [data-component=\"Pagination/Default\"]",
-      "canonicalSpecimen": "legacy:navigation:pagination",
-      "fixtureId": "fixture-pagination",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "slot": "previous",
-          "alias": "navigation/back",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "slot": "next",
-          "alias": "navigation/forward",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#pagination",
-        "react": "packages/components-react/src/index.jsx#Pagination",
-        "vue": "packages/components-vue/src/Pagination.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "avatar",
-      "logicalName": "Avatar/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 60,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Avatar/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:avatar",
-      "fixtureId": "fixture-avatar",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "fallback-32",
-          "variant": "size-32",
-          "state": "default",
-          "size": 32,
-          "content": "initials"
-        },
-        {
-          "id": "fallback-40",
-          "variant": "size-40",
-          "state": "default",
-          "size": 40,
-          "content": "initials"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "description",
-        "checked",
-        "name",
-        "ariaLabel",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#avatar",
-        "react": "packages/components-react/src/index.jsx#Avatar",
-        "vue": "packages/components-vue/src/Avatar.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "badge",
-      "logicalName": "Badge/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 61,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Badge/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:badge",
-      "fixtureId": "fixture-badge",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "label:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "color.primary"
-      ],
-      "props": [
-        "title",
-        "description",
-        "supporting",
-        "leadingIcon",
-        "leading",
-        "titleSlot",
-        "descriptionSlot",
-        "supportingSlot",
-        "content",
-        "trailing",
-        "trailingText",
-        "trailingSlot",
-        "actions",
-        "selected",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#badge",
-        "react": "packages/components-react/src/index.jsx#Badge",
-        "vue": "packages/components-vue/src/Badge.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "card",
-      "logicalName": "Card/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 62,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Card/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:card",
-      "fixtureId": "fixture-card",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "supporting",
-        "content",
-        "trailing",
-        "actions"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#card",
-        "react": "packages/components-react/src/index.jsx#Card",
-        "vue": "packages/components-vue/src/Card.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "item",
-      "logicalName": "Item/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 63,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Item/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:item",
-      "fixtureId": "fixture-item",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "single-text-arrow",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "text-arrow"
-        },
-        {
-          "id": "double-icon",
-          "variant": "double-line",
-          "state": "default",
-          "lines": 2,
-          "trailing": "icon"
-        },
-        {
-          "id": "triple-radio",
-          "variant": "triple-line",
-          "state": "default",
-          "lines": 3,
-          "trailing": "radio"
-        },
-        {
-          "id": "single-checkbox",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "checkbox"
-        },
-        {
-          "id": "single-switch",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "switch"
-        },
-        {
-          "id": "single-notification-arrow",
-          "variant": "single-line",
-          "state": "default",
-          "lines": 1,
-          "trailing": "notification-arrow"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "color.divider",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#item",
-        "react": "packages/components-react/src/index.jsx#Item",
-        "vue": "packages/components-vue/src/Item.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "table",
-      "logicalName": "Table/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 64,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Table/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:table",
-      "fixtureId": "fixture-table",
-      "surface": "white",
-      "sizing": "fill",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "header:body-m",
-        "cell:body-l"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#table",
-        "react": "packages/components-react/src/index.jsx#Table",
-        "vue": "packages/components-vue/src/Table.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "data-table",
-      "logicalName": "Data Table/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 65,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Data Table/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:data-table",
-      "fixtureId": "fixture-data-table",
-      "surface": "white",
-      "sizing": "fill",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "selected"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "header:body-m",
-        "cell:body-l"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "leading",
-        "title",
-        "description",
-        "content",
-        "trailing"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#dataTable",
-        "react": "packages/components-react/src/index.jsx#DataTable",
-        "vue": "packages/components-vue/src/DataTable.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "progress",
-      "logicalName": "Progress/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 66,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Progress/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:progress",
-      "fixtureId": "fixture-progress",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "status/success",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "color.primary"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#progress",
-        "react": "packages/components-react/src/index.jsx#Progress",
-        "vue": "packages/components-vue/src/Progress.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "empty",
-      "logicalName": "Empty/Default",
-      "category": "data-display",
-      "categoryLabel": "卡片与数据",
-      "order": 67,
-      "legacyVisualGroup": "data-display",
-      "canonicalSelector": "section#data-display [data-component=\"Empty/Default\"]",
-      "canonicalSpecimen": "legacy:data-display:empty",
-      "fixtureId": "fixture-empty",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/add",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#empty",
-        "react": "packages/components-react/src/index.jsx#Empty",
-        "vue": "packages/components-vue/src/Empty.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "accordion",
-      "logicalName": "Accordion/Default",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 70,
-      "legacyVisualGroup": "disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Accordion/Default\"]",
-      "canonicalSpecimen": "legacy:disclosure:accordion",
-      "fixtureId": "fixture-accordion",
-      "surface": "white",
-      "sizing": "fill",
-      "allowedStates": [
-        "default",
-        "unfocus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "toggle",
-        "keyboard-activation",
-        "focus"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-right",
-          "displaySizes": [
-            20
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "size",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#accordion",
-        "react": "packages/components-react/src/index.jsx#Accordion",
-        "vue": "packages/components-vue/src/Accordion.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "collapsible",
-      "logicalName": "Collapsible/Default",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 71,
-      "legacyVisualGroup": "disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Collapsible/Default\"]",
-      "canonicalSpecimen": "legacy:disclosure:collapsible",
-      "fixtureId": "fixture-collapsible",
-      "surface": "white",
-      "sizing": "fill",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "toggle",
-        "keyboard-activation",
-        "focus"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-down",
-          "displaySizes": [
-            20
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#collapsible",
-        "react": "packages/components-react/src/index.jsx#Collapsible",
-        "vue": "packages/components-vue/src/Collapsible.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "navigation-menu",
-      "logicalName": "Navigation Menu/Default",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 72,
-      "legacyVisualGroup": "disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Navigation Menu/Default\"]",
-      "canonicalSpecimen": "legacy:disclosure:navigation-menu",
-      "fixtureId": "fixture-navigation-menu",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#navigation-menu",
-        "react": "packages/components-react/src/advanced.jsx#NavigationMenu",
-        "vue": "packages/components-vue/src/advanced.js#NavigationMenu"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "menubar",
-      "logicalName": "Menubar/Default",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 73,
-      "legacyVisualGroup": "disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Menubar/Default\"]",
-      "canonicalSpecimen": "legacy:disclosure:menubar",
-      "fixtureId": "fixture-menubar",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#menubar",
-        "react": "packages/components-react/src/advanced.jsx#Menubar",
-        "vue": "packages/components-vue/src/advanced.js#Menubar"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "separator",
-      "logicalName": "Separator/Default",
-      "category": "disclosure",
-      "categoryLabel": "披露与导航",
-      "order": 74,
-      "legacyVisualGroup": "disclosure",
-      "canonicalSelector": "section#disclosure [data-component=\"Separator/Default\"]",
-      "canonicalSpecimen": "legacy:disclosure:separator",
-      "fixtureId": "fixture-separator",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#separator",
-        "react": "packages/components-react/src/index.jsx#Separator",
-        "vue": "packages/components-vue/src/Separator.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
       "id": "dialog",
       "logicalName": "Dialog/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 80,
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 512,
       "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Dialog/Default\"]",
+      "canonicalSelector": "section#containers [data-component=\"Dialog/Default\"]",
       "canonicalSpecimen": "legacy:overlays:dialog",
       "fixtureId": "fixture-dialog",
       "surface": "white",
@@ -2964,6 +4463,13 @@
           "variant": "double",
           "state": "closed",
           "actionLayout": "double",
+          "intent": "default"
+        },
+        {
+          "id": "triple-default",
+          "variant": "triple",
+          "state": "closed",
+          "actionLayout": "triple",
           "intent": "default"
         }
       ],
@@ -2999,17 +4505,57 @@
         "actionLayout",
         "confirmLabel",
         "cancelLabel",
+        "thirdActionLabel",
         "onConfirm",
         "onCancel",
+        "onThirdAction",
         "onOpenChange"
       ],
       "slots": [
-        "title",
+        "titlebar",
         "description",
         "content",
         "actions"
       ],
-      "slotContracts": {},
+      "slotContracts": {
+        "titlebar": {
+          "cardinality": "1",
+          "scope": "dialog-header",
+          "acceptedContent": "Dialog title slot",
+          "variants": [
+            "title-only",
+            "title-subtitle"
+          ],
+          "pixsoComponent": ".Title",
+          "pixsoVariants": {
+            "title-only": "2 Line=OFF",
+            "title-subtitle": "2 Line=ON"
+          }
+        },
+        "actions": {
+          "cardinality": "1",
+          "scope": "dialog-actions",
+          "acceptedContent": "Button instances",
+          "buttonCount": {
+            "min": 1,
+            "max": 3
+          },
+          "layouts": [
+            "one-button",
+            "two-buttons",
+            "three-buttons"
+          ],
+          "pixsoComponent": ".Dialog_Container",
+          "pixsoVariants": {
+            "one-button": "quantity=1_normal",
+            "two-buttons": [
+              "quantity=2_normal",
+              "quantity=2_emphasize"
+            ],
+            "three-buttons": "quantity=3_emphasize_port"
+          }
+        }
+      },
       "layoutRules": {},
       "implementations": {
         "html": "packages/components-html/src/advanced.js#dialog",
@@ -3028,11 +4574,11 @@
     {
       "id": "alert-dialog",
       "logicalName": "Alert Dialog/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 81,
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 513,
       "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Alert Dialog/Default\"]",
+      "canonicalSelector": "section#containers [data-component=\"Alert Dialog/Default\"]",
       "canonicalSpecimen": "legacy:overlays:alert-dialog",
       "fixtureId": "fixture-alert-dialog",
       "surface": "white",
@@ -3120,11 +4666,11 @@
     {
       "id": "semi-modal",
       "logicalName": "Semi-modal/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 82,
+      "category": "containers",
+      "categoryLabel": "容器类",
+      "order": 514,
       "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Semi-modal/Default\"]",
+      "canonicalSelector": "section#containers [data-component=\"Semi-modal/Default\"]",
       "canonicalSpecimen": "legacy:overlays:semi-modal",
       "fixtureId": "fixture-semi-modal",
       "surface": [
@@ -3274,1197 +4820,11 @@
       }
     },
     {
-      "id": "popover",
-      "logicalName": "Popover/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 83,
-      "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Popover/Default\"]",
-      "canonicalSpecimen": "legacy:overlays:popover",
-      "fixtureId": "fixture-popover",
-      "surface": [
-        "white",
-        "gray"
-      ],
-      "sizing": "overlay",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "shadow.overlay",
-        "radius.card"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "title",
-        "description",
-        "content",
-        "actions"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#popover",
-        "react": "packages/components-react/src/advanced.jsx#Popover",
-        "vue": "packages/components-vue/src/advanced.js#Popover"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "hover-card",
-      "logicalName": "Hover Card/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 84,
-      "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Hover Card/Default\"]",
-      "canonicalSpecimen": "legacy:overlays:hover-card",
-      "fixtureId": "fixture-hover-card",
-      "surface": [
-        "white",
-        "gray"
-      ],
-      "sizing": "overlay",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "shadow.overlay",
-        "radius.card"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "title",
-        "description",
-        "content",
-        "actions"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#hover-card",
-        "react": "packages/components-react/src/advanced.jsx#HoverCard",
-        "vue": "packages/components-vue/src/advanced.js#HoverCard"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "context-menu",
-      "logicalName": "Context Menu/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 85,
-      "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Context Menu/Default\"]",
-      "canonicalSpecimen": "legacy:overlays:context-menu",
-      "fixtureId": "fixture-context-menu",
-      "surface": [
-        "white",
-        "gray"
-      ],
-      "sizing": "overlay",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "shadow.overlay",
-        "radius.card"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#context-menu",
-        "react": "packages/components-react/src/advanced.jsx#ContextMenu",
-        "vue": "packages/components-vue/src/advanced.js#ContextMenu"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "dropdown-menu",
-      "logicalName": "Dropdown Menu/Default",
-      "category": "overlays",
-      "categoryLabel": "浮层与命令",
-      "order": 86,
-      "legacyVisualGroup": "overlays",
-      "canonicalSelector": "section#overlays [data-component=\"Dropdown Menu/Default\"]",
-      "canonicalSpecimen": "legacy:overlays:dropdown-menu",
-      "fixtureId": "fixture-dropdown-menu",
-      "surface": [
-        "white",
-        "gray"
-      ],
-      "sizing": "overlay",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "open",
-        "select",
-        "escape",
-        "arrow-keys"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "shadow.overlay",
-        "radius.card"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#dropdown-menu",
-        "react": "packages/components-react/src/advanced.jsx#DropdownMenu",
-        "vue": "packages/components-vue/src/advanced.js#DropdownMenu"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "label",
-      "logicalName": "Label/Default",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 90,
-      "legacyVisualGroup": "form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Label/Default\"]",
-      "canonicalSpecimen": "legacy:form-plus:label",
-      "fixtureId": "fixture-label",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "field/search",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-m",
-        "spacing.component-gap",
-        "spacing.padding-tag-x",
-        "size.tag-height"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#label",
-        "react": "packages/components-react/src/index.jsx#Label",
-        "vue": "packages/components-vue/src/Label.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "combobox",
-      "logicalName": "Combobox/Default",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 91,
-      "legacyVisualGroup": "form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Combobox/Default\"]",
-      "canonicalSpecimen": "legacy:form-plus:combobox",
-      "fixtureId": "fixture-combobox",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open",
-        "error"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "open",
-        "select",
-        "escape",
-        "arrow-keys"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-down",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#combobox",
-        "react": "packages/components-react/src/index.jsx#Combobox",
-        "vue": "packages/components-vue/src/Combobox.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "native-select",
-      "logicalName": "Native Select/Default",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 92,
-      "legacyVisualGroup": "form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Native Select/Default\"]",
-      "canonicalSpecimen": "legacy:form-plus:native-select",
-      "fixtureId": "fixture-native-select",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-down",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#nativeSelect",
-        "react": "packages/components-react/src/index.jsx#NativeSelect",
-        "vue": "packages/components-vue/src/NativeSelect.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "slider",
-      "logicalName": "Slider/Default",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 93,
-      "legacyVisualGroup": "form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Slider/Default\"]",
-      "canonicalSpecimen": "legacy:form-plus:slider",
-      "fixtureId": "fixture-slider",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#slider",
-        "react": "packages/components-react/src/advanced.jsx#Slider",
-        "vue": "packages/components-vue/src/advanced.js#Slider"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "input-otp",
-      "logicalName": "Input OTP/Default",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 94,
-      "legacyVisualGroup": "form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Input OTP/Default\"]",
-      "canonicalSpecimen": "legacy:form-plus:input-otp",
-      "fixtureId": "fixture-input-otp",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/check",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#input-otp",
-        "react": "packages/components-react/src/advanced.jsx#InputOtp",
-        "vue": "packages/components-vue/src/advanced.js#InputOtp"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "kbd",
-      "logicalName": "Kbd/Default",
-      "category": "form-plus",
-      "categoryLabel": "复合表单",
-      "order": 95,
-      "legacyVisualGroup": "form-plus",
-      "canonicalSelector": "section#form-plus [data-component=\"Kbd/Default\"]",
-      "canonicalSpecimen": "legacy:form-plus:kbd",
-      "fixtureId": "fixture-kbd",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "action/more",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#kbd",
-        "react": "packages/components-react/src/advanced.jsx#Kbd",
-        "vue": "packages/components-vue/src/advanced.js#Kbd"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "chart",
-      "logicalName": "Chart/Default",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 102,
-      "legacyVisualGroup": "loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Chart/Default\"]",
-      "canonicalSpecimen": "legacy:loading-data:chart",
-      "fixtureId": "fixture-chart",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/grid",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#chart",
-        "react": "packages/components-react/src/advanced.jsx#Chart",
-        "vue": "packages/components-vue/src/advanced.js#Chart"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "calendar",
-      "logicalName": "Calendar/Default",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 103,
-      "legacyVisualGroup": "loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Calendar/Default\"]",
-      "canonicalSpecimen": "legacy:loading-data:calendar",
-      "fixtureId": "fixture-calendar",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "select",
-        "arrow-keys"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "field/calendar",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#calendar",
-        "react": "packages/components-react/src/advanced.jsx#Calendar",
-        "vue": "packages/components-vue/src/advanced.js#Calendar"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "date-picker",
-      "logicalName": "Date Picker/Default",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 104,
-      "legacyVisualGroup": "loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Date Picker/Default\"]",
-      "canonicalSpecimen": "legacy:loading-data:date-picker",
-      "fixtureId": "fixture-date-picker",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open",
-        "error"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "open",
-        "select",
-        "escape"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "field/calendar",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#date-picker",
-        "react": "packages/components-react/src/advanced.jsx#DatePicker",
-        "vue": "packages/components-vue/src/advanced.js#DatePicker"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "time-picker",
-      "logicalName": "Time Picker/Default",
-      "category": "loading-data",
-      "categoryLabel": "加载与日期",
-      "order": 105,
-      "legacyVisualGroup": "loading-data",
-      "canonicalSelector": "section#loading-data [data-component=\"Time Picker/Default\"]",
-      "canonicalSpecimen": "legacy:loading-data:time-picker",
-      "fixtureId": "fixture-time-picker",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "open",
-        "error"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "open",
-        "select",
-        "escape"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "field/clock",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap",
-        "spacing.content-inset"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "leading",
-        "value",
-        "trailing",
-        "help"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#time-picker",
-        "react": "packages/components-react/src/advanced.jsx#TimePicker",
-        "vue": "packages/components-vue/src/advanced.js#TimePicker"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
       "id": "attachment",
       "logicalName": "Attachment/Default",
       "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 110,
+      "categoryLabel": "特殊组件",
+      "order": 610,
       "legacyVisualGroup": "specialized",
       "canonicalSelector": "section#specialized [data-component=\"Attachment/Default\"]",
       "canonicalSpecimen": "legacy:specialized:attachment",
@@ -4577,641 +4937,6 @@
         "html": "packages/components-html/src/advanced.js#attachment",
         "react": "packages/components-react/src/advanced.jsx#Attachment",
         "vue": "packages/components-vue/src/advanced.js#Attachment"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "carousel",
-      "logicalName": "Carousel/Default",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 111,
-      "legacyVisualGroup": "specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Carousel/Default\"]",
-      "canonicalSpecimen": "legacy:specialized:carousel",
-      "fixtureId": "fixture-carousel",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "navigation/chevron-down",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/advanced.js#carousel",
-        "react": "packages/components-react/src/advanced.jsx#Carousel",
-        "vue": "packages/components-vue/src/advanced.js#Carousel"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "aspect-ratio",
-      "logicalName": "Aspect Ratio/Default",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 112,
-      "legacyVisualGroup": "specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Aspect Ratio/Default\"]",
-      "canonicalSpecimen": "legacy:specialized:aspect-ratio",
-      "fixtureId": "fixture-aspect-ratio",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/generated/aspect-ratio.html",
-        "react": "packages/components-react/src/generated/AspectRatio.jsx#AspectRatio",
-        "vue": "packages/components-vue/src/generated/AspectRatio.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "bubble",
-      "logicalName": "Bubble/Default",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 113,
-      "legacyVisualGroup": "specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Bubble/Default\"]",
-      "canonicalSpecimen": "legacy:specialized:bubble",
-      "fixtureId": "fixture-bubble",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/generated/bubble.html",
-        "react": "packages/components-react/src/generated/Bubble.jsx#Bubble",
-        "vue": "packages/components-vue/src/generated/Bubble.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "typography",
-      "logicalName": "Typography/Default",
-      "category": "specialized",
-      "categoryLabel": "专用内容",
-      "order": 114,
-      "legacyVisualGroup": "specialized",
-      "canonicalSelector": "section#specialized [data-component=\"Typography/Default\"]",
-      "canonicalSpecimen": "legacy:specialized:typography",
-      "fixtureId": "fixture-typography",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.component-gap"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/generated/typography.html",
-        "react": "packages/components-react/src/generated/Typography.jsx#Typography",
-        "vue": "packages/components-vue/src/generated/Typography.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "alert",
-      "logicalName": "Alert/Default",
-      "category": "feedback",
-      "categoryLabel": "提示与反馈",
-      "order": 120,
-      "legacyVisualGroup": "feedback",
-      "canonicalSelector": "section#feedback [data-component=\"Alert/Default\"]",
-      "canonicalSpecimen": "legacy:feedback:alert",
-      "fixtureId": "fixture-alert",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "info",
-          "variant": "info",
-          "state": "default",
-          "label": "Info / 信息",
-          "message": "系统将在今晚自动完成更新。",
-          "action": "查看详情"
-        },
-        {
-          "id": "success",
-          "variant": "success",
-          "state": "default",
-          "label": "Success / 成功",
-          "message": "所有修改已经同步到云端。",
-          "action": "查看详情"
-        },
-        {
-          "id": "warning",
-          "variant": "warning",
-          "state": "default",
-          "label": "Warning / 警告",
-          "message": "连接不稳定，部分内容可能暂时无法加载。",
-          "action": "重新连接"
-        },
-        {
-          "id": "danger",
-          "variant": "danger",
-          "state": "default",
-          "label": "Danger / 危险",
-          "message": "存储空间不足，请清理空间后重试。",
-          "action": "清理空间"
-        },
-        {
-          "id": "neutral",
-          "variant": "neutral",
-          "state": "default",
-          "label": "Neutral / 中性",
-          "message": "当前为只读模式，部分编辑操作暂不可用。",
-          "action": "知道了"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "content:subtitle-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "status/info",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "status/success",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "status/warning",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "status/danger",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "status/neutral",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "action/close",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.subtitle-s",
-        "typography.body-m",
-        "spacing.component-gap",
-        "spacing.padding-alert-left",
-        "spacing.padding-alert-right",
-        "spacing.padding-button-sm-x",
-        "size.button-sm-height",
-        "size.icon-md",
-        "size.icon-sm",
-        "color.icon",
-        "color.primary"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#alert",
-        "react": "packages/components-react/src/index.jsx#Alert",
-        "vue": "packages/components-vue/src/Alert.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "tooltip",
-      "logicalName": "Tooltip/Default",
-      "category": "feedback",
-      "categoryLabel": "提示与反馈",
-      "order": 121,
-      "legacyVisualGroup": "feedback",
-      "canonicalSelector": "section#feedback [data-component=\"Tooltip/Default\"]",
-      "canonicalSpecimen": "legacy:feedback:tooltip",
-      "fixtureId": "fixture-tooltip",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "content:body-l"
-      ],
-      "iconSlots": [
-        {
-          "alias": "status/info",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-l",
-        "spacing.padding-tooltip",
-        "shadow.1",
-        "radius.tooltip"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#tooltip",
-        "react": "packages/components-react/src/index.jsx#Tooltip",
-        "vue": "packages/components-vue/src/Tooltip.vue"
-      },
-      "readiness": {
-        "sourceReady": true,
-        "contractReady": true,
-        "visualParity": false,
-        "behaviorParity": false,
-        "accessibilityParity": false,
-        "tokenParity": true
-      }
-    },
-    {
-      "id": "toast",
-      "logicalName": "Toast/Default",
-      "category": "feedback",
-      "categoryLabel": "提示与反馈",
-      "order": 122,
-      "legacyVisualGroup": "feedback",
-      "canonicalSelector": "section#feedback [data-component=\"Toast/Default\"]",
-      "canonicalSpecimen": "legacy:feedback:toast",
-      "fixtureId": "fixture-toast",
-      "surface": "white",
-      "sizing": "intrinsic",
-      "allowedStates": [
-        "default",
-        "hover",
-        "focus",
-        "disabled",
-        "loading"
-      ],
-      "requiredVariants": [
-        {
-          "id": "default",
-          "variant": "default",
-          "state": "default"
-        }
-      ],
-      "behaviorChecks": [
-        "focus",
-        "disabled"
-      ],
-      "textRoles": [
-        "title:title-s",
-        "content:body-l",
-        "description:body-m",
-        "help:body-s"
-      ],
-      "iconSlots": [
-        {
-          "alias": "status/success",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        },
-        {
-          "alias": "action/close",
-          "displaySizes": [
-            16,
-            20,
-            24
-          ],
-          "kind": "regular"
-        }
-      ],
-      "tokenRoles": [
-        "color.text",
-        "color.surface",
-        "color.border",
-        "typography.body-m",
-        "spacing.component-gap",
-        "color.primary",
-        "shadow.1",
-        "radius.card"
-      ],
-      "props": [
-        "label",
-        "value",
-        "disabled",
-        "state",
-        "className"
-      ],
-      "slots": [
-        "label",
-        "content",
-        "description"
-      ],
-      "slotContracts": {},
-      "layoutRules": {},
-      "implementations": {
-        "html": "packages/components-html/src/index.js#toast",
-        "react": "packages/components-react/src/index.jsx#Toast",
-        "vue": "packages/components-vue/src/Toast.vue"
       },
       "readiness": {
         "sourceReady": true,

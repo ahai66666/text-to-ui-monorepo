@@ -608,7 +608,7 @@ Container tokens apply on all sides. Tokens ending in `-x` are horizontal paddin
 | `--padding-textarea-y` | `--space-3` | 8px | Textarea 垂直内边距 |
 | `--padding-search-x` | `--space-4` | 12px | 搜索框水平内边距 |
 | `--padding-menu-item-x` | `--space-4` | 12px | 菜单项水平内边距 |
-| `--padding-button-x` | `--space-5` | 16px | 40px Button 与图标 + 文本按钮水平内边距 |
+| `--padding-button-x` | `--space-5` | 16px | 标准 40px Button 水平内边距；图标 + 文本按钮使用 `--padding-button-sm-x` |
 | `--padding-card` | `--space-6` | 24px | 卡片容器 |
 | `--padding-table` | `--space-6` | 24px | Table 外层容器的四边内边距 |
 | `--padding-dialog` | `--space-6` | 24px | 弹窗容器 |
@@ -1130,7 +1130,6 @@ Disabled:
 .icon-btn
 .icon-btn-secondary
 .icon-btn-ghost
-.selection-dropdown-trigger
 .split-control
 .split-main
 .split-main-icon
@@ -1160,7 +1159,7 @@ Variant colors:
 Icon + Text Button is a separate 40px-only component:
 
 - Variants: Primary, Secondary, and Ghost. It has no 28px size and no Danger variant.
-- Horizontal padding uses `--padding-button-x` (16px), the same as the standard 40px Button.
+- Horizontal padding uses `--padding-button-sm-x` (8px), matching the current Pixso `icon-text` master.
 - Icon and text use `--gap-button-icon-label` (`--space-3`, 8px). Apply this token to every Button and Split Button icon + text pair; do not use literal gaps.
 - Primary and Secondary reuse the matching standard Button colors.
 - Ghost uses `--color-icon-text-button-ghost-content` (`neutral-dark-90`) for both text and icon.
@@ -1174,13 +1173,7 @@ Icon Button:
 - Secondary remains available only as an explicitly requested `.icon-btn-secondary` variant. Never give an unspecified Icon Button a persistent fill. `.icon-btn-ghost` is a compatibility alias for the default Ghost rendering, not a separate required declaration.
 - Both variants support Disabled with whole-control opacity at 40% through `--state-disabled-opacity`.
 
-Checkbox, Radio, and Switch are compact selection controls. Their visible labels use `body-m` (14px / 20px / Regular 400) with primary text color; label-to-control spacing uses `--gap-choice-label` (8px). This compact-label rule does not apply to the 40px Selection Dropdown, Select, or Combobox field controls.
-
-Selection Dropdown is a separate 40px Secondary selection control:
-
-- Content is Text + Chevron only. Use it for list, toolbar, or inline value selection; the visible text reflects the current selection.
-- Height uses `--height-dropdown-control` (40px), radius uses `--radius-dropdown-button` (8px), horizontal padding uses `--padding-button-x` (16px), and typography uses `body-l`.
-- Background, content color, Hover, Active, Focus, and Disabled behavior reuse the Secondary Button rules.
+Checkbox, Radio, and Switch are compact selection controls. Their visible labels use `body-m` (14px / 20px / Regular 400) with primary text color; label-to-control spacing uses `--gap-choice-label` (8px). This compact-label rule does not apply to the 40px Select or Combobox field controls.
 
 Split Dropdown Button is a 40px Ghost action control with two independent hit targets:
 
@@ -1194,7 +1187,7 @@ Split Dropdown Button is a 40px Ghost action control with two independent hit ta
 - Leading icons use `--icon-size-md` (20px). The disclosure chevron uses `--icon-size-sm` (16px).
 - Disabled applies 40% opacity to the complete split control through `--state-disabled-opacity` and prevents both hit targets from activating.
 
-Dropdown menus shared by both families:
+Split Dropdown action menus:
 
 - Menu items use the complete `body-l` style (16px / 22px / Regular 400).
 - Split Dropdown action-menu items use Icon + Text. Icons use `--icon-size-md` (20px), text uses `body-l`, and their gap uses `--gap-menu-item-content` (`--space-3`, 8px). Use semantic HarmonyOS Symbol aliases; do not substitute character glyphs.
@@ -1243,7 +1236,7 @@ Form Field / 表单字段 stacks its title above its control. The title uses `bo
 
 Whenever white/default and gray/subtle surface examples are presented together, keep their component matrix semantically identical: the same Input, Search, Textarea, form Select, Error, and Disabled examples in the same order. Only the surface-specific fill and hover treatment may differ. Both contexts must include an operable form Select, visible Error examples with error text, and Disabled Input and Select examples. At supported desktop widths, present the two surface contexts as equal left/right columns; do not collapse them merely because an embedded framework preview is narrower than the page canvas. A one-column fallback is reserved for genuinely narrow widths below the two-column minimum.
 
-Form Select is distinct from Selection Dropdown Button. It presents a field value, uses `role="combobox"`, controls a `role="listbox"`, and exposes `aria-expanded`, `aria-controls`, and `aria-activedescendant` when open. Pointer click, `Enter`, or `Space` opens it; Arrow keys, Home, and End move the active option; `Enter` or `Space` commits the active option; `Escape` closes without changing the value and restores focus to the trigger. A pointer or focus move outside the Select closes the listbox without committing a draft value.
+Form Select presents a field value, uses `role="combobox"`, controls a `role="listbox"`, and exposes `aria-expanded`, `aria-controls`, and `aria-activedescendant` when open. Pointer click, `Enter`, or `Space` opens it; Arrow keys, Home, and End move the active option; `Enter` or `Space` commits the active option; `Escape` closes without changing the value and restores focus to the trigger. A pointer or focus move outside the Select closes the listbox without committing a draft value.
 
 ## 5.3 Cards
 

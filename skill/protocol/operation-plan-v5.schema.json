@@ -14,10 +14,11 @@
       "properties": {
         "agentContract": {
           "type": "object",
-          "required": ["protocolVersion", "planSchemaVersion", "minimumKernelVersion", "requiredCapabilities", "idempotencyKey"],
+          "required": ["protocolVersion", "planSchemaVersion", "executorProtocol", "minimumKernelVersion", "requiredCapabilities", "idempotencyKey"],
           "properties": {
             "protocolVersion": { "const": 4 },
             "planSchemaVersion": { "const": 5 },
+            "executorProtocol": { "const": 1 },
             "minimumKernelVersion": { "type": "string", "minLength": 1 },
             "requiredCapabilities": {
               "type": "array",

@@ -14,6 +14,16 @@ const runsRoot = path.join(temporary, "runs");
 fs.mkdirSync(htmlRoot, { recursive: true });
 fs.writeFileSync(path.join(htmlRoot, "index.html"), "<!doctype html><main>Fast import fixture</main>\n");
 
+function writePngHeader(file, width, height) {
+  const png = Buffer.alloc(24);
+  Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]).copy(png, 0);
+  png.writeUInt32BE(13, 8);
+  png.write("IHDR", 12, "ascii");
+  png.writeUInt32BE(width, 16);
+  png.writeUInt32BE(height, 20);
+  fs.writeFileSync(file, png);
+}
+
 const create = spawnSync(process.execPath, [
   path.join(scripts, "create-pixso-import-run.mjs"),
   "--html-root", htmlRoot,
@@ -40,6 +50,8 @@ assert.equal(manifest.executionPolicy.executorRouting, "plugin-required-mcp-expl
 assert.equal(manifest.executionPolicy.outputPolicy, "single-managed-artboard");
 assert.equal(manifest.executionPolicy.visualBaseline, "disabled-use-current-browser-screenshot");
 assert.equal(manifest.executionPolicy.pixsoWrite, "single-transaction");
+assert.equal(manifest.executionPolicy.captureBundle, "required");
+assert.ok(manifest.artifacts.captureBundle);
 assert.equal(manifest.timing.startedAt, null);
 assert.equal(manifest.telemetry.codeToDesignCalls, 0);
 assert.equal("visualBaselinePackage" in manifest.artifacts, false);
@@ -63,10 +75,29 @@ const update = (stage, status, extra = []) => spawnSync(process.execPath, [
   ...extra
 ], { encoding: "utf8" });
 assert.equal(update("capture", "start").status, 0);
+const captureVisualManifest = {
+  schemaVersion: 4,
+  kind: "text-to-ui-html-visual-manifest",
+  source: "browser-computed-visual-manifest",
+  runId: manifest.runId,
+  htmlSourceFingerprint: manifest.source.htmlSourceFingerprint,
+  stateId: manifest.viewport.stateId,
+  viewport: { width: manifest.viewport.width, height: manifest.viewport.height, devicePixelRatio: 1, zoom: 1 },
+  nodeCount: 1,
+  nodes: [{ selector: "#app", rect: { width: manifest.viewport.width, height: manifest.viewport.height }, style: { display: "grid" } }],
+};
+fs.writeFileSync(manifest.artifacts.visualManifest, `${JSON.stringify(captureVisualManifest, null, 2)}\n`);
+writePngHeader(manifest.artifacts.htmlScreenshot, manifest.viewport.width, manifest.viewport.height);
+const captureCommit = spawnSync(process.execPath, [
+  path.join(scripts, "pixso-capture-bundle.mjs"),
+  "--run-manifest", created.manifest,
+], { encoding: "utf8" });
+assert.equal(captureCommit.status, 0, captureCommit.stderr);
 assert.equal(update("capture", "passed", ["--metrics", JSON.stringify({ actualWorkMs: 5 })]).status, 0);
 const updatedManifest = JSON.parse(fs.readFileSync(created.manifest, "utf8"));
 assert.ok(updatedManifest.timing.startedAt, "active timing must begin with the first stage, not run-directory creation");
 assert.equal(updatedManifest.timing.stages.capture.workElapsedMs, 5);
+assert.equal(updatedManifest.gates.captureBundle, "passed");
 const baselineInNormalMode = update("baseline", "start");
 assert.notEqual(baselineInNormalMode.status, 0, "normal mode must reject code-to-design baseline work");
 assert.match(baselineInNormalMode.stderr, /Baseline is disabled in normal mode/);
@@ -116,6 +147,9 @@ try {
   assert.equal(health.minimumPluginRuntimeVersion, "4.16");
   assert.equal(health.preferredKernelVersion, "5.0.0");
   assert.equal(health.officialAdapterVersion, 1);
+  assert.equal(health.executionModel.mode, "installed-permanent-executor");
+  assert.equal(health.executionModel.executorProtocol, 1);
+  assert.equal(health.executionModel.codeDelivery, "none");
   const statusBefore = spawnSync(process.execPath, [path.join(scripts, "pixso-plugin-bridge.mjs"), "status"], {
     env: { ...process.env, TEXT_TO_UI_PIXSO_BRIDGE_PORT: String(port), TEXT_TO_UI_PIXSO_BRIDGE_STATE_DIR: bridgeStateDirectory }, encoding: "utf8"
   });
@@ -155,7 +189,10 @@ try {
   const pluginClaim = await (await fetch(`http://127.0.0.1:${port}/claim?after=&session=ready-plugin&runtime=5.0.0&protocol=4`)).json();
   assert.equal(pluginClaim.blocked, undefined);
   assert.equal(pluginClaim.changed, true, "a current plugin must receive a plugin-routed publication");
+  assert.ok(pluginClaim.claimToken, "claim must reserve a lease instead of starting execution");
   assert.equal(pluginClaim.plan.kind, "pixso-component-library-plan");
+  const claimedJob = await (await fetch(`http://127.0.0.1:${port}/job`)).json();
+  assert.equal(claimedJob.job.status, "claimed");
   const oldMinimumPlanPath = path.join(temporary, "old-minimum-plan.json");
   fs.writeFileSync(oldMinimumPlanPath, `${JSON.stringify({
     kind: "pixso-component-library-plan",

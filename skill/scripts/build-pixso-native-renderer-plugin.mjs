@@ -11,8 +11,12 @@ if (!template.includes("__TUI_PIXSO_RUNTIME__")) throw new Error("Plugin templat
 const output = template.replace("__TUI_PIXSO_RUNTIME__", runtime);
 const target = path.join(scripts, "pixso-native-renderer-plugin/main.js");
 fs.writeFileSync(target, output);
+const runtimeTarget = path.join(scripts, "pixso-native-renderer-plugin/pixso-native-execution-runtime.js");
+fs.copyFileSync(path.join(scripts, "pixso-native-execution-runtime.js"), runtimeTarget);
 const bridgeTarget = path.join(scripts, "pixso-native-renderer-plugin/pixso-plugin-bridge.mjs");
 fs.copyFileSync(path.join(scripts, "pixso-plugin-bridge.mjs"), bridgeTarget);
+const captureBundleTarget = path.join(scripts, "pixso-native-renderer-plugin/pixso-capture-bundle.mjs");
+fs.copyFileSync(path.join(scripts, "pixso-capture-bundle.mjs"), captureBundleTarget);
 const officialAdapterTarget = path.join(scripts, "pixso-native-renderer-plugin/pixso-official-adapter.mjs");
 fs.copyFileSync(path.join(scripts, "pixso-official-adapter.mjs"), officialAdapterTarget);
 const componentMapTarget = path.join(scripts, "pixso-native-renderer-plugin/pixso-native-component-map.json");
@@ -20,4 +24,4 @@ fs.copyFileSync(path.join(scripts, "../assets/design-system/pixso-native-compone
 for (const protocolFile of ["permanent-agent-capabilities.json", "compatibility-matrix.json"]) {
   fs.copyFileSync(path.join(scripts, "../protocol", protocolFile), path.join(scripts, "pixso-native-renderer-plugin", protocolFile));
 }
-console.log(JSON.stringify({ ok: true, target, bridgeTarget, officialAdapterTarget, runtimeBytes: Buffer.byteLength(runtime), outputBytes: Buffer.byteLength(output) }, null, 2));
+console.log(JSON.stringify({ ok: true, target, runtimeTarget, bridgeTarget, captureBundleTarget, officialAdapterTarget, runtimeBytes: Buffer.byteLength(runtime), outputBytes: Buffer.byteLength(output) }, null, 2));
