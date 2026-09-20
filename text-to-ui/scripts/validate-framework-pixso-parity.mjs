@@ -65,7 +65,9 @@ for (const mapping of profile.componentMappings) {
     failures.push(`${mapping.htmlLogicalName}: runtime identity must equal registered target ${mapping.pixsoTarget}`);
   }
   validatePixsoVariant(`${mapping.htmlLogicalName}.variant`, target, runtime.variant ?? {});
+  const ignoredFrameworkProps = new Set(runtime.ignoredFrameworkProps ?? []);
   for (const prop of contract?.props ?? []) {
+    if (ignoredFrameworkProps.has(prop)) continue;
     if (!(runtime.supportedProps ?? []).includes(prop)) {
       failures.push(`${mapping.htmlLogicalName}: mapped runtime drops framework prop ${prop}`);
     }

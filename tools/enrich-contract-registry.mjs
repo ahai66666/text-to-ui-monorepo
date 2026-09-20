@@ -201,7 +201,7 @@ const explicitStates = {
 // unknown alias fails during generation instead of silently turning into an
 // unrelated glyph.
 const iconAliases = {
-  titlebar: ["action/minimize", "action/maximize", "action/close"],
+  titlebar: ["window/minimize", "window/maximize", "window/close"],
   button: ["action/add", "action/download", "action/settings", "action/close", "navigation/chevron-down", "action/refresh", "action/more"],
   input: [],
   "form-field": [],
@@ -364,6 +364,21 @@ const coreSpecimens = {
 };
 
 for (const component of registry.components) {
+  if (component.id === "titlebar") {
+    component.props = [...new Set([...(component.props ?? []), "segmentRole", "slots", "showWindowControls", "logoSrc", "logoAlt"])];
+    component.segmentContract = {
+      owner: "pattern-title-layer", orderedBy: "titleLayer.segments", widthOwner: "pattern-renderer",
+      roles: ["primary-navigation", "secondary-list", "main-content", "main-detail"],
+      middleSegments: "alignment-only", windowControls: "final-segment-only",
+      slotAPI: "declarative-content; no arbitrary HTML"
+    };
+    component.slotContracts = { ...component.slotContracts,
+      leading: { cardinality: "0..1", valueType: "image-object", activeRoles: ["global", "primary-navigation"], fields: ["src", "alt"] },
+      label: { cardinality: "0..1", valueType: "text", activeRoles: ["global", "primary-navigation"] },
+      actions: { cardinality: "0..1", valueType: "boolean", activeRoles: ["global", "final-pane"], implementation: "component-owned-window-controls" }
+    };
+  }
+  if (component.id === "button") component.props = [...new Set([...(component.props ?? []), "icon"])];
   const section = sectionFor[component.id] ?? "specialized";
   const specimens = coreSpecimens[component.id] ?? [{ id: "default", variant: component.variants?.[0] ?? "default", state: "default" }];
   // A source adapter is not evidence of visual/behavior parity. Start every
@@ -514,15 +529,17 @@ for (const component of registry.components) {
     component.structuralAxes = {
       size: ["small", "medium", "large", "xlarge"],
       layout: ["standalone", "two-column", "three-column"],
-      paneRole: ["global", "primary-navigation", "secondary-pane", "final-pane"]
+      paneRole: ["global", "primary-navigation", "secondary-pane", "final-pane"],
+      segmentRole: ["global", "primary-navigation", "secondary-list", "main-content", "main-detail", "secondary-pane", "final-pane"]
     };
-    component.props = ["label", "paneTitle", "size", "layout", "paneRole", "disabled", "state", "mainDetailActions", "onMainDetailAction", "onAction", "className"];
+    component.props = ["label", "paneTitle", "size", "layout", "paneRole", "segmentRole", "slots", "showWindowControls", "logoSrc", "logoAlt", "disabled", "state", "mainDetailActions", "onMainDetailAction", "onAction", "className"];
     component.slots = ["leading", "label", "main-content-title", "main-detail-actions", "actions"];
     component.slotContracts = {
       ...component.slotContracts,
       "main-content-title": {
         cardinality: "0..1",
         scope: "main-content-pane-global",
+        valueType: "text",
         activeWhen: { layout: "two-column", paneRole: "final-pane" },
         defaultPlacement: "final-pane-leading-slot",
         leadingInsetToken: "layout/main-title-leading-padding"
@@ -531,6 +548,7 @@ for (const component of registry.components) {
         ...component.slotContracts?.["main-detail-actions"],
         cardinality: "0..n",
         scope: "main-detail-pane-global",
+        valueType: "action-array",
         activeWhen: { layout: "three-column", paneRole: "final-pane" },
         defaultPlacement: "final-pane-leading-slot",
         layout: "compact-horizontal-group",

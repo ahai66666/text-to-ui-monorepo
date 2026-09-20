@@ -128,11 +128,15 @@
 .tui-icon-button:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 1px; }
 .tui-icon-button[hidden] { display: none; }
 
-.tui-sidebar { display: grid; gap: var(--gap-list-item); align-content: start; padding: var(--layout-sidebar-padding-y) var(--layout-sidebar-padding-x); color: var(--color-text); background: var(--color-sidebar-bg); }
+.tui-sidebar { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-0); color: var(--color-text); background: transparent; }
+.tui-sidebar-groups { display: grid; gap: var(--space-1); align-content: start; min-width: 0; padding: var(--space-0); color: var(--color-text); background: transparent; }
+.tui-sidebar-group { min-width: 0; }
+.tui-sidebar-group__content { min-width: 0; }
 .tui-sidebar-item { width: 100%; min-height: var(--height-list-item); padding: 0 var(--space-4); display: flex; align-items: center; gap: var(--gap-menu-item-content); border: 0; border-radius: var(--radius-sidebar-nav-item); color: var(--color-text-muted); background: transparent; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); font-weight: var(--type-body-l-weight); }
 .tui-sidebar-item:hover:not(:disabled), .tui-sidebar-item[data-state="hover"] { color: var(--color-text-muted); background: var(--color-sidebar-accent); }
 .tui-sidebar-item:active:not(:disabled), .tui-sidebar-item[data-state="pressed"] { color: var(--color-text-muted); background: var(--state-layer-pressed); }
 .tui-sidebar-item[data-state="selected"] { color: var(--color-sidebar-selected-text); background: var(--color-sidebar-selected); }
+.tui-sidebar-item[data-state="selected"] [data-slot="label"] { font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
 .tui-sidebar-item[data-state="selected"]:hover:not(:disabled) { background: linear-gradient(var(--color-neutral-dark-05), var(--color-neutral-dark-05)), var(--color-brand-10); }
 .tui-sidebar-item:disabled, .tui-sidebar-item[data-state="disabled"] { color: var(--color-text-subtle); cursor: not-allowed; }
 .tui-sidebar-item [data-slot="leading"] { width: var(--icon-size-md); height: var(--icon-size-md); display: inline-grid; place-items: center; flex: 0 0 var(--icon-size-md); }
@@ -175,7 +179,7 @@
    than generated Card/Menu wrappers, but they intentionally reuse the same
    Token values as the legacy Skill baseline. */
 .tui-titlebar { width: 100%; height: var(--height-titlebar-lg); display: flex; align-items: center; gap: var(--gap-titlebar-brand); padding-left: var(--padding-titlebar-leading); padding-right: var(--padding-titlebar-trailing-l); border-bottom: 0; color: var(--color-text); background: var(--color-titlebar-normal-bg); }
-.tui-titlebar[data-size="small"] { height: var(--height-titlebar-sm); padding-right: var(--padding-titlebar-trailing-s); }
+.tui-titlebar[data-size="small"] { height: var(--height-titlebar-sm); padding-right: var(--padding-titlebar-trailing-l); }
 .tui-titlebar[data-size="medium"] { height: var(--height-titlebar-md); padding-right: var(--padding-titlebar-trailing-m); }
 .tui-titlebar[data-size="large"] { height: var(--height-titlebar-lg); padding-right: var(--padding-titlebar-trailing-l); }
 .tui-titlebar[data-size="xlarge"] { height: var(--height-titlebar-xl); padding-right: var(--padding-titlebar-trailing-xl); }
@@ -184,6 +188,12 @@
 .tui-titlebar__brand > .tui-icon { width: var(--icon-size-lg); height: var(--icon-size-lg); flex: 0 0 var(--icon-size-lg); }
 .tui-titlebar__brand [data-slot="label"] { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
 .tui-titlebar__pane-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--type-title-s-size); line-height: var(--type-title-s-leading); font-weight: var(--type-title-s-weight); }
+.tui-titlebar__pane-leading { min-width: var(--size-icon-button); height: 40px; display: inline-flex; align-items: center; flex: 0 0 auto; }
+.tui-titlebar__pane-leading-action { width: 40px; height: 40px; color: var(--color-icon); background: transparent; }
+.tui-titlebar__pane-leading-action[data-mode="icon-text"] { width: auto; min-width: 40px; padding-inline: var(--space-3); gap: var(--gap-button-icon-label); }
+.tui-titlebar__pane-leading-action [data-slot="icon"] { width: var(--icon-size-lg); height: var(--icon-size-lg); flex-basis: var(--icon-size-lg); }
+.tui-titlebar__pane-leading-action svg { width: var(--icon-size-lg); height: var(--icon-size-lg); }
+.tui-titlebar[data-layout="two-column"][data-pane-role="final-pane"]:has(.tui-titlebar__pane-leading) { column-gap: var(--space-2); }
 .tui-titlebar[data-layout="two-column"][data-pane-role="final-pane"] { border-bottom: 0; padding-left: var(--layout-main-title-leading-padding); }
 .tui-titlebar[data-layout="three-column"][data-pane-role="final-pane"] { border-bottom: var(--layout-navigation-divider-width) solid var(--color-border); padding-left: var(--layout-main-detail-action-leading-padding); }
 .tui-titlebar__pane-actions { position: relative; min-width: var(--size-icon-button); width: 0; height: 40px; display: inline-flex; align-items: center; gap: var(--gap-button-group); flex: 1 1 0; overflow: visible; }
@@ -206,7 +216,7 @@
 .tui-titlebar__action svg { width: var(--icon-size-lg); height: var(--icon-size-lg); }
 .tui-titlebar[data-size="small"] .tui-titlebar__action svg { width: var(--icon-size-sm); height: var(--icon-size-sm); }
 .tui-titlebar[data-state="unfocus"] { background: var(--color-titlebar-unfocus-bg); }
-.tui-titlebar[data-state="unfocus"] .tui-titlebar__brand, .tui-titlebar[data-state="unfocus"] .tui-titlebar__pane-actions, .tui-titlebar[data-state="unfocus"] .tui-titlebar__actions { opacity: var(--state-window-unfocus-opacity); }
+.tui-titlebar[data-state="unfocus"] .tui-titlebar__brand, .tui-titlebar[data-state="unfocus"] .tui-titlebar__pane-leading, .tui-titlebar[data-state="unfocus"] .tui-titlebar__pane-actions, .tui-titlebar[data-state="unfocus"] .tui-titlebar__actions { opacity: var(--state-window-unfocus-opacity); }
 .tui-titlebar[data-state="disabled"] { opacity: var(--state-disabled-opacity); }
 
 .tui-textarea, .tui-field, .tui-native-select { width: 100%; display: grid; gap: var(--gap-field-label); color: var(--color-text); font-family: var(--font-sans); }
@@ -354,6 +364,8 @@
 .tui-disclosure[data-component="collapsible"] .tui-disclosure__trigger > .tui-icon { transform: rotate(180deg); }
 .tui-disclosure[data-component="collapsible"] .tui-disclosure__trigger[aria-expanded="true"] > .tui-icon { transform: rotate(0deg); }
 .tui-disclosure__content { padding: var(--padding-tab-panel); border-top: 1px solid var(--color-border); color: var(--color-text-muted); }
+.tui-disclosure[data-component="accordion"] .tui-disclosure__content,
+.tui-disclosure[data-component="collapsible"] .tui-disclosure__content { padding: var(--space-0); border-top: 0; }
 .tui-avatar { --avatar-size: var(--size-avatar-md); width: var(--avatar-size); height: var(--avatar-size); display: inline-grid; place-items: center; flex: 0 0 var(--avatar-size); overflow: hidden; border-radius: var(--radius-avatar); color: var(--color-primary); background: var(--color-brand-10); font-family: var(--font-sans); font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); font-weight: var(--type-body-s-weight); }
 .tui-avatar[data-size="32"] { --avatar-size: var(--size-avatar-sm); }
 .tui-avatar[data-size="40"] { --avatar-size: var(--size-avatar-md); }
@@ -804,7 +816,7 @@
 .tui-generated--dialog p { margin: 0; color: var(--color-text-muted); }
 .tui-generated__content { color: var(--color-text); }
 .tui-generated__actions { display: flex; justify-content: flex-end; gap: var(--gap-button-group); padding-top: var(--space-4); }
-.tui-generated--titlebar { min-height: var(--height-titlebar-lg); display: flex; align-items: center; gap: var(--gap-titlebar-brand); padding-inline: var(--padding-titlebar-leading); background: var(--color-titlebar-normal-bg); }
+.tui-generated--titlebar { min-height: var(--height-titlebar-lg); display: flex; align-items: center; gap: var(--gap-titlebar-brand); padding-left: var(--padding-titlebar-leading); padding-right: var(--padding-titlebar-trailing-l); background: var(--color-titlebar-normal-bg); }
 .tui-generated--titlebar [data-slot="label"] { font-size: var(--type-title-s-size); line-height: var(--type-title-s-leading); font-weight: var(--type-title-s-weight); }
 .tui-generated--titlebar [data-slot="actions"] { margin-inline-start: auto; display: flex; gap: var(--space-2); }
 .tui-generated-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }

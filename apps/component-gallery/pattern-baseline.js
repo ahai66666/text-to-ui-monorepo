@@ -1,272 +1,249 @@
-import legacyMarkup from "../../text-to-ui/preview/component-gallery.html?raw";
+import patternRegistry from "../../text-to-ui/assets/design-system/pattern-contracts.json";
+import { createTitlebarSegments, renderHtmlComponent } from "../../packages/components-html/src/index.js";
+import { createPatternRuntime, createSecondaryPageRuntime } from "../../packages/pattern-runtime/src/index.js";
 import "./pattern-framework.css";
+import "../../packages/pattern-runtime/src/styles.css";
 
-const patternSectionIds = [
-  "primary-navigation-shell",
-  "three-pane-list-detail-shell",
-  "secondary-page-pattern"
-];
+const runtimePreviewSlots = (patternId) => {
+  const primaryNavigation = (items) => renderHtmlComponent("sidebar", {
+    ariaLabel: "主导航",
+    items
+  });
+  const primaryAction = (label) => renderHtmlComponent("button", {
+    label,
+    variant: "primary",
+    size: "standard",
+    mode: "icon-text",
+    iconName: "action/add"
+  });
+  if (patternId === "pattern-a-two-pane") {
+    return {
+      "global-title-layer": runtimePreviewTitleLayer(patternId),
+      "primary-navigation-shell": primaryNavigation([
+        { label: "概览", icon: "navigation/grid", count: 1, selected: true },
+        { label: "项目", icon: "object/file", count: 12 },
+        { label: "成员", icon: "navigation/contacts" }
+      ]),
+      "global-primary-action": primaryAction("新建项目"),
+      "primary-navigation-footer": renderHtmlComponent("button", {
+        label: "设置", icon: "action/settings", variant: "ghost", mode: "icon-text", size: "standard"
+      })
+    };
+  }
+  return {
+    "global-title-layer": runtimePreviewTitleLayer(patternId),
+    "secondary-navigation-content": primaryNavigation([
+      { label: "收件箱", icon: "navigation/grid", count: 24, selected: true },
+      { label: "项目", icon: "object/file", count: 12 },
+      { label: "成员", icon: "navigation/contacts" }
+    ]),
+    "global-primary-action": primaryAction("新建任务"),
+    "primary-navigation-bottom": `<nav class="pattern-runtime-preview-primary-items" aria-label="一级导航">${renderHtmlComponent("primary-navigation-item", { label: "工作台", iconName: "navigation/grid" })}${renderHtmlComponent("primary-navigation-item", { label: "项目", iconName: "field/calendar", selected: true })}${renderHtmlComponent("primary-navigation-item", { label: "消息", iconName: "navigation/mail-unread" })}</nav>`,
+  };
+};
 
-const selectAll = (selector, root) => [...root.querySelectorAll(selector)];
-
-const setSelectedNavigationItem = (items, selectedItem) => {
-  items.forEach((item) => {
-    const selected = item === selectedItem;
-    item.classList.toggle("selected", selected);
-    if (selected) item.setAttribute("aria-current", "page");
-    else item.removeAttribute("aria-current");
-    if (item.dataset.logicalComponent === "Sidebar Item/Default") {
-      item.dataset.state = selected ? "selected" : "default";
-      item.dataset.variant = selected ? "selected" : "default";
+const runtimePreviewTitleLayer = (patternId) => {
+  const pattern = patternRegistry.patterns.find((candidate) => candidate.id === patternId);
+  if (!pattern) return "";
+  const segmentContent = patternId === "pattern-a-two-pane"
+    ? {
+      "primary-navigation": { slots: { label: "项目空间" } },
+      "main-content": { slots: { "main-content-title": "概览" } }
     }
-  });
-};
-
-const setupTabs = (root) => {
-  selectAll("[data-tabs]", root).forEach((tabsRoot) => {
-    const tabs = selectAll('[role="tab"]', tabsRoot).filter((tab) => !tab.disabled);
-    if (!tabs.length) return;
-    const orientation = tabsRoot.dataset.orientation || "horizontal";
-    const activation = tabsRoot.dataset.activation || "automatic";
-    const activate = (nextTab, moveFocus = false) => {
-      tabs.forEach((tab) => {
-        const selected = tab === nextTab;
-        tab.setAttribute("aria-selected", String(selected));
-        tab.tabIndex = selected ? 0 : -1;
-        const panelId = tab.getAttribute("aria-controls");
-        if (panelId) {
-          const panel = tabsRoot.querySelector(`#${CSS.escape(panelId)}`);
-          if (panel) panel.hidden = !selected;
-        }
-      });
-      tabsRoot.dispatchEvent(new CustomEvent("tabs:change", { detail: { tab: nextTab } }));
-      if (moveFocus) nextTab.focus();
+    : {
+      "primary-navigation": { slots: { label: "任务工作台" } },
+      "secondary-list": { slots: {} },
+      "main-detail": { slots: { "main-detail-actions": [{ id: "more", label: "更多", icon: "action/more" }] } }
     };
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => activate(tab));
-      tab.addEventListener("keydown", (event) => {
-        let nextIndex = index;
-        const nextKey = orientation === "vertical" ? "ArrowDown" : "ArrowRight";
-        const previousKey = orientation === "vertical" ? "ArrowUp" : "ArrowLeft";
-        if (event.key === nextKey) nextIndex = (index + 1) % tabs.length;
-        else if (event.key === previousKey) nextIndex = (index - 1 + tabs.length) % tabs.length;
-        else if (event.key === "Home") nextIndex = 0;
-        else if (event.key === "End") nextIndex = tabs.length - 1;
-        else if (activation === "manual" && (event.key === "Enter" || event.key === " ")) {
-          event.preventDefault();
-          activate(tab, true);
-          return;
-        } else return;
-        event.preventDefault();
-        if (activation === "manual") {
-          tabs.forEach((candidate, candidateIndex) => { candidate.tabIndex = candidateIndex === nextIndex ? 0 : -1; });
-          tabs[nextIndex].focus();
-        } else activate(tabs[nextIndex], true);
-      });
-    });
-  });
+  const segments = createTitlebarSegments(pattern, segmentContent);
+  return `<div class="tui-pattern-runtime__title-segments" data-pattern-title-segments="${patternId}">${segments.map(({ region, ...segment }) => `<div class="tui-pattern-runtime__title-segment" data-pattern-title-segment="${region}">${renderHtmlComponent("titlebar", segment)}</div>`).join("")}</div>`;
 };
 
-const setupPrimaryNavigation = (root) => {
-  selectAll("[data-primary-navigation-shell]", root).forEach((shell) => {
-    const section = shell.closest(".section") || shell.parentElement;
-    const items = selectAll(".pattern-nav-item", shell);
-    const pageTitle = shell.querySelector("[data-pattern-page-title]");
-    items.forEach((item) => item.addEventListener("click", () => {
-      setSelectedNavigationItem(items, item);
-      if (pageTitle) pageTitle.textContent = item.dataset.patternPage || item.getAttribute("aria-label") || "";
-    }));
-
-    const collapseButton = shell.querySelector("[data-navigation-collapse]");
-    const expandButton = shell.querySelector("[data-navigation-expand]");
-    const setCollapsed = (collapsed, moveFocus = false) => {
-      shell.dataset.navigationCollapsed = String(collapsed);
-      if (collapseButton) {
-        collapseButton.hidden = collapsed;
-        collapseButton.setAttribute("aria-expanded", String(!collapsed));
-      }
-      if (expandButton) {
-        expandButton.hidden = !collapsed;
-        expandButton.setAttribute("aria-expanded", String(!collapsed));
-      }
-      if (moveFocus) (collapsed ? expandButton : collapseButton)?.focus();
+const runtimePreviewRegionContent = (patternId) => {
+  if (patternId === "pattern-a-two-pane") {
+    return {
+      "main-content": `<div class="pattern-runtime-preview-content"><div class="pattern-runtime-preview-card"><strong data-typography-role="subtitle-m">项目概览</strong><span data-typography-role="body-m">页面内容由业务方填入，Pattern 只提供区域和滚动边界。</span></div><div class="pattern-runtime-preview-card pattern-runtime-preview-card--large"><span class="pattern-runtime-preview-line"></span><span class="pattern-runtime-preview-line pattern-runtime-preview-line--wide"></span><span class="pattern-runtime-preview-line pattern-runtime-preview-line--short"></span></div></div>`
     };
-    collapseButton?.addEventListener("click", () => setCollapsed(true, true));
-    expandButton?.addEventListener("click", () => setCollapsed(false, true));
-
-    const levelPicker = section?.querySelector("[data-pattern-level-picker]");
-    levelPicker?.addEventListener("tabs:change", ({ detail: { tab } }) => {
-      const level = tab.dataset.patternLevelControl;
-      shell.dataset.navigationLevels = level;
-      const activeList = level === "two"
-        ? shell.querySelector(".pattern-secondary-navigation .pattern-nav-list")
-        : shell.querySelector(".pattern-single-navigation");
-      const activeItem = activeList?.querySelector(".pattern-nav-item");
-      if (activeItem) {
-        setSelectedNavigationItem(items, activeItem);
-        if (pageTitle) pageTitle.textContent = activeItem.dataset.patternPage || "";
-      }
-    });
-
-    const surfacePicker = section?.querySelector("[data-pattern-surface-picker]");
-    surfacePicker?.addEventListener("tabs:change", ({ detail: { tab } }) => {
-      shell.dataset.contentSurface = tab.dataset.patternSurfaceControl;
-    });
-
-    const icons = selectAll(".pattern-primary-level-icon", shell);
-    const sectionLabel = shell.querySelector("[data-primary-section-label]");
-    icons.forEach((icon) => icon.addEventListener("click", () => {
-      icons.forEach((candidate) => {
-        const selected = candidate === icon;
-        candidate.classList.toggle("selected", selected);
-        candidate.setAttribute("aria-pressed", String(selected));
-        candidate.dataset.state = selected ? "selected" : "default";
-        candidate.dataset.variant = selected ? "selected" : "default";
-      });
-      if (sectionLabel) sectionLabel.textContent = icon.dataset.primarySection || "";
-    }));
-  });
+  }
+  return {
+    "secondary-list": `<div class="pattern-runtime-preview-list"><div class="pattern-runtime-preview-list-heading"><strong data-typography-role="subtitle-m">全部任务</strong><span data-typography-role="body-m">18 个项目</span></div>${["客户端设计系统", "组件规范", "工作台改版", "发布检查"].map((label, index) => `<button class="pattern-runtime-preview-list-item${index === 0 ? " is-selected" : ""}" type="button"><span class="pattern-runtime-preview-list-icon">${index + 1}</span><span><strong data-typography-role="body-l">${label}</strong><small data-typography-role="body-m">${index + 1} 小时前 · ${index + 3} 位成员</small></span></button>`).join("")}</div>`,
+    "main-detail": `<div class="pattern-runtime-preview-content"><div class="pattern-runtime-preview-detail-heading"><strong data-typography-role="title-m">客户端设计系统</strong><span class="pattern-runtime-preview-status">进行中</span></div><p data-typography-role="body-m">这里是业务方详情内容。Renderer 负责 pane 顺序、标题段、滚动和 inset；页面内容仍由调用方提供。</p><div class="pattern-runtime-preview-card pattern-runtime-preview-card--large"><span class="pattern-runtime-preview-line"></span><span class="pattern-runtime-preview-line pattern-runtime-preview-line--wide"></span><span class="pattern-runtime-preview-line pattern-runtime-preview-line--short"></span></div></div>`
+  };
 };
 
-const setupSecondaryMenus = (root) => {
-  selectAll("[data-secondary-menu-trigger]", root).forEach((trigger) => {
-    const panelId = trigger.getAttribute("aria-controls");
-    const panel = panelId ? root.querySelector(`#${CSS.escape(panelId)}`) : null;
-    if (!panel) return;
-    trigger.addEventListener("click", () => {
-      const expanded = trigger.getAttribute("aria-expanded") === "true";
-      trigger.setAttribute("aria-expanded", String(!expanded));
-      panel.hidden = expanded;
+const createPatternRuntimePreview = () => {
+  const card = document.createElement("article");
+  card.className = "pattern-baseline-card pattern-runtime-renderer-card";
+  card.dataset.patternId = "pattern-runtime-renderer";
+  card.innerHTML = `<section class="section" aria-labelledby="pattern-runtime-renderer-title">
+    <div class="section-head">
+      <div>
+        <h3 id="pattern-runtime-renderer-title">Pattern Runtime Renderer · 可调用预览</h3>
+        <p class="section-note">这里展示同一份 Pattern Contract 如何输出 Skeleton 和 Runtime 两种结果；切换后可直接检查区域顺序、槽位和最小窗口规则。</p>
+      </div>
+      <span class="section-note" data-runtime-preview-meta></span>
+    </div>
+    <div class="pattern-runtime-preview-controls">
+      <div class="pattern-runtime-preview-control-group" role="group" aria-label="Pattern 选择">
+        <span>Pattern</span>
+        <button type="button" class="pattern-runtime-preview-control is-selected" data-runtime-pattern="pattern-a-two-pane" aria-pressed="true">A · 双栏</button>
+        <button type="button" class="pattern-runtime-preview-control" data-runtime-pattern="pattern-b-three-pane" aria-pressed="false">B · 三栏</button>
+      </div>
+      <div class="pattern-runtime-preview-control-group" role="group" aria-label="Renderer 模式">
+        <span>Renderer</span>
+        <button type="button" class="pattern-runtime-preview-control" data-runtime-mode="skeleton" aria-pressed="false">Skeleton</button>
+        <button type="button" class="pattern-runtime-preview-control is-selected" data-runtime-mode="runtime" aria-pressed="true">Runtime</button>
+      </div>
+    </div>
+    <div class="pattern-runtime-renderer-sample pattern-sample" data-runtime-preview-host aria-live="polite"></div>
+  </section>`;
+  return card;
+};
+
+const setupPatternRuntimePreview = (root) => {
+  const card = root.querySelector(".pattern-runtime-renderer-card");
+  if (!card) return;
+  const host = card.querySelector("[data-runtime-preview-host]");
+  const meta = card.querySelector("[data-runtime-preview-meta]");
+  const state = { patternId: "pattern-a-two-pane", mode: "runtime" };
+  const render = () => {
+    const runtime = createPatternRuntime({
+      registry: patternRegistry,
+      patternId: state.patternId,
+      mode: state.mode,
+      slots: state.mode === "runtime" ? runtimePreviewSlots(state.patternId) : {},
+      regionContent: state.mode === "runtime" ? runtimePreviewRegionContent(state.patternId) : {}
     });
-  });
-};
-
-const setupSecondaryPages = (root) => {
-  selectAll("[data-secondary-page-pattern]", root).forEach((pattern) => {
-    const rootTitle = pattern.querySelector("[data-secondary-page-root-title]");
-    const childTitle = pattern.querySelector("[data-secondary-page-child-title]");
-    const rootPage = pattern.querySelector("[data-secondary-page-root]");
-    const childPage = pattern.querySelector("[data-secondary-page-child]");
-    const openButton = pattern.querySelector("[data-secondary-page-open]");
-    const backButton = pattern.querySelector("[data-secondary-page-back]");
-    const setDepth = (depth, moveFocus = true) => {
-      const child = depth === "child";
-      pattern.dataset.pageDepth = depth;
-      if (rootTitle) rootTitle.hidden = child;
-      if (rootPage) rootPage.hidden = child;
-      if (childTitle) childTitle.hidden = !child;
-      if (childPage) childPage.hidden = !child;
-      if (moveFocus) (child ? backButton : openButton)?.focus();
-    };
-    openButton?.addEventListener("click", () => setDepth("child"));
-    backButton?.addEventListener("click", () => setDepth("root"));
-    pattern.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape" || pattern.dataset.pageDepth !== "child") return;
-      event.preventDefault();
-      setDepth("root");
+    host.replaceChildren();
+    host.insertAdjacentHTML("afterbegin", runtime.render());
+    const contract = runtime.contract;
+    meta.textContent = `${contract.id} · ${state.mode} · ${contract.paneOrder.join(" → ")} · min ${contract.minimumWindow?.width || 0}×${contract.minimumWindow?.height || 0}`;
+    card.querySelectorAll("[data-runtime-pattern]").forEach((button) => {
+      const selected = button.dataset.runtimePattern === state.patternId;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
     });
-  });
-
-  selectAll("[data-secondary-page-mode-switch]", root).forEach((switcher) => {
-    const section = switcher.closest(".section") || switcher.parentElement;
-    const buttons = selectAll("[data-secondary-page-mode]", switcher);
-    const panels = selectAll("[data-secondary-page-mode-panel]", section);
-    const setMode = (mode) => {
-      buttons.forEach((button) => {
-        const selected = button.dataset.secondaryPageMode === mode;
-        button.classList.toggle("is-selected", selected);
-        button.setAttribute("aria-pressed", String(selected));
-      });
-      panels.forEach((panel) => { panel.hidden = panel.dataset.secondaryPageModePanel !== mode; });
-    };
-    buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.secondaryPageMode)));
-  });
+    card.querySelectorAll("[data-runtime-mode]").forEach((button) => {
+      const selected = button.dataset.runtimeMode === state.mode;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  };
+  card.querySelectorAll("[data-runtime-pattern]").forEach((button) => button.addEventListener("click", () => {
+    state.patternId = button.dataset.runtimePattern;
+    render();
+  }));
+  card.querySelectorAll("[data-runtime-mode]").forEach((button) => button.addEventListener("click", () => {
+    state.mode = button.dataset.runtimeMode;
+    render();
+  }));
+  render();
 };
 
-const setupThreePane = (root) => {
-  selectAll("[data-three-pane-list-detail]", root).forEach((pattern) => {
-    const rows = selectAll("[data-three-pane-list-item]", pattern);
-    rows.forEach((row) => row.addEventListener("click", () => {
-      rows.forEach((candidate) => {
-        const selected = candidate === row;
-        candidate.classList.toggle("selected", selected);
-        candidate.setAttribute("aria-selected", String(selected));
-      });
-    }));
-    const input = pattern.querySelector("[data-search-input]");
-    const clearButton = pattern.querySelector("[data-search-clear]");
-    if (input && clearButton) {
-      const syncClearButton = () => { clearButton.hidden = input.value.length === 0; };
-      input.addEventListener("input", syncClearButton);
-      clearButton.addEventListener("click", () => {
-        input.value = "";
-        syncClearButton();
-        input.focus();
-      });
-      syncClearButton();
-    }
+const secondaryPageRuntimeContent = (layout) => `<div class="secondary-page-runtime-content"><div class="secondary-page-runtime-heading"><div><h4>${layout === "new-page" ? "项目设置" : "项目设置"}</h4><p>${layout === "new-page" ? "弹出新页面使用上下布局；顶部为 Titlebar_S。" : "延续一级布局进入项目设置，页面内容在主内容区滚动。"}</p></div>${renderHtmlComponent("button", { label: "保存", variant: "primary", size: "standard", mode: "text" })}</div><section class="secondary-page-runtime-form" aria-label="项目设置表单"><div class="secondary-page-runtime-setting"><span><strong>桌面通知</strong><small>项目有新动态时显示桌面提醒</small></span>${renderHtmlComponent("switch", { checked: true })}</div><div class="secondary-page-runtime-setting"><span><strong>邮件通知</strong><small>每天汇总一次重要动态</small></span>${renderHtmlComponent("switch", { checked: false })}</div></section></div>`;
 
-    const sortMenu = pattern.querySelector("[data-three-pane-sort-menu]");
-    const sortLabel = sortMenu?.querySelector("[data-three-pane-sort-label]");
-    const projectList = pattern.querySelector(".three-pane-project-list");
-    const originalRows = rows.slice();
-    const sortLabels = {
-      updated: "最近更新",
-      "name-asc": "名称升序",
-      "name-desc": "名称降序"
-    };
-    if (sortMenu) {
-      selectAll("[data-three-pane-sort]", sortMenu).forEach((sortButton) => {
-        sortButton.addEventListener("click", () => {
-          const sortKey = sortButton.dataset.threePaneSort || "updated";
-          const sortedRows = sortKey === "updated"
-            ? originalRows
-            : originalRows.slice().sort((a, b) => {
-              const direction = sortKey === "name-desc" ? -1 : 1;
-              return direction * String(a.dataset.title || "").localeCompare(String(b.dataset.title || ""), "zh-CN");
-            });
-          if (projectList) projectList.replaceChildren(...sortedRows);
-          selectAll("[data-three-pane-sort]", sortMenu).forEach((candidate) => {
-            candidate.setAttribute("aria-checked", String(candidate === sortButton));
-          });
-          if (sortLabel) sortLabel.textContent = sortLabels[sortKey] || sortLabels.updated;
-          sortMenu.open = false;
-        });
-      });
-    }
-  });
+// Secondary Page continuation keeps the same global navigation shell as the
+// canonical Pattern Runtime Renderer. The right pane still owns its own
+// Titlebar_S, while this left shell owns the workspace brand and navigation.
+const secondaryPageRuntimeNavigation = () => `<div class="secondary-page-runtime-navigation-shell" data-secondary-page-navigation-shell="pattern-runtime"><div class="secondary-page-runtime-navigation-titlebar">${renderHtmlComponent("titlebar", { label: "项目空间", size: "large", layout: "two-column", paneRole: "primary-navigation", showWindowControls: false })}</div><div class="secondary-page-runtime-navigation-body"><div class="secondary-page-runtime-primary-action">${renderHtmlComponent("button", { label: "新建项目", variant: "primary", size: "standard", mode: "icon-text", iconName: "action/add" })}</div>${renderHtmlComponent("sidebar", { ariaLabel: "主导航", items: [{ label: "概览", icon: "navigation/grid", count: 1, selected: true }, { label: "项目", icon: "object/file", count: 12 }, { label: "成员", icon: "navigation/contacts" }] })}</div><div class="secondary-page-runtime-navigation-footer">${renderHtmlComponent("button", { label: "设置", icon: "action/settings", variant: "ghost", mode: "icon-text", size: "standard" })}</div></div>`;
+
+const secondaryPageRuntimeSlots = (layout) => {
+  const titlebar = layout === "new-page"
+    ? renderHtmlComponent("titlebar", { label: "项目设置", size: "small", layout: "standalone", paneRole: "global" })
+    : renderHtmlComponent("titlebar", {
+      paneTitle: "项目设置",
+      size: "large",
+      layout: "two-column",
+      paneRole: "final-pane",
+      mainContentLeading: { id: "back", label: "返回项目", icon: "navigation/back", buttonType: "icon" }
+    });
+  return {
+    navigation: layout === "continuation" ? secondaryPageRuntimeNavigation() : renderHtmlComponent("sidebar", {
+      ariaLabel: "项目设置导航",
+      items: [
+        { label: "项目概览", icon: "navigation/grid" },
+        { label: "项目设置", icon: "action/settings", selected: true },
+        { label: "成员权限", icon: "navigation/contacts" }
+      ]
+    }),
+    titlebar,
+    content: secondaryPageRuntimeContent(layout)
+  };
 };
 
-const setupPatternInteractions = (root) => {
-  setupTabs(root);
-  setupPrimaryNavigation(root);
-  setupSecondaryMenus(root);
-  setupSecondaryPages(root);
-  setupThreePane(root);
+const createSecondaryPageRuntimePreview = () => {
+  const card = document.createElement("article");
+  card.className = "pattern-baseline-card secondary-page-runtime-card";
+  card.dataset.patternId = "secondary-page-runtime";
+  card.innerHTML = `<section class="section" aria-labelledby="secondary-page-runtime-title">
+    <div class="section-head">
+      <div>
+        <h3 id="secondary-page-runtime-title">Secondary Page Runtime · 可调用预览</h3>
+        <p class="section-note">二级页面也有 Runtime：延续一级布局使用返回按钮 + Titlebar_S；弹出新页面使用 Titlebar_S + 上下布局。</p>
+      </div>
+      <span class="section-note" data-secondary-runtime-meta></span>
+    </div>
+    <div class="pattern-runtime-preview-controls">
+      <div class="pattern-runtime-preview-control-group" role="group" aria-label="Secondary Page 布局">
+        <span>Layout</span>
+        <button type="button" class="pattern-runtime-preview-control is-selected" data-secondary-runtime-layout="continuation" aria-pressed="true">延续一级布局</button>
+        <button type="button" class="pattern-runtime-preview-control" data-secondary-runtime-layout="new-page" aria-pressed="false">弹出新页面</button>
+      </div>
+      <div class="pattern-runtime-preview-control-group" role="group" aria-label="Secondary Page Renderer 模式">
+        <span>Renderer</span>
+        <button type="button" class="pattern-runtime-preview-control" data-secondary-runtime-mode="skeleton" aria-pressed="false">Skeleton</button>
+        <button type="button" class="pattern-runtime-preview-control is-selected" data-secondary-runtime-mode="runtime" aria-pressed="true">Runtime</button>
+      </div>
+    </div>
+    <div class="secondary-page-runtime-sample pattern-sample" data-secondary-runtime-host aria-live="polite"></div>
+  </section>`;
+  return card;
+};
+
+const setupSecondaryPageRuntimePreview = (root) => {
+  const card = root.querySelector(".secondary-page-runtime-card");
+  if (!card) return;
+  const host = card.querySelector("[data-secondary-runtime-host]");
+  const meta = card.querySelector("[data-secondary-runtime-meta]");
+  const state = { layout: "continuation", mode: "runtime" };
+  const render = () => {
+    const runtime = createSecondaryPageRuntime({
+      layout: state.layout,
+      mode: state.mode,
+      slots: state.mode === "runtime" ? secondaryPageRuntimeSlots(state.layout) : {}
+    });
+    host.replaceChildren();
+    host.insertAdjacentHTML("afterbegin", runtime.render());
+    meta.textContent = `secondary-page-runtime · ${state.mode} · ${state.layout === "continuation" ? "返回 + Titlebar_S" : "Titlebar_S + 上下布局"}`;
+    card.querySelectorAll("[data-secondary-runtime-layout]").forEach((button) => {
+      const selected = button.dataset.secondaryRuntimeLayout === state.layout;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    card.querySelectorAll("[data-secondary-runtime-mode]").forEach((button) => {
+      const selected = button.dataset.secondaryRuntimeMode === state.mode;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  };
+  card.querySelectorAll("[data-secondary-runtime-layout]").forEach((button) => button.addEventListener("click", () => {
+    state.layout = button.dataset.secondaryRuntimeLayout;
+    render();
+  }));
+  card.querySelectorAll("[data-secondary-runtime-mode]").forEach((button) => button.addEventListener("click", () => {
+    state.mode = button.dataset.secondaryRuntimeMode;
+    render();
+  }));
+  render();
 };
 
 export const mountPatternBaseline = (mount) => {
   if (!mount) return;
-  const source = new DOMParser().parseFromString(legacyMarkup, "text/html");
-  const sections = patternSectionIds
-    .map((id) => source.getElementById(id))
-    .filter(Boolean);
-  if (!sections.length) {
-    mount.innerHTML = '<p class="status">Pattern 基线暂时无法加载。</p>';
-    return;
-  }
-
   const fragment = document.createDocumentFragment();
-  const sprite = source.querySelector(".hmos-sprite");
-  if (sprite) fragment.append(document.importNode(sprite, true));
-  sections.forEach((section) => {
-    const card = document.createElement("article");
-    card.className = "pattern-baseline-card";
-    card.dataset.patternId = section.id;
-    card.append(document.importNode(section, true));
-    fragment.append(card);
-  });
+  fragment.append(createPatternRuntimePreview());
+  fragment.append(createSecondaryPageRuntimePreview());
   mount.replaceChildren(fragment);
   mount.dataset.patternReady = "true";
-  setupPatternInteractions(mount);
+  setupPatternRuntimePreview(mount);
+  setupSecondaryPageRuntimePreview(mount);
 };

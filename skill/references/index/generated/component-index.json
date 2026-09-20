@@ -3,15 +3,15 @@
   "generatedFrom": [
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "76b9603a65c146e150c0345ad25083a9b36b7c9c73ca20bd59109eb275609077"
+      "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
     },
     {
       "path": "packages/component-contracts/src/parity-manifest.json",
-      "sha256": "9a250db7e05128c4f4c0450ba97131b6f85b72293a8513b8ea349130dd9a6bda"
+      "sha256": "743951f87da19f263437c1fded71bd1aa096429e11c0e1f5befcd2a670d284fa"
     },
     {
       "path": "text-to-ui/references/index/capability-aliases.source.json",
-      "sha256": "0156fe607b6beccedd0cba8492daf022daa728f1c31d181d0698ffe27ba6e178"
+      "sha256": "962c88715e8aa4b060dd120c8cb6fe989ac2299b3c08a978fb873f30a7dcec8a"
     }
   ],
   "frameworkPackages": {
@@ -79,7 +79,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -173,7 +174,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -256,7 +258,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -379,7 +382,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -455,7 +459,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -528,7 +533,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -602,7 +608,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -625,7 +632,9 @@
       "capabilities": [
         "actions",
         "button",
-        "icon-button"
+        "icon-button",
+        "icon-text-button",
+        "text-button"
       ],
       "category": "actions",
       "status": "partial",
@@ -649,6 +658,8 @@
         "size",
         "mode",
         "iconOnly",
+        "icon",
+        "iconSize",
         "disabled",
         "menuItems"
       ],
@@ -696,7 +707,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -771,7 +783,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -846,7 +859,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -944,7 +958,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1023,7 +1038,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1111,7 +1127,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1192,7 +1209,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1269,7 +1287,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1349,7 +1368,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1474,7 +1494,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1553,7 +1574,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1628,7 +1650,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1703,7 +1726,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1781,7 +1805,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1858,7 +1883,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -1934,7 +1960,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2019,7 +2046,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2131,7 +2159,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2208,7 +2237,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2289,7 +2319,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2365,7 +2396,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2443,7 +2475,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2538,7 +2571,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2618,7 +2652,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2699,7 +2734,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2774,7 +2810,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2883,7 +2920,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -2957,7 +2995,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3035,7 +3074,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3138,7 +3178,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3184,7 +3225,9 @@
         "icon",
         "selected",
         "collapsed",
-        "count"
+        "count",
+        "items",
+        "ariaLabel"
       ],
       "slots": [
         "leading",
@@ -3222,7 +3265,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3297,7 +3341,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3416,7 +3461,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3493,7 +3539,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3569,7 +3616,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3645,7 +3693,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3722,7 +3771,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3799,7 +3849,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3879,7 +3930,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -3923,9 +3975,15 @@
         "size",
         "layout",
         "paneRole",
+        "segmentRole",
+        "slots",
+        "showWindowControls",
+        "logoSrc",
+        "logoAlt",
         "disabled",
         "state",
         "mainDetailActions",
+        "onMainContentAction",
         "onMainDetailAction",
         "onAction",
         "className"
@@ -3933,11 +3991,38 @@
       "slots": [
         "leading",
         "label",
+        "main-content-leading",
         "main-content-title",
         "main-detail-actions",
         "actions"
       ],
       "slotContracts": {
+        "main-content-leading": {
+          "cardinality": "0..1",
+          "scope": "main-content-pane-global",
+          "valueType": "action-object",
+          "activeWhen": {
+            "layout": "two-column",
+            "paneRole": "final-pane"
+          },
+          "defaultPlacement": "final-pane-leading-slot",
+          "gapToken": "space/2",
+          "gap": "4px",
+          "iconSize": "24px",
+          "allowedButtonVariants": [
+            "ghost"
+          ],
+          "allowedButtonTypes": [
+            "icon",
+            "icon-text-ghost"
+          ],
+          "fields": [
+            "id",
+            "label",
+            "icon",
+            "buttonType"
+          ]
+        },
         "main-detail-actions": {
           "cardinality": "0..n",
           "scope": "main-detail-pane-global",
@@ -4013,17 +4098,48 @@
                 "label"
               ]
             }
-          }
+          },
+          "valueType": "action-array"
         },
         "main-content-title": {
           "cardinality": "0..1",
           "scope": "main-content-pane-global",
+          "valueType": "text",
           "activeWhen": {
             "layout": "two-column",
             "paneRole": "final-pane"
           },
           "defaultPlacement": "final-pane-leading-slot",
           "leadingInsetToken": "layout/main-title-leading-padding"
+        },
+        "leading": {
+          "cardinality": "0..1",
+          "valueType": "image-object",
+          "activeRoles": [
+            "global",
+            "primary-navigation"
+          ],
+          "fields": [
+            "src",
+            "alt"
+          ]
+        },
+        "label": {
+          "cardinality": "0..1",
+          "valueType": "text",
+          "activeRoles": [
+            "global",
+            "primary-navigation"
+          ]
+        },
+        "actions": {
+          "cardinality": "0..1",
+          "valueType": "boolean",
+          "activeRoles": [
+            "global",
+            "final-pane"
+          ],
+          "implementation": "component-owned-window-controls"
         }
       },
       "behaviors": [
@@ -4038,9 +4154,9 @@
         "spacing.component-gap"
       ],
       "iconAliases": [
-        "action/minimize",
-        "action/maximize",
-        "action/close"
+        "window/minimize",
+        "window/maximize",
+        "window/close"
       ],
       "contractPointer": "packages/component-contracts/src/components.json#titlebar",
       "canonicalSelector": "section#navigation [data-component=\"Titlebar/Default\"]",
@@ -4054,7 +4170,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -4130,7 +4247,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {
@@ -4219,7 +4337,8 @@
           "factoryImport": "renderHtmlComponent",
           "styleImports": [
             "@text-to-ui/tokens",
-            "@text-to-ui/components-html/styles.css"
+            "@text-to-ui/components-html/styles.css",
+            "@text-to-ui/components-html/pattern-shell.css"
           ]
         },
         "react": {

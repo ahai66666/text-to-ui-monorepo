@@ -10,7 +10,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderRuntimeHtmlComponent } from "../packages/components-html/src/index.js";
-import { cardClass, comparisonMetaFor, componentTitle, runtimeCategories, runtimeComponents, specimensFor } from "../apps/component-gallery/runtime-catalog.js";
+import { cardClass, cardDescription, comparisonMetaFor, componentTitle, isCoreAcceptanceComponent, readinessInfoFor, readinessLabels, runtimeCategories, runtimeComponents, specimensFor } from "../apps/component-gallery/runtime-catalog.js";
 import { contractDialogId, renderContractDialogHtml } from "../apps/component-gallery/contract-inspector.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,8 +24,9 @@ const escapeHtml = (value = "") => String(value)
 
 const renderCard = (component) => {
   const comparison = comparisonMetaFor(component);
-  return `<article class="${cardClass(component)}" data-component-card="${escapeHtml(component.id)}" data-contract-id="${escapeHtml(component.id)}" data-category="${escapeHtml(comparison.groupId)}" data-order="${comparison.comparisonOrder}" data-registry-category="${escapeHtml(component.category)}" data-registry-order="${component.order}" data-fixture-id="${escapeHtml(component.fixtureId)}" data-framework="html" data-readiness="${component.status}">
-  <header class="tui-runtime-card__head"><div><h3>${escapeHtml(componentTitle(component))}</h3></div><button type="button" class="tui-component tui-button tui-runtime-card__contract-trigger" data-component="button" data-renderer-key="button" data-logical-component="Icon Text Button/Ghost/Default" data-variant="ghost" data-state="default" data-framework="html" data-mode="icon-text" data-size="small" data-button-type="icon-text-ghost" data-contract-dialog-trigger aria-haspopup="dialog" aria-controls="${escapeHtml(contractDialogId(component, "html"))}" aria-expanded="false">组件规范</button></header>
+  const readiness = readinessInfoFor(component);
+  return `<article class="${cardClass(component)}" data-component-card="${escapeHtml(component.id)}" data-contract-id="${escapeHtml(component.id)}" data-category="${escapeHtml(comparison.groupId)}" data-order="${comparison.comparisonOrder}" data-registry-category="${escapeHtml(component.category)}" data-registry-order="${component.order}" data-fixture-id="${escapeHtml(component.fixtureId)}" data-framework="html" data-readiness="${readiness.level}">
+  <header class="tui-runtime-card__head"><div><h3>${escapeHtml(componentTitle(component))}</h3><div class="tui-runtime-card__readiness"><span class="tui-readiness-pill tui-readiness-pill--${readiness.level}">${readinessLabels[readiness.level]}</span>${isCoreAcceptanceComponent(component) ? '<span class="tui-readiness-priority">首批验收</span>' : ""}</div><p class="tui-runtime-card__readiness-note">${escapeHtml(cardDescription(component))}</p></div><button type="button" class="tui-component tui-button tui-runtime-card__contract-trigger" data-component="button" data-renderer-key="button" data-logical-component="Icon Text Button/Ghost/Default" data-variant="ghost" data-state="default" data-framework="html" data-mode="icon-text" data-size="small" data-button-type="icon-text-ghost" data-contract-dialog-trigger aria-haspopup="dialog" aria-controls="${escapeHtml(contractDialogId(component, "html"))}" aria-expanded="false">组件规范</button></header>
   <div class="tui-runtime-card__preview" data-fixture-id="${escapeHtml(component.fixtureId)}">${renderRuntimeHtmlComponent(component.id, { specimens: specimensFor(component), fixtureId: component.fixtureId })}</div>
   ${renderContractDialogHtml(component, "html", escapeHtml)}
 </article>`;

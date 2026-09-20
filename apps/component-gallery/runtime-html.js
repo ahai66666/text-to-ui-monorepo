@@ -1,5 +1,5 @@
 import { bindTitlebarOverflow, renderRuntimeHtmlComponent } from "../../packages/components-html/src/index.js?rev=20260812-2";
-import { cardClass, cardDescription, comparisonMetaFor, componentTitle, feedbackSpecimensFor, runtimeCategories, runtimeComponents, specimensFor } from "./runtime-catalog.js";
+import { cardClass, comparisonMetaFor, componentTitle, feedbackSpecimensFor, readinessInfoFor, runtimeCategories, runtimeComponents, specimensFor } from "./runtime-catalog.js";
 import { contractDialogId, renderContractDialogHtml } from "./contract-inspector.js";
 
 const escapeHtml = (value = "") => String(value)
@@ -11,7 +11,8 @@ const escapeHtml = (value = "") => String(value)
 
 const renderCard = (component) => {
   const comparison = comparisonMetaFor(component);
-  return `<article class="${cardClass(component)}" data-component-card="${escapeHtml(component.id)}" data-contract-id="${escapeHtml(component.id)}" data-category="${escapeHtml(comparison.groupId)}" data-order="${comparison.comparisonOrder}" data-registry-category="${escapeHtml(component.category)}" data-registry-order="${component.order}" data-fixture-id="${escapeHtml(component.fixtureId)}" data-framework="html" data-readiness="${component.status}" aria-labelledby="runtime-html-${escapeHtml(component.id)}-title">
+  const readiness = readinessInfoFor(component);
+  return `<article class="${cardClass(component)}" data-component-card="${escapeHtml(component.id)}" data-contract-id="${escapeHtml(component.id)}" data-category="${escapeHtml(comparison.groupId)}" data-order="${comparison.comparisonOrder}" data-registry-category="${escapeHtml(component.category)}" data-registry-order="${component.order}" data-fixture-id="${escapeHtml(component.fixtureId)}" data-framework="html" data-readiness="${readiness.level}" aria-labelledby="runtime-html-${escapeHtml(component.id)}-title">
   <header class="tui-runtime-card__head"><div><h3 id="runtime-html-${escapeHtml(component.id)}-title">${escapeHtml(componentTitle(component))}</h3></div><button type="button" class="tui-component tui-button tui-runtime-card__contract-trigger" data-component="button" data-renderer-key="button" data-logical-component="Icon Text Button/Ghost/Default" data-variant="ghost" data-state="default" data-framework="html" data-mode="icon-text" data-size="small" data-button-type="icon-text-ghost" data-contract-dialog-trigger aria-haspopup="dialog" aria-controls="${escapeHtml(contractDialogId(component, "html"))}" aria-expanded="false">组件规范</button></header>
   <div class="tui-runtime-card__preview" data-fixture-id="${escapeHtml(component.fixtureId)}">${renderRuntimeHtmlComponent(component.id, { specimens: component.id === "alert" ? feedbackSpecimensFor(component) : specimensFor(component), fixtureId: component.fixtureId })}</div>
   ${renderContractDialogHtml(component, "html", escapeHtml)}
@@ -90,7 +91,7 @@ const bindRuntimeInteractions = (root, setStatus) => {
     }
     const isAdvancedMenuInteraction = event.target.closest?.(".tui-advanced-menu__trigger, .tui-advanced-menu__item");
     if (root.contains(event.target) && !event.target.closest(".tui-attachment__actions") && !isAdvancedMenuInteraction) closeMenus();
-    const target = event.target.closest("button, input, textarea, select, a, .tui-combobox__trigger");
+    const target = event.target.closest("button, input, textarea, select, a, [role=button], .tui-combobox__trigger");
     if (!target || !root.contains(target) || target.disabled) return;
     const owner = target.closest("[data-component-card]");
     const id = owner?.dataset.componentCard;
@@ -144,8 +145,9 @@ const bindRuntimeInteractions = (root, setStatus) => {
       setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`);
       return;
     }
-    if (target.matches(".tui-titlebar__action, .tui-titlebar__pane-action")) {
-      setStatus(`Titlebar · ${target.matches(".tui-titlebar__pane-action") ? "Main Detail · " : ""}${target.dataset.action ?? "action"}`);
+    if (target.matches(".tui-titlebar__action, .tui-titlebar__pane-action, .tui-titlebar__pane-leading-action")) {
+      const scope = target.matches(".tui-titlebar__pane-leading-action") ? "Main Content · " : target.matches(".tui-titlebar__pane-action") ? "Main Detail · " : "";
+      setStatus(`Titlebar · ${scope}${target.dataset.action ?? "action"}`);
       return;
     }
     if (target.matches(".tui-primary-navigation-item")) {
@@ -465,6 +467,12 @@ const bindRuntimeInteractions = (root, setStatus) => {
       const layer = [...root.querySelectorAll(".tui-overlay-layer:not([hidden])")].at(-1);
       if (layer) { event.preventDefault(); closeOverlay(layer, "取消"); return; }
     }
+    const listCard = event.target.closest?.(".tui-list-card[role=button]");
+    if (listCard && root.contains(listCard) && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      listCard.click();
+      return;
+    }
     const target = event.target.closest?.(".tui-combobox__input, .tui-select__trigger, .tui-select__menu [role=option], .tui-tabs__list [role=tab], .tui-sub-tabs__list [role=tab], .tui-tree-view__item, .tui-color-picker__tabs [role=tab], .tui-advanced-menu__trigger, .tui-advanced-menu__item[role=menuitem], .tui-picker__trigger, .tui-attachment__menu-trigger, .tui-attachment__menu [role=menuitem]");
     if (!target || !root.contains(target)) return;
     if (target.matches(".tui-combobox__input")) {
@@ -676,6 +684,6 @@ const bindRuntimeInteractions = (root, setStatus) => {
 
 export function mountHtmlRuntime(container, { onStatus = () => {} } = {}) {
   container.dataset.framework = "html";
-  container.innerHTML = `<div class="tui-runtime-directory-grid" data-runtime-framework="html">${runtimeCategories.map(renderCategory).join("")}<p class="status" aria-live="polite">${escapeHtml(cardDescription(runtimeComponents.find((item) => item.id === "button") ?? { status: "partial" }))}</p></div>`;
+  container.innerHTML = `<div class="tui-runtime-directory-grid" data-runtime-framework="html">${runtimeCategories.map(renderCategory).join("")}<p class="status" aria-live="polite">原生 HTML 组件已加载 ${runtimeComponents.length} 项；可直接点击查看基础交互。</p></div>`;
   return bindRuntimeInteractions(container, onStatus);
 }

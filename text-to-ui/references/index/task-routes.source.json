@@ -6,9 +6,9 @@
       "aliases": ["mail-workbench", "email-workbench", "邮件工作台", "邮箱", "coremail"],
       "domains": ["mail", "communication"],
       "layout": "pattern-b-three-pane",
-      "requiredCapabilities": ["titlebar", "primary-navigation-item", "search", "list-item", "checkbox", "icon-button", "tooltip", "context-menu"],
-      "optionalCapabilities": ["avatar", "badge", "empty-state", "toast"],
-      "customCompositions": ["mail-message-list", "mail-detail-content"]
+      "requiredCapabilities": ["titlebar", "primary-navigation-item", "sidebar", "search", "list-item", "checkbox", "button", "icon-button", "tooltip", "context-menu"],
+      "optionalCapabilities": ["avatar", "badge", "empty-state", "toast", "attachment", "collapsible", "select", "dialog"],
+      "customCompositions": ["email-message-row", "mail-message-list", "mail-detail-content"]
     },
     {
       "id": "record-management-workbench",

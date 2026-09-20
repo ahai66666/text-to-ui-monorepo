@@ -13,13 +13,16 @@ const defaultTitlebarLogoSrc = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 import { generatedHtmlComponents } from "./generated/index.js";
 import { iconMarkup } from "./icon-map.js";
 import { advancedHtmlComponents } from "./advanced.js";
+import { resolveTitlebarSegment, createTitlebarPreviewScenes } from "@text-to-ui/component-contracts/titlebar-segments";
+export { createTitlebarSegments } from "@text-to-ui/component-contracts/titlebar-segments";
 export { bindTitlebarOverflow } from "./titlebar-overflow.js";
 
 const attrs = (id, logicalName, variant, state, extra = "") => `data-component="${id}" data-renderer-key="${id}" data-logical-component="${logicalName}" data-variant="${variant}" data-state="${state}" data-framework="html"${extra}`;
 const slot = (value, fallback = "") => value === undefined || value === null ? fallback : String(value);
 // Inline SVG keeps the HTML runtime deterministic for file:// previews and
 // makes the imported Pixso frame carry real vector geometry instead of a
-// fragile external <use> reference. Unknown semantics fail loudly.
+// fragile external <use> reference. Unknown requests are resolved by the
+// icon map's direct-source lookup or explicit non-blocking fallback.
 const icon = (name, className = "", options = {}) => iconMarkup(name, options).replace("class=\"", `class=\"${className ? `${className} ` : ""}`);
 
 const buttonTypeName = (variant = "primary") => {
@@ -35,8 +38,9 @@ const logicalNameForButton = ({ mode = "text", variant = "primary", iconOnly = f
   return `Button/${buttonTypeName(variant)}/Default`;
 };
 
-const buttonContent = ({ label, iconName, mode = "text", size = "standard", includeChevron = false }) => {
-  const iconMarkup = iconName ? `<span data-slot="icon">${icon(iconName)}</span>` : "";
+const buttonContent = ({ label, iconName, icon: iconAlias, mode = "text", size = "standard", includeChevron = false }) => {
+  const resolvedIcon = iconName ?? iconAlias;
+  const iconMarkup = resolvedIcon ? `<span data-slot="icon">${icon(resolvedIcon)}</span>` : "";
   const labelMarkup = mode === "icon" ? "" : `<span data-slot="label" data-typography-role="${size === "small" ? "body-m" : "body-l"}">${escapeHtml(label)}</span>`;
   // Button dropdown chevrons use the shared 20px medium icon rule. Keep the
   // SVG's data-icon-size in sync with its CSS box and 1.25px outline weight.
@@ -51,6 +55,7 @@ const renderButton = ({
   mode = "text",
   logicalName,
   iconName,
+  icon,
   disabled = false,
   state,
   className = "",
@@ -61,7 +66,7 @@ const renderButton = ({
   const disabledAttr = disabled ? " disabled" : "";
   const modeClass = mode === "icon" ? " tui-button--icon" : "";
   const typeAttrs = mode === "icon" ? ` aria-label="${escapeHtml(label)}"` : "";
-  return `<button class="tui-component tui-button${modeClass}${className ? ` ${className}` : ""}" type="button" ${attrs("button", resolvedLogicalName, variant, resolvedState, ` data-mode="${mode}" data-size="${size}"`)}${typeAttrs}${extraAttrs}${disabledAttr}>${buttonContent({ label, iconName, mode, size })}</button>`;
+  return `<button class="tui-component tui-button${modeClass}${className ? ` ${className}` : ""}" type="button" ${attrs("button", resolvedLogicalName, variant, resolvedState, ` data-mode="${mode}" data-size="${size}"`)}${typeAttrs}${extraAttrs}${disabledAttr}>${buttonContent({ label, iconName, icon, mode, size })}</button>`;
 };
 
 const renderSplitDropdown = ({ label = "导出文件", iconName = "action/download", disabled = false, iconOnly = false, menuItems = ["导出为 PDF", "复制分享链接", "发送到设备"] } = {}) => {
@@ -139,7 +144,10 @@ const normalizeTitlebarActions = (actions = [], actionOverflow = {}) => {
   };
 };
 
-const titlebarState = ({ label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout = "standalone", paneRole = "global", mainDetailActions = [], actionOverflow = {}, logoSrc = defaultTitlebarLogoSrc, logoAlt = "" } = {}) => {
+const titlebarState = (options = {}) => {
+  let { label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout, paneRole, mainContentLeading, mainDetailActions = [], actionOverflow = {}, logoSrc = defaultTitlebarLogoSrc, logoAlt = "", showWindowControls } = resolveTitlebarSegment(options);
+  // Pattern region names are public API; preserve the legacy styling role.
+  if (paneRole === "main-detail" || paneRole === "main-content") paneRole = "final-pane";
   const controlIconSize = size === "small" ? 16 : 24;
   const actionModel = normalizeTitlebarActions(mainDetailActions, actionOverflow);
   const paneActions = layout === "three-column" && paneRole === "final-pane" && mainDetailActions.length ? `<div class="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" data-action-overflow="${escapeHtml(actionModel.strategy)}" data-action-overflow-fit="${escapeHtml(actionModel.fit)}" data-action-mode="${actionModel.mode}"${actionModel.normalized ? ` data-mode-normalized="true"` : ""} aria-label="Main Detail 栏级操作">${actionModel.business.map((action) => {
@@ -157,10 +165,12 @@ const titlebarState = ({ label = "项目空间", paneTitle = "项目内容", siz
       extraAttrs: ` data-slot="main-detail-action" data-action="${escapeHtml(action.id)}" data-button-type="${buttonType}" data-overflow-item="true"`
     });
   }).join("")}<button class="tui-component tui-button tui-button--icon tui-titlebar__pane-action tui-titlebar__overflow-trigger" type="button" ${attrs("button", "Icon Button/Ghost/Default", "ghost", disabled ? "disabled" : "default", ` data-mode="icon" data-size="standard" data-slot="main-detail-action" data-action="more" data-button-type="icon" data-overflow-trigger="true" data-overflow-item="false" aria-label="${escapeHtml(actionModel.trigger.label)}" aria-haspopup="menu" aria-expanded="false"`)}${disabled ? " disabled" : ""}>${buttonContent({ label: actionModel.trigger.label, iconName: actionModel.trigger.icon, mode: "icon", size: "standard" })}</button><div class="tui-titlebar__overflow-menu" role="menu" hidden>${actionModel.business.map((action) => `<button class="tui-titlebar__overflow-item" type="button" role="menuitem" data-overflow-menu-item="true" data-action="${escapeHtml(action.id)}"${disabled || action.disabled ? " disabled" : ""}>${icon(action.icon ?? "action/more", "", { size: 20 })}<span data-slot="label">${escapeHtml(action.label ?? action.id)}</span></button>`).join("")}</div></div>` : "";
-  const paneTitleSlot = layout === "two-column" && paneRole === "final-pane" ? `<strong class="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">${escapeHtml(paneTitle)}</strong>` : "";
+  const contentLeadingType = mainContentLeading?.buttonType ?? "icon";
+  const contentLeadingSlot = paneRole === "final-pane" && layout === "two-column" && mainContentLeading ? `<div class="tui-titlebar__pane-leading" data-slot="main-content-leading" data-action-scope="main-content-pane-global"><button class="tui-component tui-button${contentLeadingType === "icon" ? " tui-button--icon" : ""} tui-titlebar__pane-leading-action" type="button" ${attrs("button", contentLeadingType === "icon" ? "Icon Button/Ghost/Default" : "Icon Text Button/Ghost/Default", "ghost", disabled || mainContentLeading.disabled ? "disabled" : "default", ` data-mode="${contentLeadingType === "icon" ? "icon" : "icon-text"}" data-size="standard" data-slot="main-content-leading-action" data-action="${escapeHtml(mainContentLeading.id)}" data-button-type="${escapeHtml(contentLeadingType)}" aria-label="${escapeHtml(mainContentLeading.label)}"`)}${disabled || mainContentLeading.disabled ? " disabled" : ""}><span data-slot="icon">${icon(mainContentLeading.icon, "", { size: 24 })}</span>${contentLeadingType === "icon-text-ghost" ? `<span data-slot="label" data-typography-role="body-l">${escapeHtml(mainContentLeading.label)}</span>` : ""}</button></div>` : "";
+  const paneTitleSlot = paneRole === "final-pane" && (layout === "two-column" || layout === "standalone") ? `<strong class="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">${escapeHtml(paneTitle)}</strong>` : "";
   const brand = paneRole === "global" || paneRole === "primary-navigation" ? `<span class="tui-titlebar__brand" data-slot="leading"><img class="tui-titlebar__logo" src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoAlt)}" aria-hidden="${logoAlt ? "false" : "true"}" /><span data-slot="label" data-typography-role="subtitle-m">${escapeHtml(label)}</span></span>` : "";
-  const windowActions = paneRole === "global" || paneRole === "final-pane" ? `<div class="tui-titlebar__actions" data-slot="actions" data-component="titlebar-controls" data-logical-component="Titlebar Controls/Normal" data-size="medium"><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="minimize" data-button-type="icon" aria-label="最小化"${disabled ? " disabled" : ""}>${icon("window/minimize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="maximize" data-button-type="icon" aria-label="最大化"${disabled ? " disabled" : ""}>${icon("window/maximize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="close" data-button-type="icon" aria-label="关闭"${disabled ? " disabled" : ""}>${icon("window/close", "", { size: controlIconSize })}</button></div>` : "";
-  return `<header class="tui-component tui-titlebar" ${attrs("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state)} data-size="${escapeHtml(size)}" data-layout="${escapeHtml(layout)}" data-pane-role="${escapeHtml(paneRole)}">${brand}${paneTitleSlot}${paneActions}${windowActions}</header>`;
+  const windowActions = showWindowControls ? `<div class="tui-titlebar__actions" data-slot="actions" data-component="titlebar-controls" data-logical-component="Titlebar Controls/Normal" data-size="medium"><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="minimize" data-button-type="icon" aria-label="最小化"${disabled ? " disabled" : ""}>${icon("window/minimize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="maximize" data-button-type="icon" aria-label="最大化"${disabled ? " disabled" : ""}>${icon("window/maximize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="close" data-button-type="icon" aria-label="关闭"${disabled ? " disabled" : ""}>${icon("window/close", "", { size: controlIconSize })}</button></div>` : "";
+  return `<header class="tui-component tui-titlebar" ${attrs("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state)} data-size="${escapeHtml(size)}" data-layout="${escapeHtml(layout)}" data-pane-role="${escapeHtml(paneRole)}">${brand}${contentLeadingSlot}${paneTitleSlot}${paneActions}${windowActions}</header>`;
 };
 
 const textareaState = ({ surface = "white", state = "default", label = "项目说明", value = "统一 HarmonyOS PC 客户端中的布局、组件与交互规则。", disabled = false } = {}) => `<label class="tui-component tui-textarea" ${attrs("textarea", "Textarea/Default", "default", disabled ? "disabled" : state, ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><textarea data-slot="value" data-typography-role="body-l" rows="3" placeholder="请输入内容"${disabled ? " disabled" : ""}${state === "error" ? " aria-invalid=\"true\"" : ""}>${escapeHtml(value)}</textarea><span data-slot="help" data-typography-role="body-s">支持多行输入，最多 500 字</span></label>`;
@@ -218,9 +228,9 @@ const badgeState = ({ label = "进行中", tone = "info" } = {}) => `<span class
 const badgeSpecimens = () => `<div class="tui-badge-group" aria-label="Badge 颜色示例">${badgeState({ label: "进行中", tone: "info" })}${badgeState({ label: "已完成", tone: "success" })}${badgeState({ label: "待处理", tone: "warning" })}${badgeState({ label: "错误", tone: "danger" })}${badgeState({ label: "未开始", tone: "neutral" })}</div>`;
 const itemTrailing = (type = "text-arrow", value = "详情") => {
   if (type === "icon") return `<span class="tui-item__trailing tui-item__trailing--icon" data-slot="trailing">${icon("action/more", "", { size: 20 })}</span>`;
-  if (type === "radio") return `<label class="tui-item__trailing tui-choice" data-slot="trailing" aria-label="已选中"><input type="radio" checked/><span class="tui-radio__indicator" aria-hidden="true"></span></label>`;
-  if (type === "checkbox") return `<label class="tui-item__trailing tui-choice tui-checkbox" data-slot="trailing" aria-label="已选中"><input type="checkbox" checked/>${checkboxIndicator()}</label>`;
-  if (type === "switch") return `<label class="tui-item__trailing tui-choice tui-switch" data-slot="trailing" aria-label="已开启"><input type="checkbox" role="switch" checked/><span class="tui-switch__track" aria-hidden="true"></span></label>`;
+  if (type === "radio") return `<label class="tui-item__trailing tui-choice" data-slot="trailing"><input type="radio" checked aria-label="已选中"/><span class="tui-radio__indicator" aria-hidden="true"></span></label>`;
+  if (type === "checkbox") return `<label class="tui-item__trailing tui-choice tui-checkbox" data-slot="trailing"><input type="checkbox" checked aria-label="已选中"/>${checkboxIndicator()}</label>`;
+  if (type === "switch") return `<label class="tui-item__trailing tui-choice tui-switch" data-slot="trailing"><input type="checkbox" role="switch" checked aria-label="已开启"/><span class="tui-switch__track" aria-hidden="true"></span></label>`;
   if (type === "notification-arrow") return `<span class="tui-item__trailing tui-item__trailing--notification-arrow" data-slot="trailing"><span class="tui-item__notification-dot" aria-label="有新事件"></span>${icon("navigation/chevron-right", "", { size: 20 })}</span>`;
   return `<span class="tui-item__trailing tui-item__trailing--text-arrow" data-slot="trailing" data-typography-role="body-m"><span>${escapeHtml(value)}</span>${icon("navigation/chevron-right", "", { size: 20 })}</span>`;
 };
@@ -237,7 +247,17 @@ const itemState = ({ title = "HarmonyOS 组件规范", description = "", support
   return `<div class="tui-component ${id === "list-card" ? "tui-list-card" : "tui-item"}" role="button" tabindex="${disabled ? "-1" : "0"}" ${attrs(id, logicalName, `line-${lines}`, state, ` data-lines="${lines}"`)}${selected ? " aria-selected=\"true\"" : ""}${disabled ? " aria-disabled=\"true\"" : ""}>${leadingMarkup}<span class="tui-item__content" data-slot="content">${contentMarkup}</span>${trailingMarkup}${actions ? `<span class="tui-item__actions" data-slot="actions">${slot(actions)}</span>` : ""}</div>`;
 };
 
-const sidebarState = ({ items = [{ label: "项目", icon: "navigation/grid", count: 24, selected: true }, { label: "最近访问", icon: "navigation/recent" }], ariaLabel = "主导航", collapsed = false } = {}) => `<nav class="tui-component tui-sidebar" ${attrs("sidebar", "Sidebar Item/Default", collapsed ? "collapsed" : "default", "default")} aria-label="${escapeHtml(ariaLabel)}">${items.map((item) => `<button class="tui-sidebar-item" type="button" data-state="${item.disabled ? "disabled" : item.selected ? "selected" : "default"}"${item.selected ? " aria-current=\"page\"" : ""}${item.disabled ? " disabled" : ""}>${item.leading !== undefined ? slot(item.leading) : `<span data-slot="leading">${icon(item.icon ?? "navigation/grid")}</span>`}<span data-slot="label" data-typography-role="body-l">${escapeHtml(item.label ?? "")}</span>${item.trailing !== undefined ? slot(item.trailing) : item.count !== undefined ? `<span class="tui-sidebar-item__count" data-slot="trailing" data-typography-role="body-m">${escapeHtml(item.count)}</span>` : ""}</button>`).join("")}</nav>`;
+const sidebarItemsMarkup = (items = []) => items.map((item) => `<button class="tui-sidebar-item" type="button" data-state="${item.disabled ? "disabled" : item.selected ? "selected" : "default"}"${item.selected ? " aria-current=\"page\"" : ""}${item.disabled ? " disabled" : ""}>${item.leading !== undefined ? slot(item.leading) : `<span data-slot="leading">${icon(item.icon ?? "navigation/grid")}</span>`}<span data-slot="label" data-typography-role="body-l">${escapeHtml(item.label ?? "")}</span>${item.trailing !== undefined ? slot(item.trailing) : item.count !== undefined ? `<span class="tui-sidebar-item__count" data-slot="trailing" data-typography-role="body-m">${escapeHtml(item.count)}</span>` : ""}</button>`).join("");
+const sidebarNavMarkup = ({ items = [], ariaLabel = "主导航", collapsed = false } = {}) => `<nav class="tui-component tui-sidebar" ${attrs("sidebar", "Sidebar Item/Default", collapsed ? "collapsed" : "default", "default")} aria-label="${escapeHtml(ariaLabel)}">${sidebarItemsMarkup(items)}</nav>`;
+const sidebarState = ({ items = [{ label: "项目", icon: "navigation/grid", count: 24, selected: true }, { label: "最近访问", icon: "navigation/recent" }], groups = [], ariaLabel = "主导航", collapsed = false } = {}) => {
+  const resolvedGroups = Array.isArray(groups) ? groups.filter((group) => group && Array.isArray(group.items)) : [];
+  if (resolvedGroups.length <= 1) return sidebarNavMarkup({ items: resolvedGroups[0]?.items ?? items, ariaLabel: resolvedGroups[0]?.ariaLabel ?? ariaLabel, collapsed });
+  return `<nav class="tui-component tui-sidebar-groups" data-component="sidebar-groups" data-logical-component="Sidebar Groups/Default" data-framework="html" aria-label="${escapeHtml(ariaLabel)}">${resolvedGroups.map((group, index) => {
+    const expanded = group.expanded !== false;
+    const contentId = `sidebar-group-content-${index + 1}`;
+    return `<section class="tui-component tui-disclosure tui-sidebar-group" ${attrs("collapsible", "Collapsible/Default", expanded ? "open" : "default", expanded ? "open" : "default")}><button class="tui-disclosure__trigger tui-sidebar-group__trigger" type="button" aria-expanded="${expanded}" aria-controls="${contentId}" data-typography-role="subtitle-s"><span data-slot="label">${escapeHtml(group.label ?? `导航组 ${index + 1}`)}</span>${icon("navigation/chevron-down", "", { size: 16 })}</button><div class="tui-disclosure__content tui-sidebar-group__content" id="${contentId}" data-slot="content"${expanded ? "" : " hidden"}>${sidebarNavMarkup({ items: group.items, ariaLabel: group.ariaLabel ?? group.label ?? ariaLabel, collapsed })}</div></section>`;
+  }).join("")}</nav>`;
+};
 const primaryNavigationIconAliases = Object.freeze({
   "primary-level/overview": "navigation/grid",
   "primary-level/calendar": "field/calendar",
@@ -246,11 +266,9 @@ const primaryNavigationIconAliases = Object.freeze({
   "primary-level/settings": "action/settings"
 });
 const resolvePrimaryNavigationIcon = (name) => primaryNavigationIconAliases[name] ?? name;
-const primaryNavigationAllowedIconAliases = new Set(["navigation/grid", "field/calendar", "navigation/contacts", "navigation/mail-unread", "action/settings"]);
-const primaryNavigationItemState = ({ label = "项目", ariaLabel = label, iconName = "navigation/grid", selected = false, disabled = false, state = "default", className = "" } = {}) => {
+const primaryNavigationItemState = ({ label = "项目", ariaLabel = label, iconName, icon: semanticIcon = "navigation/grid", selected = false, disabled = false, state = "default", className = "" } = {}) => {
   const resolvedState = disabled ? "disabled" : selected ? "selected" : state;
-  const iconAlias = resolvePrimaryNavigationIcon(iconName);
-  if (!primaryNavigationAllowedIconAliases.has(iconAlias)) throw new Error(`Primary Navigation Item requires an approved Lucide Regular icon alias: ${iconAlias}`);
+  const iconAlias = resolvePrimaryNavigationIcon(iconName ?? semanticIcon);
   return `<button class="tui-component tui-primary-navigation-item${className ? ` ${escapeHtml(className)}` : ""}" type="button" ${attrs("primary-navigation-item", "Primary Navigation Item/Level 1", selected ? "selected" : "default", resolvedState, ` data-placement="primary-navigation-shell" data-mode="icon-only"`)} aria-label="${escapeHtml(ariaLabel)}" aria-pressed="${selected}"${disabled ? " disabled" : ""}><span data-slot="icon">${icon(iconAlias, "", { size: 24 })}</span></button>`;
 };
 export const renderPrimaryNavigationItemGallery = () => `<nav class="tui-primary-navigation-items" aria-label="一级导航">${primaryNavigationItemState({ label: "工作台", iconName: "navigation/grid" })}${primaryNavigationItemState({ label: "项目", iconName: "field/calendar", selected: true })}${primaryNavigationItemState({ label: "消息", iconName: "navigation/mail-unread" })}${primaryNavigationItemState({ label: "设置", iconName: "action/settings" })}</nav>`;
@@ -372,12 +390,7 @@ export function renderRuntimeHtmlComponent(id, options = {}) {
     const listItem = (options) => itemState({ id: "list-card", logicalName: "List Item/White Surface/Default", ...options });
     return `<div class="tui-list-card-group" role="list">${listItem({ title: "项目设置", lines: 1, trailing: "text-arrow", trailingText: "详情" })}${listItem({ title: "成员权限", description: "管理角色和访问范围", lines: 2, trailing: "icon" })}${listItem({ title: "通知方式", description: "邮件通知", supporting: "已同步到云端", lines: 3, trailing: "radio" })}${listItem({ title: "自动同步", lines: 1, trailing: "switch" })}${listItem({ title: "项目归档", lines: 1, trailing: "checkbox" })}${listItem({ title: "更新动态", lines: 1, trailing: "notification-arrow" })}</div>`;
   }
-  if (id === "titlebar") return `<div class="tui-runtime-titlebar-gallery"><div class="tui-runtime-titlebar-layouts"><div><span class="tui-runtime-surface-label">两栏 · 左侧品牌 / 右侧标题与窗口控制</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two">${titlebarState({ layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" })}${titlebarState({ layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large" })}</div></div><div><span class="tui-runtime-surface-label">三栏 · Main Detail 操作统一为 Icon Text；更多固定为 Icon Button</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three">${titlebarState({ layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" })}${titlebarState({ layout: "three-column", paneRole: "secondary-pane", size: "large" })}${titlebarState({ layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "reply", label: "回复", icon: "action/reply", buttonType: "icon-text-ghost" }, { id: "reply-all", label: "回复全部", icon: "action/reply-all", buttonType: "icon-text-ghost" }, { id: "forward", label: "转发", icon: "action/forward", buttonType: "icon-text-ghost" }, { id: "save", label: "保存", icon: "action/save", buttonType: "icon-text-ghost" }, { id: "more", label: "更多操作", icon: "action/more", buttonType: "icon" }] })}</div></div></div>${[
-    ["small", "S · 40px"],
-    ["medium", "M · 56px"],
-    ["large", "L · 64px"],
-    ["xlarge", "XL · 72px"]
-  ].map(([size, label]) => `<div class="tui-runtime-titlebar-row"><span class="tui-runtime-surface-label">${label}</span>${titlebarState({ label: "项目空间", size })}${titlebarState({ label: "项目空间", size, state: "unfocus" })}</div>`).join("")}</div>`;
+  if (id === "titlebar") return `<div class="tui-runtime-titlebar-gallery" data-runtime-component="titlebar">${createTitlebarPreviewScenes().map(({ size, label, scenes }) => `<section class="tui-runtime-titlebar-size-group" data-preview-size="${size}"><h4 class="tui-runtime-titlebar-size-title">${label}</h4><div class="tui-runtime-titlebar-layouts">${scenes.map(scene => `<div data-preview-layout="${scene.layout}"><strong class="tui-runtime-titlebar-scenario-title">${scene.label}</strong><span class="tui-runtime-titlebar-scenario-slots">${scene.description}</span><div class="tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--${scene.columns}">${scene.segments.map(options => titlebarState(options)).join("")}</div></div>`).join("")}</div></section>`).join("")}</div>`;
   if (id === "textarea") return `<div class="tui-runtime-surface-pair tui-runtime-textarea-pair"><div data-surface-context="white"><span class="tui-runtime-surface-label">白色内容面 · 灰色输入面</span>${textareaState({ surface: "white" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">灰色内容面 · 白色输入面</span>${textareaState({ surface: "gray" })}</div></div>`;
   if (id === "field") return fieldState({ surface: "white" });
   if (id === "form-field") return `<div class="tui-runtime-form-field-states"><div data-surface-context="white"><span class="tui-runtime-surface-label">默认 · 白色内容面 / 灰色输入面</span>${formFieldState({ surface: "white", control: "input" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">默认 · 灰色内容面 / 白色输入面</span>${formFieldState({ surface: "gray", control: "input" })}</div><div data-surface-context="white"><span class="tui-runtime-surface-label">必填 · 白色内容面 / 灰色选择面</span>${formFieldState({ surface: "white", control: "select", required: true })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">必填 · 灰色内容面 / 白色选择面</span>${formFieldState({ surface: "gray", control: "select", required: true })}</div><div data-surface-context="white"><span class="tui-runtime-surface-label">错误 · 白色内容面 / 灰色输入面</span>${formFieldState({ surface: "white", control: "input", error: "项目名称不能为空", value: "" })}</div><div data-surface-context="gray"><span class="tui-runtime-surface-label">错误 · 灰色内容面 / 白色输入面</span>${formFieldState({ surface: "gray", control: "input", error: "项目名称不能为空", value: "" })}</div></div>`;
@@ -524,7 +537,11 @@ export const htmlComponents = {
 export function renderHtmlComponent(name, options) {
   const renderer = htmlComponents[name] ?? htmlComponents[String(name).replace(/-([a-z])/g, (_, character) => character.toUpperCase())];
   if (!renderer) throw new Error(`Unknown HTML component: ${name}`);
-  const markup = renderer(options);
+  // Gallery no-argument calls retain specimen text. Product calls must not
+  // inherit unrelated demo descriptions or a pre-selected checkbox.
+  const resolvedOptions = name === "checkbox" && options
+    ? { checked: false, description: "", ...options } : options;
+  const markup = renderer(resolvedOptions);
   if (/\bdata-renderer-key=/.test(markup)) return markup;
   return markup.replace(/(<[a-z][^>]*\bdata-component="[^"]+")/i, `$1 data-renderer-key="${escapeHtml(name)}"`);
 }
@@ -537,9 +554,68 @@ export function resolveHtmlRendererKey(componentId) {
 
 export function collectHtmlComponentEvidence(root = document) {
   const nodes = [...root.querySelectorAll(".tui-component[data-component][data-logical-component]")];
+  const patternRoot = root.querySelector("[data-pattern][data-structure-digest], [data-tui-pattern][data-structure-digest]");
+  const rectEvidence = (node) => {
+    const rect = node?.getBoundingClientRect?.();
+    return rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null;
+  };
+  const stylesheetEvidence = [...(root.styleSheets ?? [])].map((stylesheet) => {
+    try {
+      return { href: stylesheet.href ?? "inline", loaded: true, ruleCount: stylesheet.cssRules.length };
+    } catch {
+      return { href: stylesheet.href ?? "inline", loaded: true, ruleCount: null };
+    }
+  });
+  const patternStyle = patternRoot ? getComputedStyle(patternRoot) : null;
+  const patternRegions = patternRoot ? [...patternRoot.querySelectorAll(":scope > [data-pattern-region], :scope > [data-ui-region]")].map((node) => {
+    const style = getComputedStyle(node);
+    const readBoxStyle = (candidate) => {
+      if (!candidate) return null;
+      const candidateStyle = getComputedStyle(candidate);
+      return {
+        paddingInlineStart: candidateStyle.paddingInlineStart,
+        paddingInlineEnd: candidateStyle.paddingInlineEnd,
+        paddingBlockStart: candidateStyle.paddingBlockStart,
+        paddingBlockEnd: candidateStyle.paddingBlockEnd
+      };
+    };
+    const titleSegment = node.querySelector(":scope > [data-pattern-title-segment]");
+    const scrollBody = node.querySelector(":scope > [data-pattern-scroll-body]");
+    return {
+      region: node.getAttribute("data-pattern-region") ?? node.getAttribute("data-ui-region"),
+      display: style.display,
+      overflowX: style.overflowX,
+      overflowY: style.overflowY,
+      bounds: rectEvidence(node),
+      title: titleSegment ? { bounds: rectEvidence(titleSegment), padding: readBoxStyle(titleSegment) } : null,
+      scrollBody: scrollBody ? { bounds: rectEvidence(scrollBody), padding: readBoxStyle(scrollBody), overflowY: getComputedStyle(scrollBody).overflowY } : null
+    };
+  }) : [];
+  const interactiveSelector = "button, input, select, textarea, a[href], [role='button'], [role='checkbox'], [role='radio'], [role='switch'], [role='tab'], [role='menuitem'], [contenteditable='true']";
+  const unclassifiedInteractive = [...root.querySelectorAll(interactiveSelector)]
+    .filter((node) => !node.closest(".tui-component[data-component][data-logical-component], [data-custom-ui], [data-contract-ui]"))
+    .map((node, index) => ({
+      index,
+      tag: node.tagName.toLowerCase(),
+      role: node.getAttribute("role"),
+      label: node.getAttribute("aria-label") ?? node.getAttribute("title") ?? node.textContent?.trim().slice(0, 80) ?? ""
+    }));
   return {
     schemaVersion: 1,
     url: root.location?.href ?? null,
+    pattern: patternRoot?.dataset.pattern ?? patternRoot?.dataset.tuiPattern ?? null,
+    structureDigest: patternRoot?.dataset.structureDigest ?? null,
+    stylesheets: stylesheetEvidence,
+    patternLayout: patternRoot ? {
+      display: patternStyle.display,
+      gridTemplateColumns: patternStyle.gridTemplateColumns,
+      gridTemplateRows: patternStyle.gridTemplateRows,
+      bounds: rectEvidence(patternRoot),
+      regions: patternRegions
+    } : null,
+    customRegions: [...root.querySelectorAll("[data-custom-ui]")].map((node) => node.getAttribute("data-custom-ui")).filter(Boolean),
+    contractRegions: [...root.querySelectorAll("[data-contract-ui]")].map((node) => node.getAttribute("data-contract-ui")).filter(Boolean),
+    unclassifiedInteractive,
     components: nodes.map((node, index) => ({
       index,
       rendererKey: node.dataset.rendererKey ?? node.dataset.component,
@@ -547,7 +623,7 @@ export function collectHtmlComponentEvidence(root = document) {
       logicalName: node.dataset.logicalComponent,
       variant: node.dataset.variant,
       state: node.dataset.state,
-      region: node.closest("[data-ui-region]")?.getAttribute("data-ui-region") ?? null,
+      region: node.closest("[data-ui-region], [data-pattern-region]")?.getAttribute("data-ui-region") ?? node.closest("[data-pattern-region]")?.getAttribute("data-pattern-region") ?? null,
       slots: [...new Set([...node.querySelectorAll("[data-slot]")].map((slotNode) => slotNode.getAttribute("data-slot")))],
       visible: Boolean(node.getClientRects().length && getComputedStyle(node).visibility !== "hidden")
     }))

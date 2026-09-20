@@ -121,12 +121,10 @@ assert(
 assert(workspace.includes('packages:\n  - "packages/*"\n  - "apps/*"'), "workspace must include packages/* and apps/*");
 assert(rootReadme.includes("完整代码仓交付边界"), "root README must document complete-repository delivery");
 assert(rootReadme.includes("pnpm delivery:validate"), "root README must document delivery:validate");
-assert(canonicalSkill.includes("Mandatory Gate 0: analyze, propose, confirm"), "Text-to-UI Skill must keep the requirement-analysis gate");
-assert(canonicalSkill.includes("Confirmation: pending"), "Text-to-UI Skill must expose a pending confirmation state");
-assert(canonicalSkill.includes("Do not silently infer confirmation"), "Text-to-UI Skill must require explicit confirmation");
-assert(canonicalSkill.includes("Before confirmation, do **not** create or modify page HTML"), "Text-to-UI Skill must block page generation before confirmation");
+assert(canonicalSkill.includes("Mandatory Gate 0: analyze and build the page blueprint"), "Text-to-UI Skill must keep the blueprint analysis gate");
+assert(canonicalSkill.includes("page-blueprint.json"), "Text-to-UI Skill must require a page blueprint");
+assert(canonicalSkill.includes("The blueprint is the design decision layer"), "Text-to-UI Skill must separate design decisions from bindings");
 assert(requirementSpec.includes("The proposal must also expose the task model"), "requirement spec must preserve task-model analysis");
-assert(requirementSpec.includes("Do not start a renderer or create a page artifact while confirmation is `pending`"), "requirement spec must block renderers while pending");
 
 const registry = readJson("packages/component-contracts/src/components.json") ?? {};
 const components = Array.isArray(registry.components) ? registry.components : [];

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { readPatternRegistry } from "./pattern-contract-lib.mjs";
 
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), "tui-layout-contract-"));
 const contractPath = path.join(temp, "layout-contract.json");
@@ -28,6 +29,7 @@ const contract = {
   resizeBehavior: "fixed-panes-flexible-final-pane",
   contentMode: "default-content",
   layoutTokens: ["layout/sidebar-width", "layout/secondary-pane-width", "space/6"],
+  geometry: readPatternRegistry().patterns.find((entry) => entry.id === "pattern-b-three-pane").geometry,
 };
 const run = () => spawnSync(process.execPath, [validator, "--contract", contractPath], { encoding: "utf8" });
 
@@ -43,7 +45,7 @@ const variants = [
 ];
 const baseContract = JSON.parse(JSON.stringify(contract));
 for (const variant of variants) {
-  Object.assign(contract, baseContract, { pattern: variant.pattern, paneOrder: variant.panes, titleSegments: variant.panes, finalPaneLeadingSlot: variant.finalSlot, requiredSlots: variant.required, insetOwners: variant.inset, scrollOwners: variant.scroll });
+  Object.assign(contract, baseContract, { pattern: variant.pattern, paneOrder: variant.panes, titleSegments: variant.panes, finalPaneLeadingSlot: variant.finalSlot, requiredSlots: variant.required, insetOwners: variant.inset, scrollOwners: variant.scroll, geometry: readPatternRegistry().patterns.find((entry) => entry.id === variant.pattern).geometry });
   fs.writeFileSync(contractPath, JSON.stringify(contract));
   const variantResult = run();
   assert.equal(variantResult.status, 0, `${variant.pattern}: ${variantResult.stderr}`);

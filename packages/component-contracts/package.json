@@ -3,5 +3,5 @@
   "version": "0.1.0",
   "private": false,
   "type": "module",
-  "exports": {".": "./src/components.json", "./components.json": "./src/components.json"}
+  "exports": {".": "./src/components.json", "./components.json": "./src/components.json", "./readiness-policy": "./src/readiness-policy.js", "./titlebar-segments": "./src/titlebar-segments.js"}
 }

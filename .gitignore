@@ -37,3 +37,7 @@ build_email_test_doc.py
 
 # Generated local delivery verification metadata
 skill/.delivery-manifest.json
+
+# Local backup copies and screenshot probes
+*.bak-*
+runtime-renderer-*.png

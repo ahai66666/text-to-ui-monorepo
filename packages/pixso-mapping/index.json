@@ -693,6 +693,7 @@
       "slots": [
         "leading",
         "label",
+        "main-content-leading",
         "main-content-title",
         "main-detail-actions",
         "actions"

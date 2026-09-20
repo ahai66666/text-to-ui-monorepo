@@ -5,7 +5,7 @@ import crypto from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 
-const excluded = new Set(["node_modules", "dist", "outputs", ".git", ".text-to-ui", "__pycache__", ".DS_Store", ".delivery-manifest.json"]);
+const excluded = new Set(["node_modules", "dist", "outputs", ".git", ".text-to-ui", "__pycache__", ".DS_Store", ".delivery-manifest.json", ".text-to-ui-delivery-manifest.json"]);
 export function skillFiles(root, relative = "") {
   return fs.readdirSync(path.join(root, relative), { withFileTypes: true }).flatMap(entry => {
     if (excluded.has(entry.name)) return [];
@@ -14,6 +14,31 @@ export function skillFiles(root, relative = "") {
   }).sort();
 }
 const hash = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
+const deliveryManifestFile = target => path.join(target, ".delivery-manifest.json");
+function previousManagedFiles(target) {
+  const file = deliveryManifestFile(target);
+  if (!fs.existsSync(file)) return new Set();
+  try {
+    const manifest = JSON.parse(fs.readFileSync(file, "utf8"));
+    return new Set(Object.keys(manifest.files ?? {}));
+  } catch {
+    return new Set();
+  }
+}
+function staleManagedFiles(source, target) {
+  const current = new Set(skillFiles(source));
+  return [...previousManagedFiles(target)].filter(file => !current.has(file) && fs.existsSync(path.join(target, file)));
+}
+function staleFilesFromManifest(target, manifestFile, currentFiles) {
+  if (!fs.existsSync(manifestFile)) return [];
+  try {
+    const previous = JSON.parse(fs.readFileSync(manifestFile, "utf8"));
+    const current = new Set(Object.keys(currentFiles));
+    return Object.keys(previous.files ?? {}).filter(file => !current.has(file) && fs.existsSync(path.join(target, file)));
+  } catch {
+    return [];
+  }
+}
 export function deliveryManifest(root) {
   const files = Object.fromEntries(skillFiles(root).map(file => [file, hash(fs.readFileSync(path.join(root, file)))]));
   return { schemaVersion: 1, version: JSON.parse(fs.readFileSync(path.join(root, "package.json"))).version, sourceDigest: hash(JSON.stringify(files)), files };
@@ -25,6 +50,8 @@ export function verifySkill(source, target) {
     const actual = path.join(target, file);
     if (!fs.existsSync(actual) || hash(fs.readFileSync(actual)) !== expected) failures.push(file);
   }
+  const stale = staleManagedFiles(source, target);
+  if (stale.length) failures.push(...stale.map(file => `${file} (stale managed file)`));
   if (failures.length) throw new Error(`Skill mirror ${target} differs: ${failures.join(", ")}`);
   for (const file of ["scripts/pixso-native-scene-lib.mjs", "scripts/component-mapping-resolver.mjs", "scripts/coremail-semantic-adapter.mjs"]) {
     const result = spawnSync(process.execPath, ["--input-type=module", "-e", `await import(${JSON.stringify(pathToFileURL(path.join(target, file)).href)})`], { encoding: "utf8" });
@@ -72,12 +99,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   if (pluginExists) {
     const pluginFiles = Object.fromEntries(skillFiles(pluginSource).map(file => [file, hash(fs.readFileSync(path.join(pluginSource, file)))]));
     if (write) syncFiles(pluginSource, pluginTarget, pluginFiles, path.join(backup, "plugin"));
+    const pluginManifestPath = path.join(pluginTarget, ".text-to-ui-delivery-manifest.json");
+    const stalePluginFiles = staleFilesFromManifest(pluginTarget, pluginManifestPath, pluginFiles);
+    if (stalePluginFiles.length) throw new Error(`Plugin delivery has stale managed files: ${stalePluginFiles.join(", ")}`);
     for (const [file, expected] of Object.entries(pluginFiles)) {
       const targetFile = path.join(pluginTarget, file);
       if (!fs.existsSync(targetFile) || hash(fs.readFileSync(targetFile)) !== expected) {
         throw new Error(`Plugin delivery differs: ${targetFile}`);
       }
     }
+    if (write) fs.writeFileSync(pluginManifestPath, JSON.stringify({ schemaVersion: 1, sourceDigest: hash(JSON.stringify(pluginFiles)), files: pluginFiles }, null, 2) + "\n");
   }
   console.log(JSON.stringify({ ok: true, targets, pluginTarget: pluginExists ? pluginTarget : null, files: skillFiles(source).length, backup }, null, 2));
 }

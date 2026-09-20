@@ -34,16 +34,16 @@ const manifest = {
   enforcement: "strict-source",
   registry: "packages/component-contracts/src/components.json",
   sourceRoots: [repoRelativeSource],
-  layout: { contractPath: "layout-contract.json", pattern: "pattern-b-three-pane", paneOrder: ["primary-navigation", "secondary-list", "main-detail"] },
-  renderer: { package: "@text-to-ui/components-html", factoryImport: "renderHtmlComponent", styleImports: ["@text-to-ui/tokens", "@text-to-ui/components-html/styles.css"] },
-  registered: [{ logicalName: "Titlebar/Default", rendererKey: "titlebar", usage: "global title", requiredCallSites: 1, expectedRuntimeCount: 1 }],
+  layout: { contractPath: "layout-contract.json", pattern: "pattern-b-three-pane", paneOrder: ["primary-navigation", "secondary-list", "main-detail"], patternDigest: "test-pattern", structureDigest: "test-structure" },
+  renderer: { package: "@text-to-ui/components-html", factoryImport: "renderHtmlComponent", styleImports: ["@text-to-ui/tokens", "@text-to-ui/components-html/styles.css", "@text-to-ui/components-html/pattern-shell.css"] },
+  registered: [{ logicalName: "Titlebar/Default", rendererKey: "titlebar", usage: "global title", requiredCallSites: 1, expectedRuntimeCount: 1, readinessLevel: "provisional", unresolvedParity: ["visualParity", "behaviorParity", "accessibilityParity"] }],
   contractBased: [], custom: [], previousOutputReuse: false
 };
 const manifestPath = path.join(temp, "component-usage.json");
 fs.writeFileSync(manifestPath, JSON.stringify(manifest));
 const validator = path.resolve("text-to-ui/scripts/validate-web-component-reuse.mjs");
 const run = () => spawnSync(process.execPath, [validator, "--manifest", manifestPath, "--project-root", process.cwd()], { encoding: "utf8" });
-const validSource = `import "@text-to-ui/tokens";\nimport "@text-to-ui/components-html/styles.css";\nimport { renderHtmlComponent } from "@text-to-ui/components-html";\nexport const titlebar = renderHtmlComponent("titlebar", { label: "任务" });\n`;
+const validSource = `import "@text-to-ui/tokens";\nimport "@text-to-ui/components-html/styles.css";\nimport "@text-to-ui/components-html/pattern-shell.css";\nimport { renderHtmlComponent } from "@text-to-ui/components-html";\nexport const titlebar = renderHtmlComponent("titlebar", { label: "任务" });\n`;
 fs.writeFileSync(path.join(sourceDir, "main.js"), validSource);
 assert.equal(run().status, 0, run().stderr);
 fs.writeFileSync(path.join(sourceDir, "main.js"), validSource + `titlebar.replaceChildren(document.createElement("span"));\n`);
@@ -54,12 +54,29 @@ fs.writeFileSync(path.join(sourceDir, "main.js"), validSource.replace('renderHtm
 const lookalike = run();
 assert.notEqual(lookalike.status, 0);
 assert.match(lookalike.stderr, /never rendered enough times|handwritten registered-component/);
+fs.writeFileSync(path.join(sourceDir, "main.js"), validSource);
+fs.writeFileSync(path.join(sourceDir, "page.css"), `.page-toolbar .tui-button { height: 40px; border-radius: 12px; background: red; }\n`);
+const protectedOverride = run();
+assert.notEqual(protectedOverride.status, 0, "page CSS must not restyle registered component internals");
+assert.match(protectedOverride.stderr, /protected registered-component properties/);
+fs.writeFileSync(path.join(sourceDir, "page.css"), `.page-toolbar .tui-button { width: 100%; margin-inline: auto; }\n`);
+assert.equal(run().status, 0, run().stderr);
 
 const runtimeValidator = path.resolve("text-to-ui/scripts/validate-runtime-component-reuse.mjs");
 const evidencePath = path.join(temp, "runtime.json");
-fs.writeFileSync(evidencePath, JSON.stringify({ schemaVersion: 1, url: "http://127.0.0.1/", components: [{ rendererKey: "titlebar", logicalName: "Titlebar/Default", state: "default", variant: "medium", region: null, slots: ["label"], visible: true }] }));
+fs.writeFileSync(evidencePath, JSON.stringify({ schemaVersion: 1, url: "http://127.0.0.1/", pattern: "pattern-b-three-pane", structureDigest: "test-structure", stylesheets: [{ href: "fixture.css", loaded: true, ruleCount: 1 }], patternLayout: { display: "grid", regions: [
+  { region: "primary-navigation", display: "block", bounds: { x: 0, y: 0, width: 240, height: 720 } },
+  { region: "secondary-list", display: "block", bounds: { x: 240, y: 0, width: 360, height: 720 } },
+  { region: "main-detail", display: "block", bounds: { x: 600, y: 0, width: 600, height: 720 } }
+] }, customRegions: [], contractRegions: [], unclassifiedInteractive: [], components: [{ rendererKey: "titlebar", logicalName: "Titlebar/Default", state: "default", variant: "medium", region: null, slots: ["label"], visible: true }] }));
 const runtimeGood = spawnSync(process.execPath, [runtimeValidator, "--manifest", manifestPath, "--evidence", evidencePath], { encoding: "utf8" });
 assert.equal(runtimeGood.status, 0, runtimeGood.stderr);
+const stacked = JSON.parse(fs.readFileSync(evidencePath, "utf8"));
+stacked.patternLayout.regions = stacked.patternLayout.regions.map((region, index) => ({ ...region, bounds: { ...region.bounds, x: 0, y: index * 240 } }));
+fs.writeFileSync(evidencePath, JSON.stringify(stacked));
+const runtimeStacked = spawnSync(process.execPath, [runtimeValidator, "--manifest", manifestPath, "--evidence", evidencePath], { encoding: "utf8" });
+assert.notEqual(runtimeStacked.status, 0, "vertically stacked Pattern panes must fail runtime layout validation");
+assert.match(runtimeStacked.stderr, /overlap or stack/);
 fs.writeFileSync(evidencePath, JSON.stringify({ schemaVersion: 1, components: [] }));
 const runtimeMissing = spawnSync(process.execPath, [runtimeValidator, "--manifest", manifestPath, "--evidence", evidencePath], { encoding: "utf8" });
 assert.notEqual(runtimeMissing.status, 0);

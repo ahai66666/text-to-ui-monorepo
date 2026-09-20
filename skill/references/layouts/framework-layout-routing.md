@@ -25,3 +25,20 @@ Instances; the Pattern itself is not registered as a component.
 Always preserve the Global Title Layer, pane order, inset owners, scroll owners, resize behavior, minimum window, and declared action slots. In Pattern B, every action scoped to the complete third pane belongs in the `main-detail-actions` Titlebar slot (`0..n` actions). That slot accepts only `icon` and `icon-text-ghost` Button types with the `ghost` variant. Components fill slots; they never reshape the shell.
 
 Use `query-layouts.mjs` to locate the exact sections in `harmonyos-layout-patterns.md`, `layout-system.md`, and `pc-framework-layout-gate.md`.
+
+Pattern A navigation starts below Titlebar with `space/2` (8px) top inset:
+`global-primary-action` (Button) precedes `primary-navigation-shell` (Sidebar).
+The optional `primary-navigation-footer` slot is anchored bottom-left outside
+the navigation scroll body. Fill it with a registered Button using
+`variant: "ghost", mode: "icon-text"`; its label, icon and action are configurable.
+Omit the slot when not needed. Do not move this footer into the scrolling list.
+
+Pattern B two-level navigation uses an 8px (`space/2`) top inset below the
+title layer: fixed Button (`global-primary-action`), scrollable Sidebar
+(`secondary-navigation-content`), fixed level-one Primary Navigation Items
+(`primary-navigation-bottom`). Sidebar overflow is clipped with a bottom fade
+mask inside its own bounded scroll region. The primary rail is outside this
+region and must never scroll away or be masked. The legacy
+`primary-navigation-shell` slot is optional, not a second Sidebar container.
+The Sidebar slot's internal padding is `space/4` (16px) on all four sides;
+empty optional legacy slots must not create additional spacing.

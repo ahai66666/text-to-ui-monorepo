@@ -24,6 +24,15 @@ try {
   assert.equal(fs.readFileSync(path.join(backup, "scripts/pixso-native-scene-lib.mjs"), "utf8"), "old local source");
   assert.equal(fs.readFileSync(path.join(target, ".text-to-ui/run.json"), "utf8"), "keep runtime state");
   assert.equal(fs.readFileSync(path.join(target, "local-note.md"), "utf8"), "keep extra local files");
+  // A file that was previously managed but disappeared from the canonical
+  // source must be reported as drift; untracked local notes remain allowed.
+  const manifest = JSON.parse(fs.readFileSync(path.join(target, ".delivery-manifest.json"), "utf8"));
+  manifest.files["stale-managed.md"] = "old-hash";
+  fs.writeFileSync(path.join(target, ".delivery-manifest.json"), JSON.stringify(manifest));
+  write(target, "stale-managed.md", "old generated rule");
+  assert.throws(() => verifySkill(source, target), /stale-managed\.md \(stale managed file\)/);
+  delete manifest.files["stale-managed.md"];
+  fs.writeFileSync(path.join(target, ".delivery-manifest.json"), JSON.stringify(manifest));
   write(target, "scripts/component-mapping-resolver.mjs", "changed dependency");
   assert.throws(() => verifySkill(source, target), /component-mapping-resolver/);
   // Matching hashes alone must not hide the original missing-export failure.

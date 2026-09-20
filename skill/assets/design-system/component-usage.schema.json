@@ -26,16 +26,63 @@
     },
     "strictRegistered": {
       "type": "object",
-      "required": ["logicalName", "rendererKey", "usage", "requiredCallSites", "expectedRuntimeCount"],
+      "required": ["logicalName", "rendererKey", "usage", "requiredCallSites", "expectedRuntimeCount", "readinessLevel", "unresolvedParity"],
       "properties": {
         "logicalName": { "type": "string", "minLength": 1 },
         "rendererKey": { "type": "string", "minLength": 1 },
         "usage": { "type": "string", "minLength": 1 },
         "requiredCallSites": { "type": "integer", "minimum": 1 },
         "expectedRuntimeCount": { "type": "integer", "minimum": 1 },
+        "readinessLevel": { "enum": ["approved", "provisional", "blocked"] },
+        "unresolvedParity": { "type": "array", "items": { "type": "string", "minLength": 1 } },
         "regions": { "type": "array", "items": { "type": "string" } },
         "requiredRuntimeSlots": { "type": "array", "items": { "type": "string" } }
       }
+    },
+    "reviewedCandidate": {
+      "type": "object",
+      "required": ["logicalName", "rejectionReason"],
+      "properties": {
+        "logicalName": { "type": "string", "minLength": 1 },
+        "rejectionReason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "pageOwnedBase": {
+      "type": "object",
+      "required": ["id", "missingCapability", "registryQueries", "reviewedCandidates", "tokenRoles", "disposition"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "missingCapability": { "type": "string", "minLength": 1 },
+        "registryQueries": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "reviewedCandidates": { "type": "array", "items": { "$ref": "#/$defs/reviewedCandidate" } },
+        "tokenRoles": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "disposition": { "enum": ["page-owned", "promote-to-library"] },
+        "regions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "strictContractBased": {
+      "allOf": [
+        { "$ref": "#/$defs/pageOwnedBase" },
+        {
+          "required": ["contractLogicalName", "contractEvidence"],
+          "properties": {
+            "contractLogicalName": { "type": "string", "minLength": 1 },
+            "contractEvidence": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "strictCustom": {
+      "allOf": [
+        { "$ref": "#/$defs/pageOwnedBase" },
+        {
+          "required": ["contractQueries", "exceptionKind"],
+          "properties": {
+            "contractQueries": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+            "exceptionKind": { "enum": ["no-matching-component", "specialized-business-surface"] }
+          }
+        }
+      ]
     },
     "strictHtml": {
       "allOf": [
@@ -64,7 +111,9 @@
                 "paneOrder": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
               }
             },
-            "registered": { "type": "array", "items": { "$ref": "#/$defs/strictRegistered" } }
+            "registered": { "type": "array", "items": { "$ref": "#/$defs/strictRegistered" } },
+            "contractBased": { "type": "array", "items": { "$ref": "#/$defs/strictContractBased" } },
+            "custom": { "type": "array", "items": { "$ref": "#/$defs/strictCustom" } }
           }
         }
       ]

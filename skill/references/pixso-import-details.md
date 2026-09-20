@@ -50,9 +50,11 @@ Pixso icon slot as a separate square hot zone:
   only a diagnostic fallback when the target Pixso file has not synced the
   variables yet.
 - Apply the same contract to page SVGs, generated icon Components, and icon
-  Instances. A missing exact icon can remain as the original SVG, but an
-  approximate glyph or a top-aligned placeholder is not an acceptable
-  fallback.
+  Instances. A missing exact icon should remain as its original SVG when
+  source geometry is available. If no source can be resolved, the page may
+  continue with an explicit unresolved fallback for preview; preserve the
+  requested name and diagnostic marker so it is not mistaken for exact
+  Pixso/library parity.
 - The operation plan must carry `hotZone: { alignment: "CENTER", axes:
   "BOTH" }`; Pixso readback must verify both alignment properties, vector x/y
   centring, and the effective stroke weight.

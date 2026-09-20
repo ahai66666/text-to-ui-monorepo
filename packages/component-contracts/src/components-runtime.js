@@ -1020,6 +1020,8 @@ export default {
         "size",
         "mode",
         "iconOnly",
+        "icon",
+        "iconSize",
         "disabled",
         "menuItems"
       ],
@@ -4648,7 +4650,9 @@ export default {
         "icon",
         "selected",
         "collapsed",
-        "count"
+        "count",
+        "items",
+        "ariaLabel"
       ],
       "slots": [
         "leading",
@@ -6188,9 +6192,15 @@ export default {
         "size",
         "layout",
         "paneRole",
+        "segmentRole",
+        "slots",
+        "showWindowControls",
+        "logoSrc",
+        "logoAlt",
         "disabled",
         "state",
         "mainDetailActions",
+        "onMainContentAction",
         "onMainDetailAction",
         "onAction",
         "className"
@@ -6198,11 +6208,38 @@ export default {
       "slots": [
         "leading",
         "label",
+        "main-content-leading",
         "main-content-title",
         "main-detail-actions",
         "actions"
       ],
       "slotContracts": {
+        "main-content-leading": {
+          "cardinality": "0..1",
+          "scope": "main-content-pane-global",
+          "valueType": "action-object",
+          "activeWhen": {
+            "layout": "two-column",
+            "paneRole": "final-pane"
+          },
+          "defaultPlacement": "final-pane-leading-slot",
+          "gapToken": "space/2",
+          "gap": "4px",
+          "iconSize": "24px",
+          "allowedButtonVariants": [
+            "ghost"
+          ],
+          "allowedButtonTypes": [
+            "icon",
+            "icon-text-ghost"
+          ],
+          "fields": [
+            "id",
+            "label",
+            "icon",
+            "buttonType"
+          ]
+        },
         "main-detail-actions": {
           "cardinality": "0..n",
           "scope": "main-detail-pane-global",
@@ -6278,17 +6315,48 @@ export default {
                 "label"
               ]
             }
-          }
+          },
+          "valueType": "action-array"
         },
         "main-content-title": {
           "cardinality": "0..1",
           "scope": "main-content-pane-global",
+          "valueType": "text",
           "activeWhen": {
             "layout": "two-column",
             "paneRole": "final-pane"
           },
           "defaultPlacement": "final-pane-leading-slot",
           "leadingInsetToken": "layout/main-title-leading-padding"
+        },
+        "leading": {
+          "cardinality": "0..1",
+          "valueType": "image-object",
+          "activeRoles": [
+            "global",
+            "primary-navigation"
+          ],
+          "fields": [
+            "src",
+            "alt"
+          ]
+        },
+        "label": {
+          "cardinality": "0..1",
+          "valueType": "text",
+          "activeRoles": [
+            "global",
+            "primary-navigation"
+          ]
+        },
+        "actions": {
+          "cardinality": "0..1",
+          "valueType": "boolean",
+          "activeRoles": [
+            "global",
+            "final-pane"
+          ],
+          "implementation": "component-owned-window-controls"
         }
       },
       "layoutRules": {
@@ -6400,7 +6468,7 @@ export default {
         "focus",
         "disabled"
       ],
-      "iconSemantic": "action/minimize",
+      "iconSemantic": "window/minimize",
       "readiness": {
         "sourceReady": true,
         "contractReady": true,
@@ -6424,7 +6492,7 @@ export default {
       ],
       "iconSlots": [
         {
-          "alias": "action/minimize",
+          "alias": "window/minimize",
           "displaySizes": [
             16,
             20,
@@ -6433,7 +6501,7 @@ export default {
           "kind": "regular"
         },
         {
-          "alias": "action/maximize",
+          "alias": "window/maximize",
           "displaySizes": [
             16,
             20,
@@ -6442,7 +6510,7 @@ export default {
           "kind": "regular"
         },
         {
-          "alias": "action/close",
+          "alias": "window/close",
           "displaySizes": [
             16,
             20,
@@ -6452,9 +6520,9 @@ export default {
         }
       ],
       "iconAliases": [
-        "action/minimize",
-        "action/maximize",
-        "action/close"
+        "window/minimize",
+        "window/maximize",
+        "window/close"
       ],
       "structuralAxes": {
         "size": [
@@ -6473,6 +6541,15 @@ export default {
           "primary-navigation",
           "secondary-pane",
           "final-pane"
+        ],
+        "segmentRole": [
+          "global",
+          "primary-navigation",
+          "secondary-list",
+          "main-content",
+          "main-detail",
+          "secondary-pane",
+          "final-pane"
         ]
       },
       "dividerRules": {
@@ -6488,6 +6565,20 @@ export default {
           "final-pane": "bottom-divider"
         },
         "verticalPaneDividers": "owned-by-layout-and-continuous"
+      },
+      "segmentContract": {
+        "owner": "pattern-title-layer",
+        "orderedBy": "titleLayer.segments",
+        "widthOwner": "pattern-renderer",
+        "roles": [
+          "primary-navigation",
+          "secondary-list",
+          "main-content",
+          "main-detail"
+        ],
+        "middleSegments": "alignment-only",
+        "windowControls": "final-segment-only",
+        "slotAPI": "declarative-content; no arbitrary HTML"
       }
     },
     {

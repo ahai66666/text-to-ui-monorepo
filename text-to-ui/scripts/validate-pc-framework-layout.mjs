@@ -1,5 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
 const args = process.argv.slice(2);
 const index = args.indexOf("--contract");
@@ -11,6 +14,11 @@ if (index < 0 || !args[index + 1]) {
 const contractPath = path.resolve(args[index + 1]);
 const contract = JSON.parse(fs.readFileSync(contractPath, "utf8"));
 const failures = [];
+const canonical = (value) => Array.isArray(value)
+  ? value.map(canonical)
+  : value && typeof value === "object"
+    ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])]))
+    : value;
 const patterns = {
   "pattern-a-two-pane": ["primary-navigation", "main-content"],
   "pattern-b-three-pane": ["primary-navigation", "secondary-list", "main-detail"],
@@ -63,10 +71,30 @@ for (const pane of Object.keys(insetOwners)) if (!panes.includes(pane)) failures
 if (!Array.isArray(contract.scrollOwners) || contract.scrollOwners.length === 0) failures.push("scrollOwners must declare pane-level scrolling ownership");
 if (new Set(contract.scrollOwners ?? []).size !== (contract.scrollOwners ?? []).length) failures.push("scrollOwners must not duplicate pane ownership");
 for (const owner of contract.scrollOwners ?? []) if (!panes.includes(owner)) failures.push(`scroll owner is not a declared pane: ${owner}`);
-if (contract.resizeBehavior !== "fixed-panes-flexible-final-pane") failures.push("resizeBehavior must preserve fixed panes and a flexible final pane");
+const canonicalResizeBehavior = (() => {
+  try {
+    const registry = JSON.parse(fs.readFileSync(path.resolve(scriptDir, "..", "assets", "design-system", "pattern-contracts.json"), "utf8"));
+    const entries = Array.isArray(registry.patterns) ? registry.patterns : Object.values(registry.patterns ?? {});
+    return entries.find((entry) => (entry.id ?? entry.patternId) === contract.pattern)?.resizeBehavior ?? null;
+  } catch {
+    return null;
+  }
+})();
+const fixedPaneFlexibleFinalPane = (value) => typeof value === "string" && /fixed/.test(value) && /flexible/.test(value);
+const resizeBehaviorAllowed = contract.resizeBehavior === "fixed-panes-flexible-final-pane"
+  || (canonicalResizeBehavior !== null && contract.resizeBehavior === canonicalResizeBehavior && fixedPaneFlexibleFinalPane(contract.resizeBehavior));
+if (!resizeBehaviorAllowed) failures.push("resizeBehavior must preserve fixed panes and a flexible final pane");
 if (!["default-content", "edge-aligned"].includes(contract.contentMode)) failures.push("contentMode must be default-content or edge-aligned");
 if (!Array.isArray(contract.layoutTokens) || contract.layoutTokens.length === 0) failures.push("layoutTokens must contain shared layout Token paths");
 for (const token of contract.layoutTokens ?? []) if (!/^(layout|space|size|radius|font|opacity)\//.test(token)) failures.push(`layout token is not a shared foundation path: ${token}`);
+
+const registryPath = path.resolve(scriptDir, "..", "assets", "design-system", "pattern-contracts.json");
+const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
+const canonicalPattern = registry.patterns.find((entry) => entry.id === contract.pattern);
+if (!contract.geometry || contract.geometry.owner !== "pattern-renderer") failures.push("geometry must be present and owned by pattern-renderer");
+if (canonicalPattern && JSON.stringify(canonical(contract.geometry)) !== JSON.stringify(canonical(canonicalPattern.geometry))) {
+  failures.push("geometry must exactly match the canonical Pattern skeleton");
+}
 
 if (failures.length > 0) {
   console.error("PC framework layout validation failed");
@@ -74,4 +102,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(JSON.stringify({ ok: true, pattern: contract.pattern, panes, titleSegments: contract.titleSegments, insetOwners, scrollOwners: contract.scrollOwners, layoutTokenCount: contract.layoutTokens.length }, null, 2));
+console.log(JSON.stringify({ ok: true, pattern: contract.pattern, panes, titleSegments: contract.titleSegments, insetOwners, scrollOwners: contract.scrollOwners, geometryOwner: contract.geometry.owner, layoutTokenCount: contract.layoutTokens.length }, null, 2));

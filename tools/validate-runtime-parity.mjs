@@ -5,6 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { createTitlebarPreviewScenes } from "../packages/component-contracts/src/titlebar-segments.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (file) => fs.readFile(path.join(root, file), "utf8");
@@ -55,6 +56,7 @@ const html = await read("apps/component-gallery/runtime-html.js");
 const htmlComponents = await read("packages/components-html/src/index.js");
 const react = await read("apps/component-gallery/runtime-react.jsx");
 const vue = await read("apps/component-gallery/runtime-vue.js");
+const titlebarContract = await read("packages/component-contracts/src/titlebar-segments.js");
 for (const source of [catalog, html, react, vue]) {
   if (source.includes("core-five") || source.includes("full-catalog")) failures.push("runtime source contains the removed two-catalog split");
 }
@@ -63,10 +65,18 @@ for (const source of [react, vue]) {
 }
 for (const required of ["runtimeCategories", "comparisonGroups", "comparisonMetaFor", "specimensFor"]) if (!catalog.includes(required)) failures.push(`runtime catalog missing ${required}`);
 for (const required of ["tui-runtime-category", "data-fixture-id", "RuntimeStructuralButton"]) if (!html.includes(required) && !react.includes(required) && !vue.includes(required)) failures.push(`runtime renderer missing ${required}`);
+const titlebarSizes = createTitlebarPreviewScenes().map((scene) => scene.size);
+const titlebarLayouts = createTitlebarPreviewScenes().flatMap((scene) => scene.scenes.map((item) => item.layout));
+for (const required of ["small", "medium", "large", "xlarge", "unfocus"]) {
+  if (!titlebarContract.includes(required)) failures.push(`shared Titlebar contract is missing canonical structural coverage: ${required}`);
+}
+for (const required of ["standalone", "two-column", "three-column"]) {
+  if (!titlebarLayouts.includes(required)) failures.push(`shared Titlebar contract is missing canonical layout coverage: ${required}`);
+}
+if (new Set(titlebarSizes).size !== 4) failures.push(`shared Titlebar contract must expose 4 canonical sizes, received ${new Set(titlebarSizes).size}`);
 for (const [framework, source] of [["html", `${html}\n${htmlComponents}`], ["react", react], ["vue", vue]]) {
-  for (const required of ["small", "medium", "large", "xlarge", "unfocus", "data-surface-context"]) {
-    if (!source.includes(required)) failures.push(`${framework} runtime is missing canonical Titlebar/Input structural coverage: ${required}`);
-  }
+  if (!source.includes("createTitlebarPreviewScenes")) failures.push(`${framework} runtime must consume the shared Titlebar preview contract`);
+  if (!source.includes("data-surface-context")) failures.push(`${framework} runtime is missing canonical Input surface coverage`);
 }
 for (const [framework, source] of [["html", html], ["react", react], ["vue", vue]]) {
   for (const required of ["data-contract-id", "data-category", "data-order", "data-registry-category", "data-registry-order", "data-fixture-id"]) {

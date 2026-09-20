@@ -14,7 +14,8 @@ and Tokens live in the Monorepo; this Skill orchestrates them.
 Classify before reading detailed references. Run the route resolver when useful:
 
 ```bash
-node scripts/resolve-workflow-route.mjs --route <route-id>
+pnpm index:check
+node scripts/resolve-workflow-route.mjs --route <route-id> --repo <monorepo> --receipt-out <route-read-receipt.json>
 ```
 
 | Request | Route ID | Read next |
@@ -28,7 +29,17 @@ node scripts/resolve-workflow-route.mjs --route <route-id>
 
 Do not read another route or a broad Pixso reference unless the chosen route
 explicitly sends you there. `references/routes/index.json` is the maintained
-machine-readable directory.
+machine-readable directory and `references/routes/materials.source.json` is
+the maintained material closure. The resolver returns every required material
+with its repository-relative path, role, and SHA-256. Verify the exact read
+receipt before confirmed generation:
+
+```bash
+node scripts/verify-route-materials.mjs --route <route-id> --repo <monorepo> --receipt <route-read-receipt.json>
+```
+
+Directory drift, missing materials, stale hashes, or a partial read receipt are
+blocking routing errors, not reasons to guess a fallback workflow.
 
 ### Existing-output shortcut
 
@@ -41,12 +52,19 @@ If prose appears to be appended to a static HTML directory URL, do not browse
 or import that malformed path. Let the route's URL resolver validate it against
 the supplied HTML root and record any deterministic correction.
 
-## Mandatory Gate 0: analyze, propose, confirm
+## Mandatory Gate 0: analyze and build the page blueprint
 
-A request to make or generate a page authorizes investigation; it does not
-approve an inferred page structure. For a new page, redesign, multi-view flow,
-or materially changed information architecture, complete the analysis below
-before any renderer or page artifact.
+For a new page, first run `resolve-context.mjs --discover` as described in
+`references/routes/new-page.md`. Understand the selected Pattern geometry,
+real component inputs and icon aliases before designing the blueprint.
+Read `references/page-design-guidance.md` once. The model designs the business
+information architecture; the renderer owns the shell. Do not turn a component
+inventory into a page outline. Discovery is deliberately unconfirmed and cannot
+compile a page; resolve `--auto --blueprint` after the design decision.
+
+A request to make or generate a page authorizes investigation. For a new page,
+redesign, multi-view flow, or materially changed information architecture,
+complete the analysis below and write a page blueprint before component binding.
 
 ### Gate 0 for new builds and redesigns
 
@@ -59,14 +77,18 @@ architecture, inspect first and present a concise proposal containing:
 - actions, states, target framework, workflow, and Pixso fidelity;
 - at most three decisions that would materially change the result.
 
-Mark `Confirmation: pending`. Ask the user to confirm the proposal and build
-only after explicit confirmation. Do not silently infer confirmation from the
-original request or from an ambiguous acknowledgement.
-
-Before confirmation, do **not** create or modify page HTML, React, Vue, CSS,
-Pixso Frames, images, `page-spec.json`, `layout-contract.json`,
-`component-usage.json`, or a browser preview. Read-only inspection and a
-temporary context packet are allowed.
+Write `page-blueprint.json` with the user, work object, primary job, design
+rationale, region responsibilities, content groups, data entities, states,
+interactions, success criteria, and recovery paths. Then write
+`page-content-recipes.json`: every content group must choose either registered
+component composition or a page-owned composite with its missing-capability
+evidence, fields, states, and Token roles. The two files are automatic inputs
+for the first preview; ask only when missing information would change the
+Pattern or primary task.
+Read `references/page-blueprint-design.md` for the required information
+architecture, data relationships, state matrix, and representative row/card
+decision. A blueprint that only enumerates components or names three panes is
+invalid.
 Repository diagnosis is read-only unless the user separately authorizes a fix.
 
 ## 2. Universal source and layout rules
@@ -77,6 +99,11 @@ components or compiling `ui-scene.json`. HTML, React, Vue, and Pixso must
 consume the same resolved Pattern Contract; a framework adapter may implement
 component internals, but it must not restate pane order, width policy, inset or
 scroll ownership, surfaces, dividers, minimum window, or action-slot rules.
+For HTML, `@text-to-ui/pattern-runtime` is the only shell renderer: page
+modules fill declared content slots and never create panes, titlebars, scroll
+bodies, or navigation shells. HTML is responsive and has no design-canvas
+width, height, or scale transform; a `1728×1152` size belongs only to the
+Pixso import/capture board.
 Patterns are compositions, never component registry entries or Pixso base
 components.
 
@@ -88,8 +115,142 @@ Resolve every visible region in this order:
 
 Lookalike markup, copied CSS, screenshots, matching class names, and
 `data-component` do not prove component reuse. Components fill Pattern slots;
-they do not reshape the shell. Record source evidence in `component-usage.json`
-when a generated page requires it.
+they do not reshape the shell. If the target-framework component exists, using
+it is mandatory: visual fidelity, delivery speed, or a standalone-file request
+never permits a handwritten replacement. First extend it through supported
+Props and Slots, then compose it with other registered components. Use a
+Token-based page-owned implementation only after registry discovery proves
+that no matching component or contract can satisfy the capability.
+Page composites receive `mount(host, { renderComponent })` for business data
+and state only. Every control and icon must call the supplied renderer with a
+registered component and semantic icon alias. Raw native controls, SVG icons,
+global `document.querySelector`, and Pattern data attributes are generation
+errors.
+
+Treat a selected Pattern as a renderer-owned design skeleton, not a checklist
+to apply afterward. Where a Pattern exposes a navigation mode, the generator
+owns its structural slots and their order; the model supplies only the slot
+content. In two-level navigation, second-level content belongs to the middle
+scroll slot and icon-only first-level navigation belongs to the bottom slot.
+A page binding that attempts another placement is a generation error.
+The resolved Pattern `geometry` block is also authoritative: it owns title
+height, pane inset, content axes, scroll-body ownership, and slot spacing.
+Page-owned groups inherit the Pattern inset and may only arrange their own
+business content inside it. They must not add a second pane padding wrapper.
+
+Before compilation, require a Style Plan and Behavior Plan alongside the
+selected Pattern and component bindings. The Style Plan declares the limited
+Token-backed scope of every page-owned group and preserves component internals.
+The Behavior Plan declares interaction kinds, trigger bindings, and an
+observable outcome for each interaction. Compile
+all target frameworks from the same composition tree and generated entry
+module; do not recreate the tree or mount path manually in a product entry.
+
+### Non-negotiable component and Token policy
+
+This policy is a generation contract, not a visual cleanup suggestion:
+
+- If the canonical registry has a target-framework implementation, the page
+  must render that component through the framework adapter. Do not recreate it
+  with a `div`, copied class names, copied CSS, or a page-owned lookalike.
+- Page-owned markup is allowed only after the Context Packet and registry
+  search document the missing capability. Its `component-usage` entry must
+  keep the query, rejected candidates, missing capability, and shared Token
+  roles. Any control, field, attachment action, or icon inside it still uses
+  the supplied `renderComponent` adapter.
+- Page-owned CSS may use canonical `var(--...)` references only for visible
+  design values: colors, typography, radii, shadows, spacing, and component
+  dimensions. A local custom property is valid only when it aliases a
+  canonical Token; it may not contain a new hex/rgb color or a raw px/rem/em/pt
+  value.
+- The only literal layout values allowed by this rule are explicit entries in
+  `layout-contract.json.cssStructuralParameters`, each with a reason. The
+  `1728×1152` board size is a Pixso capture contract, not an HTML CSS value.
+- `generate-framework-page.mjs` runs the Token and page-owned component
+  preflight before writing the page module, entry, manifest, or UI Scene. A
+  browser preview check is regression evidence, not the place where these
+  violations are repaired.
+
+Generated pages are disposable outputs, not historical design references. Do
+not index, inspect, or reuse a generated page for a later design request unless
+the user explicitly registers it in `references/approved-pages/`. This keeps
+unreviewed output from changing the user's approved design language. Even an
+approved page is explicit-only and may inform page-level information
+architecture or composition; Pattern, component, Token, and behavior contracts
+remain higher authority.
+
+Every generated page must classify all visible and interactive UI in
+`component-usage.json` as `registered`, `contractBased`, or `custom`.
+`contractBased` and `custom` entries must record registry queries, reviewed
+candidates, the exact missing capability, shared Token roles, and whether the
+result remains page-owned or should be promoted to the library. A custom entry
+that overlaps an available target-framework component is a blocking error.
+
+Resolve registered-component delivery status with
+`references/components/component-readiness-policy.json`. `approved`
+components may pass Fast Preview and release. `provisional` components have
+usable source and contract and may be used in Fast Preview with an explicit
+warning, but they cannot pass release validation. `blocked` components cannot
+be generated. Do not translate the registry's legacy `partial` label directly
+into a failure or silently promote it to release-ready.
+
+User-accepted design risks are not component-selection blockers. If the user
+explicitly accepts a known visual, contrast, or interaction tradeoff, keep it
+in internal readiness evidence but do not repeat it in ordinary usage guidance
+or prevent the Skill from selecting the component for Fast Preview. Continue
+to block only unavailable source, invalid contracts, broken mappings, or
+runtime failures; surface accepted-risk details only when the user asks for
+an audit or release-readiness report.
+
+### Mandatory component-generation gate
+
+For normal page generation, the blocking gate is limited to these checks:
+
+1. Resolve the selected Pattern Contract and preserve its declared regions,
+   slots, and digests.
+2. Resolve every registered component through the framework adapter, canonical
+   component contract, and mapping registry; a page binding must never name a
+   component absent from the renderer contract.
+3. Confirm that the selected target framework loads and renders its declared
+   runtime bindings. Cross-framework parity belongs to component maintenance,
+   not every new-page run.
+4. Confirm that declared interactions and basic semantics remain connected:
+   names, roles, states, keyboard activation, and event paths must not be
+   dropped by the adapter or page composition.
+5. Reject page-owned CSS literals, unknown Token references, and page-owned
+   custom entries that overlap an available target-framework component.
+6. Use the installed synchronized Skill. Run mirror/delivery synchronization
+   when maintaining the Skill, not while generating an ordinary page.
+
+Icon resolution is a page-generation blocker. Prefer the Context Packet's
+canonical aliases for reusable components and exact Pixso provenance. Direct
+Lucide/source names and not-yet-registered requests must be converted to an
+approved alias before compilation; unknown aliases stop the owning binding.
+Pixso preparation uses the same registered alias map and must not introduce an
+untracked fallback icon.
+
+The route resolver and Context Packet form one material-closure gate. Resolve
+the route with `--receipt-out`, resolve context with a second `--receipt-out`,
+then run `verify-route-materials.mjs` and `verify-context-materials.mjs` before
+compilation. These receipts list repository-relative paths, roles, and SHA-256
+hashes; missing, stale, partial, or unexpectedly added materials stop page
+generation instead of letting a multi-directory route silently drift.
+
+For a MAJOR Skill update, follow
+`references/governance/major-version-update-checklist.md`. This is the living
+maintenance inventory for routes, material closures, Pattern contracts,
+component adapters, Tokens, icons, generators, tests, previews, and delivery
+mirrors. The update report must explain what changed and what a page author
+must migrate; “sync passed” alone is not a sufficient release note.
+
+Visual parity and contrast comparison are not default blockers for this
+project because the supplied Tokens and component styles are treated as
+canonical. Token reference correctness and component reuse are different:
+they are generation blockers and are checked before output. Run broader
+visual/style comparison only when the user explicitly requests an audit or
+formal release-readiness report. Never weaken the runtime and delivery checks
+above to make generation continue; stop at the exact failed mapping or Token
+gate and report it.
 
 For a new page, choose and validate one canonical PC Pattern before component
 selection. Preserve the Global Title Layer, pane order, inset owner, scroll
@@ -111,8 +272,123 @@ and Pixso Operation Plan must carry the same `patternDigest` and
 slot is a blocking error. `ui-scene.json` is the shared page intermediate, not
 a Pixso-only document.
 
+When the project is outside the Monorepo, invoke scripts from the installed
+Skill root or the repository's `text-to-ui/scripts` directory and pass the
+Monorepo explicitly with `--repo` when needed. Never assume the user's project
+has a top-level `scripts/` directory. Component queries use comma-separated
+capability IDs and a semantic context value; `--context` is not a Context Packet
+file path.
+
+For HTML, `generate-framework-page.mjs` must also emit the strict
+`component-usage.json`. Validate the exact browser artifact delivered to the
+user with `scripts/verify-fast-preview.mjs` and runtime evidence captured from
+that artifact. Passing an intermediate component module does not validate a
+later handwritten HTML replacement. A standalone HTML file is allowed only
+when it is built from the component-backed source by an approved bundling step;
+if no such step is available, stop at that gate instead of recreating the
+components by hand.
+
+If component lookup, Pattern resolution, or page generation fails, stop at the
+failed gate. Do not continue by editing `main.js`, `index.html`, or page CSS by
+hand. A Vite/npm build proves compilation only; it does not prove Pattern
+composition or component reuse. The delivered artifact must be traceable to
+`generate-framework-page.mjs`, its framework-page manifest, and the HTML
+`component-usage.json` when the target is HTML.
+
+After bundling, stamp the final HTML and all linked local stylesheets with
+`scripts/stamp-framework-artifact.mjs`. Any later HTML or CSS edit invalidates
+the stamp and requires recapture of runtime evidence. New HTML pages must use
+strict schema version 2; legacy component declarations cannot pass a new-page
+delivery gate.
+
 `primary-navigation-item` is the icon-first primary rail item; `sidebar` is the
 labeled secondary navigation row. They are not aliases.
+For business pages, Sidebar bindings must declare `options.items` or
+`options.groups`; the adapter's illustrative gallery defaults are not a valid
+source of page data and are rejected by the page compiler.
+
+For a new page, create and validate `page-blueprint.json` and
+`page-content-recipes.json` before `page-bindings.json`, then pass both to
+`generate-framework-page.mjs`. The blueprint is the design decision layer;
+content recipes decide registered component versus page-owned composite; and
+bindings are only the implementation layer. Use `scripts/scaffold-standalone-project.mjs`
+for projects outside the Monorepo so package dependencies are copied into
+`vendor/` and rewritten from `workspace:*` to local package references. The
+scaffold also writes a local `pnpm-workspace.yaml` boundary when the page is
+nested inside another workspace; install and build from that project root so
+an ancestor lockfile cannot silently select a stale Runtime package.
+
+`page-bindings.json` is not the canonical page structure. The compiler must
+produce a shared `ui-scene.json`/composition plan with separate
+`patternSlot` and `componentSlot` namespaces. Pattern B Titlebar segments,
+including `main-detail-actions`, are nested component slots and must not be
+reconstructed by scanning or moving sibling nodes after the page is built.
+
+Page-owned CSS must not select or redefine Pattern-owned selectors such as
+`data-pattern`, `data-pattern-region`, `data-pattern-shell-slot`, or
+`data-tui-pane-role`. Use the Pattern shell supplied by the renderer and style
+only declared page composition groups.
+
+### Pattern Runtime entry point
+
+For a browser preview or a generated HTML page, call
+`@text-to-ui/pattern-runtime` instead of rebuilding a Pattern shell in page
+markup. Resolve the same registry entry first, then use
+`createPatternRuntime({ registry, patternId, mode, slots })`. `mode: "skeleton"`
+renders slot placeholders for design review; `mode: "runtime"` requires every
+required slot and renders page-owned content inside contract-owned regions. Use
+the optional `regionContent` map for page-owned body content that is not a
+registered component slot (for example a list pane's rows); it is ignored in
+Skeleton mode. The runtime owns pane order, minimum window, region metadata, title layer,
+scroll-body boundaries, and navigation slot placement. Page code owns only the
+slot values. Use `runtime.decorate(root)` when an approved legacy preview must
+keep its existing visual markup while adopting the same contract metadata.
+Import `@text-to-ui/pattern-runtime/styles.css` for the structural shell
+styles.
+
+Generated HTML entries also mount `bindTitlebarOverflow` from
+`@text-to-ui/components-html`. This is required for Pattern B detail actions:
+the adapter measures the final segment, keeps the More trigger and window
+controls in place, and moves only non-fitting business actions into the More
+menu. A page must not reimplement this with a second toolbar or fixed-width
+CSS.
+
+For the approved Secondary Page compositions, use
+`createSecondaryPageRuntime({ layout: "continuation" | "new-page", mode, slots })`.
+`continuation` renders the inline back-navigation + `Titlebar_S` arrangement;
+`new-page` renders `Titlebar_S` above a vertically organized content surface.
+`Titlebar_S` is a standalone single-column titlebar; it is not valid as a
+two-column or three-column pane segment. Use a larger Titlebar size for
+pane-aligned Pattern title segments.
+It is a page pattern rather than one of the four canonical A–D Pattern
+Contracts, but it follows the same rule: the renderer owns the shell and the
+caller owns `navigation`, `titlebar`, and `content`.
+
+Minimal HTML usage:
+
+```js
+import patternRegistry from "./assets/design-system/pattern-contracts.json";
+import { createPatternRuntime } from "@text-to-ui/pattern-runtime";
+import "@text-to-ui/pattern-runtime/styles.css";
+
+const runtime = createPatternRuntime({
+  registry: patternRegistry,
+  patternId: "pattern-b-three-pane",
+  mode: "runtime",
+  slots: {
+    "global-title-layer": "<strong>任务</strong>",
+    "primary-navigation-shell": "<nav>…</nav>",
+    "secondary-navigation-content": "<nav>…</nav>",
+    "main-detail-actions": "<button type=\"button\">更多</button>"
+  }
+});
+document.querySelector("#app").innerHTML = runtime.render();
+```
+
+This is the callable boundary for Skills: the Skill selects a Pattern and
+provides slot content; it must not copy the Pattern preview or invent pane
+geometry. Framework-specific adapters may wrap the same runtime contract, but
+they must not restate its layout decisions.
 
 ### Mapping and Pixso details
 
@@ -135,8 +411,8 @@ Do not start an ad-hoc `4173` service for new work. A user-provided existing
 `4173` URL may still be captured as the source page.
 
 For new HTML/React/Vue output, show an early interactive browser preview after
-layout, component-source, and Token checks. Release validation occurs only after
-the user approves the direction.
+layout and component-source checks. Release validation occurs only after the
+user approves the direction.
 
 ## 4. Pixso execution
 

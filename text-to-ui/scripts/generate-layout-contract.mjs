@@ -58,6 +58,7 @@ const contract = {
   requiredSlots: [...(context.layout?.requiredSlots ?? patternDefinition.slots.filter((slot) => slot.cardinality === '1' || slot.cardinality === '1..n').map((slot) => slot.id))],
   insetOwners,
   scrollOwners,
+  geometry: patternDefinition.geometry,
   resizeBehavior: patternDefinition.resizeBehavior,
   contentMode: 'default-content',
   layoutTokens,

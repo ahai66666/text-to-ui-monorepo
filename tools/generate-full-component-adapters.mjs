@@ -15,10 +15,25 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const registryPath = path.join(root, "packages/component-contracts/src/components.json");
 const registry = JSON.parse(await fs.readFile(registryPath, "utf8"));
 const iconSprite = await fs.readFile(path.join(root, "packages/components-html/src/component-icons.svg"), "utf8");
-const iconDefinitions = Object.fromEntries([...iconSprite.matchAll(/<symbol\s+id="tui-([^"]+)"\s+viewBox="([^"]+)">([\s\S]*?)<\/symbol>/g)].map((match) => {
-  const [, id, viewBox, content] = match;
-  const [group, ...parts] = id.split("-");
-  return [`${group}/${parts.join("-")}`, { viewBox, content: content.trim() }];
+const iconAliasRegistry = JSON.parse(await fs.readFile(path.join(root, "text-to-ui/assets/icons/icon-aliases.json"), "utf8"));
+const canonicalAliasBySymbolId = new Map(Object.keys(iconAliasRegistry.aliases ?? {}).map((alias) => [`tui-${alias.replaceAll("/", "-")}`, alias]));
+const readAttribute = (attributes, name) => String(attributes).match(new RegExp(`\\b${name}="([^"]*)"`))?.[1] ?? null;
+const iconDefinitions = Object.fromEntries([...iconSprite.matchAll(/<symbol\b([^>]*)>([\s\S]*?)<\/symbol>/g)].map((match) => {
+  const [, attributes, content] = match;
+  const symbolId = readAttribute(attributes, "id");
+  const alias = readAttribute(attributes, "data-icon-alias") ?? canonicalAliasBySymbolId.get(symbolId);
+  if (!symbolId || !alias) throw new Error(`Generated icon symbol has no canonical alias: ${symbolId ?? "unknown"}`);
+  const registryEntry = iconAliasRegistry.aliases?.[alias];
+  if (!registryEntry) throw new Error(`Generated icon symbol uses unknown canonical alias: ${alias}`);
+  const sourceName = readAttribute(attributes, "data-icon-name") ?? registryEntry.name ?? null;
+  const sourcePath = readAttribute(attributes, "data-icon-path") ?? registryEntry.path ?? null;
+  return [alias, {
+    viewBox: readAttribute(attributes, "viewBox") ?? "0 0 24 24",
+    content: content.trim(),
+    source: readAttribute(attributes, "data-icon-source") ?? (registryEntry.source === "lucide" ? `lucide@${iconAliasRegistry.lucideVersion}` : registryEntry.source),
+    ...(sourceName ? { name: sourceName } : {}),
+    ...(sourcePath ? { path: sourcePath } : {})
+  }];
 }));
 const remaining = registry.components.filter((component) =>
   !new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "chips", "tabs", "sub-tabs", "tree-view", "accordion", "collapsible", "avatar", "badge", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "label", "alert", "tooltip", "snackbar", "dialog", "alert-dialog", "semi-modal", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment"]).has(component.id),
@@ -113,11 +128,22 @@ const sampleText = {
 const getSample = (component) => sampleText[component.id] ?? [component.logicalName.split("/")[0], "HarmonyOS PC 组件示例"];
 const contractAttrs = (component, extra = "") => `data-component="${component.id}" data-logical-component="${component.logicalName}" data-variant="${component.variants?.[0] ?? "default"}" data-state="default" data-framework="html"${extra}`;
 const reactContract = (component, extra = "") => `{...contract("${component.id}", "${component.logicalName}", "${component.variants?.[0] ?? "default"}", state, ${extra || "{}"})}`;
+const unresolvedIconDefinition = {
+  viewBox: "0 0 24 24",
+  content: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8v5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16h.01" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>',
+  source: "unresolved-fallback",
+  manualFallback: true,
+};
 const htmlIcon = (name, size = 20) => {
   if (!name) throw new Error("Missing icon semantic alias in generated adapter");
-  const definition = iconDefinitions[name];
-  if (!definition) throw new Error(`Unknown icon semantic alias in generated adapter: ${name}`);
-  return `<svg class="tui-icon tui-icon--regular" viewBox="${definition.viewBox}" width="${size}" height="${size}" aria-hidden="true" data-icon-alias="${name}" data-icon-size="${size}" data-icon-kind="regular">${definition.content}</svg>`;
+  const definition = iconDefinitions[name] ?? { ...unresolvedIconDefinition, requestedAlias: name };
+  const provenance = [
+    `data-icon-source="${escape(definition.source)}"`,
+    definition.name ? `data-icon-name="${escape(definition.name)}"` : "",
+    definition.path ? `data-icon-path="${escape(definition.path)}"` : "",
+    definition.manualFallback ? `data-icon-manual-fallback="unresolved:${escape(name)}"` : ""
+  ].filter(Boolean).join(" ");
+  return `<svg class="tui-icon tui-icon--regular" viewBox="${definition.viewBox}" width="${size}" height="${size}" aria-hidden="true" data-icon-alias="${name}" data-icon-size="${size}" data-display-size-token="size/${size}" data-icon-kind="regular" ${provenance}>${definition.content}</svg>`;
 };
 
 function htmlMarkup(component) {

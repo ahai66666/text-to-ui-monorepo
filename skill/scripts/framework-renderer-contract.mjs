@@ -5,9 +5,9 @@ const rendererPackages = {
 };
 
 const styleImports = {
-  html: ["@text-to-ui/tokens", "@text-to-ui/components-html/styles.css"],
-  react: ["@text-to-ui/tokens", "@text-to-ui/components-react/styles.css"],
-  vue: ["@text-to-ui/tokens", "@text-to-ui/components-vue/styles.css"],
+  html: ["@text-to-ui/tokens", "@text-to-ui/components-html/styles.css", "@text-to-ui/components-html/pattern-shell.css"],
+  react: ["@text-to-ui/tokens", "@text-to-ui/components-react/styles.css", "@text-to-ui/components-html/pattern-shell.css"],
+  vue: ["@text-to-ui/tokens", "@text-to-ui/components-vue/styles.css", "@text-to-ui/components-html/pattern-shell.css"],
 };
 
 function exportNameFromSource(source, fallback) {

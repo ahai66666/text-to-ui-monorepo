@@ -1,4 +1,7 @@
 import contracts from "../../packages/component-contracts/src/components-runtime.js";
+import { resolveComponentReadiness } from "../../packages/component-contracts/src/readiness-policy.js";
+import readinessPolicy from "../../text-to-ui/references/components/component-readiness-policy.json" with { type: "json" };
+import coreAcceptanceBatch from "../../text-to-ui/references/components/core-component-acceptance.json" with { type: "json" };
 
 export const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "form-field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "segmented-button", "number-selector", "chips", "tabs", "sub-tabs", "tree-view", "accordion", "collapsible", "avatar", "badge", "table", "pagination", "breadcrumb", "progress", "label", "alert", "tooltip", "toast", "dialog", "alert-dialog", "semi-modal", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "color-picker", "calendar", "date-picker", "time-picker", "attachment"]);
 const fullWidthPreviewIds = new Set(["titlebar", "button"]);
@@ -63,16 +66,30 @@ export const sourceFor = (component, framework) => component.frameworks?.[framew
   ?? component.implementations?.[framework]
   ?? frameworkSources[framework];
 export const readinessFor = (component) => component.readiness ?? {};
-export const isReady = (component) => ["sourceReady", "contractReady", "visualParity", "behaviorParity", "accessibilityParity", "tokenParity"].every((key) => readinessFor(component)[key] === true);
-export const readyCount = runtimeComponents.filter(isReady).length;
-export const partialCount = runtimeComponents.length - readyCount;
+export const readinessInfoFor = (component) => resolveComponentReadiness(component, readinessPolicy);
+export const readinessLabels = { approved: "Approved", provisional: "Provisional", blocked: "Blocked" };
+export const readinessDimensionLabels = {
+  sourceReady: "源码", contractReady: "契约", visualParity: "视觉", behaviorParity: "行为", accessibilityParity: "可访问性", tokenParity: "Token"
+};
+export const coreAcceptanceLogicalNames = new Set(coreAcceptanceBatch.components);
+export const isCoreAcceptanceComponent = (component) => coreAcceptanceLogicalNames.has(component.logicalName);
+export const readinessSummary = runtimeComponents.reduce((summary, component) => {
+  summary[readinessInfoFor(component).level] += 1;
+  return summary;
+}, { approved: 0, provisional: 0, blocked: 0 });
+export const isReady = (component) => readinessInfoFor(component).level === "approved";
+export const readyCount = readinessSummary.approved;
+export const partialCount = readinessSummary.provisional + readinessSummary.blocked;
 export const cardClass = (component) => {
   const sizing = component.sizing === "fill" ? " tui-runtime-card--fill" : component.sizing === "overlay" ? " tui-runtime-card--overlay" : " tui-runtime-card--intrinsic";
   return `tui-runtime-card${coreIds.has(component.id) ? " tui-runtime-card--core" : ""}${fullWidthPreviewIds.has(component.id) ? " tui-runtime-card--wide" : ""}${sizing}`;
 };
-export const cardDescription = (component) => component.status === "ready"
-  ? "已通过三框架契约验收；默认态展示，交互状态由真实组件触发。"
-  : "Partial · 已接入契约和适配器，视觉、行为与可访问性仍按批次验收。";
+export const cardDescription = (component) => {
+  const readiness = readinessInfoFor(component);
+  if (readiness.level === "approved") return "Approved · 已通过正式交付所需的全部验收维度。";
+  if (readiness.level === "blocked") return `Blocked · ${readiness.reason}`;
+  return `Provisional · 可用于预览；待验收：${readiness.unresolvedDimensions.map((key) => readinessDimensionLabels[key] ?? key).join("、")}。`;
+};
 export const specimensFor = (component) => component.specimens?.length ? component.specimens : [{ id: "default", variant: component.variants?.[0] ?? "default", state: "default" }];
 const feedbackCopy = {
   info: { label: "Info / 信息", message: "系统将在今晚自动完成更新。", action: "查看详情" },

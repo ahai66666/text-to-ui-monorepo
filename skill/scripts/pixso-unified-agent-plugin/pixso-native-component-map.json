@@ -489,6 +489,7 @@
         "size",
         "mode",
         "iconOnly",
+        "icon",
         "menuItems",
         "disabled"
       ],
@@ -1087,6 +1088,10 @@
         "selected",
         "collapsed",
         "disabled"
+      ],
+      "ignoredFrameworkProps": [
+        "items",
+        "ariaLabel"
       ],
       "supportedSlots": [
         "leading",

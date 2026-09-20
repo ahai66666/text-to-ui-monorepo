@@ -29,6 +29,8 @@
     "pixso:import-run:create": "node scripts/create-pixso-import-run.mjs",
     "pixso:import": "node scripts/pixso-import-orchestrator.mjs",
     "workflow:route": "node scripts/resolve-workflow-route.mjs",
+    "workflow:materials:verify": "node scripts/verify-route-materials.mjs",
+    "workflow:context-materials:verify": "node scripts/verify-context-materials.mjs",
     "workflow:route:test": "node scripts/test-workflow-route.mjs",
     "framework:page:generate": "node scripts/generate-framework-page.mjs",
     "framework:page:test": "node scripts/test-framework-page-generation.mjs && node scripts/test-ui-scene-pattern-binding.mjs",

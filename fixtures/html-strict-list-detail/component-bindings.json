@@ -1,11 +1,51 @@
 {
   "sourceRoots": ["fixtures/html-strict-list-detail/src"],
   "componentBindings": [
-    { "logicalName": "Titlebar/Default", "usage": "任务详情全局标题", "region": "detail", "expectedRuntimeCount": 1 },
-    { "logicalName": "Sidebar Item/Default", "usage": "任务分类导航", "region": "navigation", "expectedRuntimeCount": 1 },
-    { "logicalName": "Search/White Surface/Default", "usage": "任务搜索", "region": "list", "expectedRuntimeCount": 1 },
-    { "logicalName": "List Item/White Surface/Default", "usage": "任务列表行", "region": "list", "expectedRuntimeCount": 2 },
-    { "logicalName": "Button/Primary/Default", "usage": "新增任务", "region": "navigation", "expectedRuntimeCount": 1 },
-    { "logicalName": "Checkbox/Default", "usage": "任务完成状态", "region": "detail", "expectedRuntimeCount": 1 }
-  ]
+    { "id": "detail-titlebar", "logicalName": "Titlebar/Default", "semanticContext": "main-detail-titlebar", "options": { "layout": "two-column", "paneRole": "main-detail" }, "usage": "任务详情全局标题", "region": "detail", "expectedRuntimeCount": 1 },
+    { "id": "task-navigation", "logicalName": "Sidebar Item/Default", "usage": "任务分类导航", "semanticContext": "secondary-navigation", "behaviorId": "select-task-category", "options": { "items": [{ "label": "任务", "icon": "navigation/grid", "selected": true }] }, "region": "navigation", "expectedRuntimeCount": 1 },
+    { "id": "task-search", "logicalName": "Search/White Surface/Default", "semanticContext": "secondary-list-search", "behaviorId": "filter-tasks", "options": { "surface": "white" }, "usage": "任务搜索", "region": "list", "expectedRuntimeCount": 1 },
+    { "id": "task-rows", "logicalName": "List Item/White Surface/Default", "semanticContext": "repeated-list-row", "usage": "任务列表行", "region": "list", "expectedRuntimeCount": 2 },
+    { "id": "add-task", "logicalName": "Button/Primary/Default", "usage": "新增任务", "semanticContext": "page-primary-action", "behaviorId": "open-add-task", "options": { "label": "新增任务", "variant": "primary", "size": "standard", "mode": "text" }, "region": "navigation", "expectedRuntimeCount": 1 },
+    { "id": "task-checkbox", "logicalName": "Checkbox/Default", "semanticContext": "selection-control", "usage": "任务完成状态", "behaviorId": "toggle-task-complete", "region": "detail", "expectedRuntimeCount": 1 }
+  ],
+  "stylePlan": {
+    "schemaVersion": 1,
+    "compositions": [
+      { "id": "navigation-stack", "region": "primary-navigation", "tokenRoles": ["spacing.component-gap"], "componentBoundary": "preserve" },
+      { "id": "task-list", "region": "secondary-list", "tokenRoles": ["spacing.component-gap"], "componentBoundary": "preserve" },
+      { "id": "task-detail", "region": "main-detail", "tokenRoles": ["spacing.component-gap"], "componentBoundary": "preserve" }
+    ]
+  },
+  "behaviorPlan": {
+    "schemaVersion": 1,
+    "interactions": [
+      { "id": "select-task-category", "kind": "set-selected", "triggerBindingIds": ["task-navigation"] },
+      { "id": "filter-tasks", "kind": "filter-collection", "triggerBindingIds": ["task-search"] },
+      { "id": "open-add-task", "kind": "open-overlay", "triggerBindingIds": ["add-task"] },
+      { "id": "toggle-task-complete", "kind": "component-native", "triggerBindingIds": ["task-checkbox"] }
+    ]
+  },
+  "composition": {
+    "regions": {
+      "primary-navigation": [
+        { "kind": "group", "id": "navigation-stack", "tag": "nav", "ariaLabel": "任务导航", "children": [
+          { "kind": "component", "bindingId": "task-navigation" },
+          { "kind": "component", "bindingId": "add-task" }
+        ] }
+      ],
+      "secondary-list": [
+        { "kind": "group", "id": "task-list", "tag": "section", "children": [
+          { "kind": "component", "bindingId": "task-search" },
+          { "kind": "text", "id": "task-list-title", "tag": "h1", "text": "任务" },
+          { "kind": "component", "bindingId": "task-rows" }
+        ] }
+      ],
+      "main-detail": [
+        { "kind": "group", "id": "task-detail", "tag": "article", "children": [
+          { "kind": "component", "bindingId": "detail-titlebar" },
+          { "kind": "component", "bindingId": "task-checkbox" }
+        ] }
+      ]
+    }
+  }
 }

@@ -5,6 +5,7 @@ export { default as Sidebar } from "./Sidebar.vue";
 export { default as PrimaryNavigationItem } from "./PrimaryNavigationItem.vue";
 export { default as ListCard } from "./ListCard.vue";
 export { default as Titlebar } from "./Titlebar.vue";
+export { createTitlebarSegments } from "@text-to-ui/component-contracts/titlebar-segments";
 export { default as Textarea } from "./Textarea.vue";
 export { default as Field } from "./Field.vue";
 export { default as FormField } from "./FormField.vue";

@@ -4,15 +4,16 @@ Use this mode to reach the first real, interactive browser page quickly. It is a
 
 ## Required sequence
 
-1. Complete Gate 0: show the requirement analysis, Tool Task Brief, page tree,
-   proposed Pattern, states, assumptions, and workflow; then receive explicit
-   user confirmation. Never treat the original build request as confirmation.
-2. Generate a `fast-preview` Context Packet with `resolve-context.mjs` only
-   after explicit confirmation, using `--confirmed`.
+1. Record the task, Pattern, states and content hierarchy in the blueprint.
+   Continue automatically unless a consequential user decision is missing.
+2. Generate a Context Packet using `--auto --blueprint <file>`. Include task
+   capabilities using `--capabilities`; route defaults are discovery seeds,
+   not an exhaustive library inventory.
 3. Generate `layout-contract.json` with `generate-layout-contract.mjs` and
    validate it before component selection.
 4. Create `page-spec.json` with the canonical Pattern ID and bind it to the
-   same layout contract. For HTML, generate the strict component skeleton and schemaVersion 2
+   same layout contract. Generate the page through generate-framework-page.mjs,
+   with its content recipes, composition CSS and schemaVersion 2
    `component-usage.json`; React/Vue retain the compatibility manifest.
 5. Import real target-framework components. Use contract implementation only for indexed library misses; use Token-based custom work only after both searches miss.
 6. Run source reuse and page Token audits, then build or open the real page.

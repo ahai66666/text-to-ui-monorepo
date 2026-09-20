@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { aliasToSymbolId, loadIconRegistry, skillRoot } from "./icon-tools.mjs";
+import { resolvePixsoIcon } from "./pixso-native-scene-lib.mjs";
 
 const args = process.argv.slice(2);
 let inputPath = null;
@@ -152,8 +153,28 @@ output = protectedHtml.masked.replace(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/gi, (full
   const symbolId = useMatch[1];
   const symbol = symbols.get(symbolId);
   if (!symbol) {
-    unresolvedUses += 1;
-    return full;
+    const requestedName = symbolId.replace(/^(?:hmos|tui|icon)-/i, "");
+    const resolved = resolvePixsoIcon(requestedName);
+    const sourceMatch = resolved.svg.match(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/i);
+    if (!sourceMatch) {
+      unresolvedUses += 1;
+      return full;
+    }
+    let nextAttributes = appendSvgSourceAttributes(wrapperAttributes, sourceMatch[1]);
+    const resolvedAlias = resolved.resolvedAlias ?? null;
+    const displaySizeToken = attribute(wrapperAttributes, "data-display-size-token") ?? displaySizeTokenForAlias(resolvedAlias, wrapperAttributes);
+    nextAttributes = setAttribute(nextAttributes, "data-pixso-icon", "inline-svg");
+    nextAttributes = setAttribute(nextAttributes, "data-pixso-overflow", "visible");
+    nextAttributes = setAttribute(nextAttributes, "data-display-size-token", displaySizeToken);
+    nextAttributes = setAttribute(nextAttributes, "data-icon-source", resolved.source ?? "unresolved-fallback");
+    nextAttributes = setAttribute(nextAttributes, "data-icon-request", requestedName);
+    if (resolvedAlias) nextAttributes = setAttribute(nextAttributes, "data-icon-alias", resolvedAlias);
+    else nextAttributes = setAttribute(nextAttributes, "data-icon-manual-fallback", "unresolved-source:" + requestedName);
+    const existingStyle = attribute(nextAttributes, "style");
+    nextAttributes = setAttribute(nextAttributes, "style", existingStyle ? existingStyle.replace(/;?$/, ";") + "overflow:visible" : "overflow:visible");
+    inlineCount += 1;
+    if (!resolvedAlias) unresolvedUses += 1;
+    return "<svg" + nextAttributes + ">" + sourceMatch[2].trim() + "</svg>";
   }
 
   const alias = inferAlias(symbolId, symbol.attributes);
@@ -167,6 +188,7 @@ output = protectedHtml.masked.replace(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/gi, (full
   nextAttributes = setAttribute(nextAttributes, "data-icon-source", source);
   nextAttributes = setAttribute(nextAttributes, "data-icon-sprite-id", symbolId);
   if (alias) nextAttributes = setAttribute(nextAttributes, "data-icon-alias", alias);
+  else nextAttributes = setAttribute(nextAttributes, "data-icon-manual-fallback", "unresolved-sprite:" + symbolId);
   const existingStyle = attribute(nextAttributes, "style");
   nextAttributes = setAttribute(nextAttributes, "style", existingStyle ? existingStyle.replace(/;?$/, ";") + "overflow:visible" : "overflow:visible");
   inlineCount += 1;
@@ -175,14 +197,12 @@ output = protectedHtml.masked.replace(/<svg\b([^>]*)>([\s\S]*?)<\/svg>/gi, (full
 output = protectedHtml.restore(output);
 
 if (unresolvedUses > 0) {
-  const message = "Could not resolve " + unresolvedUses + " SVG <use> reference(s) from an in-document symbol";
-  if (strict) throw new Error(message);
-  console.warn("WARN " + message + "; those wrappers were kept unchanged");
+  const message = unresolvedUses + " SVG icon request(s) used the explicit non-blocking fallback";
+  console.warn("WARN " + message + "; the Pixso import continues and keeps a manual-fallback marker");
 }
 if (unaliasedUses > 0) {
   const message = unaliasedUses + " SVG icon(s) have no semantic alias in the source sprite";
-  if (strict) throw new Error(message + "; add the icon to assets/icons/icon-aliases.json before Pixso import");
-  console.warn("WARN " + message + "; source provenance is retained for legacy/native sprites");
+  console.warn("WARN " + message + "; geometry and source provenance are retained, and the import continues");
 }
 
 await writeFile(outputPath, output);

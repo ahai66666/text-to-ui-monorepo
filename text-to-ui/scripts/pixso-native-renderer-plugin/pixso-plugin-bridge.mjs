@@ -752,7 +752,13 @@ async function publish(planPath, serviceOwned = false) {
   if (existingState.plan && existingJob?.idempotencyKey === idempotencyKey && !["failed", "cancelled", "needs-attention"].includes(existingJob.status)) {
     return { ok: true, reused: true, queued: !terminalJobStatuses.has(existingJob.status), jobId: existingJob.jobId, revision: existingState.revision, plan: absolute, bridge: `http://${host}:${port}` };
   }
-  if (existingJob && !terminalJobStatuses.has(existingJob.status)) throw new Error("Another import is active; finish or cancel it before publishing");
+  // A claimed job has not started Pixso execution yet. Replacing it with a
+  // freshly published plan is safe: archive the old publication below and
+  // let the plugin claim only the new revision. Running or cancelling jobs
+  // still require an explicit finish/cancel before publication.
+  if (existingJob && !terminalJobStatuses.has(existingJob.status) && existingJob.status !== "claimed") {
+    throw new Error("Another import is active; finish or cancel it before publishing");
+  }
   const officialAdapter = createPixsoOfficialAdapterPlan(plan, { ...plugin, ready: true });
   fs.mkdirSync(stateDirectory, { recursive: true });
   if (existingState.plan) archiveActivePublication("superseded-by-new-publication", { publicationId: existingState.publicationId, idempotencyKey });

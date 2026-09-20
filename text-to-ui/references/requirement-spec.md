@@ -23,11 +23,10 @@ The model supplies tool-task reasoning, information architecture, interaction co
 
 Do not read a fixed questionnaire aloud. Generate questions from the uncertainty of the current task.
 
-This file is an executable intake gate, not background documentation. For a new
-page, redesign, multi-view flow, framework conversion, or Pixso task, the agent
-must show the analysis and proposed solution in the conversation and wait for
-explicit approval before generating any renderer or page artifact. A direct
-request to build something is not approval of an inferred structure.
+For new pages, record the task brief in the blueprint and proceed to the first
+working preview. A build request authorizes this work. Ask only for a missing
+decision that materially changes the primary task or Pattern. Conversion and
+Pixso execution follow their own route; this reference adds no approval gate.
 
 The only shortcut is an exact micro revision to an already approved page or
 component that cannot change hierarchy, workflow, permissions, action scope, or
@@ -78,6 +77,11 @@ Infer these when the user has not specified them:
 - Navigation relationships.
 - Which low-risk interactions can be simulated in the demonstration.
 
+Component composition is constrained by the canonical registry. Existing
+target-framework components are mandatory. A page-owned implementation is a
+documented exception for a missing or genuinely product-specific capability,
+not an alternate styling path for a registered component.
+
 ## 3. Adaptive Question Policy
 
 Before asking anything:
@@ -101,7 +105,9 @@ High-value question areas:
 
 Ask a blocking question only when different answers would create substantially different products, workflows, permissions, sensitive-data behavior, or delivery scope. Otherwise continue with reasonable assumptions.
 
-After the questions or safe inference, show the Tool Task Brief together with a concise proposed solution and ask for explicit confirmation before any renderer or page artifact starts. This is a design-scope review, not a long form. If the user corrects a material decision, revise the proposal and ask for confirmation again. For multi-view, reusable, extension, or redesign work, also save the brief as `design-strategy.md` after confirmation.
+After questions or safe inference, record the task brief in the blueprint and
+continue generation. Briefly state consequential assumptions. Incorporate user
+corrections without restarting a confirmation loop.
 
 ## 4. User Input Guidance
 
@@ -123,12 +129,12 @@ Demonstration scope
 
 Do not require the user to translate their idea into design-system language.
 
-## 5. Proposed Solution Confirmation
+## 5. First preview planning
 
-Use this short review message after requirement analysis and before HTML, Pixso, image, or code generation:
+Use this optional brief when explaining a material design choice:
 
 ```markdown
-## Proposed Solution (confirmation required)
+## Proposed Solution
 - Design goal:
 - Page structure (tree):
   ```text
@@ -140,21 +146,17 @@ Use this short review message after requirement analysis and before HTML, Pixso,
 - Technology/output:
 - Assumptions:
 - Open questions:
-- Confirmation: pending | confirmed
+- Assumptions requiring a user decision, if any:
 ```
 
 Rules:
 
 - Ask at most three high-impact questions in the same message; infer low-risk details.
-- “确认”, “可以”, or “按这个做” is explicit approval.
-- Any material correction sends the proposal back to `pending` until the user confirms again.
-- Do not start a renderer or create a page artifact while confirmation is `pending`.
+- Continue automatically when the request provides enough information.
+- Only a specific unresolved user decision pauses dependent work.
 
-Before confirmation, the agent may inspect supplied materials, locate the
-Monorepo, query generated indexes, and read the minimum references. It may not
-write page HTML, React, Vue, CSS, Pixso Frames, images, `page-spec.json`,
-`layout-contract.json`, or `component-usage.json`. An internal Context Packet is
-planning data and may be generated outside the deliverable directory.
+Read the selected Pattern and relevant component interfaces before composing
+the page. Save planning decisions alongside the project, then generate it.
 
 The proposal must also expose the task model: primary user, work object, start
 state, success state, failure/recovery path, and state that must be preserved.
@@ -249,6 +251,8 @@ Create a compact internal or project-level requirement contract before HTML or P
 - Applied HarmonyOS baseline:
 - Project exceptions and rationale:
 - Core components:
+- Component reuse classification: registered / contract-based / custom, with
+  registry evidence for every custom exception:
 - Required states:
 
 ## Interaction Scope
@@ -274,6 +278,7 @@ Create a compact internal or project-level requirement contract before HTML or P
 - Pixso approval checkpoint, if required:
 - Final frontend views:
 - Verification scope:
+- Exact final artifact component-reuse verification and runtime evidence:
 - Release validation status: blocked-until-direction-approval / in-progress / passed
 - Final visible review:
 - Primary acceptance flow:

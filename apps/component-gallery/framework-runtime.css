@@ -74,6 +74,7 @@
 .tui-contract-inspector__badge.is-complete { color: var(--color-success); background: var(--color-success-subtle); }
 .tui-contract-inspector__note { grid-column: 1 / -1; margin: 0; color: var(--color-text-muted); font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); }
 .tui-runtime-card__preview { min-width: 0; min-height: 64px; display: grid; align-content: start; justify-items: start; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-2); background: transparent; }
+.tui-runtime-card__preview:has(> .tui-sidebar) { padding: var(--space-0); }
 .tui-runtime-card__preview { container-name: runtime-preview; container-type: inline-size; }
 .tui-runtime-card__preview > .tui-button, .tui-runtime-card__preview > .tui-input, .tui-runtime-card__preview > .tui-search, .tui-runtime-card__preview > .tui-sidebar, .tui-runtime-card__preview > .tui-list-card { max-width: 100%; }
 .tui-runtime-card--fill .tui-runtime-card__preview > * { width: 100%; }
@@ -113,14 +114,15 @@
 .tui-runtime-form-field-states > [data-surface-context="white"] { background: var(--color-surface); }
 .tui-runtime-form-field-states > [data-surface-context="gray"] { background: var(--color-bg-subtle); }
 .tui-runtime-titlebar-gallery { min-width: 0; max-width: 100%; display: grid; gap: var(--space-5); }
-.tui-runtime-titlebar-layouts { min-width: 0; max-width: 100%; display: grid; grid-template-columns: 1fr; gap: var(--space-5); }
-.tui-runtime-titlebar-layouts > div { min-width: 0; display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-bg-subtle); }
-.tui-runtime-titlebar-layouts > div:first-child::before { content: "01  两栏布局 · 从左到右确认 Primary Navigation 与 Main Content 的槽位"; color: var(--color-text); font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
-.tui-runtime-titlebar-layouts > div:nth-child(2)::before { content: "02  三栏布局 · 在两栏之间增加 Secondary Pane，最终栏改用 Main Detail 操作槽位"; color: var(--color-text); font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
-.tui-runtime-titlebar-layouts > div:first-child::after { content: "Primary Navigation: leading · label                                      Main Content: main-content-title · actions"; white-space: pre-wrap; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-2); color: var(--color-text-subtle); background: var(--color-surface); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); order: 1; }
-.tui-runtime-titlebar-layouts > div:nth-child(2)::after { content: "Primary Navigation: leading · label     Secondary Pane: —     Main Detail: main-detail-actions · actions"; white-space: pre-wrap; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-2); color: var(--color-text-subtle); background: var(--color-surface); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); order: 1; }
+.tui-runtime-titlebar-layouts { min-width: 0; max-width: 100%; display: grid; grid-template-columns: 1fr; gap: var(--space-4); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-bg-subtle); }
+.tui-runtime-titlebar-layouts > div { min-width: 0; display: grid; gap: var(--space-3); padding: 0; border: 0; border-radius: 0; background: transparent; }
+.tui-runtime-titlebar-size-group { min-width: 0; display: grid; gap: var(--space-3); }
+.tui-runtime-titlebar-size-title { margin: 0; color: var(--color-text); font-size: var(--type-subtitle-m-size); line-height: var(--type-subtitle-m-leading); font-weight: var(--type-subtitle-m-weight); }
+.tui-runtime-titlebar-scenario-title { font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
+.tui-runtime-titlebar-scenario-slots { padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-2); color: var(--color-text-subtle); background: var(--color-surface); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--type-body-s-size); line-height: var(--type-body-s-leading); overflow-wrap: anywhere; }
 .tui-runtime-titlebar-layouts > div > .tui-runtime-titlebar-layout-shell { order: 2; }
 .tui-runtime-titlebar-layout-shell { min-width: 0; max-width: 100%; display: grid; overflow: hidden; background: var(--color-surface); }
+.tui-runtime-titlebar-layout-shell--one { grid-template-columns: minmax(0, 1fr); }
 .tui-runtime-titlebar-layout-shell--two { grid-template-columns: minmax(168px, .8fr) minmax(0, 1.2fr); }
 .tui-runtime-titlebar-layout-shell--three { grid-template-columns: minmax(132px, .9fr) minmax(80px, .6fr) minmax(288px, 1.4fr); }
 .tui-runtime-titlebar-layout-shell > .tui-titlebar { min-width: 0; max-width: 100%; overflow: hidden; border-right: 1px solid var(--color-border); }

@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "kind": "text-to-ui-route-material-manifest",
+  "generatedFrom": [
+    {
+      "path": "text-to-ui/references/routes/materials.source.json",
+      "sha256": "eff2719043200073c2c749fe3ae87c158e86bc30b386e001d887347dfa95985b"
+    },
+    {
+      "path": "text-to-ui/references/routes/index.json",
+      "sha256": "b39f4049bbf25392ce881ec294700e74335eab5bece4974c2972a8d5054099ca"
+    }
+  ],
+  "policy": {
+    "canonicalRoot": "text-to-ui",
+    "pathBasis": "repository-relative",
+    "missingMaterialIsBlocking": true,
+    "staleSnapshotIsBlocking": true
+  },
+  "routes": {
+    "existing-html-to-pixso": {
+      "id": "existing-html-to-pixso",
+      "dynamicMaterials": [],
+      "materialsDigest": "494c755d17865ccaa08583bea606845bdaff0daa38f56c81155eaf0baad03127",
+      "materials": [
+        {
+          "path": "packages/component-contracts/src/components.json",
+          "role": "component-registry",
+          "required": true,
+          "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+        },
+        {
+          "path": "packages/tokens/src/token-runtime-map.json",
+          "role": "token-registry",
+          "required": true,
+          "sha256": "5f084420874b4f8147e1f8a6176e93343750a6f5db93d3a9e1e70a5eb14c84ff"
+        },
+        {
+          "path": "text-to-ui/assets/design-system/pattern-contracts.json",
+          "role": "pattern-contract",
+          "required": true,
+          "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+        },
+        {
+          "path": "text-to-ui/assets/icons/icon-aliases.json",
+          "role": "icon-registry",
+          "required": true,
+          "sha256": "ca3cd2bd5020185fda34cfe4fde1b648537fba9e439f1605beac9c1ef54e7b78"
+        },
+        {
+          "path": "text-to-ui/references/components/source-resolution.md",
+          "role": "component-resolution",
+          "required": true,
+          "sha256": "e6949fa375046b081cd6b6e1b8d704c3c3a9c4b274cae4f048db59fe5724061e"
+        },
+        {
+          "path": "text-to-ui/references/layouts/framework-layout-routing.md",
+          "role": "layout-routing",
+          "required": true,
+          "sha256": "84616974c2744ded7956dba63d627118d2cc6b8ac1682ce0451e21c0625a385b"
+        },
+        {
+          "path": "text-to-ui/references/pixso-execution-invariants.md",
+          "role": "pixso-execution",
+          "required": true,
+          "sha256": "6b773cf8272426b70f820a8365a360014ba7520bb5d82a29d7e0cf25272d442f"
+        },
+        {
+          "path": "text-to-ui/references/pixso-fidelity-import-pipeline.md",
+          "role": "pixso-fidelity",
+          "required": true,
+          "sha256": "0ef07b9b12db4109d6af81c5035fec1ee54b5c254190a8f63766ad4cc25e03ba"
+        },
+        {
+          "path": "text-to-ui/references/pixso-import-details.md",
+          "role": "pixso-import",
+          "required": true,
+          "sha256": "6a27b6723dc8fdd799a87427dd3a070948b3743e123c47f3f2d5b854a4ba3251"
+        },
+        {
+          "path": "text-to-ui/references/requirement-spec.md",
+          "role": "requirement-contract",
+          "required": true,
+          "sha256": "2af7b73b0ebbe69b46d70920ee1028e3b8b9ae2471cbe056ddf0e5e960ed4000"
+        },
+        {
+          "path": "text-to-ui/references/routes/existing-html-to-pixso.md",
+          "role": "route-reference",
+          "required": true,
+          "sha256": "cb774197f1006fc631d254e3f52b4e44885cb840107db46768a218f4d48dd05f"
+        }
+      ]
+    },
+    "new-page": {
+      "id": "new-page",
+      "dynamicMaterials": [
+        "pattern-references",
+        "domain-reference",
+        "titlebar-segments"
+      ],
+      "materialsDigest": "c57efce6d1d54c6655a1f3cd302590551a40edecef5bcf620d745bc56d87dcbd",
+      "materials": [
+        {
+          "path": "packages/component-contracts/src/components.json",
+          "role": "component-registry",
+          "required": true,
+          "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+        },
+        {
+          "path": "packages/tokens/src/token-runtime-map.json",
+          "role": "token-registry",
+          "required": true,
+          "sha256": "5f084420874b4f8147e1f8a6176e93343750a6f5db93d3a9e1e70a5eb14c84ff"
+        },
+        {
+          "path": "text-to-ui/assets/design-system/pattern-contracts.json",
+          "role": "pattern-contract",
+          "required": true,
+          "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+        },
+        {
+          "path": "text-to-ui/assets/icons/icon-aliases.json",
+          "role": "icon-registry",
+          "required": true,
+          "sha256": "ca3cd2bd5020185fda34cfe4fde1b648537fba9e439f1605beac9c1ef54e7b78"
+        },
+        {
+          "path": "text-to-ui/references/components/page-composition.md",
+          "role": "page-composition",
+          "required": true,
+          "sha256": "2327f851160d2a41edf08d193abb3b2b86e1e8919556dcf94358e7289e72c64a"
+        },
+        {
+          "path": "text-to-ui/references/components/source-resolution.md",
+          "role": "component-resolution",
+          "required": true,
+          "sha256": "e6949fa375046b081cd6b6e1b8d704c3c3a9c4b274cae4f048db59fe5724061e"
+        },
+        {
+          "path": "text-to-ui/references/layouts/framework-layout-routing.md",
+          "role": "layout-routing",
+          "required": true,
+          "sha256": "84616974c2744ded7956dba63d627118d2cc6b8ac1682ce0451e21c0625a385b"
+        },
+        {
+          "path": "text-to-ui/references/page-blueprint-design.md",
+          "role": "page-blueprint",
+          "required": true,
+          "sha256": "077311e7da77d04c3cca26512c27302aaaabf18e257bb7808f5e0e2592cf4309"
+        },
+        {
+          "path": "text-to-ui/references/page-design-guidance.md",
+          "role": "page-guidance",
+          "required": true,
+          "sha256": "de346aab0e0780bdd06ee879b0e5a6337c0a2279cdd39cf031fcff2285f89a86"
+        },
+        {
+          "path": "text-to-ui/references/requirement-spec.md",
+          "role": "requirement-contract",
+          "required": true,
+          "sha256": "2af7b73b0ebbe69b46d70920ee1028e3b8b9ae2471cbe056ddf0e5e960ed4000"
+        },
+        {
+          "path": "text-to-ui/references/routes/new-page.md",
+          "role": "route-reference",
+          "required": true,
+          "sha256": "46627130dda7b851c32f28c3e381f24aef3808370c6020bfbd82c856cc7b410c"
+        },
+        {
+          "path": "text-to-ui/references/workflows/fast-preview.md",
+          "role": "validation",
+          "required": true,
+          "sha256": "c01f7311d1e512d9441f046214563895056601604ae21819cbe4dd8eecc4285f"
+        }
+      ]
+    },
+    "micro-revision": {
+      "id": "micro-revision",
+      "dynamicMaterials": [],
+      "materialsDigest": "959e7ff1465cf1df91bf105315bf72f52e0b60d5489f1c712acc4c8612f58405",
+      "materials": [
+        {
+          "path": "packages/component-contracts/src/components.json",
+          "role": "component-registry",
+          "required": true,
+          "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+        },
+        {
+          "path": "packages/tokens/src/token-runtime-map.json",
+          "role": "token-registry",
+          "required": true,
+          "sha256": "5f084420874b4f8147e1f8a6176e93343750a6f5db93d3a9e1e70a5eb14c84ff"
+        },
+        {
+          "path": "text-to-ui/assets/design-system/pattern-contracts.json",
+          "role": "pattern-contract",
+          "required": true,
+          "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+        },
+        {
+          "path": "text-to-ui/assets/icons/icon-aliases.json",
+          "role": "icon-registry",
+          "required": true,
+          "sha256": "ca3cd2bd5020185fda34cfe4fde1b648537fba9e439f1605beac9c1ef54e7b78"
+        },
+        {
+          "path": "text-to-ui/references/components/source-resolution.md",
+          "role": "component-resolution",
+          "required": true,
+          "sha256": "e6949fa375046b081cd6b6e1b8d704c3c3a9c4b274cae4f048db59fe5724061e"
+        },
+        {
+          "path": "text-to-ui/references/layouts/framework-layout-routing.md",
+          "role": "layout-routing",
+          "required": true,
+          "sha256": "84616974c2744ded7956dba63d627118d2cc6b8ac1682ce0451e21c0625a385b"
+        },
+        {
+          "path": "text-to-ui/references/page-design-guidance.md",
+          "role": "page-guidance",
+          "required": true,
+          "sha256": "de346aab0e0780bdd06ee879b0e5a6337c0a2279cdd39cf031fcff2285f89a86"
+        },
+        {
+          "path": "text-to-ui/references/requirement-spec.md",
+          "role": "requirement-contract",
+          "required": true,
+          "sha256": "2af7b73b0ebbe69b46d70920ee1028e3b8b9ae2471cbe056ddf0e5e960ed4000"
+        },
+        {
+          "path": "text-to-ui/references/routes/micro-revision.md",
+          "role": "route-reference",
+          "required": true,
+          "sha256": "83bd316540b6fa83ab5c49a7671e51301d5bb886d0c645d254b343b6deae6452"
+        }
+      ]
+    },
+    "pixso-component-library": {
+      "id": "pixso-component-library",
+      "dynamicMaterials": [],
+      "materialsDigest": "f6a2962f53dc9418f9566715592264d9d46ffac198a9a92c8d0d453f3a4a6488",
+      "materials": [
+        {
+          "path": "packages/component-contracts/src/components.json",
+          "role": "component-registry",
+          "required": true,
+          "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+        },
+        {
+          "path": "packages/tokens/src/token-runtime-map.json",
+          "role": "token-registry",
+          "required": true,
+          "sha256": "5f084420874b4f8147e1f8a6176e93343750a6f5db93d3a9e1e70a5eb14c84ff"
+        },
+        {
+          "path": "text-to-ui/assets/design-system/pattern-contracts.json",
+          "role": "pattern-contract",
+          "required": true,
+          "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+        },
+        {
+          "path": "text-to-ui/assets/icons/icon-aliases.json",
+          "role": "icon-registry",
+          "required": true,
+          "sha256": "ca3cd2bd5020185fda34cfe4fde1b648537fba9e439f1605beac9c1ef54e7b78"
+        },
+        {
+          "path": "text-to-ui/references/components/source-resolution.md",
+          "role": "component-resolution",
+          "required": true,
+          "sha256": "e6949fa375046b081cd6b6e1b8d704c3c3a9c4b274cae4f048db59fe5724061e"
+        },
+        {
+          "path": "text-to-ui/references/layouts/framework-layout-routing.md",
+          "role": "layout-routing",
+          "required": true,
+          "sha256": "84616974c2744ded7956dba63d627118d2cc6b8ac1682ce0451e21c0625a385b"
+        },
+        {
+          "path": "text-to-ui/references/mapping-registry.md",
+          "role": "mapping-registry",
+          "required": true,
+          "sha256": "c0aff63c2cc6486f9eadb6e831b64f1330add498bcaf3e736f47c76f5681351a"
+        },
+        {
+          "path": "text-to-ui/references/pixso-component-maintenance.md",
+          "role": "component-maintenance",
+          "required": true,
+          "sha256": "e613426ba1f7fb17e28d2fa321c5d8066d544d28900bce4ad5be215af7bce55d"
+        },
+        {
+          "path": "text-to-ui/references/pixso-component-usage.md",
+          "role": "component-usage",
+          "required": true,
+          "sha256": "811dbff6ca66ae01962368947b93752043ad91e826943ef59fb378a98a6c0d8f"
+        },
+        {
+          "path": "text-to-ui/references/pixso-execution-invariants.md",
+          "role": "pixso-execution",
+          "required": true,
+          "sha256": "6b773cf8272426b70f820a8365a360014ba7520bb5d82a29d7e0cf25272d442f"
+        },
+        {
+          "path": "text-to-ui/references/pixso-import-details.md",
+          "role": "pixso-import",
+          "required": true,
+          "sha256": "6a27b6723dc8fdd799a87427dd3a070948b3743e123c47f3f2d5b854a4ba3251"
+        },
+        {
+          "path": "text-to-ui/references/pixso-native-scene.md",
+          "role": "native-scene",
+          "required": true,
+          "sha256": "364cacabe76ee783f44970c1cce795c06a06449d5d33fbb42fe7b72e1ff25e9d"
+        },
+        {
+          "path": "text-to-ui/references/requirement-spec.md",
+          "role": "requirement-contract",
+          "required": true,
+          "sha256": "2af7b73b0ebbe69b46d70920ee1028e3b8b9ae2471cbe056ddf0e5e960ed4000"
+        },
+        {
+          "path": "text-to-ui/references/routes/pixso-component-library.md",
+          "role": "route-reference",
+          "required": true,
+          "sha256": "1bcb194ca1ca20d62d3273d15c32da1eac08db0c2c8a7e25497314034ec9700a"
+        }
+      ]
+    },
+    "converter-diagnosis": {
+      "id": "converter-diagnosis",
+      "dynamicMaterials": [],
+      "materialsDigest": "c8ec07c777c8ef0a1a5b91059692f47ea6c4b706919a3d4386845d8a3bea8fc0",
+      "materials": [
+        {
+          "path": "packages/component-contracts/src/components.json",
+          "role": "component-registry",
+          "required": true,
+          "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+        },
+        {
+          "path": "packages/tokens/src/token-runtime-map.json",
+          "role": "token-registry",
+          "required": true,
+          "sha256": "5f084420874b4f8147e1f8a6176e93343750a6f5db93d3a9e1e70a5eb14c84ff"
+        },
+        {
+          "path": "text-to-ui/assets/design-system/pattern-contracts.json",
+          "role": "pattern-contract",
+          "required": true,
+          "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+        },
+        {
+          "path": "text-to-ui/assets/icons/icon-aliases.json",
+          "role": "icon-registry",
+          "required": true,
+          "sha256": "ca3cd2bd5020185fda34cfe4fde1b648537fba9e439f1605beac9c1ef54e7b78"
+        },
+        {
+          "path": "text-to-ui/references/components/source-resolution.md",
+          "role": "component-resolution",
+          "required": true,
+          "sha256": "e6949fa375046b081cd6b6e1b8d704c3c3a9c4b274cae4f048db59fe5724061e"
+        },
+        {
+          "path": "text-to-ui/references/layouts/framework-layout-routing.md",
+          "role": "layout-routing",
+          "required": true,
+          "sha256": "84616974c2744ded7956dba63d627118d2cc6b8ac1682ce0451e21c0625a385b"
+        },
+        {
+          "path": "text-to-ui/references/pixso-execution-invariants.md",
+          "role": "pixso-execution",
+          "required": true,
+          "sha256": "6b773cf8272426b70f820a8365a360014ba7520bb5d82a29d7e0cf25272d442f"
+        },
+        {
+          "path": "text-to-ui/references/pixso-fidelity-import-pipeline.md",
+          "role": "pixso-fidelity",
+          "required": true,
+          "sha256": "0ef07b9b12db4109d6af81c5035fec1ee54b5c254190a8f63766ad4cc25e03ba"
+        },
+        {
+          "path": "text-to-ui/references/pixso-import-details.md",
+          "role": "pixso-import",
+          "required": true,
+          "sha256": "6a27b6723dc8fdd799a87427dd3a070948b3743e123c47f3f2d5b854a4ba3251"
+        },
+        {
+          "path": "text-to-ui/references/pixso-mcp.md",
+          "role": "pixso-diagnostic",
+          "required": true,
+          "sha256": "c27752b65cc0a5039f0e599a48eb0bbed1a6d406c317f470b41d320ca85b3a0f"
+        },
+        {
+          "path": "text-to-ui/references/pixso-native-scene.md",
+          "role": "native-scene",
+          "required": true,
+          "sha256": "364cacabe76ee783f44970c1cce795c06a06449d5d33fbb42fe7b72e1ff25e9d"
+        },
+        {
+          "path": "text-to-ui/references/pixso-visual-parity.md",
+          "role": "visual-diagnostic",
+          "required": true,
+          "sha256": "f8dc07f1b897761c92fd9eca1115bea997b48fda2dd977d8d6fb5d101411a8e5"
+        },
+        {
+          "path": "text-to-ui/references/requirement-spec.md",
+          "role": "requirement-contract",
+          "required": true,
+          "sha256": "2af7b73b0ebbe69b46d70920ee1028e3b8b9ae2471cbe056ddf0e5e960ed4000"
+        },
+        {
+          "path": "text-to-ui/references/routes/converter-diagnosis.md",
+          "role": "route-reference",
+          "required": true,
+          "sha256": "918537c50d62a7a963cb0a4e9aeeef06b9035b7453e58b5794bb76d7af1c08ae"
+        }
+      ]
+    },
+    "skill-maintenance": {
+      "id": "skill-maintenance",
+      "dynamicMaterials": [],
+      "materialsDigest": "b06b134599be183787507d98cfef92d81d6bcad7d7f75eb16f6eab15bd9bd2fb",
+      "materials": [
+        {
+          "path": "packages/component-contracts/src/components.json",
+          "role": "component-registry",
+          "required": true,
+          "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+        },
+        {
+          "path": "packages/tokens/src/token-runtime-map.json",
+          "role": "token-registry",
+          "required": true,
+          "sha256": "5f084420874b4f8147e1f8a6176e93343750a6f5db93d3a9e1e70a5eb14c84ff"
+        },
+        {
+          "path": "text-to-ui/assets/design-system/pattern-contracts.json",
+          "role": "pattern-contract",
+          "required": true,
+          "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+        },
+        {
+          "path": "text-to-ui/assets/icons/icon-aliases.json",
+          "role": "icon-registry",
+          "required": true,
+          "sha256": "ca3cd2bd5020185fda34cfe4fde1b648537fba9e439f1605beac9c1ef54e7b78"
+        },
+        {
+          "path": "text-to-ui/references/components/page-composition.md",
+          "role": "page-composition",
+          "required": true,
+          "sha256": "2327f851160d2a41edf08d193abb3b2b86e1e8919556dcf94358e7289e72c64a"
+        },
+        {
+          "path": "text-to-ui/references/components/source-resolution.md",
+          "role": "component-resolution",
+          "required": true,
+          "sha256": "e6949fa375046b081cd6b6e1b8d704c3c3a9c4b274cae4f048db59fe5724061e"
+        },
+        {
+          "path": "text-to-ui/references/governance/major-version-update-checklist.md",
+          "role": "major-version-governance",
+          "required": true,
+          "sha256": "8110ad5860abea9e8e01897a12c511e9bb9adb5a579846d56c64027506203b0f"
+        },
+        {
+          "path": "text-to-ui/references/layouts/framework-layout-routing.md",
+          "role": "layout-routing",
+          "required": true,
+          "sha256": "84616974c2744ded7956dba63d627118d2cc6b8ac1682ce0451e21c0625a385b"
+        },
+        {
+          "path": "text-to-ui/references/pixso-execution-invariants.md",
+          "role": "pixso-execution",
+          "required": true,
+          "sha256": "6b773cf8272426b70f820a8365a360014ba7520bb5d82a29d7e0cf25272d442f"
+        },
+        {
+          "path": "text-to-ui/references/pixso-import-details.md",
+          "role": "pixso-import",
+          "required": true,
+          "sha256": "6a27b6723dc8fdd799a87427dd3a070948b3743e123c47f3f2d5b854a4ba3251"
+        },
+        {
+          "path": "text-to-ui/references/requirement-spec.md",
+          "role": "requirement-contract",
+          "required": true,
+          "sha256": "2af7b73b0ebbe69b46d70920ee1028e3b8b9ae2471cbe056ddf0e5e960ed4000"
+        },
+        {
+          "path": "text-to-ui/references/routes/skill-maintenance.md",
+          "role": "route-reference",
+          "required": true,
+          "sha256": "2939dd16d36027572951f563d25c3744cbf523da63c1d7f1b13f0f889274263a"
+        }
+      ]
+    }
+  },
+  "indexDigest": "a8bb6d8423f76ed713ad30ddec9efed7aa28969dd3b214c8d6642d2b15f79f6b"
+}

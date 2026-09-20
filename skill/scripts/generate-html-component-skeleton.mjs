@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
+import { loadReadinessPolicy, resolveComponentReadiness } from "./component-readiness-policy.mjs";
 
 const args = process.argv.slice(2);
 const valueFor = (flag) => {
@@ -28,9 +29,14 @@ if (JSON.stringify(layoutContract.paneOrder) !== JSON.stringify(context.layout?.
 const rawBindings = input.componentBindings ?? input.components ?? input.bindings ?? [];
 if (!Array.isArray(rawBindings) || rawBindings.length === 0) throw new Error("Bindings input must contain componentBindings, components, or bindings");
 const rendererByLogicalName = new Map((context.renderer.components ?? []).map((item) => [item.logicalName, item]));
+const readinessPolicy = loadReadinessPolicy(path.join(context.repository.root, "text-to-ui"));
+const componentRegistry = readJson(path.join(context.repository.root, "packages/component-contracts/src/components.json")).components;
+const registryByLogicalName = new Map(componentRegistry.map((component) => [component.logicalName, component]));
 const normalized = rawBindings.map((binding, index) => {
   const resolved = rendererByLogicalName.get(binding.logicalName);
   if (!resolved?.rendererKey) throw new Error(`No HTML rendererKey resolved for binding ${index}: ${binding.logicalName}`);
+  const readiness = resolveComponentReadiness(registryByLogicalName.get(binding.logicalName), readinessPolicy);
+  if (!readiness.allowedInFastPreview) throw new Error(`${binding.logicalName}: component readiness is ${readiness.level}; ${readiness.reason}`);
   return {
     logicalName: binding.logicalName,
     rendererKey: resolved.rendererKey,
@@ -41,7 +47,8 @@ const normalized = rawBindings.map((binding, index) => {
     tokenRoles: resolved.tokenRoles ?? [],
     supportedProps: resolved.supportedProps ?? [],
     supportedSlots: resolved.supportedSlots ?? [],
-    source: resolved.source
+    source: resolved.source,
+    readiness
   };
 });
 const grouped = new Map();
@@ -58,6 +65,7 @@ const identifier = (key) => key.replace(/-([a-z])/g, (_, character) => character
 const lines = [
   'import "@text-to-ui/tokens";',
   'import "@text-to-ui/components-html/styles.css";',
+  'import "@text-to-ui/components-html/pattern-shell.css";',
   'import { collectHtmlComponentEvidence, renderHtmlComponent } from "@text-to-ui/components-html";',
   '',
   'const node = (markup) => {',
@@ -92,7 +100,9 @@ const manifest = {
   layout: {
     contractPath: manifestLayoutContractPath,
     pattern: layoutContract.pattern,
-    paneOrder: layoutContract.paneOrder
+    paneOrder: layoutContract.paneOrder,
+    patternDigest: context.patternContract?.patternDigest ?? null,
+    structureDigest: context.patternContract?.structureDigest ?? null
   },
   registered: registered.map((entry) => ({
     logicalName: entry.logicalName,
@@ -104,11 +114,14 @@ const manifest = {
     supportedProps: entry.supportedProps,
     supportedSlots: entry.supportedSlots,
     tokenRoles: entry.tokenRoles,
-    source: entry.source
+    source: entry.source,
+    readinessLevel: entry.readiness.level,
+    unresolvedParity: entry.readiness.unresolvedDimensions
   })),
   contractBased: [],
   custom: [],
-  previousOutputReuse: false
+  previousOutputReuse: false,
+  validationStage: "fast-preview"
 };
 fs.mkdirSync(path.dirname(path.resolve(manifestPath)), { recursive: true });
 fs.writeFileSync(path.resolve(manifestPath), `${JSON.stringify(manifest, null, 2)}\n`);

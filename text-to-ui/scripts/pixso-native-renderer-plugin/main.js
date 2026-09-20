@@ -263,14 +263,24 @@
       state.styles = new Map([...textStyles, ...effectStyles].map((item) => [item.name, item]));
       const library = findPage(plan.execution?.libraryPage ?? plan.resources?.componentLibraryPage ?? "NewComponents");
       if (library) {
-        // Component pages produced by the library plan keep reusable masters as
-        // direct children. Do not scan the whole page during an import: a
-        // cooperation refresh can invalidate internal S_Guid values while an
-        // async traversal is still in flight. Missing masters are reported by
-        // preflight and must be repaired by the separate library-sync flow.
-        const reusable = Array.isArray(library.children)
-          ? library.children.filter((node) => node.type === "COMPONENT" || node.type === "COMPONENT_SET")
-          : [];
+        // Component libraries commonly place masters inside SECTION or FRAME
+        // containers. Match the component-facts sync traversal so importing a
+        // page can resolve the same NewComponents inventory that was synced.
+        // Exclude variants and helper nodes nested in a component definition.
+        const candidates = typeof library.findAllAsync === "function"
+          ? await library.findAllAsync((node) => node.type === "COMPONENT" || node.type === "COMPONENT_SET")
+          : (Array.isArray(library.children) ? library.children : [])
+            .filter((node) => node.type === "COMPONENT" || node.type === "COMPONENT_SET");
+        const reusable = candidates.filter((node) => {
+          let parent = node?.parent;
+          const visited = new Set();
+          while (parent && parent !== library && parent.id !== library.id && !visited.has(parent.id)) {
+            visited.add(parent.id);
+            if (parent.type === "COMPONENT_SET" || parent.type === "COMPONENT") return false;
+            parent = parent.parent;
+          }
+          return true;
+        });
         state.componentSets = new Map(reusable.filter((node) => node.type === "COMPONENT_SET").map((node) => [node.name, node]));
         state.components = new Map(reusable.filter((node) => node.type === "COMPONENT").map((node) => [node.name, node]));
       }
@@ -1992,11 +2002,17 @@
       if (hasMissing(missing)) return { ok: false, phase: "preflight", page: { id: page.id, name: page.name }, missing };
       state.nodes.clear();
       hydrateExistingLibraryComponents(page);
+      // A replacement import must start from the source plan, not reconcile a
+      // structurally incompatible older component.  Reconciliation is useful
+      // for additive slot repairs, but it leaves obsolete visual children in
+      // place when a generic placeholder is replaced by a real component.
       let repaired = 0;
-      try {
-        repaired = await repairExistingLibraryOutput(plan, page);
-      } catch (error) {
-        return { ok: false, phase: "repair", page: { id: page.id, name: page.name }, error: error.message };
+      if (!options.replaceExisting) {
+        try {
+          repaired = await repairExistingLibraryOutput(plan, page);
+        } catch (error) {
+          return { ok: false, phase: "repair", page: { id: page.id, name: page.name }, error: error.message };
+        }
       }
       const componentOperations = (plan.operations ?? []).filter((operation) => operation.op === "create-component");
       const materialOperations = (plan.operations ?? []).filter((operation) => String(operation.op).startsWith("create-") && operation.op !== "create-page");

@@ -66,10 +66,6 @@
       .status { min-height: var(--type-body-l-leading); margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
       .gallery-view { display: grid; gap: var(--space-6); }
       .gallery-view[hidden] { display: none; }
-      .gallery-mode-switch { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-2); background: var(--color-bg-subtle); }
-      .gallery-mode-switch button { min-height: var(--height-button); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-2); color: var(--color-text-muted); background: transparent; cursor: pointer; font-size: var(--type-body-l-size); line-height: var(--type-body-l-leading); }
-      .gallery-mode-switch button[aria-selected="true"] { color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-1); }
-      .gallery-mode-switch button:focus-visible { outline: 2px solid var(--color-brand-100); outline-offset: 2px; }
       .gallery-view__intro { display: grid; gap: var(--space-2); }
       .gallery-view__intro h3 { margin: 0; font-size: var(--type-title-m-size); line-height: var(--type-title-m-leading); font-weight: var(--type-title-m-weight); }
       .gallery-view__intro p { max-width: 960px; margin: 0; color: var(--color-text-muted); }
@@ -80,11 +76,6 @@
       .tui-runtime-framework-switch button:disabled { color: var(--color-text-subtle); background: transparent; cursor: not-allowed; opacity: .58; }
       .tui-runtime-framework-switch button:disabled:focus-visible { outline: 1px solid var(--color-border); }
       .runtime-directory { gap: var(--space-5); }
-      .runtime-framework-summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
-      .runtime-framework-summary > span { display: inline-flex; align-items: center; gap: var(--space-2); }
-      .runtime-framework-summary > span::before { width: var(--size-2); height: var(--size-2); border-radius: var(--radius-full); background: var(--color-warning); content: ""; }
-      .runtime-framework-summary > .runtime-framework-summary__ready::before { background: var(--color-success); }
-      .runtime-framework-summary strong { color: var(--color-text); font-weight: var(--type-body-l-weight); }
       .tui-runtime-core-card { grid-column: 1 / -1; }
       .tui-runtime-core-card > header { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--space-3); }
       .tui-runtime-core-card > header p { grid-column: 1 / -1; margin: 0; color: var(--color-text-muted); font-size: var(--type-body-m-size); line-height: var(--type-body-m-leading); }
@@ -139,7 +130,7 @@
       <main class="gallery-main">
         <header class="gallery-titlebar"><h1>组件预览</h1><div class="gallery-titlebar__actions"><span>画布基线</span><strong>HarmonyOS PC · 1728 × 1152</strong></div></header>
         <div class="gallery-content">
-          <section class="gallery-intro"><h2>HarmonyOS PC 设计系统预览</h2><p><strong>Pattern 框架</strong>确认跨框架共用的页面布局、区域、槽位与滚动规则；<strong>框架组件</strong>用于体验真实的 HTML / React / Vue 组件。组件的逻辑身份、Variant、状态、Slots、Token 与验收信息通过每张运行时卡片标题栏右侧的“组件规范”弹窗查看，不再作为另一套视觉画廊。</p><div class="gallery-mode-switch" role="tablist" aria-label="预览模式"><button type="button" data-view-tab="pattern" role="tab" aria-selected="false">Pattern 框架</button><button type="button" data-view-tab="runtime" role="tab" aria-selected="true">框架组件</button></div></section>
+          <section class="gallery-intro"><h2>HarmonyOS PC 设计系统预览</h2><p><strong>Pattern 框架</strong>确认跨框架共用的页面布局、区域、槽位与滚动规则；<strong>框架组件</strong>用于体验真实的 HTML / React / Vue 组件。组件的逻辑身份、Variant、状态、Slots、Token 与验收信息通过每张运行时卡片标题栏右侧的“组件规范”弹窗查看，不再作为另一套视觉画廊。</p></section>
           <section class="gallery-view" id="pattern-view" data-view="pattern" aria-labelledby="pattern-view-title" hidden>
             <div class="gallery-view__intro"><h3 id="pattern-view-title">Pattern 框架</h3><p>这里展示页面组合契约，而不是新的一组组件。Pattern A–D 的区域顺序、栏宽策略、Titlebar 分段、表面、分割线、滚动与 inset owner、最小窗口和动作槽位，统一来自 <code>pattern-contracts.json</code>；HTML、React、Vue 和 Pixso 只执行解析后的同一份规则。</p><div class="gallery-view__meta"><span class="framework-label">4 个 canonical Patterns</span><code>authority: pattern-contract</code><span>Pixso 输出原生 Frame + Component Instance</span></div></div>
             <section class="gallery-surface canonical-contract" aria-labelledby="pattern-baseline-title">
@@ -151,11 +142,10 @@
             </section>
           </section>
           <section class="gallery-view" id="runtime-view" data-view="runtime" aria-labelledby="runtime-view-title">
-            <div class="gallery-view__intro"><h3 id="runtime-view-title">框架组件</h3><p>这里直接展示 HTML、React、Vue 的真实运行时组件。框架选择是一级目录里的单元切换，不跳转二级页面；默认态可直接交互，其他状态由真实控件触发。需要查看组件规则时，点击卡片标题栏右侧的“组件规范”。</p><div class="gallery-view__meta"><span class="framework-label" id="runtime-coverage-count">组件已注册 · 验收进度加载中</span><code>真实运行时 → 组件规范 → 验收结果</code><span>三框架均已接入；“已完成验收”是质量进度，不代表是否支持</span></div><div class="tui-runtime-framework-switch" role="tablist" aria-label="选择框架组件实现"><button type="button" role="tab" data-runtime-framework="html" aria-selected="true">HTML</button><button type="button" role="tab" data-runtime-framework="react" aria-selected="false" aria-describedby="runtime-framework-note">React</button><button type="button" role="tab" data-runtime-framework="vue" aria-selected="false" aria-describedby="runtime-framework-note">Vue</button></div><p id="runtime-framework-note" class="runtime-framework-note" hidden>直接打开文件时仅提供 HTML 静态 fallback；React、Vue 需要通过 HTTP 开发服务器打开本页。</p></div>
+            <div class="gallery-view__intro"><h3 id="runtime-view-title">框架组件</h3><p>这里直接展示 HTML、React、Vue 的真实运行时组件。框架选择是一级目录里的单元切换，不跳转二级页面；默认态可直接交互，其他状态由真实控件触发。需要查看组件规则时，点击卡片标题栏右侧的“组件规范”。</p><div class="gallery-view__meta"><span class="framework-label" id="runtime-coverage-count">组件目录加载中</span><code>真实运行时组件</code></div><div class="tui-runtime-framework-switch" role="tablist" aria-label="选择框架组件实现"><button type="button" role="tab" data-runtime-framework="html" aria-selected="true">HTML</button><button type="button" role="tab" data-runtime-framework="react" aria-selected="false" aria-describedby="runtime-framework-note">React</button><button type="button" role="tab" data-runtime-framework="vue" aria-selected="false" aria-describedby="runtime-framework-note">Vue</button></div><p id="runtime-framework-note" class="runtime-framework-note" hidden>直接打开文件时仅提供 HTML 静态 fallback；React、Vue 需要通过 HTTP 开发服务器打开本页。</p></div>
             <section class="gallery-surface runtime-directory" id="runtime-directory" aria-labelledby="runtime-directory-title">
             <div class="gallery-surface__head"><h3 id="runtime-directory-title">框架组件适配器目录</h3><span class="framework-label">每个组件对应一个 logicalName</span></div>
-              <div class="runtime-framework-summary" id="runtime-framework-summary" aria-label="三框架验收进度"></div>
-              <p class="status">三种框架均已提供独立适配器；当前选择的框架会在这组一级目录卡片中直接渲染。这里的“已完成验收”表示视觉、行为、可访问性和 Token 检查全部通过，待验收组件仍可查看和交互，不代表不支持。</p>
+              <p class="status">三种框架均已提供独立适配器；当前框架会在这组卡片中直接渲染。</p>
               <div data-component-mount="component-catalog" aria-live="polite"></div>
               <p class="status" id="gallery-status" aria-live="polite">准备就绪</p>
             </section>
@@ -207,7 +197,6 @@
         };
         const views = [...document.querySelectorAll("[data-view]")];
         const links = [...document.querySelectorAll("[data-view-link]")];
-        const tabs = [...document.querySelectorAll("[data-view-tab]")];
         const setView = (requested) => {
           const alias = aliases[requested] ?? requested;
           const view = ["pattern", "runtime", "regression"].includes(alias) ? alias : "runtime";
@@ -216,16 +205,10 @@
             if (link.dataset.viewLink === view) link.setAttribute("aria-current", "page");
             else link.removeAttribute("aria-current");
           });
-          tabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.viewTab === view)));
           if (["contract-view", "contract-components", "all-components"].includes(requested) && location.hash !== `#${view}-view`) history.replaceState(null, "", `#${view}-view`);
         };
         const sync = () => setView(location.hash.slice(1));
         links.forEach((link) => link.addEventListener("click", () => setTimeout(sync, 0)));
-        tabs.forEach((tab) => tab.addEventListener("click", () => {
-          const view = tab.dataset.viewTab;
-          if (location.hash !== `#${view}-view`) history.replaceState(null, "", `#${view}-view`);
-          setView(view);
-        }));
         window.addEventListener("hashchange", sync);
         sync();
 

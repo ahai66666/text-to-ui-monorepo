@@ -8,9 +8,10 @@ Use the first source that provides an approved match:
 
 1. User-provided exact SVG.
 2. Existing approved project semantic alias.
-3. Lucide for broad product, business, navigation, communication, file, data, device, and industry concepts.
-4. HarmonyOS Symbol for platform-specific concepts and already-approved HarmonyOS glyphs.
-5. A documented manual fallback.
+3. Direct Lucide/source name when the page needs an icon that has not been registered yet.
+4. Lucide for broad product, business, navigation, communication, file, data, device, and industry concepts.
+5. HarmonyOS Symbol for platform-specific concepts and already-approved HarmonyOS glyphs.
+6. A documented manual fallback.
 
 Never replace a higher-authority asset silently. The Titlebar window-control SVGs are an example of user-provided exact assets and remain authoritative.
 
@@ -18,10 +19,15 @@ Never replace a higher-authority asset silently. The Titlebar window-control SVG
 
 1. Write the semantic intent as `category/concept`, separating action, object, and state. Examples: `action/add`, `field/search`, `navigation/sidebar-collapse`, `communication/mail-unread`.
 2. Translate the concept into canonical English search terms. Search synonyms when the first term is ambiguous.
-3. Use `pnpm icons:search -- <query>` to discover Lucide filenames. Shortlist 2–3 plausible candidates.
+3. Use `pnpm icons:search -- <query>` to discover Lucide filenames. Shortlist 2–3 plausible candidates. A direct filename may be used immediately when the alias registry does not yet contain it.
 4. Render candidates at the actual component size: 16px, 20px, or 24px. Compare silhouette, direction, density, and neighboring icons.
 5. Choose the closest visual and semantic match, then bind it to a stable project semantic alias.
 6. Record any intentionally non-obvious choice near the alias map.
+
+Legacy short names and flattened names such as `close`, `disclosure-down`,
+`window-minimize`, and `settings` are accepted as non-blocking compatibility
+inputs. The shared resolver first maps them to an existing canonical alias;
+only an actually unresolvable name receives the explicit manual fallback.
 
 Do not select an icon solely from a Chinese label, the first filename match, or loose visual resemblance. Ask the user only when multiple candidates communicate materially different product meanings.
 
@@ -35,7 +41,7 @@ Treat `assets/icons/icon-aliases.json` as the machine-readable source of icon id
    pnpm icons:search -- reply
    ```
 
-2. Add the approved semantic alias to `assets/icons/icon-aliases.json`. Do not bind reusable markup directly to a guessed filename.
+2. Add the approved semantic alias to `assets/icons/icon-aliases.json` when the icon is becoming reusable or needs exact Pixso provenance. Do not invent a semantic alias merely to unblock a page; direct source requests are allowed and receive a runtime diagnostic until registered.
 3. Generate exact source geometry from the registry. For a single-file HTML output, inject the sprite directly into the page:
 
    ```bash
@@ -75,9 +81,11 @@ Keep the browser HTML unchanged, create a separate import copy with
 and pass that copy to `code_to_design`. The script preserves the semantic alias,
 source provenance, viewBox, display-size token, and source vector geometry while
 removing the sprite only from the import copy. A strict Pixso preparation must
-resolve every `<use>` and every generated icon must have a semantic alias; a
-legacy/native sprite without an alias is allowed only as a temporary migration
-warning and must be registered before that icon is used in a new page.
+resolve every `<use>`. An icon with no semantic alias may still be imported
+when its source geometry is present; the preparation keeps its source/sprite
+marker and adds an explicit manual-fallback marker. Register it later when it
+needs exact reusable library provenance; registration is not a prerequisite
+for a runnable page.
 
 Strict audit treats unregistered `<symbol>` elements and unprovenanced inline SVG geometry as errors. Non-icon SVGs must declare `data-svg-role="logo"`, `illustration`, `chart`, or `decoration`. A true manual icon fallback must declare `data-icon-manual-fallback` and be documented in the project alias decision record.
 

@@ -1,6 +1,8 @@
 import React from "react";
 import "./styles.css";
 import { Icon, contract } from "./shared.jsx";
+import { resolveTitlebarSegment } from "@text-to-ui/component-contracts/titlebar-segments";
+export { createTitlebarSegments } from "@text-to-ui/component-contracts/titlebar-segments";
 export { Chips } from "./Chips.jsx";
 
 const defaultTitlebarLogoSrc = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%230A59F7'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-family='Arial,sans-serif' font-size='14' font-weight='700' fill='white'%3ET%3C/text%3E%3C/svg%3E";
@@ -12,14 +14,14 @@ const buttonLogicalName = ({ variant, mode, iconOnly = false }) => {
   return `Button/${variant[0].toUpperCase()}${variant.slice(1)}/Default`;
 };
 
-export function Button({ label, children, variant = "primary", size = "standard", mode = "text", state = "default", disabled = false, icon, iconOnly = false, logicalName: logicalNameOverride, onClick, menuOpen = false, className = "", ...props }) {
+export function Button({ label, children, variant = "primary", size = "standard", mode = "text", state = "default", disabled = false, icon, iconSize = 20, iconOnly = false, logicalName: logicalNameOverride, onClick, menuOpen = false, className = "", ...props }) {
   const resolvedState = disabled ? "disabled" : state;
   const logicalName = logicalNameOverride ?? buttonLogicalName({ variant, mode, iconOnly });
   const isIconOnly = mode === "icon" || iconOnly;
   const modeClass = isIconOnly ? " tui-button--icon" : "";
   const labelContent = children ?? label;
-  return <button type="button" className={`tui-component tui-button${modeClass}${className ? ` ${className}` : ""}`} aria-label={iconOnly ? label : undefined} {...props} {...contract("button", logicalName, variant, resolvedState, { "data-mode": mode, "data-size": size })} disabled={disabled} onClick={onClick}>
-    {icon && <span data-slot="icon"><Icon name={icon} /></span>}
+  return <button type="button" className={`tui-component tui-button${modeClass}${className ? ` ${className}` : ""}`} aria-label={isIconOnly ? label : undefined} {...props} {...contract("button", logicalName, variant, resolvedState, { "data-mode": mode, "data-size": size })} disabled={disabled} onClick={onClick}>
+    {icon && <span data-slot="icon"><Icon name={icon} size={iconSize} /></span>}
     {!isIconOnly && <span data-slot="label" data-typography-role={size === "small" ? "body-m" : "body-l"}>{labelContent}</span>}
   </button>;
 }
@@ -32,24 +34,39 @@ export function Input({ value, defaultValue, placeholder = "请输入内容", di
   </label>;
 }
 
-export function Search({ value, defaultValue, placeholder = "搜索", disabled = false, state = "default", surface = "white", advancedSearch = false, advancedSearchLabel = "高级搜索", onAdvancedSearch, onChange, onClear, ...props }) {
-  const hasValue = value !== undefined ? Boolean(value) : Boolean(defaultValue);
+export function Search({ value, defaultValue = "", placeholder = "搜索", disabled = false, state = "default", surface = "white", advancedSearch = false, advancedSearchLabel = "高级搜索", onAdvancedSearch, onChange, onClear, ...props }) {
+  const [internalValue, setInternalValue] = React.useState(defaultValue);
+  const currentValue = value === undefined ? internalValue : value;
+  const hasValue = Boolean(currentValue);
   const [focused, setFocused] = React.useState(false);
   const resolvedState = disabled ? "disabled" : state === "default" && focused ? "focus" : state;
   return <label className="tui-component tui-search" data-surface={surface} {...contract("search", "Search/White Surface/Default", advancedSearch ? "advanced-search" : hasValue ? "with-value" : "default", resolvedState)}>
     <span data-slot="leading"><Icon name="field/search" /></span>
-    <input {...props} type="search" value={value} defaultValue={defaultValue} placeholder={placeholder} disabled={disabled} onChange={onChange} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }} data-slot="value" data-typography-role="body-l" />
-    {hasValue && <button className="tui-icon-button" type="button" aria-label="清除" onClick={onClear} data-slot="clear"><Icon name="action/close" /></button>}
+    <input {...props} type="search" value={currentValue} placeholder={placeholder} disabled={disabled} onChange={(event) => { if (value === undefined) setInternalValue(event.target.value); onChange?.(event); }} onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }} data-slot="value" data-typography-role="body-l" />
+    {hasValue && <button className="tui-icon-button" type="button" aria-label="清除" onClick={(event) => { if (value === undefined) setInternalValue(""); onClear?.(event); }} data-slot="clear"><Icon name="action/close" /></button>}
     {advancedSearch && <Button className="tui-search__advanced" label={advancedSearchLabel} variant="ghost" size="small" mode="text" type="button" aria-label={advancedSearchLabel} aria-haspopup="dialog" disabled={disabled} onClick={onAdvancedSearch} data-slot="advanced-search" data-typography-role="body-m" />}
   </label>;
 }
 
-export function Sidebar({ items = [], selected, onSelect, children, ...props }) {
-  return <nav className="tui-component tui-sidebar" data-component="sidebar" data-renderer-key="sidebar" data-variant="default" data-state="default" data-framework="react" aria-label="主导航" {...props}>
-    {children ?? items.map((item) => { const itemState = item.id === selected ? "selected" : item.state ?? "default"; return <button className="tui-sidebar-item" key={item.id ?? item.label} type="button" data-component="sidebar-item" data-renderer-key="sidebar-item" data-logical-component="Sidebar Item/Default" data-variant={itemState} data-state={itemState} data-framework="react" disabled={item.disabled || item.state === "disabled"} onClick={() => onSelect?.(item.id)}>
-      <span data-slot="leading"><Icon name={item.iconAlias ?? item.icon ?? "navigation/grid"} /></span><span data-slot="label">{item.label}</span>{item.count !== undefined && <span className="tui-sidebar-item__count" data-slot="trailing">{item.count}</span>}
-    </button>; })}
+export function Sidebar({ items = [], groups = [], selected, onSelect, children, ariaLabel = "主导航", ...props }) {
+  const renderItems = (groupItems) => groupItems.map((item) => { const itemState = item.id === selected ? "selected" : item.state ?? "default"; return <button className="tui-sidebar-item" key={item.id ?? item.label} type="button" data-component="sidebar-item" data-renderer-key="sidebar-item" data-logical-component="Sidebar Item/Default" data-variant={itemState} data-state={itemState} data-framework="react" disabled={item.disabled || item.state === "disabled"} onClick={() => onSelect?.(item.id)}>
+    <span data-slot="leading"><Icon name={item.iconAlias ?? item.icon ?? "navigation/grid"} /></span><span data-slot="label">{item.label}</span>{item.count !== undefined && <span className="tui-sidebar-item__count" data-slot="trailing">{item.count}</span>}
+  </button>; });
+  if (!children && groups.length > 1) return <nav className="tui-component tui-sidebar-groups" data-component="sidebar-groups" data-logical-component="Sidebar Groups/Default" data-framework="react" aria-label={ariaLabel} {...props}>
+    {groups.map((group, index) => <SidebarGroup key={group.id ?? index} group={group} index={index} selected={selected} onSelect={onSelect} />)}
   </nav>;
+  return <nav className="tui-component tui-sidebar" data-component="sidebar" data-renderer-key="sidebar" data-variant="default" data-state="default" data-framework="react" aria-label={ariaLabel} {...props}>
+    {children ?? renderItems(groups.length === 1 ? groups[0].items : items)}
+  </nav>;
+}
+
+function SidebarGroup({ group, index, selected, onSelect }) {
+  const [expanded, setExpanded] = React.useState(group.expanded !== false);
+  const contentId = `sidebar-group-content-${index + 1}`;
+  return <section className="tui-component tui-disclosure tui-sidebar-group" data-component="collapsible" data-renderer-key="collapsible" data-logical-component="Collapsible/Default" data-variant={expanded ? "open" : "default"} data-state={expanded ? "open" : "default"} data-framework="react">
+    <button className="tui-disclosure__trigger tui-sidebar-group__trigger" type="button" aria-expanded={expanded} aria-controls={contentId} data-typography-role="subtitle-s" onClick={() => setExpanded((value) => !value)}><span data-slot="label">{group.label ?? `导航组 ${index + 1}`}</span><Icon name="navigation/chevron-down" size={16} /></button>
+    <div className="tui-disclosure__content tui-sidebar-group__content" id={contentId} data-slot="content" hidden={!expanded}><Sidebar items={group.items} selected={selected} onSelect={onSelect} ariaLabel={group.ariaLabel ?? group.label ?? "主导航"} /></div>
+  </section>;
 }
 
 const primaryNavigationIconAliases = Object.freeze({
@@ -60,11 +77,9 @@ const primaryNavigationIconAliases = Object.freeze({
   "primary-level/settings": "action/settings"
 });
 const resolvePrimaryNavigationIcon = (name) => primaryNavigationIconAliases[name] ?? name;
-const primaryNavigationAllowedIconAliases = new Set(["navigation/grid", "field/calendar", "navigation/contacts", "navigation/mail-unread", "action/settings"]);
 export function PrimaryNavigationItem({ label = "项目", ariaLabel, icon = "navigation/grid", selected = false, disabled = false, state = "default", onSelect, className = "", ...props }) {
   const resolvedState = disabled ? "disabled" : selected ? "selected" : state;
   const iconAlias = resolvePrimaryNavigationIcon(icon);
-  if (!primaryNavigationAllowedIconAliases.has(iconAlias)) throw new Error(`Primary Navigation Item requires an approved Lucide Regular icon alias: ${iconAlias}`);
   return <button type="button" className={`tui-component tui-primary-navigation-item${className ? ` ${className}` : ""}`} {...contract("primary-navigation-item", "Primary Navigation Item/Level 1", selected ? "selected" : "default", resolvedState, { "data-placement": "primary-navigation-shell", "data-mode": "icon-only", "aria-label": ariaLabel ?? label, "aria-pressed": selected, ...props })} disabled={disabled || state === "disabled"} onClick={() => onSelect?.(label)}>
     <span data-slot="icon"><Icon name={iconAlias} size={24} /></span>
   </button>;
@@ -75,20 +90,23 @@ export function ListCard({ title = "项目设置", description = "", supporting 
   const trailingNode = trailing === "icon"
     ? <span className="tui-item__trailing tui-item__trailing--icon" data-slot="trailing"><Icon name="action/more" size={20} /></span>
     : trailing === "radio"
-      ? <label className="tui-item__trailing tui-choice" data-slot="trailing" aria-label="已选中"><input type="radio" defaultChecked /><span className="tui-radio__indicator" aria-hidden="true" /></label>
+      ? <label className="tui-item__trailing tui-choice" data-slot="trailing"><input type="radio" defaultChecked aria-label="已选中" /><span className="tui-radio__indicator" aria-hidden="true" /></label>
       : trailing === "checkbox"
-        ? <label className="tui-item__trailing tui-choice tui-checkbox" data-slot="trailing" aria-label="已选中"><input type="checkbox" defaultChecked /><span className="tui-checkbox__indicator" aria-hidden="true"><Icon name="choice/check" size={16} /></span></label>
+        ? <label className="tui-item__trailing tui-choice tui-checkbox" data-slot="trailing"><input type="checkbox" defaultChecked aria-label="已选中" /><span className="tui-checkbox__indicator" aria-hidden="true"><Icon name="choice/check" size={16} /></span></label>
         : trailing === "switch"
-          ? <label className="tui-item__trailing tui-choice tui-switch" data-slot="trailing" aria-label="已开启"><input type="checkbox" role="switch" defaultChecked /><span className="tui-switch__track" aria-hidden="true" /></label>
+          ? <label className="tui-item__trailing tui-choice tui-switch" data-slot="trailing"><input type="checkbox" role="switch" defaultChecked aria-label="已开启" /><span className="tui-switch__track" aria-hidden="true" /></label>
           : trailing === "notification-arrow"
             ? <span className="tui-item__trailing tui-item__trailing--notification-arrow" data-slot="trailing"><span className="tui-item__notification-dot" aria-label="有新事件" /><Icon name="navigation/chevron-right" size={20} /></span>
             : <span className="tui-item__trailing tui-item__trailing--text-arrow" data-slot="trailing" data-typography-role="body-m"><span>{trailingText}</span><Icon name="navigation/chevron-right" size={20} /></span>;
-  return <div className="tui-component tui-list-card" role="button" tabIndex={resolvedState === "disabled" ? -1 : 0} {...contract("list-card", "List Item/White Surface/Default", `line-${lines}`, resolvedState, { "data-lines": lines })} aria-pressed={selected || resolvedState === "selected"} aria-disabled={resolvedState === "disabled" || undefined} onClick={resolvedState === "disabled" ? undefined : onClick} onKeyDown={(event) => { if (resolvedState !== "disabled" && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onClick?.(event); } }} {...props}>
+  const activate = (event) => { if (!event.target.closest("input, button, a, select, textarea")) onClick?.(event); };
+  return <div className="tui-component tui-list-card" role="button" tabIndex={resolvedState === "disabled" ? -1 : 0} {...contract("list-card", "List Item/White Surface/Default", `line-${lines}`, resolvedState, { "data-lines": lines })} aria-pressed={selected || resolvedState === "selected"} aria-disabled={resolvedState === "disabled" || undefined} onClick={resolvedState === "disabled" ? undefined : activate} onKeyDown={(event) => { if (resolvedState !== "disabled" && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onClick?.(event); } }} {...props}>
     {children ?? <><span className="tui-item__leading" data-slot="leading"><Icon name={leading} size={24} /></span><span className="tui-item__content"><span data-slot="title" data-typography-role="body-l">{title}</span>{description && <span data-slot="description" data-typography-role="body-m">{description}</span>}{supporting && <span data-slot="supporting" data-typography-role="body-s">{supporting}</span>}</span>{trailingNode}</>}
   </div>;
 }
 
-export function Titlebar({ label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout = "standalone", paneRole = "global", mainDetailActions = [], onMainDetailAction, onAction, logoSrc = defaultTitlebarLogoSrc, logoAlt = "", children, ...props }) {
+export function Titlebar(options = {}) {
+  let { label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout, paneRole, mainContentLeading, mainDetailActions = [], onMainContentAction, onMainDetailAction, onAction, logoSrc = defaultTitlebarLogoSrc, logoAlt = "", showWindowControls, segmentRole, slots, children, ...props } = resolveTitlebarSegment(options);
+  if (paneRole === "main-detail" || paneRole === "main-content") paneRole = "final-pane";
   const actions = [
     ["minimize", "最小化"],
     ["maximize", "最大化"],
@@ -103,12 +121,12 @@ export function Titlebar({ label = "项目空间", paneTitle = "项目内容", s
   };
   return <header className="tui-component tui-titlebar" {...contract("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state, { "data-size": size, "data-layout": layout, "data-pane-role": paneRole })} {...props}>
     {(paneRole === "global" || paneRole === "primary-navigation") && <span className="tui-titlebar__brand" data-slot="leading"><img className="tui-titlebar__logo" src={logoSrc} alt={logoAlt} aria-hidden={logoAlt ? undefined : true} /><span data-slot="label" data-typography-role="subtitle-m">{label}</span></span>}
-    {children ?? <>{layout === "two-column" && isFinalPane && <strong className="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">{paneTitle}</strong>}{layout === "three-column" && isFinalPane && mainDetailActions.length > 0 && <div className="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" aria-label="Main Detail 栏级操作">{mainDetailActions.map((action) => {
+    {children ?? <>{layout === "two-column" && isFinalPane && mainContentLeading && <div className="tui-titlebar__pane-leading" data-slot="main-content-leading" data-action-scope="main-content-pane-global"><Button label={mainContentLeading.label} variant="ghost" size="standard" mode={mainContentLeading.buttonType === "icon-text-ghost" ? "icon-text" : "icon"} logicalName={mainContentLeading.buttonType === "icon-text-ghost" ? "Icon Text Button/Ghost/Default" : "Icon Button/Ghost/Default"} icon={mainContentLeading.icon} iconSize={24} className="tui-titlebar__pane-leading-action" type="button" data-slot="main-content-leading-action" data-action={mainContentLeading.id} data-button-type={mainContentLeading.buttonType ?? "icon"} disabled={disabled || mainContentLeading.disabled} onClick={() => onMainContentAction?.(mainContentLeading.id)} /></div>}{(layout === "two-column" || layout === "standalone") && isFinalPane && <strong className="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">{paneTitle}</strong>}{layout === "three-column" && isFinalPane && mainDetailActions.length > 0 && <div className="tui-titlebar__pane-actions" data-slot="main-detail-actions" data-action-scope="main-detail-pane-global" aria-label="Main Detail 栏级操作">{mainDetailActions.map((action) => {
       const buttonType = titlebarActionType(action);
       const iconOnly = buttonType === "icon";
       return <Button key={action.id} label={action.label} variant="ghost" mode={iconOnly ? "icon" : "icon-text"} logicalName={iconOnly ? "Icon Button/Ghost/Default" : "Icon Text Button/Ghost/Default"} icon={action.icon ?? "action/more"} className={`tui-titlebar__pane-action${iconOnly ? "" : " tui-titlebar__pane-action--text"}`} type="button" data-slot="main-detail-action" data-action={action.id} data-button-type={buttonType} aria-label={action.label} disabled={disabled || action.disabled} onClick={() => onMainDetailAction?.(action.id)} />;
     })}</div>}</>}
-    {(paneRole === "global" || isFinalPane) && <div className="tui-titlebar__actions" data-slot="actions">{actions.map(([action, text]) => <button className="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action={action} aria-label={text} disabled={disabled} key={action} onClick={() => onAction?.(action)}><Icon name={`window/${action}`} size={controlIconSize} /></button>)}</div>}
+    {showWindowControls && <div className="tui-titlebar__actions" data-slot="actions">{actions.map(([action, text]) => <button className="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action={action} aria-label={text} disabled={disabled} key={action} onClick={() => onAction?.(action)}><Icon name={`window/${action}`} size={controlIconSize} /></button>)}</div>}
   </header>;
 }
 
@@ -139,9 +157,11 @@ export function Field({ label = "项目名称", value, defaultValue, placeholder
  */
 export function FormField({ label = "项目名称", required = false, error = "", disabled = false, state = "default", surface = "white", children, control, ...props }) {
   const resolvedState = disabled ? "disabled" : state !== "default" ? state : error ? "error" : "default";
+  const child = children ?? control;
+  const labelledControl = React.isValidElement(child) ? React.cloneElement(child, { "aria-label": child.props["aria-label"] ?? label }) : child;
   return <section className="tui-component tui-form-field" data-surface={surface} data-required={required} {...contract("form-field", "Form Field/Default", "default", resolvedState)} {...props}>
     <span data-slot="label" data-typography-role="subtitle-s">{required && <span className="tui-form-field__required" aria-hidden="true">*</span>}{label}</span>
-    <div className="tui-form-field__control" data-slot="control">{children ?? control}</div>
+    <div className="tui-form-field__control" data-slot="control">{labelledControl}</div>
     {error && <span className="tui-form-field__error" data-slot="error" role="alert" data-typography-role="body-s">{error}</span>}
   </section>;
 }
@@ -178,7 +198,7 @@ function SelectBase({ id, label = "状态", value, defaultValue = defaultSelectO
   </div>;
 }
 
-export function Select(props) { return <SelectBase {...props} id="select" />; }
+export function Select({ id = "select", ...props }) { return <SelectBase {...props} id={id} />; }
 export function Combobox(props) { return <SelectBase {...props} id="combobox" combobox />; }
 
 export function NativeSelect({ label = "视图", value, defaultValue = "列表视图", options = ["列表视图", "网格视图", "紧凑视图"], disabled = false, state = "default", surface = "white", onChange, ...props }) {

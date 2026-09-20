@@ -287,11 +287,83 @@ function lucideSvg(name) {
 export function resolvePixsoIcon(alias) {
   const aliases = readJson(ICON_ALIAS_PATH).aliases ?? {};
   const entry = aliases[alias];
-  if (!entry) throw new Error(`Unknown semantic icon alias: ${alias}`);
-  if (entry.source === "asset") {
-    return { alias, source: entry.source, path: entry.path, svg: fs.readFileSync(path.join(SKILL_ROOT, entry.path), "utf8") };
+  if (!entry) {
+    const normalize = (value) => String(value ?? "")
+      .trim()
+      .replace(/^lucide(?::|\/)/i, "")
+      .replace(/([a-z])([A-Z])/g, "$1-$2")
+      .replace(/[\s_]+/g, "-")
+      .toLowerCase();
+    const requested = normalize(alias);
+    const flatAliasMatches = Object.keys(aliases).filter((candidateAlias) => normalize(candidateAlias.replaceAll("/", "-")) === requested);
+    const compatibilityAliasNames = {
+      "disclosure-down": "navigation/chevron-down",
+      "disclosure-right": "navigation/chevron-right",
+      "disclosure-up": "navigation/chevron-up",
+      "window-minimize": "window/minimize",
+      "window-maximize": "window/maximize",
+      "window-close": "window/close",
+      close: "action/close",
+      trash: "action/delete",
+      document: "object/file",
+      download: "action/download",
+      refresh: "action/refresh",
+      add: "action/add",
+      settings: "action/settings",
+      search: "field/search",
+      more: "action/more",
+      grid: "navigation/grid",
+      history: "navigation/recent",
+      user: "object/avatar",
+      "panel-left": "navigation/panel-left",
+      device: "object/device",
+      calendar: "field/calendar",
+      clock: "field/clock",
+      info: "status/info",
+      success: "status/success",
+      warning: "status/warning",
+      danger: "status/danger",
+      neutral: "status/neutral",
+      sync: "action/refresh"
+    };
+    const compatibilityAlias = compatibilityAliasNames[requested];
+    const compatibilityResolvedAlias = compatibilityAlias && aliases[compatibilityAlias]
+      ? compatibilityAlias
+      : flatAliasMatches.length === 1
+        ? flatAliasMatches[0]
+        : null;
+    if (compatibilityResolvedAlias) {
+      const resolved = aliases[compatibilityResolvedAlias];
+      return { alias, resolvedAlias: compatibilityResolvedAlias, source: resolved.source, name: resolved.name, resolution: compatibilityAlias ? "compatibility-alias" : "flat-alias", svg: resolved.source === "lucide" ? lucideSvg(resolved.name) : fs.readFileSync(path.join(SKILL_ROOT, resolved.path), "utf8") };
+    }
+    const sourceNameMatches = Object.entries(aliases)
+      .filter(([, candidate]) => candidate.source === "lucide" && normalize(candidate.name) === requested)
+      .map(([candidateAlias]) => candidateAlias);
+    const requestedSuffix = requested.split("/").at(-1);
+    const suffixMatches = Object.keys(aliases).filter((candidateAlias) => normalize(candidateAlias.split("/").at(-1)) === requestedSuffix);
+    const resolvedAlias = sourceNameMatches.length === 1
+      ? sourceNameMatches[0]
+      : suffixMatches.length === 1
+        ? suffixMatches[0]
+        : null;
+    if (resolvedAlias) {
+      const resolved = aliases[resolvedAlias];
+      return { alias, resolvedAlias, source: resolved.source, name: resolved.name, resolution: sourceNameMatches.length === 1 ? "source-name" : "semantic-suffix", svg: resolved.source === "lucide" ? lucideSvg(resolved.name) : fs.readFileSync(path.join(SKILL_ROOT, resolved.path), "utf8") };
+    }
+    const directName = requested.replace(/^.*\//, "");
+    const directPath = path.join(LUCIDE_ICON_DIR, `${directName}.mjs`);
+    if (fs.existsSync(directPath)) return { alias, source: "lucide", name: directName, resolution: "source-name", svg: lucideSvg(directName) };
+    return {
+      alias,
+      source: "unresolved-fallback",
+      resolution: "unresolved-fallback",
+      svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>',
+    };
   }
-  if (entry.source === "lucide") return { alias, source: entry.source, name: entry.name, svg: lucideSvg(entry.name) };
+  if (entry.source === "asset") {
+    return { alias, source: entry.source, path: entry.path, resolution: "canonical", svg: fs.readFileSync(path.join(SKILL_ROOT, entry.path), "utf8") };
+  }
+  if (entry.source === "lucide") return { alias, source: entry.source, name: entry.name, resolution: "canonical", svg: lucideSvg(entry.name) };
   throw new Error(`Unsupported icon source for ${alias}: ${entry.source}`);
 }
 
