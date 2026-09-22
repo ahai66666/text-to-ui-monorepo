@@ -12,6 +12,8 @@ const registry = JSON.parse(fs.readFileSync(new URL('../assets/design-system/pat
 const componentStyles = fs.readFileSync(new URL('../../packages/component-styles/src/index.css', import.meta.url), 'utf8');
 assert.match(componentStyles, /\.tui-titlebar\[data-size="small"\][^}]*padding-right:\s*var\(--padding-titlebar-trailing-l\)/, 'Titlebar S must use the 12px trailing inset token');
 assert.match(componentStyles, /\.tui-generated--titlebar\s*\{[^}]*padding-right:\s*var\(--padding-titlebar-trailing-l\)/, 'generated Titlebar must use the 12px trailing inset token');
+assert.match(componentStyles, /\.tui-titlebar\[data-layout="three-column"\]\[data-pane-role="secondary-pane"\][^}]*padding-inline:\s*var\(--space-5\)[^}]*align-items:\s*center/, 'three-column middle Titlebar content must use the 16px inline inset and size-based cross-axis centering');
+assert.match(componentStyles, /\.tui-titlebar__secondary-content\s*\{[^}]*width:\s*100%[^}]*display:\s*flex[^}]*align-items:\s*center/, 'middle Titlebar content must fill the slot without adding vertical padding');
 const pattern = registry.patterns.find(p => p.id === 'pattern-b-three-pane');
 const configs = createTitlebarSegments(pattern, {
   'primary-navigation': { slots: { leading: { src: '/product.svg', alt: '产品' }, label: '收件箱工作台' } },
@@ -20,6 +22,8 @@ const configs = createTitlebarSegments(pattern, {
 assert.deepEqual(configs.map(s => s.region), pattern.titleLayer.segments);
 assert.deepEqual(configs.map(s => s.showWindowControls), [false, false, true]);
 assert.throws(() => resolveTitlebarSegment({ segmentRole: 'secondary-list', slots: { label: '错位' } }), /not available/);
+assert.doesNotThrow(() => resolveTitlebarSegment({ layout: 'three-column', segmentRole: 'secondary-list', slots: { 'secondary-pane-content': { component: 'search', props: { placeholder: '搜索项目' } } } }));
+assert.throws(() => resolveTitlebarSegment({ layout: 'three-column', segmentRole: 'secondary-list', slots: { 'secondary-pane-content': { component: 'input' } } }), /registered Search/);
 assert.throws(() => resolveTitlebarSegment({ segmentRole: 'primary-navigation', showWindowControls: true }), /final/);
 assert.throws(() => createTitlebarSegments(pattern, { 'main-detail': { layout: 'two-column' } }), /placement/);
 assert.throws(() => resolveTitlebarSegment({ size: 'small', layout: 'two-column', segmentRole: 'main-content' }), /Titlebar_S.*standalone/);
@@ -69,11 +73,17 @@ try {
         assert.equal((markup.match(/data-component="titlebar"/g) ?? []).length, scene.segments.length, `${framework}/${size}/${scene.layout}`);
         assert.equal((markup.match(/data-action="close"/g) ?? []).length, 1, `${framework}/${size}/${scene.layout}`);
         assert.equal((markup.match(new RegExp(`<header\\b[^>]*\\bdata-size="${size}"`, 'g')) ?? []).length, scene.segments.length, `${framework} size must apply to every segment`);
+        if (scene.layout === 'three-column') {
+          assert.equal((markup.match(/data-slot="secondary-pane-content"/g) ?? []).length, 1, `${framework}/${size}/three-column middle slot`);
+          assert.equal((markup.match(/data-component="search"/g) ?? []).length, 1, `${framework}/${size}/three-column registered middle component`);
+        }
       }
     }
     const markup = (await Promise.all(configs.map(({ region, ...options }) => render(options)))).join('');
     assert.equal((markup.match(/data-component="titlebar"/g) ?? []).length, 3, framework);
     assert.equal((markup.match(/data-action="close"/g) ?? []).length, 1, framework);
+    assert.ok((markup.match(/data-logical-component="Icon Button\/Ghost\/Default"/g) ?? []).length >= 3, `${framework} window controls must reuse the registered ghost icon Button`);
+    assert.ok((markup.match(/data-icon-size="24"/g) ?? []).length >= 3, `${framework} window-control icons must be 24×24`);
     assert.match(markup, /收件箱工作台/);
     assert.match(markup, /product.svg/);
     assert.match(markup, /回复邮件/);

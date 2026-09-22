@@ -1,5 +1,28 @@
 # New page or redesign route
 
+## Recommended one-shot entry
+
+For ordinary page generation, use the compliant pipeline rather than invoking
+the individual route, context, layout, and framework scripts manually:
+
+```bash
+node scripts/generate-compliant-page.mjs \
+  --project <generated-project> \
+  --repo <monorepo> \
+  --framework <html|react|vue> \
+  --task <request> \
+  --blueprint <page-blueprint.json> \
+  --content-recipes <page-content-recipes.json> \
+  --bindings <page-bindings.json> \
+  --page-css <page-composition.css>
+```
+
+This entry point owns route/context resolution, material-closure verification,
+Layout Contract generation, strict page compilation, and atomic output commit.
+If a gate fails, repair the named input and rerun; do not patch the generated
+entry or CSS by hand. The lower-level commands below remain useful for
+diagnosis and Skill maintenance.
+
 First locate the repository and discover the design inputs (no blueprint or
 user confirmation is required for discovery). The route material closure is
 part of the generation context; do not rely on a partial hand-picked list:
@@ -27,6 +50,10 @@ inputs before Gate 0 from `SKILL.md`, then read only:
 
 After automatic blueprint planning (ask only if the user must choose a different
 Pattern or primary task):
+
+The following expanded sequence documents the gates owned by the one-shot
+command. It is a diagnostic/maintenance breakdown, not the normal authoring
+entry point.
 
 ```bash
 node scripts/locate-monorepo.mjs --start "$PWD"
@@ -122,6 +149,15 @@ group. For Pattern B, compose at the actual 360px secondary width and use the
 still decides what the row or card means, which fields lead, what is selected,
 and how the detail relates to it.
 
+Every generated Pattern page also has one renderer-owned Titlebar scene. Bind
+exactly one registered `Titlebar/Default` to `global-title-layer`; omit
+`options.size` for the default `L`/`large`, or explicitly choose `M`/`medium`,
+`L`/`large`, or `XL`/`xlarge`. `S`/`small` is reserved for the standalone
+Secondary Page runtime and is rejected in a canonical Pattern title layer.
+Never recreate a titlebar with page CSS or a page-owned header; the compiler
+records the resolved size in `titlebar-scene.json` and fails before writing a
+page artifact when the Titlebar is missing or uses an invalid size.
+
 Build each `page-bindings.json` entry from the Context Packet and the exact
 `query-components.mjs --context` result. For example, use
 `primary-navigation-shell` for Primary Navigation Item,
@@ -129,6 +165,24 @@ Build each `page-bindings.json` entry from the Context Packet and the exact
 `repeated-list-row` for List Item, and `selection-control` for Checkbox.
 Use `primary-navigation-titlebar`, `global-titlebar`, or
 `main-detail-titlebar` for the corresponding Titlebar placement.
+Regardless of Pattern A/B/C/D, `global-title-layer` must contain exactly one
+registered `Titlebar/Default` binding. For a pane-aligned Pattern use
+`options.size: "medium" | "large" | "xlarge"` (default `large`); never use
+`small` here. This one binding is the page Titlebar baseline; additional
+Pattern segments are resolved by the Pattern contract and may not be rebuilt
+as page headers.
+For Pattern B, Search must use `slot: "secondary-list-title"`. The right title
+segment must use one `main-detail-titlebar` binding in
+`slot: "main-detail-title"`; its business actions are action objects inside
+`slots["main-detail-actions"]`, not separate Button bindings. Use
+`actionBehaviors` on that Titlebar when the nested actions need different
+Behavior Plan outcomes. This is what preserves vertical centering, responsive
+overflow, and the final window controls across HTML, React, and Vue.
+The compliant generator derives `titlebar-scene.json` from this binding set and
+the canonical Titlebar Scene contract. Treat that output as the exact Titlebar
+design proposal for the page: revise the product copy or declared actions and
+regenerate if the direction changes; never patch pane placement, title height,
+Search alignment, or window controls in page code/CSS.
 Do not hand-copy a previous page-bindings file: a stale binding can refer to a
 component that is not present in the current renderer contract.
 

@@ -12,6 +12,7 @@ import { readPageContentRecipes } from "./page-content-recipes.mjs";
 import { materialSnapshot } from "./route-material-lib.mjs";
 import { normalizePageUiScene } from "./page-ui-scene.mjs";
 import { validatePageTokenUsage } from "./page-token-usage-lib.mjs";
+import { resolveTitlebarScene, titlebarScenePreset } from "./titlebar-scene.mjs";
 
 const args = process.argv.slice(2);
 const valueFor = (flag) => { const index = args.indexOf(flag); return index >= 0 ? args[index + 1] : null; };
@@ -26,8 +27,9 @@ const blueprintPath = valueFor("--blueprint");
 const contentRecipesPath = valueFor("--content-recipes");
 const pageCssPath = valueFor("--page-css");
 const uiSceneOutputPath = valueFor("--ui-scene");
+const titlebarSceneOutputPath = valueFor("--titlebar-scene");
 if (!contextPath || !layoutPath || !bindingsPath || !outputPath || !entryOutputPath || !manifestPath) {
-  throw new Error("Usage: generate-framework-page.mjs --context <context.json> --layout-contract <layout-contract.json> --blueprint <page-blueprint.json> --content-recipes <page-content-recipes.json> --bindings <page-bindings.json> --out <page module> --entry-out <generated entry module> --manifest <framework-page-manifest.json> [--component-usage <component-usage.json>] [--require-slots]");
+  throw new Error("Usage: generate-framework-page.mjs --context <context.json> --layout-contract <layout-contract.json> --blueprint <page-blueprint.json> --content-recipes <page-content-recipes.json> --bindings <page-bindings.json> --out <page module> --entry-out <generated entry module> --manifest <framework-page-manifest.json> [--component-usage <component-usage.json>] [--ui-scene <ui-scene.json>] [--titlebar-scene <titlebar-scene.json>] [--require-slots]");
 }
 
 const read = (file) => JSON.parse(fs.readFileSync(path.resolve(file), "utf8"));
@@ -58,6 +60,8 @@ const resolvedPattern = resolvePatternContract(layoutContract.pattern, { registr
 if (context.layout?.id !== resolvedPattern.pattern.id) throw new Error("Context Packet Pattern does not match layout-contract Pattern");
 const rawBindings = input.componentBindings ?? input.components ?? input.bindings ?? [];
 if (!Array.isArray(rawBindings) || rawBindings.length === 0) throw new Error("Bindings must contain at least one registered component");
+const titlebarPreset = titlebarScenePreset({ repositoryRoot: context.repository.root, patternId: resolvedPattern.pattern.id }).preset;
+const titlebarDetailScene = titlebarPreset?.segments?.find((segment) => segment.id === "main-detail") ?? null;
 const available = new Map((context.renderer.components ?? []).map((component) => [component.logicalName, component]));
 const selectionRulesPath = path.join(context.repository.root, "text-to-ui/references/components/component-selection-rules.json");
 const selectionRules = fs.existsSync(selectionRulesPath) ? read(selectionRulesPath).rules ?? [] : [];
@@ -76,7 +80,14 @@ const bindings = rawBindings.map((binding, index) => {
   if (!canonicalComponent) throw new Error(`No canonical component contract found for binding ${index}: ${binding.logicalName}`);
   const readiness = resolveComponentReadiness(canonicalComponent, readinessPolicy);
   if (!readiness.allowedInFastPreview) throw new Error(`${binding.logicalName}: component readiness is ${readiness.level}; ${readiness.reason}`);
-  const slots = binding.slots && typeof binding.slots === "object" && !Array.isArray(binding.slots) ? binding.slots : {};
+  const slots = binding.slots && typeof binding.slots === "object" && !Array.isArray(binding.slots) ? { ...binding.slots } : {};
+  if (binding.semanticContext === "main-detail-titlebar" && Array.isArray(slots["main-detail-actions"]) && titlebarDetailScene?.defaultBusinessActionMode) {
+    slots["main-detail-actions"] = slots["main-detail-actions"].map((action) => {
+      if (!action || typeof action !== "object" || action.buttonType) return action;
+      const isMore = action.id === "more" || action.overflowTrigger === true || action.icon === "action/more";
+      return { ...action, buttonType: isMore ? "icon" : titlebarDetailScene.defaultBusinessActionMode };
+    });
+  }
   const unsupportedSlots = Object.keys(slots).filter((key) => !(renderer.supportedSlots ?? []).includes(key));
   if (unsupportedSlots.length) throw new Error(`${binding.logicalName}: unsupported slots ${unsupportedSlots.join(", ")}`);
   const options = { ...(binding.options ?? {}) };
@@ -122,6 +133,10 @@ const bindings = rawBindings.map((binding, index) => {
     const actual = canonicalComponent.id === "titlebar" && key === "paneRole" ? options.segmentRole ?? options.paneRole : options?.[key];
     if (actual !== expected) throw new Error(`${binding.logicalName}: semanticContext '${semanticContext}' requires options.${key}=${JSON.stringify(expected)}`);
   }
+  const resolvedBindingSlot = binding.patternSlot ?? binding.slot ?? null;
+  if (selectionRule?.requiredSlot && resolvedBindingSlot !== selectionRule.requiredSlot) {
+    throw new Error(`${binding.logicalName}: semanticContext '${semanticContext}' requires Pattern slot ${selectionRule.requiredSlot}`);
+  }
   if (selectionRule?.allowedModes && !selectionRule.allowedModes.includes(options?.mode)) throw new Error(`${binding.logicalName}: semanticContext '${semanticContext}' requires mode ${selectionRule.allowedModes.join(" or ")}`);
   // Shared contract preflight catches renderer exceptions before writing any
   // application output. Browser evidence is still required for real mounting.
@@ -142,6 +157,7 @@ const bindings = rawBindings.map((binding, index) => {
     slots,
     semanticContext,
     behaviorId: binding.behaviorId ?? null,
+    actionBehaviors: binding.actionBehaviors ?? null,
     expectedRuntimeCount,
     source: renderer.source,
     readiness,
@@ -181,9 +197,11 @@ const componentExpression = (binding) => {
   const rendered = binding.expectedRuntimeCount === 1
   ? `renderHtmlComponent(${JSON.stringify(binding.rendererKey)}, ${JSON.stringify(binding.options)})`
   : `Array.from({ length: ${binding.expectedRuntimeCount} }, () => renderHtmlComponent(${JSON.stringify(binding.rendererKey)}, ${JSON.stringify(binding.options)})).join("")`;
-  return binding.behaviorId
-    ? `${JSON.stringify(`<span data-tui-behavior="${escapeHtml(binding.behaviorId)}">`)} + ${rendered} + "</span>"`
-    : rendered;
+  const attributes = [
+    binding.behaviorId ? `data-tui-behavior="${escapeHtml(binding.behaviorId)}"` : "",
+    binding.actionBehaviors ? `data-tui-action-behaviors="${escapeHtml(JSON.stringify(binding.actionBehaviors))}"` : ""
+  ].filter(Boolean).join(" ");
+  return attributes ? `${JSON.stringify(`<span ${attributes}>`)} + ${rendered} + "</span>"` : rendered;
 };
 const htmlCompositionExpression = (node, region) => {
   if (!node || typeof node !== "object") throw new Error(`Invalid composition node in region ${region}`);
@@ -219,9 +237,11 @@ const frameworkComponentExpression = (binding, create) => {
   const rendered = binding.expectedRuntimeCount === 1
     ? `${create}(${binding.exportName}, ${props})`
     : `Array.from({ length: ${binding.expectedRuntimeCount} }, (_, index) => ${create}(${binding.exportName}, { ...${props}, key: ${JSON.stringify(binding.id)} + "-" + index }))`;
-  return binding.behaviorId
-    ? `${create}("span", { "data-tui-behavior": ${JSON.stringify(binding.behaviorId)}, onClick: (event) => event.currentTarget.dispatchEvent(new CustomEvent("text-to-ui:behavior", { bubbles: true, detail: { behaviorId: ${JSON.stringify(binding.behaviorId)} } })) }, ${rendered})`
-    : rendered;
+  if (!binding.behaviorId && !binding.actionBehaviors) return rendered;
+  const behaviorResolver = binding.actionBehaviors
+    ? `(event.target.closest?.("[data-action]") ? ${JSON.stringify(binding.actionBehaviors)}[event.target.closest("[data-action]").dataset.action] : null) || ${JSON.stringify(binding.behaviorId)}`
+    : JSON.stringify(binding.behaviorId);
+  return `${create}("span", { ${binding.behaviorId ? `"data-tui-behavior": ${JSON.stringify(binding.behaviorId)}, ` : ""}${binding.actionBehaviors ? `"data-tui-action-behaviors": ${JSON.stringify(JSON.stringify(binding.actionBehaviors))}, ` : ""}onClick: (event) => { const behaviorId = ${behaviorResolver}; if (behaviorId) event.currentTarget.dispatchEvent(new CustomEvent("text-to-ui:behavior", { bubbles: true, detail: { behaviorId } })); } }, ${rendered})`;
 };
 const frameworkCompositionExpression = (node, region, create) => {
   if (!node || typeof node !== "object") throw new Error(`Invalid composition node in region ${region}`);
@@ -271,13 +291,28 @@ for (const interaction of behaviorPlan.interactions) {
   for (const bindingId of interaction.triggerBindingIds) if (!bindings.some((binding) => binding.id === bindingId)) throw new Error(`behaviorPlan interaction '${interaction.id}' references unknown binding '${bindingId}'`);
 }
 for (const binding of bindings) {
+  if (binding.actionBehaviors !== null) {
+    if (!binding.actionBehaviors || typeof binding.actionBehaviors !== "object" || Array.isArray(binding.actionBehaviors)) {
+      throw new Error(`${binding.id}: actionBehaviors must map Titlebar action ids to behaviorPlan ids`);
+    }
+    if (binding.rendererKey !== "titlebar" && binding.logicalName !== "Titlebar/Default") throw new Error(`${binding.id}: actionBehaviors is only valid on a registered Titlebar binding`);
+    const availableActionIds = new Set((binding.slots?.["main-detail-actions"] ?? []).map((action) => action.id));
+    if (Object.keys(binding.actionBehaviors).length === 0) throw new Error(`${binding.id}: actionBehaviors must not be empty`);
+    for (const [actionId, behaviorId] of Object.entries(binding.actionBehaviors)) {
+      if (!availableActionIds.has(actionId)) throw new Error(`${binding.id}: actionBehaviors references unknown Titlebar action '${actionId}'`);
+      if (!behaviorPlanById.has(behaviorId)) throw new Error(`${binding.id}: actionBehaviors '${actionId}' references undeclared behavior '${behaviorId}'`);
+      if (!behaviorPlanById.get(behaviorId).triggerBindingIds.includes(binding.id)) throw new Error(`${binding.id}: behaviorPlan '${behaviorId}' must list this Titlebar binding as a trigger`);
+    }
+  }
   if (interactiveRendererKeys.has(binding.rendererKey) && !binding.behaviorId) throw new Error(`${binding.id}: interactive component '${binding.logicalName}' requires behaviorId before generation`);
   if (binding.behaviorId && !behaviorPlanById.has(binding.behaviorId)) throw new Error(`${binding.id}: behaviorId '${binding.behaviorId}' is not declared in behaviorPlan`);
   if (binding.behaviorId && !behaviorPlanById.get(binding.behaviorId).triggerBindingIds.includes(binding.id)) throw new Error(`${binding.id}: behaviorPlan '${binding.behaviorId}' must list this binding as a trigger`);
 }
 for (const interaction of behaviorPlan.interactions) {
   for (const bindingId of interaction.triggerBindingIds) {
-    if (bindings.find((binding) => binding.id === bindingId)?.behaviorId !== interaction.id) throw new Error(`behaviorPlan interaction '${interaction.id}' trigger '${bindingId}' must reference the same behaviorId`);
+    const binding = bindings.find((candidate) => candidate.id === bindingId);
+    const ownsInteraction = binding?.behaviorId === interaction.id || Object.values(binding?.actionBehaviors ?? {}).includes(interaction.id);
+    if (!ownsInteraction) throw new Error(`behaviorPlan interaction '${interaction.id}' trigger '${bindingId}' must reference the same behaviorId or Titlebar actionBehaviors entry`);
   }
 }
 const validateStylePlanNodes = (nodes, region) => {
@@ -310,6 +345,101 @@ if (navigationMode) {
     validateStylePlanNodes(nodes, navigationShellDefinition.region);
   }
 }
+// Pattern B has one renderer-owned global title layer.  In a two-level
+// navigation shell the primary segment is intentionally a *single direct*
+// Titlebar component: a page-owned header around it, a sibling collapse
+// button, or any other wrapper changes the segment's ownership and produces
+// the coloured second bar / apparent four-column layout seen in generated
+// workbenches.  The secondary segment is equally strict: Search is the only
+// component allowed in its title row; scope/filter actions belong in the list
+// body or a registered Titlebar slot, never beside Search.
+const validatePatternBTitleLayer = () => {
+  if (resolvedPattern.pattern.id !== "pattern-b-three-pane") return;
+
+  const globalTitleBindings = bindings.filter((binding) => binding.slot === "global-title-layer");
+  if (globalTitleBindings.length !== 1) {
+    throw new Error(`Pattern B global-title-layer must resolve to exactly one Titlebar binding; found ${globalTitleBindings.length}`);
+  }
+  const primaryTitlebar = globalTitleBindings[0];
+  const isTitlebarBinding = (binding) => binding.rendererKey === "titlebar" || binding.logicalName === "Titlebar/Default";
+  const isSearchBinding = (binding) => binding.rendererKey === "search" || binding.logicalName === "Search/White Surface/Default";
+  if (!isTitlebarBinding(primaryTitlebar) || !["global-titlebar", "primary-navigation-titlebar"].includes(primaryTitlebar.semanticContext)) {
+    throw new Error("Pattern B global-title-layer must use the registered Titlebar/Default binding with semanticContext global-titlebar or primary-navigation-titlebar");
+  }
+  const primaryRole = primaryTitlebar.options.segmentRole ?? primaryTitlebar.options.paneRole;
+  if (primaryRole !== "primary-navigation" || primaryTitlebar.options.layout !== "three-column") {
+    throw new Error("Pattern B primary-navigation title segment requires Titlebar layout=three-column and paneRole/segmentRole=primary-navigation");
+  }
+  if (primaryTitlebar.options.showWindowControls === true) {
+    throw new Error("Pattern B primary-navigation Titlebar cannot own window controls; only the final segment may show them");
+  }
+
+  const secondaryTitleBindings = bindings.filter((binding) => binding.slot === "secondary-list-title");
+  const secondarySearchBindings = bindings.filter((binding) => binding.semanticContext === "secondary-list-search");
+  const unboundSecondarySearch = secondarySearchBindings.filter((binding) => binding.slot !== "secondary-list-title");
+  if (unboundSecondarySearch.length) {
+    throw new Error(`Pattern B Search must bind explicitly to secondary-list-title so the renderer can own its height, inset, and vertical alignment; update ${unboundSecondarySearch.map((binding) => binding.id).join(", ")}`);
+  }
+  const invalidSecondaryTitleBindings = secondaryTitleBindings.filter((binding) => !isSearchBinding(binding) || binding.semanticContext !== "secondary-list-search");
+  if (invalidSecondaryTitleBindings.length) {
+    throw new Error(`Pattern B secondary-list-title is Search-only; move ${invalidSecondaryTitleBindings.map((binding) => binding.logicalName).join(", ")} out of the title row instead of placing it beside Search`);
+  }
+  if (secondaryTitleBindings.length > 1) {
+    throw new Error("Pattern B secondary-list-title accepts at most one Search component; filters, scope buttons, and list actions belong below the title row");
+  }
+
+  const directDetailActions = bindings.filter((binding) => binding.slot === "main-detail-actions");
+  if (directDetailActions.length) {
+    throw new Error(`Pattern B main-detail-actions is component-owned; move ${directDetailActions.map((binding) => binding.id).join(", ")} into the final Titlebar binding slots["main-detail-actions"] instead of binding separate buttons to the Pattern`);
+  }
+  const finalTitlebars = bindings.filter((binding) => binding.slot === "main-detail-title");
+  if (finalTitlebars.length !== 1) {
+    throw new Error(`Pattern B main-detail-title must resolve to exactly one final Titlebar binding; found ${finalTitlebars.length}`);
+  }
+  const finalTitlebar = finalTitlebars[0];
+  const finalRole = finalTitlebar.options.segmentRole ?? finalTitlebar.options.paneRole;
+  if (!isTitlebarBinding(finalTitlebar) || finalTitlebar.semanticContext !== "main-detail-titlebar" || finalTitlebar.options.layout !== "three-column" || !["main-detail", "final-pane"].includes(finalRole)) {
+    throw new Error("Pattern B main-detail-title requires registered Titlebar/Default with semanticContext main-detail-titlebar, layout=three-column, and paneRole/segmentRole=main-detail");
+  }
+  if (finalTitlebar.options.showWindowControls === false || finalTitlebar.slots?.actions === false) {
+    throw new Error("Pattern B final Titlebar owns the minimize, maximize, and close controls; window controls cannot be disabled");
+  }
+
+  if (!navigationMode) return;
+  const globalTitleNodes = navigationShell?.slots?.["global-title-layer"];
+  if (!Array.isArray(globalTitleNodes) || globalTitleNodes.length !== 1 || globalTitleNodes[0]?.kind !== "component") {
+    throw new Error("Pattern B navigation global-title-layer must be one direct Titlebar component; do not wrap it in a page header or add a sibling button");
+  }
+  if (globalTitleNodes[0].bindingId !== primaryTitlebar.id) {
+    throw new Error("Pattern B navigation global-title-layer must point directly to the primary-navigation Titlebar binding");
+  }
+};
+validatePatternBTitleLayer();
+// Resolve the exact Titlebar composition from canonical scene contracts before
+// writing a page. This prevents a later page implementation from inventing a
+// fourth column, top-aligning Search, or splitting window controls away from
+// the final registered Titlebar.
+const titlebarScene = resolveTitlebarScene({
+  repositoryRoot: context.repository.root,
+  resolvedPattern,
+  bindings
+});
+// A page-composite mounted in a Pattern-owned navigation slot may provide
+// business content only. The shell already owns the title layer, primary
+// action, pane inset, and pinned level-one navigation. Without this boundary a
+// composite can silently rebuild a second rail/titlebar inside the slot (the
+// classic nested-navigation and apparent four-column failure).
+const navigationShellGroupIds = new Set();
+if (navigationMode) {
+  for (const nodes of Object.values(navigationShell.slots)) collectGroupIds(nodes, navigationShellGroupIds);
+}
+// Pattern B also owns the Main Detail title segment. A page composite mounted
+// in that pane may render business content, but it must not recreate a
+// pane-local Titlebar/toolbar or handwritten window controls. Those controls
+// belong to the renderer-owned `main-detail-title` slot; a second row is the
+// source of the title overlap seen in generated mail workbenches.
+const mainDetailGroupIds = new Set();
+if (compositionRegions?.["main-detail"]) collectGroupIds(compositionRegions["main-detail"], mainDetailGroupIds);
 const canonicalUiSceneResult = normalizePageUiScene({
   resolvedPattern,
   input,
@@ -322,6 +452,9 @@ if (canonicalUiSceneResult.patternDigest !== patternDigest) throw new Error("Can
 structureDigest = canonicalUiSceneResult.structureDigest;
 structure = canonicalUiSceneResult.structure;
 const absoluteUiScenePath = path.resolve(uiSceneOutputPath ?? path.join(path.dirname(path.resolve(manifestPath)), "ui-scene.json"));
+const absoluteTitlebarScenePath = titlebarScene
+  ? path.resolve(titlebarSceneOutputPath ?? path.join(path.dirname(path.resolve(manifestPath)), "titlebar-scene.json"))
+  : null;
 const compositionIds = collectGroupIds(Object.values(compositionRegions).flat());
 if (navigationMode) for (const nodes of Object.values(navigationShell.slots)) collectGroupIds(nodes, compositionIds);
 const pageContentRecipes = contentRecipesPath
@@ -336,6 +469,22 @@ if (pageCssPath) {
   const forbiddenPatternSelectors = /(?:\[data-(?:pattern|tui-pane-role|pattern-region|pattern-shell-slot)|\.tui-(?:pattern|runtime-card|sidebar|titlebar)\b)/;
   if (forbiddenPatternSelectors.test(css)) throw new Error(`Page CSS '${cssFile}' overrides Pattern-owned selectors`);
   if (/(?:^|,)\s*(?:html|body|main|#app)\b[^{}]*\{[^}]*\b(?:width|height)\s*:\s*\d+(?:\.\d+)?px\b/is.test(css) || /(?:^|,)\s*(?:html|body|main|#app)\b[^{}]*\{[^}]*\btransform\s*:\s*scale\s*\(/is.test(css)) throw new Error(`Page CSS '${cssFile}' fixes or scales the HTML runtime canvas; use responsive layout and reserve 1728×1152 for Pixso import only`);
+  const cssBoundaryFailures = [];
+  // Keep the generation preflight aligned with validate-page-css-boundaries:
+  // protect Pattern/pane/Titlebar wrappers, while allowing unrelated business
+  // shells that own their own card surface.
+  const shellLikeSelector = /(?:^|[.#\s>])[^,]*\b(?:pattern|pane|titlebar)\b/i;
+  const strokeProperty = /\b(?:border(?:-(?:top|right|bottom|left|inline-start|inline-end|block-start|block-end))?|outline|box-shadow)\s*:/i;
+  const persistentOutline = /\boutline(?:-(?:color|style|width|offset))?\s*:\s*(?!0(?:px)?\b|none\b|var\(--color-focus-ring\b)/i;
+  const dividerSelector = /(?:^|[.#\s>])[^,]*\b(?:divider|separator)\b/i;
+  for (const match of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selector = match[1].trim();
+    const body = match[2];
+    if (shellLikeSelector.test(selector) && strokeProperty.test(body)) cssBoundaryFailures.push(`shell-like selector '${selector}' cannot add a border, outline, or shadow; Runtime owns structural divider edges`);
+    if (!/:focus-visible\b/i.test(selector) && persistentOutline.test(body)) cssBoundaryFailures.push(`outline is reserved for :focus-visible component states: '${selector}'`);
+    if (dividerSelector.test(selector) && strokeProperty.test(body) && !/var\(\s*--layout-navigation-divider-width\b/i.test(body)) cssBoundaryFailures.push(`divider/separator '${selector}' must use --layout-navigation-divider-width`);
+  }
+  if (cssBoundaryFailures.length) throw new Error(`Page CSS stroke boundary preflight failed for '${cssFile}':\n${cssBoundaryFailures.map((failure) => `- ${failure}`).join("\n")}`);
   const tokenReport = validatePageTokenUsage({ sourcePaths: [cssFile], projectRoot: context.repository.root, layoutContract });
   if (tokenReport.failures.length) {
     throw new Error(`Page CSS Token preflight failed for '${cssFile}':\n${tokenReport.failures.map((failure) => `- ${failure}`).join("\n")}`);
@@ -400,6 +549,26 @@ const pageModules = (input.pageModules ?? []).map((item) => {
   const prohibited = /<\/?(?:button|input|select|textarea|svg|use)\b|\bdocument\.querySelector(?:All)?\s*\(|\bstyle\s*=|\.style\.|\.style\.setProperty\s*\(|data-(?:pattern|tui-pane-role|pattern-region|pattern-shell-slot)\s*=/i;
   if (prohibited.test(source)) throw new Error(`Page module '${file}' bypasses the component or Pattern adapter; composites may use only the supplied host and renderComponent`);
   if (/\b(?:function\s+)?mount\s*(?:=)?\s*\([^)]*\brenderComponent\b/s.test(source) && !/\brenderComponent\s*\(/.test(source)) throw new Error(`Page module '${file}' accepts renderComponent but never calls it; registered controls must use the adapter`);
+  if (navigationShellGroupIds.has(item.compositionId)) {
+    const shellOwnedMarkup = [
+      [/\brenderComponent\s*\(\s*['"](?:titlebar|button|primary-navigation-item)['"]/i, "a Pattern-owned Titlebar, Button, or Primary Navigation Item"],
+      [/\brole\s*=\s*["']button["']/i, "a handwritten role=button control"],
+      [/(?:class|className)\s*[=:]\s*["'`][^"'`]*(?:\b(?:titlebar|sidebar|shell|brand|nav-(?:collapse|primary-action|modules)|primary-navigation)\b)[^"'`]*["'`]/i, "a Pattern shell wrapper or brand/navigation class"]
+    ].find(([pattern]) => pattern.test(source));
+    if (shellOwnedMarkup) {
+      throw new Error(`Page module '${file}' owns Pattern navigation slot '${item.compositionId}' but renders ${shellOwnedMarkup[1]}; Pattern Runtime owns the title layer, primary action, pane inset, and primary-navigation-bottom. Keep this module to business content inside secondary-navigation-content and use registered components for controls.`);
+    }
+  }
+  if (mainDetailGroupIds.has(item.compositionId)) {
+    const detailShellMarkup = [
+      [/renderComponent\s*\(\s*['"]titlebar['"]/i, "a pane-local Titlebar"],
+      [/(?:class|className)\s*[=:]\s*["'`][^"'`]*(?:\bdetail-toolbar\b|\btitlebar\b|\bwindow-controls\b)[^"'`]*["'`]/i, "a pane-local Titlebar or toolbar wrapper"],
+      [/<(?:span|button)[^>]*>\s*(?:[?−□×]|最小化|最大化|关闭)\s*<\//i, "handwritten window controls"]
+    ].find(([pattern]) => pattern.test(source));
+    if (detailShellMarkup) {
+      throw new Error(`Page module '${file}' owns Pattern Main Detail slot '${item.compositionId}' but renders ${detailShellMarkup[1]}; put pane-global actions in the registered main-detail-title Titlebar binding and keep this module to business content in the detail scroll body.`);
+    }
+  }
   return { compositionId: item.compositionId, file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') };
 });
 if (new Set(pageModules.map((item) => item.compositionId)).size !== pageModules.length) throw new Error('Only one page module may own each composition host');
@@ -408,6 +577,10 @@ if (new Set(customUsage.map((entry) => entry.id)).size !== customUsage.length) t
 // scene is written only after all page-owned CSS and module boundaries pass.
 fs.mkdirSync(path.dirname(absoluteUiScenePath), { recursive: true });
 fs.writeFileSync(absoluteUiScenePath, `${JSON.stringify(canonicalUiSceneResult.scene, null, 2)}\n`);
+if (absoluteTitlebarScenePath) {
+  fs.mkdirSync(path.dirname(absoluteTitlebarScenePath), { recursive: true });
+  fs.writeFileSync(absoluteTitlebarScenePath, `${JSON.stringify(titlebarScene, null, 2)}\n`);
+}
 const htmlNavigationShellExpression = () => {
   const region = navigationShellDefinition.region;
   const slots = navigationShellDefinition.shellSlots.map((slot) => {
@@ -571,6 +744,7 @@ if (framework === "html") {
   source = `${imports.join("\n")}\n\nexport const patternContract = ${JSON.stringify({ id: resolvedPattern.pattern.id, source: resolvedPattern.authority, schemaVersion: 1, patternDigest, structureDigest }, null, 2)};\nexport const stylePlan = ${JSON.stringify(stylePlan, null, 2)};\nexport const behaviorPlan = ${JSON.stringify(behaviorPlan, null, 2)};\nexport function GeneratedPage() {\n  return ${create}("main", { "data-pattern": ${JSON.stringify(resolvedPattern.pattern.id)}, "data-structure-digest": ${JSON.stringify(structureDigest)}, "data-tui-behavior-plan": ${JSON.stringify(JSON.stringify(behaviorPlan))} },\n    ${paneExpressions.join(",\n    ")}\n  );\n}\n`;
 }
 
+source = source.replace("export const stylePlan", `export const titlebarScene = ${JSON.stringify(titlebarScene, null, 2)};\nexport const stylePlan`);
 source = source.replace("export const stylePlan", `export const pageBlueprint = ${JSON.stringify(pageBlueprint, null, 2)};\nexport const pageContentRecipes = ${JSON.stringify(pageContentRecipes, null, 2)};\nexport const stylePlan`);
 if (framework === "html") {
   source = source.replace(
@@ -597,6 +771,13 @@ const manifest = {
     path: path.relative(path.dirname(path.resolve(manifestPath)), absoluteUiScenePath) || path.basename(absoluteUiScenePath),
     sha256: crypto.createHash("sha256").update(fs.readFileSync(absoluteUiScenePath)).digest("hex")
   },
+  titlebarScene: absoluteTitlebarScenePath ? {
+    schemaVersion: titlebarScene.schemaVersion,
+    kind: titlebarScene.kind,
+    preset: titlebarScene.preset,
+    path: path.relative(path.dirname(path.resolve(manifestPath)), absoluteTitlebarScenePath) || path.basename(absoluteTitlebarScenePath),
+    sha256: crypto.createHash("sha256").update(fs.readFileSync(absoluteTitlebarScenePath)).digest("hex")
+  } : null,
   registered: bindings,
   iconResolution: {
     policy: "registered-alias-required",
@@ -619,11 +800,11 @@ const relativeImport = (file) => `./${path.relative(path.dirname(absoluteEntryOu
 const moduleImports = pageModules.map((item, index) => `import { mount as mountComposite${index} } from ${JSON.stringify(relativeImport(item.file))};`).join("\n");
 const moduleMounts = pageModules.map((item, index) => `  { const host = root.querySelector(${JSON.stringify(`[data-composition-id="${item.compositionId}"]`)}); if (!host) throw new Error("Missing composite host"); const cleanup = mountComposite${index}(host, { renderComponent: renderHtmlComponent }); if (typeof cleanup === "function") cleanups.push(cleanup); }`).join("\n");
 let entrySource = framework === "html" ? `
-import { renderGeneratedPage, patternContract, runtimePatternContract, pageBlueprint, stylePlan, behaviorPlan } from ${JSON.stringify(pageImport)};
+import { renderGeneratedPage, patternContract, runtimePatternContract, pageBlueprint, titlebarScene, stylePlan, behaviorPlan } from ${JSON.stringify(pageImport)};
 import { bindTitlebarOverflow, renderHtmlComponent } from "@text-to-ui/components-html";
 ${pageCssPath ? `import ${JSON.stringify(relativeImport(path.resolve(pageCssPath)))};` : ""}
 ${moduleImports}
-export { patternContract, pageBlueprint, stylePlan, behaviorPlan };
+export { patternContract, pageBlueprint, titlebarScene, stylePlan, behaviorPlan };
 export function mountGeneratedPage(root = document.querySelector("#app")) {
   if (!root) throw new Error("Generated page mount root was not found");
   root.__tuiDispose?.();
@@ -640,9 +821,16 @@ export function mountGeneratedPage(root = document.querySelector("#app")) {
   if (typeof titlebarOverflowCleanup === "function") cleanups.push(titlebarOverflowCleanup);
   const behaviors = new Map(behaviorPlan.interactions.map((item) => [item.id, item]));
   const execute = (event) => {
-    const host = event.target.closest?.("[data-tui-behavior]");
+    const actionHost = event.target.closest?.("[data-tui-action-behaviors]");
+    const action = event.target.closest?.("[data-action]")?.dataset.action;
+    let actionBehaviorId = null;
+    if (actionHost && action) {
+      try { actionBehaviorId = JSON.parse(actionHost.dataset.tuiActionBehaviors || "{}")[action] || null; }
+      catch { throw new Error("Invalid generated Titlebar action behavior map"); }
+    }
+    const host = actionBehaviorId ? actionHost : event.target.closest?.("[data-tui-behavior]");
     if (!host || !root.contains(host)) return;
-    const behavior = behaviors.get(host.dataset.tuiBehavior);
+    const behavior = behaviors.get(actionBehaviorId || host.dataset.tuiBehavior);
     if (!behavior) return;
     if (event.type === "click" && behavior.kind === "set-selected") {
       root.querySelectorAll("[data-tui-behavior]").forEach((item) => { if (item.dataset.tuiBehavior === host.dataset.tuiBehavior) item.dataset.tuiSelected = String(item === host); });
@@ -662,7 +850,7 @@ ${moduleMounts}
   root.__tuiDispose = () => { for (const type of ["click", "input", "change"]) root.removeEventListener(type, execute); cleanups.forEach((cleanup) => cleanup()); delete root.__tuiDispose; };
   return root;
 }
-` : `export { GeneratedPage as default, GeneratedPage, patternContract, pageBlueprint, stylePlan, behaviorPlan } from ${JSON.stringify(pageImport)};\n`;
+` : `export { GeneratedPage as default, GeneratedPage, patternContract, pageBlueprint, titlebarScene, stylePlan, behaviorPlan } from ${JSON.stringify(pageImport)};\n`;
 manifest.pageModules = pageModules.map(({ compositionId, file, sha256 }) => ({ compositionId, path: path.relative(path.dirname(path.resolve(manifestPath)), file), sha256 }));
 fs.mkdirSync(path.dirname(absoluteEntryOutputPath), { recursive: true });
 fs.writeFileSync(absoluteEntryOutputPath, entrySource);
@@ -736,4 +924,4 @@ const groupedUsage = new Map();
 const absoluteManifestPath = path.resolve(manifestPath);
 fs.mkdirSync(path.dirname(absoluteManifestPath), { recursive: true });
 fs.writeFileSync(absoluteManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-console.log(JSON.stringify({ ok: true, framework, patternId: resolvedPattern.pattern.id, patternDigest, structureDigest, unresolvedIconCount: iconDiagnostics.length, output: path.resolve(outputPath), manifest: path.resolve(manifestPath) }, null, 2));
+console.log(JSON.stringify({ ok: true, framework, patternId: resolvedPattern.pattern.id, patternDigest, structureDigest, titlebarScene: absoluteTitlebarScenePath, unresolvedIconCount: iconDiagnostics.length, output: path.resolve(outputPath), manifest: path.resolve(manifestPath) }, null, 2));

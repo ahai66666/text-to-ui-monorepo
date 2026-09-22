@@ -61,6 +61,20 @@ pnpm delivery:validate
 
 更新 Skill 时只编辑 `text-to-ui/` 规范源，再将相同文件同步到 `skill/`；不要在两个目录中维护不同规则。
 
+新页面推荐只调用一个入口：
+
+```bash
+pnpm page:generate --project <generated-project> --framework html \
+  --task "<页面需求>" --blueprint <page-blueprint.json> \
+  --content-recipes <page-content-recipes.json> \
+  --bindings <page-bindings.json> --page-css <page-composition.css>
+```
+
+该入口会自动解析并验证路由、Context Packet、Pattern/Layout Contract、组件
+适配器、Token、图标和页面组合边界；所有生成文件通过后才一次性提交，并写出
+`.text-to-ui/generation-receipt.json`。普通页面不要直接调用底层
+`generate-framework-page.mjs`。
+
 当前配套 Monorepo 提供 55 个组件契约、4 个页面 Pattern，以及 HTML、React、Vue 三套真实 UI 组件实现。组件包、Tokens、共享样式、Pixso 映射和正式画廊位于 Monorepo 的 `packages/` 与 `apps/` 下；本 Skill 负责规则、索引、页面编排和导入工具，不替代生产组件源码。
 
 当前版本提供三条可选工作流：

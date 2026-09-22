@@ -369,7 +369,7 @@ for (const component of registry.components) {
     component.segmentContract = {
       owner: "pattern-title-layer", orderedBy: "titleLayer.segments", widthOwner: "pattern-renderer",
       roles: ["primary-navigation", "secondary-list", "main-content", "main-detail"],
-      middleSegments: "alignment-only", windowControls: "final-segment-only",
+      middleSegments: "optional-registered-content; alignment-owned-by-titlebar", windowControls: "final-segment-only",
       slotAPI: "declarative-content; no arbitrary HTML"
     };
     component.slotContracts = { ...component.slotContracts,

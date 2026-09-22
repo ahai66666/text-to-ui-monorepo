@@ -3,7 +3,7 @@
   "generatedFrom": [
     {
       "path": "text-to-ui/assets/design-system/pattern-contracts.json",
-      "sha256": "40971b10dd9fe323dd69b20feabff0f86357d669c5aceb78752004ac2646647b"
+      "sha256": "7c281c8924ddb4533422b34d680c196a2910147c39944b0d7061d3344babd93e"
     },
     {
       "path": "text-to-ui/references/index/layout-routes.source.json",
@@ -323,10 +323,9 @@
           {
             "id": "secondary-list-title",
             "owner": "secondary-list",
-            "cardinality": "0..n",
+            "cardinality": "0..1",
             "allowedComponentModes": [
-              "search",
-              "titlebar"
+              "search"
             ],
             "overflow": "none"
           },
@@ -355,7 +354,9 @@
           "gridGapToken": "space/0",
           "titleLayer": {
             "heightToken": "layout/titlebar-height",
-            "alignToPaneBoundaries": true
+            "alignToPaneBoundaries": true,
+            "crossAxisAlignment": "center",
+            "middleSegmentInsetToken": "space/5"
           },
           "regions": {
             "primary-navigation": {

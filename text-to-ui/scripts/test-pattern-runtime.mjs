@@ -20,6 +20,18 @@ assert.match(patternRuntimeCss, /\.tui-pattern-runtime__navigation-top\s*\{[\s\S
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__pane\s*\{[\s\S]*box-sizing:\s*border-box/, "Runtime panes must not depend on a host page's global box-sizing reset");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__slot\s*\{[\s\S]*box-sizing:\s*border-box/, "Runtime slots must use the same box model in Renderer and generated pages");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__scroll-body\s*\{[\s\S]*box-sizing:\s*border-box/, "Runtime scroll bodies must use the same box model in Renderer and generated pages");
+assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment:first-child\s*\{[\s\S]*background:\s*var\(--color-sidebar-bg/, "Primary title segment surface must come from the shell");
+assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment:not\(:first-child\)\s*\{[\s\S]*background:\s*var\(--color-surface/, "Non-primary title segment surface must come from the shell");
+assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment \.tui-titlebar\s*\{[\s\S]*background:\s*var\(--color-titlebar-normal-bg,\s*transparent\)/, "Titlebar must remain transparent inside the shell title segment");
+assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment\s*\{[\s\S]*display:\s*flex;[\s\S]*align-items:\s*center;/, "Every Pattern title segment must vertically center its content against the shared Titlebar height");
+assert.match(patternRuntimeCss, /border-bottom:\s*var\(--layout-navigation-divider-width,\s*0\.5px\)\s+solid/, "Runtime structural separators must use the 0.5px divider Token");
+assert.match(patternRuntimeCss, /border-inline-end:\s*var\(--layout-navigation-divider-width,\s*0\.5px\)\s+solid/, "Runtime pane and title-segment dividers must use the 0.5px divider Token");
+assert.match(patternRuntimeCss, /\.tui-secondary-page-runtime__titlebar\s*\{[\s\S]*border-block-end:\s*var\(--layout-navigation-divider-width,\s*0\.5px\)\s+solid/, "Secondary Page titlebar separator must use the same 0.5px divider Token");
+assert.doesNotMatch(patternRuntimeCss, /border(?:-inline-end|-bottom):\s*1px\s+solid/, "Runtime must not hard-code a thick 1px structural divider");
+assert.match(patternRuntimeCss, /data-pattern-title-segment="secondary-list"\]:not\(:has\(> \.tui-titlebar\[data-pane-role="secondary-pane"\]\)\)[\s\S]*padding-inline:\s*var\(--space-5,\s*16px\)/, "Pattern B direct middle title content must use the renderer-owned 16px inset without double-padding a Titlebar middle segment");
+assert.match(patternRuntimeCss, /data-pattern-title-segment="secondary-list"\][\s\S]*> \[data-tui-behavior\][\s\S]*width:\s*100%/, "A behavior-wrapped Search must still fill the middle segment");
+assert.match(patternRuntimeCss, /data-pattern-title-segment="main-detail"\][\s\S]*> \[data-tui-action-behaviors\][\s\S]*width:\s*100%/, "A behavior-wrapped final Titlebar must still fill the final segment");
+assert.doesNotMatch(patternRuntimeCss, /\.tui-pattern-runtime__title-segment:first-child\s*,[\s\S]*\.tui-titlebar/, "The primary shell surface must not be painted onto the Titlebar component");
 assert.match(patternShellCss, /\[data-pattern\]:not\(\.tui-pattern-runtime\)\s*\{/, "Static Pattern shell styles must never target a Runtime root");
 assert.match(patternShellCss, /\[data-pattern\]:not\(\.tui-pattern-runtime\) \[data-pattern-shell-slot\]\s*\{/, "Static slot styles must be contained below a static Pattern root");
 assert.match(patternShellCss, /\[data-pattern\]:not\(\.tui-pattern-runtime\) \[data-pattern-scroll-body\]\s*\{/, "Static scroll-body styles must be contained below a static Pattern root");
@@ -31,6 +43,9 @@ assert.match(patternRuntimeCss, /data-pattern="pattern-b-three-pane"[^}]*seconda
 assert.match(patternRuntimeCss, /data-pattern-shell-placement="bottom"[\s\S]*?padding-block-end: var\(--space-3, 8px\)/);
 assert.match(patternShellCss, /data-pattern="pattern-a-two-pane"[^}]*global-primary-action[\s\S]*?padding-inline: var\(--space-5\)/);
 assert.match(patternShellCss, /data-pattern-shell-slot="primary-navigation-bottom"[\s\S]*?padding-block-end: var\(--space-3\)/);
+assert.match(patternShellCss, /data-pattern-title-segment="secondary-list"\]:not\(:has\(> \.tui-titlebar\[data-pane-role="secondary-pane"\]\)\)[\s\S]*padding-inline: var\(--space-5\)/, "Static Pattern must not double-apply the middle inset when Titlebar owns it");
+assert.match(patternShellCss, /border-inline-end:\s*var\(--layout-navigation-divider-width,\s*0\.5px\)\s+solid/, "Static Pattern dividers must use the same 0.5px divider Token as Runtime");
+assert.doesNotMatch(patternShellCss, /border-inline-end:\s*1px\s+solid/, "Static Pattern shell must not hard-code a thick 1px divider");
 
 const singleSidebar = renderHtmlComponent("sidebar", {
   groups: [{ label: "项目", items: [{ label: "概览", icon: "navigation/grid", selected: true }] }]
@@ -49,6 +64,8 @@ assert.match(groupedSidebar, /data-component="collapsible"/);
 
 const pattern = resolvePatternContract(registry, "pattern-b-three-pane");
 assert.deepEqual(pattern.paneOrder, ["primary-navigation", "secondary-list", "main-detail"]);
+assert.equal(pattern.geometry.titleLayer.crossAxisAlignment, "center");
+assert.equal(pattern.geometry.titleLayer.middleSegmentInsetToken, "space/5");
 assert.equal(tokenCssVariable("layout/sidebar-expanded"), "--layout-sidebar-width");
 
 const skeleton = createPatternRuntime({ registry, patternId: "pattern-b-three-pane", mode: "skeleton" }).render();
@@ -105,10 +122,20 @@ assert.match(secondarySkeleton, /data-secondary-page-slot-placeholder="titlebar"
 const secondaryRuntime = createSecondaryPageRuntime({
   layout: "continuation",
   mode: "runtime",
-  slots: { navigation: "<nav>导航</nav>", titlebar: "<header>Titlebar_S</header>", content: "<main>内容</main>" }
+  slots: {
+    navigation: "<nav>导航</nav>",
+    titlebar: renderHtmlComponent("titlebar", { paneTitle: "项目设置", size: "large", layout: "two-column", paneRole: "final-pane", mainContentLeading: { id: "back", label: "返回项目", icon: "navigation/back", buttonType: "icon" } }),
+    content: "<main>内容</main>"
+  }
 }).render();
 assert.match(secondaryRuntime, /data-secondary-page-runtime="true"/);
-assert.match(secondaryRuntime, /Titlebar_S/);
+assert.match(secondaryRuntime, /data-size="large"/);
+const secondaryNewPageRuntime = createSecondaryPageRuntime({
+  layout: "new-page",
+  mode: "runtime",
+  slots: { titlebar: renderHtmlComponent("titlebar", { label: "项目设置", size: "small", layout: "standalone", paneRole: "global" }), content: "<main>内容</main>" }
+}).render();
+assert.match(secondaryNewPageRuntime, /data-size="small"/);
 assert.throws(() => renderSecondaryPageHtml({ layout: "continuation", mode: "runtime", slots: {} }), /requires a value/);
 
 console.log("Pattern Runtime tests passed.");

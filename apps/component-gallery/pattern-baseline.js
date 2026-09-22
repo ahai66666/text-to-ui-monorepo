@@ -144,7 +144,7 @@ const secondaryPageRuntimeContent = (layout) => `<div class="secondary-page-runt
 
 // Secondary Page continuation keeps the same global navigation shell as the
 // canonical Pattern Runtime Renderer. The right pane still owns its own
-// Titlebar_S, while this left shell owns the workspace brand and navigation.
+// pane-aligned Titlebar_L, while this left shell owns the workspace brand and navigation.
 const secondaryPageRuntimeNavigation = () => `<div class="secondary-page-runtime-navigation-shell" data-secondary-page-navigation-shell="pattern-runtime"><div class="secondary-page-runtime-navigation-titlebar">${renderHtmlComponent("titlebar", { label: "项目空间", size: "large", layout: "two-column", paneRole: "primary-navigation", showWindowControls: false })}</div><div class="secondary-page-runtime-navigation-body"><div class="secondary-page-runtime-primary-action">${renderHtmlComponent("button", { label: "新建项目", variant: "primary", size: "standard", mode: "icon-text", iconName: "action/add" })}</div>${renderHtmlComponent("sidebar", { ariaLabel: "主导航", items: [{ label: "概览", icon: "navigation/grid", count: 1, selected: true }, { label: "项目", icon: "object/file", count: 12 }, { label: "成员", icon: "navigation/contacts" }] })}</div><div class="secondary-page-runtime-navigation-footer">${renderHtmlComponent("button", { label: "设置", icon: "action/settings", variant: "ghost", mode: "icon-text", size: "standard" })}</div></div>`;
 
 const secondaryPageRuntimeSlots = (layout) => {
@@ -179,7 +179,7 @@ const createSecondaryPageRuntimePreview = () => {
     <div class="section-head">
       <div>
         <h3 id="secondary-page-runtime-title">Secondary Page Runtime · 可调用预览</h3>
-        <p class="section-note">二级页面也有 Runtime：延续一级布局使用返回按钮 + Titlebar_S；弹出新页面使用 Titlebar_S + 上下布局。</p>
+        <p class="section-note">二级页面也有 Runtime：延续一级布局使用返回按钮 + Titlebar_L；弹出新页面使用 Titlebar_S + 上下布局。</p>
       </div>
       <span class="section-note" data-secondary-runtime-meta></span>
     </div>
@@ -214,7 +214,7 @@ const setupSecondaryPageRuntimePreview = (root) => {
     });
     host.replaceChildren();
     host.insertAdjacentHTML("afterbegin", runtime.render());
-    meta.textContent = `secondary-page-runtime · ${state.mode} · ${state.layout === "continuation" ? "返回 + Titlebar_S" : "Titlebar_S + 上下布局"}`;
+    meta.textContent = `secondary-page-runtime · ${state.mode} · ${state.layout === "continuation" ? "返回 + Titlebar_L" : "Titlebar_S + 上下布局"}`;
     card.querySelectorAll("[data-secondary-runtime-layout]").forEach((button) => {
       const selected = button.dataset.secondaryRuntimeLayout === state.layout;
       button.classList.toggle("is-selected", selected);

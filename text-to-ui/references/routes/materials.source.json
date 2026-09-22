@@ -26,6 +26,7 @@
         { "path": "text-to-ui/references/page-design-guidance.md", "role": "page-guidance" },
         { "path": "text-to-ui/references/page-blueprint-design.md", "role": "page-blueprint" },
         { "path": "text-to-ui/references/components/page-composition.md", "role": "page-composition" },
+        { "path": "text-to-ui/assets/design-system/titlebar-scene-contracts.json", "role": "titlebar-scene-contract" },
         { "path": "text-to-ui/references/workflows/fast-preview.md", "role": "validation" }
       ],
       "dynamicMaterials": ["pattern-references", "domain-reference", "titlebar-segments"]
@@ -62,7 +63,10 @@
       "materials": [
         { "path": "text-to-ui/references/routes/skill-maintenance.md", "role": "route" },
         { "path": "text-to-ui/references/governance/major-version-update-checklist.md", "role": "major-version-governance" },
+        { "path": "text-to-ui/references/governance/skill-catalog-refresh.md", "role": "skill-catalog-governance" },
+        { "path": "text-to-ui/references/index/generated/skill-catalog-index.json", "role": "skill-catalog-index" },
         { "path": "text-to-ui/references/components/page-composition.md", "role": "page-composition" },
+        { "path": "text-to-ui/assets/design-system/titlebar-scene-contracts.json", "role": "titlebar-scene-contract" },
         { "path": "text-to-ui/references/pixso-import-details.md", "role": "pixso-import" },
         { "path": "text-to-ui/references/pixso-execution-invariants.md", "role": "pixso-execution" }
       ]

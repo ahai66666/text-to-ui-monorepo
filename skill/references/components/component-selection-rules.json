@@ -59,7 +59,8 @@
       "context": "main-detail-titlebar",
       "logicalName": "Titlebar/Default",
       "rendererKey": "titlebar",
-      "requiredOptions": { "paneRole": "main-detail" }
+      "requiredOptions": { "paneRole": "main-detail", "layout": "three-column" },
+      "requiredSlot": "main-detail-title"
     },
     {
       "capabilities": ["titlebar", "primary-navigation-titlebar"],
@@ -81,7 +82,8 @@
       "context": "secondary-list-search",
       "logicalName": "Search/White Surface/Default",
       "rendererKey": "search",
-      "requiredOptions": { "surface": "white" }
+      "requiredOptions": { "surface": "white" },
+      "requiredSlot": "secondary-list-title"
     },
     {
       "capabilities": ["list-item", "list-row"],

@@ -75,6 +75,31 @@ Only change descendants of `host`; do not query or replace Pattern regions,
 insert navigation/toolbars into the shell, or import another shell stylesheet.
 The scaffold owns main.js; do not patch generated files or bundle output.
 
+The page shell always supplies the Titlebar through the registered Pattern
+scene. A page module never creates a Titlebar and never chooses its pane
+geometry; the binding in `global-title-layer` chooses only the approved
+`medium`/`large`/`xlarge` size (default `large`). `small` is a standalone
+Secondary Page variant and is not valid for a Pattern page. This keeps every
+page on the same Titlebar contract while allowing the page surface to select
+the appropriate size.
+
+When the host is a group inside `patternShell.navigation.slots`, the restriction
+is even tighter: the module is a business-content slot, not a navigation shell.
+It must not render a Titlebar, the global primary action, a level-one Primary
+Navigation Item, a handwritten `role="button"`, or a brand/rail/shell wrapper.
+Those responsibilities stay in `global-title-layer`, `global-primary-action`,
+and `primary-navigation-bottom`. This keeps the generated DOM at the same
+depth as Pattern Runtime Renderer and prevents a second background, inset, or
+apparent fourth column. The generator rejects these shell-owned markers before
+it writes any page artifact.
+
+The same boundary applies to a page module hosted in Pattern B's `main-detail`
+group: do not add a pane-local Titlebar, `.detail-toolbar`, or handwritten
+window controls. Put pane-global mail/editor actions in the registered
+`main-detail-title` Titlebar binding; the module owns only the detail scroll
+body. The generator rejects these markers as well, so a second action row
+cannot overlap the Runtime Titlebar or create a false fourth column.
+
 Do not author native `button`, `input`, `select`, `textarea`, `svg`, or Pattern
 data attributes in a page module. Do not query `document`; query only the
 provided `host`. `validate-page-composite-boundaries.mjs` enforces this before
@@ -144,14 +169,45 @@ It is scoped below a non-Runtime Pattern root and must not style a
 their `border-box` model explicitly, so generated pages cannot depend on a
 host application's global CSS reset for their geometry.
 
+### Stroke ownership
+
+The Pattern renderer owns the structural divider edges. It reads each region's
+`dividerEdges` and paints only those edges with the canonical
+`--layout-navigation-divider-width` Token (`0.5px`) and `--color-border`.
+Page-owned groups inherit the pane surface and inset; they must not add a
+rectangle border, outline, or shadow around a Pattern root, pane, title layer,
+Titlebar, or slot wrapper. This prevents a divider from becoming a visibly
+thick double outline. Use a registered component when a business control or
+card needs its own border; do not reproduce its frame in page CSS.
+
+`outline` is valid only for a `:focus-visible` interaction state owned by the
+component and must use the focus-ring Token. A persistent outline, a `1px` or
+`2px` page-owned shell stroke, or a page CSS rule that replaces a declared
+divider fails the pre-generation boundary check.
+
 Business-page `Sidebar Item/Default` bindings must also provide explicit
 `options.items` or `options.groups`. The HTML adapter's labels/counts are
 gallery-only specimen defaults; they are intentionally rejected for a page so
 demo data cannot leak into product navigation.
 
 For Pattern B the renderer also owns the 64px title segments and pane scroll
-bodies. It places `secondary-list-search` in the secondary title segment and
-`main-detail-titlebar` / `main-detail-actions` in the detail title segment.
-Business groups render inside the scroll bodies with the Pattern's insets.
-Do not add a second toolbar, search header, pane padding, or nested pane scroll
-to compensate for the shell. Compose content at the supplied 360px list width.
+bodies. Search binds explicitly to `secondary-list-title`; Runtime gives it
+one `space/5` inline inset, full available width, and vertical centering. The
+detail segment binds exactly one final `Titlebar/Default` to
+`main-detail-title`; its business actions are nested in the Titlebar's
+`main-detail-actions` component slot, followed by the component-owned window
+controls. Separate page-level action buttons in the Pattern title slot are
+invalid. Business groups render inside the scroll bodies with the Pattern's
+insets. Do not add a second toolbar, search header, pane padding, or nested pane
+scroll to compensate for the shell. Compose content at the supplied 360px list
+width.
+
+When `patternMode.navigation` is `"two-level"`, the navigation shell's
+`global-title-layer` is intentionally stricter than a normal composition slot:
+it is a flat array containing one direct `Titlebar/Default` for the
+primary-navigation segment. A page `header`, brand wrapper, collapse button, or
+any sibling component in that slot is invalid and is rejected before output.
+The renderer owns the segment surface, so page CSS must not paint a second
+background on the Titlebar. In the secondary-list title segment, Search is the
+only allowed component; put scope/filter/list actions below it or inside their
+declared component slot.

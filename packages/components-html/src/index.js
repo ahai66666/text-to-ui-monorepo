@@ -38,9 +38,9 @@ const logicalNameForButton = ({ mode = "text", variant = "primary", iconOnly = f
   return `Button/${buttonTypeName(variant)}/Default`;
 };
 
-const buttonContent = ({ label, iconName, icon: iconAlias, mode = "text", size = "standard", includeChevron = false }) => {
+const buttonContent = ({ label, iconName, icon: iconAlias, mode = "text", size = "standard", iconSize = null, includeChevron = false }) => {
   const resolvedIcon = iconName ?? iconAlias;
-  const iconMarkup = resolvedIcon ? `<span data-slot="icon">${icon(resolvedIcon)}</span>` : "";
+  const iconMarkup = resolvedIcon ? `<span data-slot="icon">${icon(resolvedIcon, "", iconSize ? { size: iconSize } : {})}</span>` : "";
   const labelMarkup = mode === "icon" ? "" : `<span data-slot="label" data-typography-role="${size === "small" ? "body-m" : "body-l"}">${escapeHtml(label)}</span>`;
   // Button dropdown chevrons use the shared 20px medium icon rule. Keep the
   // SVG's data-icon-size in sync with its CSS box and 1.25px outline weight.
@@ -56,6 +56,7 @@ const renderButton = ({
   logicalName,
   iconName,
   icon,
+  iconSize = null,
   disabled = false,
   state,
   className = "",
@@ -66,7 +67,7 @@ const renderButton = ({
   const disabledAttr = disabled ? " disabled" : "";
   const modeClass = mode === "icon" ? " tui-button--icon" : "";
   const typeAttrs = mode === "icon" ? ` aria-label="${escapeHtml(label)}"` : "";
-  return `<button class="tui-component tui-button${modeClass}${className ? ` ${className}` : ""}" type="button" ${attrs("button", resolvedLogicalName, variant, resolvedState, ` data-mode="${mode}" data-size="${size}"`)}${typeAttrs}${extraAttrs}${disabledAttr}>${buttonContent({ label, iconName, icon, mode, size })}</button>`;
+  return `<button class="tui-component tui-button${modeClass}${className ? ` ${className}` : ""}" type="button" ${attrs("button", resolvedLogicalName, variant, resolvedState, ` data-mode="${mode}" data-size="${size}"`)}${typeAttrs}${extraAttrs}${disabledAttr}>${buttonContent({ label, iconName, icon, mode, size, iconSize })}</button>`;
 };
 
 const renderSplitDropdown = ({ label = "导出文件", iconName = "action/download", disabled = false, iconOnly = false, menuItems = ["导出为 PDF", "复制分享链接", "发送到设备"] } = {}) => {
@@ -145,7 +146,7 @@ const normalizeTitlebarActions = (actions = [], actionOverflow = {}) => {
 };
 
 const titlebarState = (options = {}) => {
-  let { label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout, paneRole, mainContentLeading, mainDetailActions = [], actionOverflow = {}, logoSrc = defaultTitlebarLogoSrc, logoAlt = "", showWindowControls } = resolveTitlebarSegment(options);
+  let { label = "项目空间", paneTitle = "项目内容", size = "large", state = "default", disabled = false, layout, paneRole, mainContentLeading, mainDetailActions = [], secondaryPaneContent, actionOverflow = {}, logoSrc = defaultTitlebarLogoSrc, logoAlt = "", showWindowControls } = resolveTitlebarSegment(options);
   // Pattern region names are public API; preserve the legacy styling role.
   if (paneRole === "main-detail" || paneRole === "main-content") paneRole = "final-pane";
   const controlIconSize = size === "small" ? 16 : 24;
@@ -168,9 +169,14 @@ const titlebarState = (options = {}) => {
   const contentLeadingType = mainContentLeading?.buttonType ?? "icon";
   const contentLeadingSlot = paneRole === "final-pane" && layout === "two-column" && mainContentLeading ? `<div class="tui-titlebar__pane-leading" data-slot="main-content-leading" data-action-scope="main-content-pane-global"><button class="tui-component tui-button${contentLeadingType === "icon" ? " tui-button--icon" : ""} tui-titlebar__pane-leading-action" type="button" ${attrs("button", contentLeadingType === "icon" ? "Icon Button/Ghost/Default" : "Icon Text Button/Ghost/Default", "ghost", disabled || mainContentLeading.disabled ? "disabled" : "default", ` data-mode="${contentLeadingType === "icon" ? "icon" : "icon-text"}" data-size="standard" data-slot="main-content-leading-action" data-action="${escapeHtml(mainContentLeading.id)}" data-button-type="${escapeHtml(contentLeadingType)}" aria-label="${escapeHtml(mainContentLeading.label)}"`)}${disabled || mainContentLeading.disabled ? " disabled" : ""}><span data-slot="icon">${icon(mainContentLeading.icon, "", { size: 24 })}</span>${contentLeadingType === "icon-text-ghost" ? `<span data-slot="label" data-typography-role="body-l">${escapeHtml(mainContentLeading.label)}</span>` : ""}</button></div>` : "";
   const paneTitleSlot = paneRole === "final-pane" && (layout === "two-column" || layout === "standalone") ? `<strong class="tui-titlebar__pane-title" data-slot="main-content-title" data-action-scope="main-content-pane-global" data-typography-role="title-s">${escapeHtml(paneTitle)}</strong>` : "";
+  const secondaryContentSlot = paneRole === "secondary-pane" && secondaryPaneContent ? `<div class="tui-titlebar__secondary-content" data-slot="secondary-pane-content" data-component-slot="registered-component">${searchState(secondaryPaneContent.props ?? {})}</div>` : "";
   const brand = paneRole === "global" || paneRole === "primary-navigation" ? `<span class="tui-titlebar__brand" data-slot="leading"><img class="tui-titlebar__logo" src="${escapeHtml(logoSrc)}" alt="${escapeHtml(logoAlt)}" aria-hidden="${logoAlt ? "false" : "true"}" /><span data-slot="label" data-typography-role="subtitle-m">${escapeHtml(label)}</span></span>` : "";
-  const windowActions = showWindowControls ? `<div class="tui-titlebar__actions" data-slot="actions" data-component="titlebar-controls" data-logical-component="Titlebar Controls/Normal" data-size="medium"><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="minimize" data-button-type="icon" aria-label="最小化"${disabled ? " disabled" : ""}>${icon("window/minimize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="maximize" data-button-type="icon" aria-label="最大化"${disabled ? " disabled" : ""}>${icon("window/maximize", "", { size: controlIconSize })}</button><button class="tui-icon-button tui-titlebar__action" type="button" data-slot="titlebar-action" data-action="close" data-button-type="icon" aria-label="关闭"${disabled ? " disabled" : ""}>${icon("window/close", "", { size: controlIconSize })}</button></div>` : "";
-  return `<header class="tui-component tui-titlebar" ${attrs("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state)} data-size="${escapeHtml(size)}" data-layout="${escapeHtml(layout)}" data-pane-role="${escapeHtml(paneRole)}">${brand}${contentLeadingSlot}${paneTitleSlot}${paneActions}${windowActions}</header>`;
+  const windowActions = showWindowControls ? `<div class="tui-titlebar__actions" data-slot="actions" data-component="titlebar-controls" data-logical-component="Titlebar Controls/Normal" data-size="medium">${[
+    ["minimize", "最小化"],
+    ["maximize", "最大化"],
+    ["close", "关闭"]
+  ].map(([action, text]) => renderButton({ label: text, variant: "ghost", size: "standard", mode: "icon", logicalName: "Icon Button/Ghost/Default", icon: `window/${action}`, iconSize: controlIconSize, disabled, className: "tui-titlebar__action", extraAttrs: ` data-slot="titlebar-action" data-action="${action}" data-button-type="icon"` })).join("")}</div>` : "";
+  return `<header class="tui-component tui-titlebar" ${attrs("titlebar", "Titlebar/Default", size, disabled ? "disabled" : state)} data-size="${escapeHtml(size)}" data-layout="${escapeHtml(layout)}" data-pane-role="${escapeHtml(paneRole)}">${brand}${secondaryContentSlot}${contentLeadingSlot}${paneTitleSlot}${paneActions}${windowActions}</header>`;
 };
 
 const textareaState = ({ surface = "white", state = "default", label = "项目说明", value = "统一 HarmonyOS PC 客户端中的布局、组件与交互规则。", disabled = false } = {}) => `<label class="tui-component tui-textarea" ${attrs("textarea", "Textarea/Default", "default", disabled ? "disabled" : state, ` data-surface="${surface}"`)}><span data-slot="label" data-typography-role="body-m">${escapeHtml(label)}</span><textarea data-slot="value" data-typography-role="body-l" rows="3" placeholder="请输入内容"${disabled ? " disabled" : ""}${state === "error" ? " aria-invalid=\"true\"" : ""}>${escapeHtml(value)}</textarea><span data-slot="help" data-typography-role="body-s">支持多行输入，最多 500 字</span></label>`;

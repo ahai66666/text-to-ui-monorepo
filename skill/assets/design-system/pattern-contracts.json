@@ -65,14 +65,14 @@
         { "id": "global-primary-action", "owner": "primary-navigation", "cardinality": "0..1" },
         { "id": "secondary-navigation-content", "owner": "primary-navigation", "cardinality": "0..n" },
         { "id": "primary-navigation-bottom", "owner": "primary-navigation", "cardinality": "0..n" },
-        { "id": "secondary-list-title", "owner": "secondary-list", "cardinality": "0..n", "allowedComponentModes": ["search", "titlebar"], "overflow": "none" },
+        { "id": "secondary-list-title", "owner": "secondary-list", "cardinality": "0..1", "allowedComponentModes": ["search"], "overflow": "none" },
         { "id": "main-detail-title", "owner": "main-detail", "cardinality": "0..1", "allowedComponentModes": ["titlebar"], "overflow": "none" },
         { "id": "main-detail-actions", "owner": "main-detail", "cardinality": "0..n", "allowedComponentModes": ["icon", "icon-text-ghost"], "overflow": "more-menu" }
       ],
       "geometry": {
         "owner": "pattern-renderer",
         "gridGapToken": "space/0",
-        "titleLayer": { "heightToken": "layout/titlebar-height", "alignToPaneBoundaries": true },
+        "titleLayer": { "heightToken": "layout/titlebar-height", "alignToPaneBoundaries": true, "crossAxisAlignment": "center", "middleSegmentInsetToken": "space/5" },
         "regions": {
           "primary-navigation": {
             "title": { "kind": "global-shell-slot", "heightToken": "layout/titlebar-height", "inlineStart": "space/5", "inlineEnd": "space/5" },

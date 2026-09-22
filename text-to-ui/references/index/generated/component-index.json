@@ -3,11 +3,11 @@
   "generatedFrom": [
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "fb7153aed28924e2bdce2e603045e830204167484bc059d1bbeaecb064f6ec50"
+      "sha256": "f0e4c4f40a27a3b54b81be7f6cafc0a831b7eaacd1e4686a68fba311d2362c37"
     },
     {
       "path": "packages/component-contracts/src/parity-manifest.json",
-      "sha256": "743951f87da19f263437c1fded71bd1aa096429e11c0e1f5befcd2a670d284fa"
+      "sha256": "0d44c57dcffac663b9a784b1640d6c06f1e7a254c9a5fc70b79983a2e2f4323a"
     },
     {
       "path": "text-to-ui/references/index/capability-aliases.source.json",
@@ -3227,6 +3227,7 @@
         "collapsed",
         "count",
         "items",
+        "groups",
         "ariaLabel"
       ],
       "slots": [
@@ -3991,12 +3992,31 @@
       "slots": [
         "leading",
         "label",
+        "secondary-pane-content",
         "main-content-leading",
         "main-content-title",
         "main-detail-actions",
         "actions"
       ],
       "slotContracts": {
+        "secondary-pane-content": {
+          "cardinality": "0..1",
+          "scope": "secondary-pane-titlebar",
+          "valueType": "registered-component-binding",
+          "activeWhen": {
+            "layout": "three-column",
+            "paneRole": "secondary-pane"
+          },
+          "allowedComponents": [
+            "Search/White Surface/Default"
+          ],
+          "defaultPlacement": "secondary-pane-titlebar-content",
+          "horizontalInsetToken": "space/5",
+          "horizontalInset": "16px",
+          "crossAxisAlignment": "center",
+          "verticalInset": "none",
+          "owner": "titlebar-component"
+        },
         "main-content-leading": {
           "cardinality": "0..1",
           "scope": "main-content-pane-global",

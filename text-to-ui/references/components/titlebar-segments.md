@@ -5,6 +5,21 @@ ordered title segments, their widths, dividers and height. Do not give Titlebar
 a separate grid or hard-code a navigation width. Preserve the existing size
 and visual variants. Existing `paneRole` calls remain compatible.
 
+Titlebar has no outer frame. Its segment boundary is a Runtime-owned divider;
+the component itself uses a transparent surface and `border-bottom: 0` except
+for any explicitly contracted final-pane separator. Do not add an outline,
+rounded card border, or shadow around a Titlebar from page CSS. Structural
+dividers use `--layout-navigation-divider-width` (`0.5px`); focus outlines
+belong only to the registered button/input states.
+
+Every generated canonical Pattern page must contain one renderer-owned
+Titlebar scene. The global binding is the page-level invariant; Pattern A/B/C/D
+may vary the registered Titlebar size, not the ownership or geometry. Use
+`medium` (M), `large` (L, default), or `xlarge` (XL) for pane-aligned Pattern
+titlebars. `small` (S) belongs only to the standalone Secondary Page runtime;
+the page compiler rejects it in a Pattern title layer and emits the resolved
+size in `titlebar-scene.json`.
+
 The Runtime shell itself is one column with two rows: the pane-aligned Global
 Title Layer, then the Pattern pane grid. Pattern-specific column widths belong
 to `.tui-pattern-runtime__pane-grid`, not the Runtime root. A page or adapter
@@ -14,8 +29,16 @@ four-column/overlap bug and is a blocking layout error.
 ## Scenarios
 
 - Two panes: brand segment → content-title + window-control segment.
-- Three panes: brand segment → empty alignment segment → detail-action +
-  window-control segment. Empty is deliberate, not missing content.
+- Three panes: brand Titlebar → middle content segment → final Titlebar with
+  detail actions + window controls. The middle segment may be empty. When a
+  registered component is supplied through `secondary-pane-content`, the
+  Titlebar owns the shared height, applies one `space/5` (16px) inline inset,
+  and centers the component on the cross axis for the selected S/M/L/XL
+  Titlebar height. It does not add top/bottom padding. Pattern Runtime still
+  owns the segment width, order, and dividers. When the Titlebar is mounted as
+  the segment itself, the shell suppresses its duplicate middle inset; when a
+  Search is mounted directly in the Pattern slot, the renderer owns that one
+  inset instead.
 - `Titlebar_S` (`size: "small"`, 40px) is standalone-only. It may be used as
   one complete titlebar (including a standalone final-pane title), but it must
   not be split into two-column or three-column Pattern segments. Use M/L/XL for
@@ -43,12 +66,14 @@ style is the shared source for HTML, React, and Vue.
 | `main-content-leading` | `{ id, label, icon, buttonType? }` action object | Two-pane final segment; leading action such as Back; 24×24 icon, 4px gap to title |
 | `main-content-title` | Text | Standalone final title or two-pane final segment |
 | `main-detail-actions` | Action objects array | Three-pane final segment |
+| `secondary-pane-content` | `{ component: "search", props? }` | Three-pane middle segment; registered Search only |
 | `actions` | Boolean; enable/disable built-in window controls | Final segment |
 
 These are controlled content slots, not arbitrary HTML or containers. Titles
 are escaped text, actions render through library buttons, and window controls
 remain component-owned. Invalid slot/segment combinations fail before render.
-`showWindowControls: false` also hides the built-in controls. Only a standalone
+`showWindowControls: false` hides the built-in controls only where the Pattern
+permits it. Pattern B requires the final segment controls. Only a standalone
 global Titlebar or a final segment may show them.
 
 In a generated Pattern B HTML page, the compiler composes the primary,
@@ -57,6 +82,55 @@ detail action group is then activated with `bindTitlebarOverflow`; do not leave
 the detail Titlebar in a pane-local header or add a second hand-written action
 row, because that produces an apparent fourth column and allows actions to
 paint over the fixed window controls.
+
+The same rule applies to the primary-navigation segment: in a two-level shell
+`global-title-layer` must contain exactly one direct `Titlebar/Default` binding
+with `layout: "three-column"` and `paneRole: "primary-navigation"`. Do not wrap
+it in a page `header`, put a collapse button beside it, or add a second
+background layer. The navigation shell supplies the subtle surface; the
+Titlebar component itself remains transparent through
+`--color-titlebar-normal-bg`. A collapse affordance, if the selected Pattern
+contract exposes one, must be a declared Titlebar/component slot rather than a
+page-owned sibling.
+
+For Pattern B the `secondary-list-title` segment is Search-only (at most one
+registered Search component), and Search must explicitly bind that Pattern
+slot. Scope, filter, refresh, and selection controls belong in the list body or
+a registered component-owned action slot. The shell uses one 64px row with
+`align-items: center`, applies the middle `space/5` inline inset once, and lets
+Search fill the remaining width. Page CSS must not add top/bottom alignment or
+another title-row padding. The standalone Titlebar gallery uses the same
+`secondary-pane-content` contract so the component preview and Pattern Runtime
+cannot drift apart.
+
+The right segment must be exactly one `Titlebar/Default` binding in
+`main-detail-title`, with `semanticContext: "main-detail-titlebar"`,
+`layout: "three-column"`, and `segmentRole: "main-detail"`. Put business
+actions in that binding's `slots["main-detail-actions"]`; never bind sibling
+Button components directly to the Pattern `main-detail-actions` slot. The
+Titlebar then owns action normalization, responsive collapse-to-More, and the
+fixed trailing 3×40px window-control group. Every window control is a
+registered `Icon Button/Ghost/Default` with a 24×24 icon.
+
+## Generated Titlebar Scene
+
+For every canonical Pattern page, page generation resolves the binding data
+through `assets/design-system/titlebar-scene-contracts.json` and commits a
+sibling `titlebar-scene.json`. It is the inspectable source of the rendered
+title layer, not an optional preview file. Pattern B's three segments are fixed
+as follows:
+
+- Primary navigation: one pane-aligned `Titlebar/Default`, transparent over the
+  Runtime-owned navigation surface, with no window controls.
+- Secondary list: zero or one registered Search component, vertically centered
+  in the shared title height with one `space/5` inline inset.
+- Main detail: one final `Titlebar/Default`; nested business actions have one
+  uniform mode and collapse to More, followed by the component-owned
+  minimize/maximize/close group of 40px Ghost Icon Buttons with 24px icons.
+
+The page author supplies only product copy and action objects. A separate
+title-row wrapper, direct Pattern action binding, mixed business-action modes,
+or a page-owned window control is a scene mismatch and stops compilation.
 
 ```js
 import { createTitlebarSegments, renderHtmlComponent } from '@text-to-ui/components-html';
@@ -83,3 +157,23 @@ both `options.slots` and `slots`. The generator forwards this content to all
 three framework implementations. Declare the semantic context for the segment
 as usual; slots do not authorize moving the segment or using a handwritten
 button. Preserve the main-detail action restrictions in source-resolution.md.
+
+When individual Titlebar actions have separate Behavior Plan outcomes, map
+their stable action ids with `actionBehaviors` on the same Titlebar binding:
+
+```json
+{
+  "id": "detail-titlebar",
+  "logicalName": "Titlebar/Default",
+  "semanticContext": "main-detail-titlebar",
+  "region": "main-detail",
+  "slot": "main-detail-title",
+  "options": { "layout": "three-column", "segmentRole": "main-detail" },
+  "slots": {
+    "main-detail-actions": [
+      { "id": "reply", "label": "回复", "icon": "action/reply", "buttonType": "icon-text-ghost" }
+    ]
+  },
+  "actionBehaviors": { "reply": "reply-message" }
+}
+```

@@ -4652,6 +4652,7 @@ export default {
         "collapsed",
         "count",
         "items",
+        "groups",
         "ariaLabel"
       ],
       "slots": [
@@ -6208,12 +6209,31 @@ export default {
       "slots": [
         "leading",
         "label",
+        "secondary-pane-content",
         "main-content-leading",
         "main-content-title",
         "main-detail-actions",
         "actions"
       ],
       "slotContracts": {
+        "secondary-pane-content": {
+          "cardinality": "0..1",
+          "scope": "secondary-pane-titlebar",
+          "valueType": "registered-component-binding",
+          "activeWhen": {
+            "layout": "three-column",
+            "paneRole": "secondary-pane"
+          },
+          "allowedComponents": [
+            "Search/White Surface/Default"
+          ],
+          "defaultPlacement": "secondary-pane-titlebar-content",
+          "horizontalInsetToken": "space/5",
+          "horizontalInset": "16px",
+          "crossAxisAlignment": "center",
+          "verticalInset": "none",
+          "owner": "titlebar-component"
+        },
         "main-content-leading": {
           "cardinality": "0..1",
           "scope": "main-content-pane-global",
@@ -6364,6 +6384,14 @@ export default {
           "surfaceInset": "16px",
           "contentAxis": "24px",
           "scrollWrapperPadding": "16px 16px"
+        },
+        "secondaryPaneTitlebar": {
+          "horizontalInsetToken": "space/5",
+          "horizontalInset": "16px",
+          "crossAxisAlignment": "center",
+          "verticalInset": "none",
+          "contentOwner": "titlebar-component",
+          "contentSlot": "secondary-pane-content"
         },
         "mainDetailPane": {
           "paddingInline": "24px",
@@ -6576,7 +6604,7 @@ export default {
           "main-content",
           "main-detail"
         ],
-        "middleSegments": "alignment-only",
+        "middleSegments": "optional-registered-content; alignment-owned-by-titlebar",
         "windowControls": "final-segment-only",
         "slotAPI": "declarative-content; no arbitrary HTML"
       }

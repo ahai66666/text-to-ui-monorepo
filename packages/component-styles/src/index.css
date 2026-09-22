@@ -196,6 +196,9 @@
 .tui-titlebar[data-layout="two-column"][data-pane-role="final-pane"]:has(.tui-titlebar__pane-leading) { column-gap: var(--space-2); }
 .tui-titlebar[data-layout="two-column"][data-pane-role="final-pane"] { border-bottom: 0; padding-left: var(--layout-main-title-leading-padding); }
 .tui-titlebar[data-layout="three-column"][data-pane-role="final-pane"] { border-bottom: var(--layout-navigation-divider-width) solid var(--color-border); padding-left: var(--layout-main-detail-action-leading-padding); }
+.tui-titlebar[data-layout="three-column"][data-pane-role="secondary-pane"] { padding-inline: var(--space-5); align-items: center; }
+.tui-titlebar__secondary-content { min-width: 0; width: 100%; display: flex; align-items: center; }
+.tui-titlebar__secondary-content > * { min-width: 0; width: 100%; }
 .tui-titlebar__pane-actions { position: relative; min-width: var(--size-icon-button); width: 0; height: 40px; display: inline-flex; align-items: center; gap: var(--gap-button-group); flex: 1 1 0; overflow: visible; }
 .tui-titlebar__pane-action { width: 40px; height: 40px; color: var(--color-icon); background: transparent; }
 .tui-titlebar__pane-action--text { width: auto; min-width: 40px; flex: 0 0 auto; padding-inline: var(--space-3); gap: var(--gap-button-icon-label); }

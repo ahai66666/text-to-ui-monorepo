@@ -32,12 +32,13 @@ to be a fifth canonical Pattern Contract:
 
 ```js
 import { createSecondaryPageRuntime } from "@text-to-ui/pattern-runtime";
+import { renderHtmlComponent } from "@text-to-ui/components-html";
 
 const runtime = createSecondaryPageRuntime({
   layout: "new-page", // or "continuation"
   mode: "runtime",
   slots: {
-    titlebar: "<header>Titlebar_S</header>",
+    titlebar: renderHtmlComponent("titlebar", { label: "项目设置", size: "small", layout: "standalone", paneRole: "global" }),
     content: "<main>设置内容</main>"
   }
 });

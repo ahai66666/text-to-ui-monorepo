@@ -20,6 +20,7 @@ const route = JSON.parse(routeOutput.stdout);
 assert.equal(route.ok, true);
 assert.ok(route.materials.length >= 10);
 assert.equal(route.materialsDigest, route.readReceipt.materialsDigest);
+assert.ok(route.materials.some((material) => material.role === 'titlebar-scene-contract'));
 const verify = spawnSync(process.execPath, [
   path.join(scripts, 'verify-route-materials.mjs'),
   '--route', 'new-page', '--repo', repo, '--receipt', receipt
@@ -34,6 +35,21 @@ const rejected = spawnSync(process.execPath, [
 ], { cwd: repo, encoding: 'utf8' });
 assert.notEqual(rejected.status, 0);
 assert.match(rejected.stderr, /does not match the route closure/);
+const maintenanceReceipt = path.join(temp, 'skill-maintenance-read-receipt.json');
+const maintenanceOutput = spawnSync(process.execPath, [
+  path.join(scripts, 'resolve-workflow-route.mjs'),
+  '--route', 'skill-maintenance', '--repo', repo, '--receipt-out', maintenanceReceipt
+], { cwd: repo, encoding: 'utf8' });
+assert.equal(maintenanceOutput.status, 0, maintenanceOutput.stderr);
+const maintenance = JSON.parse(maintenanceOutput.stdout);
+assert.ok(maintenance.materials.some((material) => material.role === 'skill-catalog-index'));
+assert.ok(maintenance.materials.some((material) => material.role === 'skill-catalog-governance'));
+assert.ok(maintenance.materials.some((material) => material.role === 'titlebar-scene-contract'));
+const maintenanceVerify = spawnSync(process.execPath, [
+  path.join(scripts, 'verify-route-materials.mjs'),
+  '--route', 'skill-maintenance', '--repo', repo, '--receipt', maintenanceReceipt
+], { cwd: repo, encoding: 'utf8' });
+assert.equal(maintenanceVerify.status, 0, maintenanceVerify.stderr);
 const contextPath = path.join(temp, 'context.json');
 const contextReceipt = path.join(temp, 'context-material-receipt.json');
 const contextOutput = spawnSync(process.execPath, [

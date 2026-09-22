@@ -519,6 +519,7 @@
         "collapsed",
         "count",
         "items",
+        "groups",
         "ariaLabel"
       ],
       "slots": [

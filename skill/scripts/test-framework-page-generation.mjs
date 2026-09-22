@@ -34,15 +34,15 @@ fs.writeFileSync(pageCss, ".task-list { display: grid; gap: var(--gap-button-gro
 fs.writeFileSync(contentRecipes, JSON.stringify({ schemaVersion: 1, blueprintRef: { id: "task-workbench" }, recipes: [
   { id: "navigation-recipe", contentGroupId: "navigation-content", region: "primary-navigation", compositionId: "nav-stack", kind: "registered-composition", bindingIds: ["title", "compose", "navigation", "primary-nav"] },
   { id: "task-row-recipe", contentGroupId: "task-list", region: "secondary-list", compositionId: "search-area", kind: "page-composite", entityId: "task", bindingIds: ["search"], fields: ["title", "assignee", "status"], states: ["default", "selected"], missingCapability: "task work-item row with assignee and status", registryQueries: ["repeated-list-row"], reviewedCandidates: [{ logicalName: "List Item/White Surface/Default", rejectionReason: "does not expose task assignee and status fields" }], tokenRoles: ["spacing.component-gap", "color.surface"], disposition: "page-owned" },
-  { id: "detail-recipe", contentGroupId: "task-detail", region: "main-detail", compositionId: "detail-actions", kind: "registered-composition", bindingIds: ["action"] }
+  { id: "detail-recipe", contentGroupId: "task-detail", region: "main-detail", compositionId: "detail-actions", kind: "registered-composition", bindingIds: ["detail-titlebar"] }
 ] }, null, 2));
 fs.writeFileSync(bindings, `${JSON.stringify({ componentBindings: [
   { id: "title", logicalName: "Titlebar/Default", semanticContext: "global-titlebar", options: { layout: "three-column", segmentRole: "primary-navigation" }, slots: { label: "任务" }, region: "primary-navigation", slot: "global-title-layer" },
   { id: "compose", logicalName: "Button/Primary/Default", semanticContext: "page-primary-action", behaviorId: "compose", options: { label: "新增", variant: "primary", size: "standard", mode: "text" }, region: "primary-navigation", slot: "global-primary-action" },
   { id: "navigation", logicalName: "Sidebar Item/Default", semanticContext: "secondary-navigation", behaviorId: "select-route", options: { items: [{ label: "任务", icon: "navigation/grid", selected: true }] }, region: "primary-navigation", slot: "secondary-navigation-content" },
   { id: "primary-nav", logicalName: "Primary Navigation Item/Level 1", semanticContext: "primary-navigation-shell", behaviorId: "select-app", options: { label: "任务", ariaLabel: "任务", icon: "navigation/mail-unread", selected: true }, region: "primary-navigation", slot: "primary-navigation-bottom" },
-  { id: "search", logicalName: "Search/White Surface/Default", semanticContext: "secondary-list-search", behaviorId: "filter-list", options: { surface: "white" }, region: "secondary-list" },
-  { id: "action", logicalName: "Button/Primary/Default", semanticContext: "titlebar-main-detail-actions", behaviorId: "more-actions", options: { label: "更多", variant: "ghost", size: "small", mode: "icon" }, region: "main-detail", slot: "main-detail-actions" }
+  { id: "search", logicalName: "Search/White Surface/Default", semanticContext: "secondary-list-search", behaviorId: "filter-list", options: { surface: "white" }, region: "secondary-list", slot: "secondary-list-title" },
+  { id: "detail-titlebar", logicalName: "Titlebar/Default", semanticContext: "main-detail-titlebar", options: { layout: "three-column", segmentRole: "main-detail" }, slots: { "main-detail-actions": [{ id: "more", label: "更多", icon: "action/more", buttonType: "icon" }] }, actionBehaviors: { more: "more-actions" }, region: "main-detail", slot: "main-detail-title" }
 ], patternMode: { navigation: "two-level" }, patternShell: { navigation: { mode: "two-level", slots: {
   "global-title-layer": [{ kind: "component", bindingId: "title" }],
   "global-primary-action": [{ kind: "component", bindingId: "compose" }],
@@ -57,14 +57,14 @@ fs.writeFileSync(bindings, `${JSON.stringify({ componentBindings: [
   { id: "select-route", kind: "set-selected", triggerBindingIds: ["navigation"], outcome: "切换二级导航" },
   { id: "select-app", kind: "set-selected", triggerBindingIds: ["primary-nav"], outcome: "切换一级应用" },
   { id: "filter-list", kind: "filter-collection", triggerBindingIds: ["search"], outcome: "更新列表结果" },
-  { id: "more-actions", kind: "component-native", triggerBindingIds: ["action"], outcome: "打开操作菜单" }
+  { id: "more-actions", kind: "component-native", triggerBindingIds: ["detail-titlebar"], outcome: "打开操作菜单" }
 ] }, composition: { regions: {
   "secondary-list": [{ kind: "group", id: "search-area", tag: "section", children: [{ kind: "text", id: "heading", tag: "h1", text: "任务" }, { kind: "component", bindingId: "search" }] }],
-  "main-detail": [{ kind: "group", id: "detail-actions", tag: "header", children: [{ kind: "component", bindingId: "action" }] }]
+  "main-detail": [{ kind: "group", id: "detail-actions", tag: "section", children: [{ kind: "component", bindingId: "detail-titlebar" }] }]
 } } }, null, 2)}\n`);
 
 const iconFallbackFixture = JSON.parse(fs.readFileSync(bindings, "utf8"));
-iconFallbackFixture.componentBindings.find((binding) => binding.id === "action").options.icon = "mail/does-not-exist";
+iconFallbackFixture.componentBindings.find((binding) => binding.id === "detail-titlebar").slots["main-detail-actions"][0].icon = "mail/does-not-exist";
 const invalidIconBindings = path.join(temp, "invalid-icon-bindings.json");
 fs.writeFileSync(invalidIconBindings, JSON.stringify(iconFallbackFixture));
 
@@ -96,6 +96,15 @@ for (const framework of ["html", "react", "vue"]) {
   assert.ok(parsed.generatedSource?.sha256);
   assert.ok(parsed.generatedEntry?.sha256);
   assert.ok(parsed.uiScene?.sha256);
+  assert.equal(parsed.titlebarScene?.preset, "pattern-b-three-pane-default-titlebar", "Pattern B pages must emit their resolved Titlebar Scene");
+  const titlebarScene = JSON.parse(fs.readFileSync(path.join(path.dirname(manifest), parsed.titlebarScene.path), "utf8"));
+  assert.deepEqual(titlebarScene.segments.map((segment) => segment.id), ["primary-navigation", "secondary-list", "main-detail"]);
+  assert.equal(titlebarScene.pagePolicy.required, true);
+  assert.equal(titlebarScene.segments[0].size, "large");
+  assert.equal(titlebarScene.segments[2].size, "large");
+  assert.equal(titlebarScene.segments[1].verticalAlignment, "center");
+  assert.equal(titlebarScene.segments[1].inlineInsetToken, "space/5");
+  assert.deepEqual(titlebarScene.segments[2].windowControls.actions, ["minimize", "maximize", "close"]);
   assert.equal(JSON.parse(fs.readFileSync(path.join(path.dirname(manifest), parsed.uiScene.path), "utf8")).kind, "text-to-ui-scene");
   assert.ok(fs.existsSync(entry));
   if (framework === "html") {
@@ -108,6 +117,7 @@ for (const framework of ["html", "react", "vue"]) {
   const source = fs.readFileSync(output, "utf8");
   assert.match(source, /"structureDigest"/);
   assert.match(source, /export const stylePlan/);
+  assert.match(source, /export const titlebarScene/);
   assert.match(source, /export const behaviorPlan/);
   assert.match(source, /export const pageContentRecipes/);
   assert.match(fs.readFileSync(entry, "utf8"), /GeneratedPage|mountGeneratedPage/);
@@ -117,7 +127,10 @@ for (const framework of ["html", "react", "vue"]) {
     assert.match(source, /"primary-navigation-bottom"/);
     assert.match(source, /@text-to-ui\/pattern-runtime\/styles\.css/);
     assert.match(source, /tui-pattern-runtime__title-segments/, "Pattern B title slots must compose into one pane-aligned global title layer");
-    assert.match(fs.readFileSync(entry, "utf8"), /bindTitlebarOverflow/, "HTML entries must mount Titlebar overflow behavior");
+    assert.match(source, /data-tui-action-behaviors/, "Final Titlebar actions must keep their behavior map inside the component boundary");
+    const entrySource = fs.readFileSync(entry, "utf8");
+    assert.match(entrySource, /bindTitlebarOverflow/, "HTML entries must mount Titlebar overflow behavior");
+    assert.match(entrySource, /tuiActionBehaviors/, "HTML entries must resolve business actions from the final Titlebar rather than separate page buttons");
   }
 }
 const literalPageCss = path.join(temp, "literal-page.css");
@@ -126,6 +139,18 @@ result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-
 assert.notEqual(result.status, 0, "literal page CSS must block generation before an artifact is written");
 assert.match(result.stderr, /Page CSS Token preflight failed/);
 assert.equal(fs.existsSync(path.join(temp, "literal-page.js")), false, "failed Token preflight must not leave a page module");
+const shellStrokePageCss = path.join(temp, "shell-stroke-page.css");
+fs.writeFileSync(shellStrokePageCss, ".task-pane-shell { border: 2px solid var(--color-border); }\n");
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", bindings, "--out", path.join(temp, "shell-stroke-page.js"), "--entry-out", path.join(temp, "shell-stroke-page-entry.js"), "--manifest", path.join(temp, "shell-stroke-page.json"), "--component-usage", path.join(temp, "shell-stroke-page-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", shellStrokePageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "page-owned shell strokes must block generation before an artifact is written");
+assert.match(result.stderr, /Page CSS stroke boundary preflight failed/);
+assert.equal(fs.existsSync(path.join(temp, "shell-stroke-page.js")), false, "failed stroke preflight must not leave a page module");
+const shellBlockStrokePageCss = path.join(temp, "shell-block-stroke-page.css");
+fs.writeFileSync(shellBlockStrokePageCss, ".task-pane-shell { border-block-end: 2px solid var(--color-border); }\n");
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", bindings, "--out", path.join(temp, "shell-block-stroke-page.js"), "--entry-out", path.join(temp, "shell-block-stroke-page-entry.js"), "--manifest", path.join(temp, "shell-block-stroke-page.json"), "--component-usage", path.join(temp, "shell-block-stroke-page-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", shellBlockStrokePageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "page-owned block-direction shell strokes must block generation before an artifact is written");
+assert.match(result.stderr, /Page CSS stroke boundary preflight failed/);
+assert.equal(fs.existsSync(path.join(temp, "shell-block-stroke-page.js")), false, "failed block-direction stroke preflight must not leave a page module");
 result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", invalidIconBindings, "--out", path.join(temp, "invalid-icon.js"), "--entry-out", path.join(temp, "invalid-icon-entry.js"), "--manifest", path.join(temp, "invalid-icon.json"), "--component-usage", path.join(temp, "invalid-icon-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
 assert.notEqual(result.status, 0, "unregistered icons must block page generation");
 assert.match(result.stderr, /Icon resolution failed/);
@@ -145,6 +170,133 @@ assert.notEqual(result.status, 0, "page-owned custom UI must not overlap an avai
 assert.match(result.stderr, /overlaps available html component/);
 assert.equal(new Set(manifests.map((manifest) => manifest.patternContract.structureDigest)).size, 1, "HTML, React, and Vue must share one structure digest");
 assert.equal(new Set(manifests.map((manifest) => manifest.navigationMode)).size, 1, "HTML, React, and Vue must share one navigation shell mode");
+
+// A navigation shell must not wrap the primary Titlebar or place a second
+// control beside it. This is the regression fixture for the bad email page:
+// the wrapper painted a second background under the logo and visually split
+// the shell into an extra column.
+const nestedTitlebarBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+nestedTitlebarBindings.patternShell.navigation.slots["global-title-layer"] = [{
+  kind: "group",
+  id: "nested-titlebar-wrapper",
+  tag: "header",
+  children: [{ kind: "component", bindingId: "title" }]
+}];
+nestedTitlebarBindings.stylePlan.compositions.push({ id: "nested-titlebar-wrapper", region: "primary-navigation", tokenRoles: ["spacing.component-gap"], componentBoundary: "preserve" });
+const nestedTitlebarPath = path.join(temp, "nested-titlebar-bindings.json");
+fs.writeFileSync(nestedTitlebarPath, JSON.stringify(nestedTitlebarBindings));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", nestedTitlebarPath, "--out", path.join(temp, "nested-titlebar.js"), "--entry-out", path.join(temp, "nested-titlebar-entry.js"), "--manifest", path.join(temp, "nested-titlebar.json"), "--component-usage", path.join(temp, "nested-titlebar-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "Pattern B must reject a wrapped primary Titlebar");
+assert.match(result.stderr, /global-title-layer must be one direct Titlebar component/);
+
+const unboundSearchBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+delete unboundSearchBindings.componentBindings.find((binding) => binding.id === "search").slot;
+const unboundSearchPath = path.join(temp, "unbound-search-bindings.json");
+fs.writeFileSync(unboundSearchPath, JSON.stringify(unboundSearchBindings));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", unboundSearchPath, "--out", path.join(temp, "unbound-search.js"), "--entry-out", path.join(temp, "unbound-search-entry.js"), "--manifest", path.join(temp, "unbound-search.json"), "--component-usage", path.join(temp, "unbound-search-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "Pattern B Search must declare its renderer-owned title slot");
+assert.match(result.stderr, /requires Pattern slot secondary-list-title/);
+
+const missingFinalTitlebarBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+missingFinalTitlebarBindings.componentBindings = missingFinalTitlebarBindings.componentBindings.filter((binding) => binding.id !== "detail-titlebar");
+missingFinalTitlebarBindings.composition.regions["main-detail"][0].children = [];
+missingFinalTitlebarBindings.behaviorPlan.interactions = missingFinalTitlebarBindings.behaviorPlan.interactions.filter((interaction) => interaction.id !== "more-actions");
+const missingFinalTitlebarPath = path.join(temp, "missing-final-titlebar-bindings.json");
+fs.writeFileSync(missingFinalTitlebarPath, JSON.stringify(missingFinalTitlebarBindings));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", missingFinalTitlebarPath, "--out", path.join(temp, "missing-final-titlebar.js"), "--entry-out", path.join(temp, "missing-final-titlebar-entry.js"), "--manifest", path.join(temp, "missing-final-titlebar.json"), "--component-usage", path.join(temp, "missing-final-titlebar-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "Pattern B must require a final-pane Titlebar");
+assert.match(result.stderr, /main-detail-title must resolve to exactly one final Titlebar/);
+
+const directDetailActionBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+directDetailActionBindings.componentBindings.push({ id: "legacy-action", logicalName: "Button/Primary/Default", semanticContext: "titlebar-main-detail-actions", behaviorId: "legacy-action", options: { label: "旧操作", variant: "ghost", size: "small", mode: "icon", icon: "action/more" }, region: "main-detail", slot: "main-detail-actions" });
+directDetailActionBindings.behaviorPlan.interactions.push({ id: "legacy-action", kind: "component-native", triggerBindingIds: ["legacy-action"], outcome: "执行旧操作" });
+directDetailActionBindings.composition.regions["main-detail"][0].children.push({ kind: "component", bindingId: "legacy-action" });
+const directDetailActionPath = path.join(temp, "direct-detail-action-bindings.json");
+fs.writeFileSync(directDetailActionPath, JSON.stringify(directDetailActionBindings));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", directDetailActionPath, "--out", path.join(temp, "direct-detail-action.js"), "--entry-out", path.join(temp, "direct-detail-action-entry.js"), "--manifest", path.join(temp, "direct-detail-action.json"), "--component-usage", path.join(temp, "direct-detail-action-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "Pattern B must reject direct page-level action buttons in its final title segment");
+assert.match(result.stderr, /main-detail-actions is component-owned/);
+
+const implicitTitlebarMode = JSON.parse(fs.readFileSync(bindings, "utf8"));
+const implicitDetailTitlebar = implicitTitlebarMode.componentBindings.find((binding) => binding.id === "detail-titlebar");
+implicitDetailTitlebar.slots["main-detail-actions"] = [
+  { id: "reply", label: "回复", icon: "action/reply" },
+  { id: "more", label: "更多", icon: "action/more", buttonType: "icon" }
+];
+implicitDetailTitlebar.actionBehaviors = { reply: "more-actions", more: "more-actions" };
+const implicitTitlebarModePath = path.join(temp, "implicit-titlebar-mode.json");
+const implicitTitlebarModeManifest = path.join(temp, "implicit-titlebar-mode-manifest.json");
+fs.writeFileSync(implicitTitlebarModePath, JSON.stringify(implicitTitlebarMode));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", implicitTitlebarModePath, "--out", path.join(temp, "implicit-titlebar-mode.js"), "--entry-out", path.join(temp, "implicit-titlebar-mode-entry.js"), "--manifest", implicitTitlebarModeManifest, "--component-usage", path.join(temp, "implicit-titlebar-mode-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.equal(result.status, 0, result.stderr);
+const implicitTitlebarModeScene = JSON.parse(fs.readFileSync(path.join(temp, JSON.parse(fs.readFileSync(implicitTitlebarModeManifest, "utf8")).titlebarScene.path), "utf8"));
+assert.equal(implicitTitlebarModeScene.segments[2].businessActions.mode, "icon-text-ghost", "unspecified business action mode must inherit the current Titlebar Scene default");
+assert.equal(implicitTitlebarModeScene.segments[2].businessActions.actions.find((action) => action.id === "reply").buttonType, "icon-text-ghost");
+
+const mixedTitlebarActions = JSON.parse(fs.readFileSync(bindings, "utf8"));
+const mixedDetailTitlebar = mixedTitlebarActions.componentBindings.find((binding) => binding.id === "detail-titlebar");
+mixedDetailTitlebar.slots["main-detail-actions"] = [
+  { id: "reply", label: "回复", icon: "action/reply", buttonType: "icon-text-ghost" },
+  { id: "archive", label: "归档", icon: "action/archive", buttonType: "icon" }
+];
+mixedDetailTitlebar.actionBehaviors = { reply: "more-actions" };
+const mixedTitlebarActionsPath = path.join(temp, "mixed-titlebar-actions.json");
+fs.writeFileSync(mixedTitlebarActionsPath, JSON.stringify(mixedTitlebarActions));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", mixedTitlebarActionsPath, "--out", path.join(temp, "mixed-titlebar-actions.js"), "--entry-out", path.join(temp, "mixed-titlebar-actions-entry.js"), "--manifest", path.join(temp, "mixed-titlebar-actions.json.out"), "--component-usage", path.join(temp, "mixed-titlebar-actions-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "Pattern B must reject mixed Titlebar business action modes instead of silently normalizing them");
+assert.match(result.stderr, /main-detail actions must use one uniform mode/);
+
+const navigationCompositeSource = path.join(temp, "navigation-composite.js");
+fs.writeFileSync(navigationCompositeSource, `export function mount(host, { renderComponent }) {
+  host.innerHTML = '<div class="mail-nav"><div role="button">收件箱</div>' + renderComponent('button', { label: '写邮件', variant: 'primary', size: 'standard', mode: 'text' }) + '</div>';
+}`);
+const navigationCompositeBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+navigationCompositeBindings.pageModules = [{ compositionId: "nav-stack", source: "./navigation-composite.js" }];
+const navigationCompositeRecipes = JSON.parse(fs.readFileSync(contentRecipes, "utf8"));
+navigationCompositeRecipes.recipes[0] = {
+  ...navigationCompositeRecipes.recipes[0],
+  kind: "page-composite",
+  fields: ["label"],
+  states: ["default"],
+  missingCapability: "specialized navigation business content",
+  registryQueries: ["specialized-navigation-business-content"],
+  reviewedCandidates: [],
+  tokenRoles: ["spacing.component-gap"],
+  disposition: "page-owned"
+};
+const navigationCompositeBindingsPath = path.join(temp, "navigation-composite-bindings.json");
+const navigationCompositeRecipesPath = path.join(temp, "navigation-composite-recipes.json");
+fs.writeFileSync(navigationCompositeBindingsPath, JSON.stringify(navigationCompositeBindings));
+fs.writeFileSync(navigationCompositeRecipesPath, JSON.stringify(navigationCompositeRecipes));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", navigationCompositeBindingsPath, "--out", path.join(temp, "navigation-composite.js.out"), "--entry-out", path.join(temp, "navigation-composite-entry.js"), "--manifest", path.join(temp, "navigation-composite-manifest.json"), "--component-usage", path.join(temp, "navigation-composite-usage.json"), "--blueprint", blueprint, "--content-recipes", navigationCompositeRecipesPath, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "navigation composites must not recreate Pattern shell responsibilities");
+assert.match(result.stderr, /owns Pattern navigation slot .*renders/);
+
+const detailCompositeSource = path.join(temp, "detail-composite.js");
+fs.writeFileSync(detailCompositeSource, `export function mount(host) {
+  host.innerHTML = '<div class="detail-toolbar"><span>−</span></div><article>邮件正文</article>';
+}`);
+const detailCompositeBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+detailCompositeBindings.pageModules = [{ compositionId: "detail-actions", source: "./detail-composite.js" }];
+const detailCompositeRecipes = JSON.parse(fs.readFileSync(contentRecipes, "utf8"));
+detailCompositeRecipes.recipes[2] = {
+  ...detailCompositeRecipes.recipes[2],
+  kind: "page-composite",
+  fields: ["body"],
+  states: ["default"],
+  missingCapability: "specialized mail detail body",
+  registryQueries: ["mail-detail-body"],
+  reviewedCandidates: [],
+  tokenRoles: ["spacing.component-gap"],
+  disposition: "page-owned"
+};
+const detailCompositeBindingsPath = path.join(temp, "detail-composite-bindings.json");
+const detailCompositeRecipesPath = path.join(temp, "detail-composite-recipes.json");
+fs.writeFileSync(detailCompositeBindingsPath, JSON.stringify(detailCompositeBindings));
+fs.writeFileSync(detailCompositeRecipesPath, JSON.stringify(detailCompositeRecipes));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", detailCompositeBindingsPath, "--out", path.join(temp, "detail-composite.js.out"), "--entry-out", path.join(temp, "detail-composite-entry.js"), "--manifest", path.join(temp, "detail-composite-manifest.json"), "--component-usage", path.join(temp, "detail-composite-usage.json"), "--blueprint", blueprint, "--content-recipes", detailCompositeRecipesPath, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "Main Detail composites must not recreate a pane-local Titlebar");
+assert.match(result.stderr, /owns Pattern Main Detail slot .*renders/);
 
 const invalidBindings = path.join(temp, "invalid-bindings.json");
 fs.writeFileSync(invalidBindings, JSON.stringify({ componentBindings: [{ logicalName: "Button/Primary/Default", semanticContext: "page-primary-action", options: { label: "新增", variant: "primary", size: "standard", mode: "text" }, region: "invented-pane" }] }));
@@ -193,6 +345,78 @@ fs.writeFileSync(missingBehaviorPlanPath, JSON.stringify(missingBehaviorPlan));
 result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", missingBehaviorPlanPath, "--out", path.join(temp, "missing-behavior.js"), "--entry-out", path.join(temp, "missing-behavior-entry.js"), "--manifest", path.join(temp, "missing-behavior.json"), "--component-usage", path.join(temp, "missing-behavior-usage.json")]);
 assert.notEqual(result.status, 0, "interactive components must declare their Behavior Plan before generation");
 assert.match(result.stderr, /requires behaviorPlan/);
+
+// The normal authoring path is the one-shot compliant pipeline. It owns the
+// route/context receipts and only commits final output after the strict
+// generator succeeds.
+const oneShotRouteReceipt = path.join(temp, "one-shot-route-read-receipt.json");
+result = run("resolve-workflow-route.mjs", ["--route", "new-page", "--repo", root, "--receipt-out", oneShotRouteReceipt]);
+assert.equal(result.status, 0, result.stderr);
+const oneShotContext = path.join(temp, "one-shot-context.json");
+const oneShotContextReceipt = path.join(temp, "one-shot-context-material-receipt.json");
+result = run("resolve-context.mjs", ["--task", "tasks", "--repo", root, "--skill-root", path.join(root, "text-to-ui"), "--framework", "html", "--mode", "fast-preview", "--auto", "--confirmed", "--blueprint", blueprint, "--out", oneShotContext, "--receipt-out", oneShotContextReceipt]);
+assert.equal(result.status, 0, result.stderr);
+const oneShotDir = path.join(temp, "one-shot-output");
+fs.mkdirSync(oneShotDir, { recursive: true });
+const oneShotReceipt = path.join(oneShotDir, "generation-receipt.json");
+result = run("generate-compliant-page.mjs", [
+  "--project", oneShotDir,
+  "--repo", root,
+  "--framework", "html",
+  "--context", oneShotContext,
+  "--route-receipt", oneShotRouteReceipt,
+  "--context-receipt", oneShotContextReceipt,
+  "--layout-contract", layout,
+  "--blueprint", blueprint,
+  "--content-recipes", contentRecipes,
+  "--bindings", bindings,
+  "--page-css", pageCss,
+  "--out", path.join(oneShotDir, "generated-page.js"),
+  "--entry-out", path.join(oneShotDir, "generated-entry.js"),
+  "--manifest", path.join(oneShotDir, "framework-page-manifest.json"),
+  "--component-usage", path.join(oneShotDir, "component-usage.json"),
+  "--ui-scene", path.join(oneShotDir, "ui-scene.json"),
+  "--receipt-out", oneShotReceipt
+]);
+assert.equal(result.status, 0, result.stderr);
+const oneShotManifest = JSON.parse(fs.readFileSync(path.join(oneShotDir, "framework-page-manifest.json"), "utf8"));
+const oneShotGenerationReceipt = JSON.parse(fs.readFileSync(oneShotReceipt, "utf8"));
+assert.equal(oneShotGenerationReceipt.kind, "text-to-ui-compliant-generation-receipt");
+assert.equal(oneShotGenerationReceipt.pattern.patternDigest, oneShotManifest.patternContract.patternDigest);
+assert.ok(oneShotGenerationReceipt.gates.every((gate) => gate.status === "passed"));
+assert.equal(oneShotManifest.titlebarScene?.preset, "pattern-b-three-pane-default-titlebar");
+assert.ok(oneShotGenerationReceipt.gates.some((gate) => gate.id === "titlebar-scene"));
+assert.ok(fs.existsSync(path.join(oneShotDir, "titlebar-scene.json")), "one-shot generation must commit the resolved Titlebar Scene with the page");
+assert.ok(fs.existsSync(path.join(oneShotDir, "package.json")), "empty targets must be scaffolded by the one-shot entry");
+assert.match(fs.readFileSync(path.join(oneShotDir, "main.js"), "utf8"), /generated-entry\.js/);
+assert.match(fs.readFileSync(path.join(oneShotDir, "generated-entry.js"), "utf8"), /generated-page\.js/);
+assert.doesNotMatch(fs.readFileSync(path.join(oneShotDir, "generated-entry.js"), "utf8"), /\.tmp/);
+
+const oneShotInvalidCss = path.join(temp, "one-shot-invalid.css");
+fs.writeFileSync(oneShotInvalidCss, ".task-list { color: #123456; padding: 12px; }\n");
+const failedOneShotSource = path.join(oneShotDir, "failed-page.js");
+result = run("generate-compliant-page.mjs", [
+  "--project", oneShotDir,
+  "--repo", root,
+  "--framework", "html",
+  "--context", oneShotContext,
+  "--route-receipt", oneShotRouteReceipt,
+  "--context-receipt", oneShotContextReceipt,
+  "--layout-contract", layout,
+  "--blueprint", blueprint,
+  "--content-recipes", contentRecipes,
+  "--bindings", bindings,
+  "--page-css", oneShotInvalidCss,
+  "--out", failedOneShotSource,
+  "--entry-out", path.join(oneShotDir, "failed-entry.js"),
+  "--manifest", path.join(oneShotDir, "failed-manifest.json"),
+  "--component-usage", path.join(oneShotDir, "failed-usage.json"),
+  "--ui-scene", path.join(oneShotDir, "failed-scene.json"),
+  "--receipt-out", path.join(oneShotDir, "failed-receipt.json")
+]);
+assert.notEqual(result.status, 0, "one-shot pipeline must block invalid Token CSS");
+assert.equal(fs.existsSync(failedOneShotSource), false, "failed one-shot generation must not commit a page module");
+assert.equal(fs.existsSync(path.join(oneShotDir, "failed-manifest.json")), false, "failed one-shot generation must not commit a manifest");
 if (process.env.TUI_PLAYWRIGHT_MODULE) {
   result = run('scaffold-standalone-project.mjs', ['--project', temp, '--repo', root, '--entry', './entry-html.js']);
   assert.equal(result.status, 0, result.stderr);

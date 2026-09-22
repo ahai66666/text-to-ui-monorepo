@@ -9,12 +9,13 @@ Use this mode to reach the first real, interactive browser page quickly. It is a
 2. Generate a Context Packet using `--auto --blueprint <file>`. Include task
    capabilities using `--capabilities`; route defaults are discovery seeds,
    not an exhaustive library inventory.
-3. Generate `layout-contract.json` with `generate-layout-contract.mjs` and
-   validate it before component selection.
-4. Create `page-spec.json` with the canonical Pattern ID and bind it to the
-   same layout contract. Generate the page through generate-framework-page.mjs,
-   with its content recipes, composition CSS and schemaVersion 2
-   `component-usage.json`; React/Vue retain the compatibility manifest.
+3. Use `generate-compliant-page.mjs` as the single generation entry point. It
+   resolves `layout-contract.json`, verifies route/context material receipts,
+   validates the blueprint, content recipes, bindings, composition CSS and
+   schemaVersion 2 `component-usage.json`, then calls the strict framework
+   generator with atomic output. React/Vue retain the compatibility manifest.
+   The lower-level `generate-framework-page.mjs` command is for maintenance and
+   regression fixtures only.
 5. Import real target-framework components. Use contract implementation only for indexed library misses; use Token-based custom work only after both searches miss.
 6. Run source reuse and page Token audits, then build or open the real page.
    Capture `collectHtmlComponentEvidence(document)` and run the runtime reuse

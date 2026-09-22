@@ -74,6 +74,10 @@
 7. 执行 `pnpm skill:sync`、`pnpm skill:check`，确认所有目录哈希一致。
 8. 检查 `git diff --check`，生成大版本更新回执。
 
+任意核心资料更新（即使不提升 MAJOR）也必须构建并校验
+`references/index/generated/skill-catalog-index.json`。它是维护路由的跨目录
+资料发现入口；目录漂移、缺失文件或过期哈希不得通过镜像同步。
+
 ## 我每次必须回报的内容
 
 - 版本号：旧版本 → 新版本；

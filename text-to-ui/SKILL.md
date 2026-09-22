@@ -93,6 +93,41 @@ Repository diagnosis is read-only unless the user separately authorizes a fix.
 
 ## 2. Universal source and layout rules
 
+### One-shot compliant page generation
+
+Normal new-page work uses `scripts/generate-compliant-page.mjs` as the single
+delivery entry point. The model supplies the page decision files
+(`page-blueprint.json`, `page-content-recipes.json`, `page-bindings.json`, and
+Token-checked page CSS); the command resolves or refreshes the route and
+Context Packet, writes and verifies both material read receipts, derives the
+Layout Contract, and then calls the strict framework generator. It stages all
+generated files beside their final paths and commits them only after the
+Pattern, component adapter, slot, Token, icon, behavior, and page-composite
+gates pass. A failed gate must leave no new page module, entry, manifest,
+component-usage file, or UI Scene.
+
+Use this for a normal new page:
+
+```bash
+node scripts/generate-compliant-page.mjs \
+  --project <generated-project> \
+  --repo <monorepo> \
+  --framework <html|react|vue> \
+  --task <request> \
+  --blueprint <page-blueprint.json> \
+  --content-recipes <page-content-recipes.json> \
+  --bindings <page-bindings.json> \
+  --page-css <page-composition.css>
+```
+
+If `--context` and `--layout-contract` are omitted, the command creates them
+under `<generated-project>/.text-to-ui/`, verifies the route/context closure,
+and records `generation-receipt.json`. Use the lower-level
+`generate-framework-page.mjs` only for Skill maintenance and regression
+fixtures; it is not the normal page-authoring path. An empty project is
+scaffolded automatically; pass `--scaffold` to refresh the managed local
+package copies in an existing standalone project.
+
 Treat `assets/design-system/pattern-contracts.json` as the machine-readable
 truth layer for application composition. Resolve it before selecting
 components or compiling `ui-scene.json`. HTML, React, Vue, and Pixso must
@@ -243,6 +278,14 @@ component adapters, Tokens, icons, generators, tests, previews, and delivery
 mirrors. The update report must explain what changed and what a page author
 must migrate; “sync passed” alone is not a sufficient release note.
 
+For any core maintenance change (including a patch), build and validate
+`references/index/generated/skill-catalog-index.json` before changing sources.
+It is the required discovery index across routes/Context Packets/receipts,
+Pattern/Skeleton/Runtime/Secondary Page, component adapters, Tokens/type/icons,
+UI Scene/generators, evidence gates, mirrors, and Gallery/Preview/Baseline.
+Read the affected canonical entries from the catalog; a mirror or a gallery
+example never substitutes for a contract source.
+
 Visual parity and contrast comparison are not default blockers for this
 project because the supplied Tokens and component styles are treated as
 canonical. Token reference correctness and component reuse are different:
@@ -329,6 +372,66 @@ Page-owned CSS must not select or redefine Pattern-owned selectors such as
 `data-tui-pane-role`. Use the Pattern shell supplied by the renderer and style
 only declared page composition groups.
 
+### Stroke and divider ownership (non-negotiable)
+
+Pattern boundaries are separators, not card outlines. The Runtime/Pattern Shell
+is the only owner of the structural strokes declared by a Pattern contract's
+`dividerEdges`: it renders a single Token-backed line using
+`--layout-navigation-divider-width` (currently `0.5px`) and
+`--color-border`. The global title row, pane grid, pane containers, and
+Titlebar components must not receive an extra page-owned `border`, `outline`,
+or `box-shadow` around their full rectangle. A page stylesheet that paints a
+second pane edge, wraps a Pattern pane in a bordered card, or uses `1px`/`2px`
+as a substitute divider is a generation error.
+
+Registered components retain their own visual contract: a field, menu, card,
+table, or selected-state indicator may draw the border specified by that
+component. Page CSS must not override those internals. `outline` is reserved
+for an interaction's `:focus-visible` state and must use the component's
+focus-ring Token; it is never a persistent layout separator or a screenshot
+annotation. The page generator and CSS-boundary checks enforce this ownership
+before an artifact is written.
+
+Universal Titlebar baseline (non-negotiable): every generated canonical
+Pattern page has one renderer-owned Titlebar scene. Bind exactly one registered
+`Titlebar/Default` to `global-title-layer` before generating page content. The
+page may select only a registered Titlebar size: `M`/`medium`, `L`/`large`, or
+`XL`/`xlarge`; `L` is the default. `S`/`small` is reserved for standalone
+Secondary Page titlebars and is rejected in a Pattern title layer. The compiler
+records the resolved size and binding in `titlebar-scene.json`; a page header,
+handwritten toolbar, or missing global Titlebar is therefore a pre-generation
+error. Pattern contracts still own segment order, pane boundaries, height,
+insets, and window-control ownership; size is the only page-level variation.
+
+Pattern B title-layer gate (non-negotiable): a two-level navigation page must
+bind exactly one direct `Titlebar/Default` to `global-title-layer` for the
+primary-navigation segment (`layout: "three-column"`, `paneRole:
+"primary-navigation"`, no window controls). Never wrap that Titlebar in a page
+header or place a collapse/brand/button sibling in the slot. The secondary-list
+title segment accepts at most one registered Search binding and requires the
+explicit `secondary-list-title` slot; Runtime owns its 64px cross-axis centering,
+full width, and `space/5` inline inset. The right segment requires exactly one
+`Titlebar/Default` in `main-detail-title` (`layout: "three-column"`,
+`segmentRole: "main-detail"`). Business actions belong to that Titlebar's
+`slots["main-detail-actions"]`, optionally mapped with `actionBehaviors`; direct
+Pattern-level action Button bindings are forbidden. Titlebar owns responsive
+overflow plus the registered 3×40px Ghost Icon Button window controls. Scope,
+filter, refresh, and selection actions are body content or component-owned
+slots. The Runtime shell provides the subtle navigation surface while Titlebar
+uses the transparent `--color-titlebar-normal-bg` Token. The strict page
+generator rejects any violation before writing an artifact, so a page cannot
+drift into a second coloured bar, missing window controls, top-aligned Search,
+or an apparent fourth column.
+
+For every canonical Pattern page, the compiler resolves and writes a
+`titlebar-scene.json` from `assets/design-system/titlebar-scene-contracts.json`.
+This is the page's authoritative Titlebar design record. Pattern B additionally
+records its centered Search segment, final Titlebar action order/overflow, and
+component-owned window controls. Do not author a second Titlebar layout plan,
+copy a gallery specimen, or repair a generated Titlebar in page CSS. Change
+only product copy, declared Titlebar actions, or the approved size; a scene
+mismatch blocks generation before the page artifact is written.
+
 ### Pattern Runtime entry point
 
 For a browser preview or a generated HTML page, call
@@ -355,11 +458,11 @@ CSS.
 
 For the approved Secondary Page compositions, use
 `createSecondaryPageRuntime({ layout: "continuation" | "new-page", mode, slots })`.
-`continuation` renders the inline back-navigation + `Titlebar_S` arrangement;
-`new-page` renders `Titlebar_S` above a vertically organized content surface.
-`Titlebar_S` is a standalone single-column titlebar; it is not valid as a
-two-column or three-column pane segment. Use a larger Titlebar size for
-pane-aligned Pattern title segments.
+`continuation` renders the inline back-navigation + pane-aligned `Titlebar_L`
+two-column arrangement; `new-page` renders standalone `Titlebar_S` above a
+vertically organized content surface. `Titlebar_S` is a standalone
+single-column titlebar; it is not valid as a two-column or three-column pane
+segment. Use a larger Titlebar size for pane-aligned Pattern title segments.
 It is a page pattern rather than one of the four canonical A–D Pattern
 Contracts, but it follows the same rule: the renderer owns the shell and the
 caller owns `navigation`, `titlebar`, and `content`.
@@ -368,6 +471,7 @@ Minimal HTML usage:
 
 ```js
 import patternRegistry from "./assets/design-system/pattern-contracts.json";
+import { renderHtmlComponent } from "@text-to-ui/components-html";
 import { createPatternRuntime } from "@text-to-ui/pattern-runtime";
 import "@text-to-ui/pattern-runtime/styles.css";
 
@@ -376,7 +480,7 @@ const runtime = createPatternRuntime({
   patternId: "pattern-b-three-pane",
   mode: "runtime",
   slots: {
-    "global-title-layer": "<strong>任务</strong>",
+    "global-title-layer": renderHtmlComponent("titlebar", { label: "任务", layout: "three-column", paneRole: "primary-navigation", showWindowControls: false }),
     "primary-navigation-shell": "<nav>…</nav>",
     "secondary-navigation-content": "<nav>…</nav>",
     "main-detail-actions": "<button type=\"button\">更多</button>"

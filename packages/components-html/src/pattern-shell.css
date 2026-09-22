@@ -41,7 +41,7 @@
 
 [data-pattern]:not(.tui-pattern-runtime) [data-pattern-region="primary-navigation"] {
   background: var(--color-bg-subtle);
-  border-inline-end: 1px solid var(--color-border);
+  border-inline-end: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border);
 }
 
 /* Pattern-owned two-level navigation: page composition can fill each slot,
@@ -123,7 +123,7 @@
 
 [data-pattern]:not(.tui-pattern-runtime) [data-pattern-region="secondary-list"],
 [data-pattern]:not(.tui-pattern-runtime) [data-pattern-region="main-content"] {
-  border-inline-end: 1px solid var(--color-border);
+  border-inline-end: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border);
 }
 
 [data-pattern]:not(.tui-pattern-runtime) [data-pattern-segmented] {
@@ -140,7 +140,7 @@
   align-items: center;
   min-width: 0;
 }
-[data-pattern]:not(.tui-pattern-runtime) [data-pattern-title-segment="secondary-list"] {
+[data-pattern]:not(.tui-pattern-runtime) [data-pattern-title-segment="secondary-list"]:not(:has(> .tui-titlebar[data-pane-role="secondary-pane"])) {
   padding-inline: var(--space-5);
 }
 [data-pattern]:not(.tui-pattern-runtime) [data-pattern-title-segment] > * { min-width: 0; width: 100%; }

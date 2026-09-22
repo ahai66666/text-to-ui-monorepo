@@ -7,6 +7,10 @@
      title content paint over the first body row. */
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
+  /* Fill the host window without imposing a fixed canvas size. This keeps
+     Pattern-owned bottom navigation pinned inside responsive previews while
+     preserving the page's natural width and the Pixso-only import dimensions. */
+  height: 100%;
   min-width: var(--tui-pattern-min-width, 0);
   min-height: var(--tui-pattern-min-height, 0);
   overflow: hidden;
@@ -32,7 +36,7 @@
 
 .tui-pattern-runtime__global-title {
   padding-inline: var(--padding-titlebar-leading, var(--space-6, 24px)) var(--padding-titlebar-trailing-l, var(--space-5, 20px));
-  border-bottom: 1px solid var(--color-border, #e4e7eb);
+  border-bottom: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border, #e4e7eb);
 }
 
 /* A page-owned global title layer may provide the contract's pane-aligned
@@ -56,9 +60,13 @@
 
 .tui-pattern-runtime__title-segment {
   min-width: 0;
+  height: var(--layout-titlebar-height, 64px);
   min-height: var(--layout-titlebar-height, 64px);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
   overflow: hidden;
-  border-inline-end: 1px solid var(--color-border, #e4e7eb);
+  border-inline-end: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border, #e4e7eb);
 }
 
 .tui-pattern-runtime__title-segment:last-child { border-inline-end: 0; }
@@ -68,12 +76,52 @@
   max-width: 100%;
 }
 
-.tui-pattern-runtime__title-segment:first-child > .tui-titlebar {
+/* Pattern B's direct middle slot is content, not a second Titlebar. The
+   renderer owns its 64px row, 16px pane inset, and cross-axis centering so a
+   Search (or another future registered slot component) cannot stick to the
+   top edge or invent page-local padding. If a segment is intentionally
+   rendered by the Titlebar component, that component owns the same inset and
+   the shell must not apply it twice. */
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="secondary-list"]:not(:has(> .tui-titlebar[data-pane-role="secondary-pane"])) {
+  padding-inline: var(--space-5, 16px);
+}
+
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="secondary-list"] > .tui-component,
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="secondary-list"] > [data-tui-behavior],
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="secondary-list"] > [data-tui-action-behaviors] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+/* The final Titlebar owns responsive business-action overflow. Its menu must
+   be allowed to escape the segment while the component keeps the fixed
+   3×40px window-control group protected on the trailing edge. */
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="main-detail"] {
+  overflow: visible;
+}
+
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="main-detail"] > [data-tui-behavior],
+[data-tui-pattern="pattern-b-three-pane"] [data-pattern-title-segment="main-detail"] > [data-tui-action-behaviors] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.tui-pattern-runtime__title-segment:first-child {
   background: var(--color-sidebar-bg, #f7f8fa);
 }
 
-.tui-pattern-runtime__title-segment:not(:first-child) > .tui-titlebar {
+.tui-pattern-runtime__title-segment:not(:first-child) {
   background: var(--color-surface, #fff);
+}
+
+/* The shell surface supplies the subtle navigation background.  Titlebar is
+   a transparent content component, so it must not paint a second coloured
+   strip under the logo or create a false layer below the primary segment. */
+.tui-pattern-runtime__title-segment .tui-titlebar {
+  background: var(--color-titlebar-normal-bg, transparent);
 }
 
 [data-tui-pattern="pattern-a-two-pane"] .tui-pattern-runtime__title-segments {
@@ -104,7 +152,7 @@
   overflow: hidden;
   box-sizing: border-box;
   background: var(--color-surface, #fff);
-  border-inline-end: 1px solid var(--color-border, #e4e7eb);
+  border-inline-end: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border, #e4e7eb);
 }
 
 .tui-pattern-runtime__pane:last-child { border-inline-end: 0; }
@@ -182,7 +230,7 @@
 
 .tui-pattern-runtime__pane-title {
   padding-inline: var(--space-5, 20px);
-  border-bottom: 1px solid var(--color-border, #e4e7eb);
+  border-bottom: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border, #e4e7eb);
 }
 
 .tui-pattern-runtime__pane--navigation .tui-pattern-runtime__scroll-body {
@@ -335,7 +383,7 @@
   min-width: 0;
   min-height: 0;
   padding: 0;
-  border-inline-end: 1px solid var(--color-border, #e4e7eb);
+  border-inline-end: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border, #e4e7eb);
   background: var(--color-sidebar-bg, #f7f8fa);
 }
 
@@ -366,7 +414,7 @@
   min-height: var(--layout-titlebar-height-small, 40px);
   display: flex;
   align-items: center;
-  border-block-end: 1px solid var(--color-border, #e4e7eb);
+  border-block-end: var(--layout-navigation-divider-width, 0.5px) solid var(--color-border, #e4e7eb);
   background: var(--color-surface, #fff);
 }
 

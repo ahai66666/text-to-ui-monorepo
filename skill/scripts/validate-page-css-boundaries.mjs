@@ -8,6 +8,13 @@ const sources = args.flatMap((arg, index) => arg === "--source" ? [args[index + 
 if (!sources.length) throw new Error("Usage: validate-page-css-boundaries.mjs --source <css-file-or-directory> [--source <...>]");
 const forbidden = /(?:\[data-(?:pattern|tui-pane-role|pattern-region|pattern-shell-slot)|\.tui-(?:pattern|runtime-card|sidebar|titlebar)\b)/;
 const canvasRoot = /(?:^|,)\s*(?:html|body|main|#app|\[data-tui-pattern\]|\.tui-pattern-runtime)\b/i;
+// Match Pattern-specific wrappers without banning ordinary business shells
+// (for example a mail composer card named `.fixture-demo-shell`). A shell is
+// protected when it also names a Pattern, pane, or Titlebar boundary.
+const shellLikeSelector = /(?:^|[.#\s>])[^,]*\b(?:pattern|pane|titlebar)\b/i;
+const strokeProperty = /\b(?:border(?:-(?:top|right|bottom|left|inline-start|inline-end|block-start|block-end))?|outline|box-shadow)\s*:/i;
+const persistentOutline = /\boutline(?:-(?:color|style|width|offset))?\s*:\s*(?!0(?:px)?\b|none\b|var\(--color-focus-ring\b)/i;
+const dividerSelector = /(?:^|[.#\s>])[^,]*\b(?:divider|separator)\b/i;
 const failures = [];
 const files = sources.flatMap((source) => {
   const resolved = path.resolve(source);
@@ -15,7 +22,21 @@ const files = sources.flatMap((source) => {
   return [resolved];
 });
 for (const file of files) {
-  const lines = fs.readFileSync(file, "utf8").split("\n");
+  const css = fs.readFileSync(file, "utf8");
+  for (const match of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selector = match[1].trim();
+    const body = match[2];
+    if (shellLikeSelector.test(selector) && strokeProperty.test(body)) {
+      failures.push(`${path.relative(process.cwd(), file)} page CSS cannot add a border, outline, or shadow to Pattern shell-like selector '${selector}'; Runtime owns structural divider edges`);
+    }
+    if (!/:focus-visible\b/i.test(selector) && persistentOutline.test(body)) {
+      failures.push(`${path.relative(process.cwd(), file)} page CSS outline is reserved for :focus-visible component states: '${selector}'`);
+    }
+    if (dividerSelector.test(selector) && strokeProperty.test(body) && !/var\(\s*--layout-navigation-divider-width\b/i.test(body)) {
+      failures.push(`${path.relative(process.cwd(), file)} divider/separator strokes must use --layout-navigation-divider-width: '${selector}'`);
+    }
+  }
+  const lines = css.split("\n");
   let selector = "";
   for (const [line, text] of lines.entries()) {
     if (forbidden.test(text)) failures.push(`${path.relative(process.cwd(), file)}:${line + 1} page CSS cannot override Pattern-owned selectors`);

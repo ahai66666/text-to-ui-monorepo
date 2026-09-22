@@ -11,6 +11,15 @@ changes, generator and gate changes, mirror synchronization, migration notes,
 and the complete validation result. A user can provide only the desired
 change; the maintenance route owns the impact analysis and checklist.
 
+Before any maintenance reads, rebuild and check
+`references/index/generated/skill-catalog-index.json` using
+`pnpm index:build && pnpm catalog:check`. Read its relevant material groups
+before changing sources. This catalog is the cross-directory discovery gate for
+routes/receipts, Pattern/Skeleton/Runtime/Secondary Page, component adapters,
+Tokens/type/icons, UI Scene/generators, validation evidence, delivery mirrors,
+and Gallery/Preview/Baseline. Do not treat a single route file, a Gallery
+example, or a delivery mirror as sufficient source material.
+
 - Work in the canonical `text-to-ui/` and `packages/` sources; run root commands from the repository.
 - Inspect existing changes and keep delivery-only edits backed up before synchronization.
 - Component identities and aliases live in `mapping-registry.json`; `component-mapping-resolver.mjs` is the shared normalization implementation. Generated maps are not inputs to canonical resolution.

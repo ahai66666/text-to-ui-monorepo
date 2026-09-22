@@ -33,6 +33,18 @@ const contentRecipesPath = path.join(temp, "page-content-recipes.json");
 const frameworkBindings = JSON.parse(fs.readFileSync(path.join(repo, "fixtures/html-strict-list-detail/component-bindings.json"), "utf8"));
 const normalizedRegions = { navigation: "primary-navigation", list: "secondary-list", detail: "main-detail" };
 frameworkBindings.componentBindings = frameworkBindings.componentBindings.map((binding) => ({ ...binding, region: normalizedRegions[binding.region] ?? binding.region }));
+frameworkBindings.componentBindings.unshift({
+  id: "primary-titlebar",
+  logicalName: "Titlebar/Default",
+  semanticContext: "global-titlebar",
+  options: { layout: "three-column", paneRole: "primary-navigation", showWindowControls: false },
+  slots: { label: "任务" },
+  usage: "一级导航标题",
+  region: "primary-navigation",
+  slot: "global-title-layer",
+  expectedRuntimeCount: 1
+});
+frameworkBindings.composition.regions["primary-navigation"].unshift({ kind: "component", bindingId: "primary-titlebar" });
 frameworkBindings.stylePlan.compositions = frameworkBindings.stylePlan.compositions.map((entry) => ({ ...entry, region: normalizedRegions[entry.region] ?? entry.region }));
 frameworkBindings.behaviorPlan.interactions = frameworkBindings.behaviorPlan.interactions.map((interaction) => ({ ...interaction, outcome: `完成 ${interaction.id}` }));
 fs.writeFileSync(blueprintPath, JSON.stringify({ schemaVersion: 1, id: "task-list-detail", task: "任务管理", user: "任务处理人员", primaryJob: "查看并完成任务", designRationale: "分类列表驱动详情", pattern: { id: "pattern-b-three-pane" }, regions: [{ id: "primary-navigation", purpose: "任务分类" }, { id: "secondary-list", purpose: "任务列表" }, { id: "main-detail", purpose: "任务详情" }], contentGroups: [{ id: "navigation-content", region: "primary-navigation", purpose: "导航" }, { id: "task-list", region: "secondary-list", purpose: "任务列表", dataEntities: ["task"] }, { id: "task-detail", region: "main-detail", purpose: "任务详情", dataEntities: ["task"] }], dataEntities: [{ id: "task" }], interactions: [{ id: "select-task-category", sourceGroup: "navigation-content", targetGroup: "task-list", taskOutcome: "切换任务分类" }, { id: "filter-tasks", sourceGroup: "task-list", targetGroup: "task-list", taskOutcome: "筛选任务" }, { id: "open-add-task", sourceGroup: "navigation-content", targetGroup: "task-detail", taskOutcome: "打开新增任务" }, { id: "toggle-task-complete", sourceGroup: "task-detail", targetGroup: "task-detail", taskOutcome: "更新完成状态" }], states: [{ id: "selected" }, { id: "empty" }], successCriteria: ["可以查看和完成任务"], recoveryPaths: ["无结果时恢复全部任务"] }, null, 2));
@@ -45,7 +57,7 @@ fixtureBlueprint.states = [{ id: "selected", kind: "selection", appliesTo: ["tas
 fixtureBlueprint.design = { readingOrder: ["primary-navigation", "secondary-list", "main-detail"], informationPriority: ["task-list", "task-detail"], regionResponsibilities: [{ region: "primary-navigation", responsibility: "任务分类" }, { region: "secondary-list", responsibility: "任务筛选和选择" }, { region: "main-detail", responsibility: "任务处理" }], contentDensity: { "primary-navigation": "compact", "secondary-list": "comfortable", "main-detail": "comfortable" }, primaryActionIds: ["open-add-task"], secondaryActionIds: ["select-task-category", "filter-tasks", "toggle-task-complete"], relationships: [{ from: "task-list", to: "task-detail", kind: "selection" }], stateMatrix: [{ stateId: "selected", appliesTo: ["task-list", "task-detail"], entryCondition: "选择任务", recovery: "恢复默认任务" }, { stateId: "empty", appliesTo: ["task-list"], entryCondition: "筛选无结果", recovery: "清除筛选" }] };
 fs.writeFileSync(blueprintPath, JSON.stringify(fixtureBlueprint, null, 2));
 fs.writeFileSync(contentRecipesPath, JSON.stringify({ schemaVersion: 1, blueprintRef: { id: "task-list-detail" }, recipes: [
-  { id: "navigation-recipe", contentGroupId: "navigation-content", region: "primary-navigation", compositionId: "navigation-stack", kind: "registered-composition", bindingIds: ["task-navigation", "add-task"] },
+  { id: "navigation-recipe", contentGroupId: "navigation-content", region: "primary-navigation", compositionId: "navigation-stack", kind: "registered-composition", bindingIds: ["primary-titlebar", "task-navigation", "add-task"] },
   { id: "task-list-recipe", contentGroupId: "task-list", region: "secondary-list", compositionId: "task-list", kind: "registered-composition", entityId: "task", bindingIds: ["task-search", "task-rows"] },
   { id: "task-detail-recipe", contentGroupId: "task-detail", region: "main-detail", compositionId: "task-detail", kind: "registered-composition", entityId: "task", bindingIds: ["detail-titlebar", "task-checkbox"] }
 ] }, null, 2));
