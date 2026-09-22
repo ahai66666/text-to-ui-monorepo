@@ -9,12 +9,7 @@ const primaryNavigationIconAliases = Object.freeze({
   "primary-level/settings": "action/settings"
 });
 const resolvePrimaryNavigationIcon = (name) => primaryNavigationIconAliases[name] ?? name;
-const primaryNavigationAllowedIconAliases = new Set(["navigation/grid", "field/calendar", "navigation/contacts", "navigation/mail-unread", "action/settings"]);
-const checkedPrimaryNavigationIcon = (name) => {
-  const alias = resolvePrimaryNavigationIcon(name);
-  if (!primaryNavigationAllowedIconAliases.has(alias)) throw new Error(`Primary Navigation Item requires an approved Lucide Regular icon alias: ${alias}`);
-  return alias;
-};
+const resolvePrimaryNavigationIconForRender = (name) => resolvePrimaryNavigationIcon(name);
 
 const props = defineProps({
   label: { type: String, default: "项目" },
@@ -44,6 +39,6 @@ const emit = defineEmits(["select"]);
     :disabled="props.disabled || props.state === 'disabled'"
     @click="emit('select', props.label)"
   >
-    <span data-slot="icon"><Icon :name="checkedPrimaryNavigationIcon(props.icon)" :size="24" /></span>
+    <span data-slot="icon"><Icon :name="resolvePrimaryNavigationIconForRender(props.icon)" :size="24" /></span>
   </button>
 </template>

@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "generatedFrom": [
     "assets/design-system/pixso-component-registry.json",
+    "assets/design-system/pixso-component-facts.json",
     "preview/component-gallery.html",
     "preview/component-gallery.css",
     "assets/design-system/tokens.*.json",
@@ -57,9 +58,301 @@
     }
   },
   "components": {
+    "Accordion/Collapsed": {
+      "family": "Accordion",
+      "previewSelector": ".tui-disclosure[data-component=\"accordion\"] .tui-disclosure__trigger",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": 24
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L"
+      },
+      "direction": "horizontal",
+      "iconSize": 16
+    },
+    "Alert/Error": {
+      "family": "Alert",
+      "previewSelector": ".tui-alert",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Detail": "Subtitle_S",
+        "Text Action": "Body_M"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Alert Main",
+        "Alert Actions"
+      ],
+      "iconSize": 20,
+      "closeTargetSize": 32,
+      "closeIconSize": 16,
+      "paddingLeftToken": "padding/alert-left",
+      "paddingRightToken": "padding/alert-right"
+    },
+    "Alert/Info": {
+      "family": "Alert",
+      "previewSelector": ".tui-alert",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Detail": "Subtitle_S",
+        "Text Action": "Body_M"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Alert Main",
+        "Alert Actions"
+      ],
+      "iconSize": 20,
+      "closeTargetSize": 32,
+      "closeIconSize": 16,
+      "paddingLeftToken": "padding/alert-left",
+      "paddingRightToken": "padding/alert-right"
+    },
+    "Alert/Neutral": {
+      "family": "Alert",
+      "previewSelector": ".tui-alert",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Detail": "Subtitle_S",
+        "Text Action": "Body_M"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Alert Main",
+        "Alert Actions"
+      ],
+      "iconSize": 20,
+      "closeTargetSize": 32,
+      "closeIconSize": 16,
+      "paddingLeftToken": "padding/alert-left",
+      "paddingRightToken": "padding/alert-right"
+    },
+    "Alert/Success": {
+      "family": "Alert",
+      "previewSelector": ".tui-alert",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Detail": "Subtitle_S",
+        "Text Action": "Body_M"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Alert Main",
+        "Alert Actions"
+      ],
+      "iconSize": 20,
+      "closeTargetSize": 32,
+      "closeIconSize": 16,
+      "paddingLeftToken": "padding/alert-left",
+      "paddingRightToken": "padding/alert-right"
+    },
+    "Alert/Warning": {
+      "family": "Alert",
+      "previewSelector": ".tui-alert",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Detail": "Subtitle_S",
+        "Text Action": "Body_M"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Alert Main",
+        "Alert Actions"
+      ],
+      "iconSize": 20,
+      "closeTargetSize": 32,
+      "closeIconSize": 16,
+      "paddingLeftToken": "padding/alert-left",
+      "paddingRightToken": "padding/alert-right"
+    },
+    "Avatar/32/Fallback": {
+      "family": "Avatar",
+      "previewSelector": ".avatar",
+      "sizing": {
+        "masterWidth": 32,
+        "placementWidth": "fixed",
+        "height": 32
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Initials": "Body_S"
+      },
+      "iconSize": 20,
+      "radiusToken": "radius/avatar"
+    },
+    "Avatar/32/Image": {
+      "family": "Avatar",
+      "previewSelector": ".avatar",
+      "sizing": {
+        "masterWidth": 32,
+        "placementWidth": "fixed",
+        "height": 32
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Initials": "Body_S"
+      },
+      "iconSize": 20,
+      "radiusToken": "radius/avatar"
+    },
+    "Avatar/40/Fallback": {
+      "family": "Avatar",
+      "previewSelector": ".avatar",
+      "sizing": {
+        "masterWidth": 40,
+        "placementWidth": "fixed",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Initials": "Body_S"
+      },
+      "iconSize": 24,
+      "radiusToken": "radius/avatar"
+    },
+    "Avatar/40/Image": {
+      "family": "Avatar",
+      "previewSelector": ".avatar",
+      "sizing": {
+        "masterWidth": 40,
+        "placementWidth": "fixed",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Initials": "Body_S"
+      },
+      "iconSize": 24,
+      "radiusToken": "radius/avatar"
+    },
+    "Badge/Info": {
+      "family": "Badge",
+      "previewSelector": ".tui-badge",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 24
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_S"
+      },
+      "direction": "horizontal",
+      "paddingX": 8,
+      "radiusToken": "radius/04"
+    },
+    "Badge/Neutral": {
+      "family": "Badge",
+      "previewSelector": ".tui-badge",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 24
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_S"
+      },
+      "direction": "horizontal",
+      "paddingX": 8,
+      "radiusToken": "radius/04"
+    },
+    "Badge/Success": {
+      "family": "Badge",
+      "previewSelector": ".tui-badge",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 24
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_S"
+      },
+      "direction": "horizontal",
+      "paddingX": 8,
+      "radiusToken": "radius/04"
+    },
+    "Badge/Warning": {
+      "family": "Badge",
+      "previewSelector": ".tui-badge",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 24
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_S"
+      },
+      "direction": "horizontal",
+      "paddingX": 8,
+      "radiusToken": "radius/04"
+    },
+    "Breadcrumb/Default": {
+      "family": "Breadcrumb",
+      "previewSelector": ".tui-breadcrumb",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/breadcrumb-item",
+      "iconSize": 16
+    },
+    "Button/Ghost/Default": {
+      "family": "Button",
+      "previewSelector": ".tui-button",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": null,
+      "paddingXToken": "padding/button-x",
+      "radiusToken": "radius/control"
+    },
     "Button/Primary/Default": {
       "family": "Button",
-      "previewSelector": ".btn",
+      "previewSelector": ".tui-button",
       "sizing": {
         "masterWidth": "hug",
         "placementWidth": "hug",
@@ -76,7 +369,7 @@
     },
     "Button/Secondary/Default": {
       "family": "Button",
-      "previewSelector": ".btn",
+      "previewSelector": ".tui-button",
       "sizing": {
         "masterWidth": "hug",
         "placementWidth": "hug",
@@ -91,174 +384,207 @@
       "paddingXToken": "padding/button-x",
       "radiusToken": "radius/control"
     },
-    "Button/Ghost/Default": {
-      "family": "Button",
-      "previewSelector": ".btn",
+    "Checkbox/Unchecked/Default": {
+      "family": "Checkbox",
+      "previewSelector": ".tui-checkbox",
       "sizing": {
         "masterWidth": "hug",
         "placementWidth": "hug",
         "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/choice-label",
+      "controlSize": 20
+    },
+    "Chips/Default": {
+      "family": "Chips",
+      "previewSelector": ".tui-chip",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 28
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "space/2",
+      "paddingLeftToken": "space/4",
+      "paddingRightToken": "space/3",
+      "radiusToken": "radius/control",
+      "iconSize": 16,
+      "pixsoDefaultVariant": {
+        "状态": "Default"
+      },
+      "slotContracts": {
+        "leading": {
+          "cardinality": "0..1",
+          "iconSize": 16
+        },
+        "label": {
+          "cardinality": "1",
+          "typographyRole": "Body_M"
+        },
+        "close": {
+          "cardinality": "0..1",
+          "iconAlias": "action/close",
+          "iconSize": 16
+        }
+      }
+    },
+    "Collapsible/Collapsed": {
+      "family": "Collapsible",
+      "previewSelector": ".tui-disclosure[data-component=\"collapsible\"] .tui-disclosure__trigger",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": 32
       },
       "autoLayout": true,
       "textRoles": {
         "Label": "Body_L"
       },
       "direction": "horizontal",
-      "gapToken": null,
-      "paddingXToken": "padding/button-x",
-      "radiusToken": "radius/control"
+      "iconSize": 16
     },
-    "Icon Text Button/Primary/Default": {
-      "family": "Icon Text Button",
-      "previewSelector": ".btn.btn-icon-text",
+    "ColorPicker/Tablet": {
+      "family": "ColorPicker",
+      "previewSelector": ".tui-color-picker",
       "sizing": {
-        "masterWidth": "hug",
+        "masterWidth": 360,
         "placementWidth": "hug",
+        "height": 515
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Title": "Title_S",
+        "Label": "Body_M",
+        "Value": "Body_S"
+      },
+      "minWidth": 320,
+      "direction": "vertical",
+      "nestedGroups": [
+        "ColorPicker Tabs",
+        "ColorPicker Controls",
+        "ColorPicker Favorites"
+      ],
+      "iconSize": 24,
+      "radiusToken": "radius/card"
+    },
+    "Combobox/Gray Surface/Default": {
+      "family": "Combobox",
+      "previewSelector": ".tui-combobox",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
         "height": 40
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Body_L"
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
       },
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label",
-      "paddingXToken": "padding/button-x",
-      "iconSize": 20,
-      "radiusToken": "radius/control"
+      "iconSize": 16,
+      "clearActionReserve": null
     },
-    "Icon Text Button/Secondary/Default": {
-      "family": "Icon Text Button",
-      "previewSelector": ".btn.btn-icon-text",
+    "Combobox/White Surface/Default": {
+      "family": "Combobox",
+      "previewSelector": ".tui-combobox",
       "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
+        "masterWidth": 280,
+        "placementWidth": "fill",
         "height": 40
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Body_L"
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
       },
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label",
-      "paddingXToken": "padding/button-x",
-      "iconSize": 20,
-      "radiusToken": "radius/control"
+      "iconSize": 16,
+      "clearActionReserve": null
     },
-    "Icon Text Button/Ghost/Default": {
-      "family": "Icon Text Button",
-      "previewSelector": ".btn.btn-icon-text",
+    "Date Picker/Default": {
+      "family": "Date Picker",
+      "previewSelector": ".date-picker-trigger",
       "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "paddingXToken": "padding/button-x",
-      "iconSize": 20,
-      "radiusToken": "radius/control"
-    },
-    "Icon Button/Ghost/Default": {
-      "family": "Icon Button",
-      "previewSelector": ".icon-btn",
-      "sizing": {
-        "masterWidth": 40,
-        "placementWidth": "fixed",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "direction": "horizontal",
-      "iconSize": 20,
-      "radiusToken": "radius/control"
-    },
-    "Icon Button/Secondary/Default": {
-      "family": "Icon Button",
-      "previewSelector": ".icon-btn",
-      "sizing": {
-        "masterWidth": 40,
-        "placementWidth": "fixed",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "direction": "horizontal",
-      "iconSize": 20,
-      "radiusToken": "radius/control"
-    },
-    "Selection Dropdown/Default": {
-      "family": "Selection Dropdown",
-      "previewSelector": ".selection-dropdown-trigger",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
+        "masterWidth": 280,
+        "placementWidth": "fill",
         "height": 40
       },
       "autoLayout": true,
       "textRoles": {
         "Value": "Body_L"
       },
-      "minWidth": 132,
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label",
-      "paddingXToken": "padding/button-x",
       "iconSize": 16
     },
-    "Split Dropdown Button/Icon Text/Default": {
-      "family": "Split Dropdown Button",
-      "previewSelector": ".split-control",
+    "Dialog/Default": {
+      "family": "Dialog-2in1",
+      "previewSelector": ".tui-dialog",
       "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 40
+        "masterWidth": 400,
+        "placementWidth": "fixed",
+        "height": "hug"
       },
       "autoLayout": true,
       "textRoles": {
-        "Label": "Body_L"
+        "Title": "Title_S",
+        "Subtitle": "Body_M",
+        "Description": "Body_M"
       },
-      "direction": "horizontal",
+      "minWidth": 400,
+      "direction": "vertical",
       "nestedGroups": [
-        "Main Action",
-        "Dropdown Trigger"
+        "Dialog Titlebar",
+        "Dialog Content",
+        "Dialog Actions"
       ],
-      "gapToken": "gap/button-icon-label",
-      "iconSizes": [
-        20,
-        16
-      ]
-    },
-    "Split Dropdown Button/Icon Only/Default": {
-      "family": "Split Dropdown Button",
-      "previewSelector": ".split-control",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSizes": [
-        20,
-        16
-      ]
-    },
-    "Toggle/Off/Default": {
-      "family": "Toggle",
-      "previewSelector": ".toggle-btn",
-      "sizing": {
-        "masterWidth": 56,
-        "placementWidth": "fixed",
-        "height": 32
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "iconSize": 20
+      "slotContracts": {
+        "titlebar": {
+          "cardinality": "1",
+          "variants": [
+            "title-only",
+            "title-subtitle"
+          ],
+          "pixsoComponent": ".Title",
+          "pixsoVariants": {
+            "title-only": "2 Line=OFF",
+            "title-subtitle": "2 Line=ON"
+          }
+        },
+        "actions": {
+          "cardinality": "1",
+          "acceptedComponent": "Button",
+          "buttonCount": {
+            "min": 1,
+            "max": 3
+          },
+          "variants": [
+            "one-button",
+            "two-buttons",
+            "three-buttons"
+          ],
+          "pixsoComponent": ".Dialog_Container",
+          "pixsoVariants": {
+            "one-button": "quantity=1_normal",
+            "two-buttons": [
+              "quantity=2_normal",
+              "quantity=2_emphasize"
+            ],
+            "three-buttons": "quantity=3_emphasize_port"
+          }
+        }
+      }
     },
     "Field/Default": {
       "family": "Field",
@@ -300,185 +626,110 @@
         "Control"
       ]
     },
-    "Input/White Surface/Default": {
-      "family": "Input",
-      "previewSelector": ".field",
+    "Form Field/Default": {
+      "family": "Form Field",
+      "previewSelector": ".tui-form-field",
       "sizing": {
         "masterWidth": 280,
         "placementWidth": "fill",
-        "height": 40
+        "height": 64
       },
       "autoLayout": true,
       "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": null,
-      "iconSize": null,
-      "clearActionReserve": null
-    },
-    "Input/Gray Surface/Default": {
-      "family": "Input",
-      "previewSelector": ".field",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": null,
-      "iconSize": null,
-      "clearActionReserve": null
-    },
-    "Search/White Surface/Default": {
-      "family": "Search",
-      "previewSelector": ".field.search",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSize": 16,
-      "clearActionReserve": 32
-    },
-    "Search/Gray Surface/Default": {
-      "family": "Search",
-      "previewSelector": ".field.search",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSize": 16,
-      "clearActionReserve": 32
-    },
-    "Textarea/White Surface/Default": {
-      "family": "Textarea",
-      "previewSelector": ".textarea",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 80
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
+        "Label": "Subtitle_S",
+        "Error": "Body_S"
       },
       "direction": "vertical",
-      "gapToken": null,
-      "iconSize": null,
-      "clearActionReserve": null
+      "gapToken": "gap/field-label",
+      "nestedGroups": [
+        "Control"
+      ],
+      "pixsoDefaultVariant": {
+        "surface": "White",
+        "state": "Default"
+      }
     },
-    "Textarea/Gray Surface/Default": {
-      "family": "Textarea",
-      "previewSelector": ".textarea",
+    "Icon Button/Ghost/Default": {
+      "family": "Icon Button",
+      "previewSelector": ".tui-button[data-mode=\"icon\"]",
       "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 80
+        "masterWidth": 40,
+        "placementWidth": "fixed",
+        "height": 40
       },
       "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
-      },
-      "direction": "vertical",
-      "gapToken": null,
-      "iconSize": null,
-      "clearActionReserve": null
+      "textRoles": {},
+      "direction": "horizontal",
+      "iconSize": 20,
+      "radiusToken": "radius/control"
     },
-    "Select/White Surface/Default": {
-      "family": "Select",
-      "previewSelector": ".select-trigger",
+    "Icon Button/Secondary/Default": {
+      "family": "Icon Button",
+      "previewSelector": ".tui-button[data-mode=\"icon\"]",
       "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
+        "masterWidth": 40,
+        "placementWidth": "fixed",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "direction": "horizontal",
+      "iconSize": 20,
+      "radiusToken": "radius/control"
+    },
+    "Icon Text Button/Ghost/Default": {
+      "family": "Icon Text Button",
+      "previewSelector": ".tui-button[data-mode=\"icon-text\"]",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
         "height": 40
       },
       "autoLayout": true,
       "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
+        "Label": "Body_L"
       },
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label",
-      "iconSize": 16,
-      "clearActionReserve": null
+      "paddingXToken": "padding/button-sm-x",
+      "iconSize": 20,
+      "radiusToken": "radius/control"
     },
-    "Select/Gray Surface/Default": {
-      "family": "Select",
-      "previewSelector": ".select-trigger",
+    "Icon Text Button/Primary/Default": {
+      "family": "Icon Text Button",
+      "previewSelector": ".tui-button[data-mode=\"icon-text\"]",
       "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
+        "masterWidth": "hug",
+        "placementWidth": "hug",
         "height": 40
       },
       "autoLayout": true,
       "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
+        "Label": "Body_L"
       },
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label",
-      "iconSize": 16,
-      "clearActionReserve": null
+      "paddingXToken": "padding/button-sm-x",
+      "iconSize": 20,
+      "radiusToken": "radius/control"
     },
-    "Combobox/White Surface/Default": {
-      "family": "Combobox",
-      "previewSelector": ".combobox-trigger",
+    "Icon Text Button/Secondary/Default": {
+      "family": "Icon Text Button",
+      "previewSelector": ".tui-button[data-mode=\"icon-text\"]",
       "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
+        "masterWidth": "hug",
+        "placementWidth": "hug",
         "height": 40
       },
       "autoLayout": true,
       "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
+        "Label": "Body_L"
       },
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label",
-      "iconSize": 16,
-      "clearActionReserve": null
-    },
-    "Combobox/Gray Surface/Default": {
-      "family": "Combobox",
-      "previewSelector": ".combobox-trigger",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L",
-        "Placeholder": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSize": 16,
-      "clearActionReserve": null
+      "paddingXToken": "padding/button-sm-x",
+      "iconSize": 20,
+      "radiusToken": "radius/control"
     },
     "Input OTP/Default": {
       "family": "Input OTP",
@@ -495,75 +746,9 @@
       "direction": "horizontal",
       "gapToken": "gap/button-icon-label"
     },
-    "Checkbox/Unchecked/Default": {
-      "family": "Checkbox",
-      "previewSelector": ".choice",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 20
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_M"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/choice-label",
-      "controlSize": 20
-    },
-    "Radio/Unselected/Default": {
-      "family": "Radio",
-      "previewSelector": ".choice",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 20
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_M"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/choice-label",
-      "controlSize": 20
-    },
-    "Switch/Off/Default": {
-      "family": "Switch",
-      "previewSelector": ".choice .switch",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 24
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_M"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/choice-label",
-      "trackSize": [
-        44,
-        24
-      ],
-      "thumbSize": 20
-    },
-    "Slider/Default": {
-      "family": "Slider",
-      "previewSelector": ".range-field",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 24
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "trackHeight": 4,
-      "thumbSize": 20,
-      "intentionalOverlapWrapper": "Slider Visual"
-    },
-    "Date Picker/Default": {
-      "family": "Date Picker",
-      "previewSelector": ".date-picker-trigger",
+    "Input/Gray Surface/Default": {
+      "family": "Input",
+      "previewSelector": ".tui-input",
       "sizing": {
         "masterWidth": 280,
         "placementWidth": "fill",
@@ -571,130 +756,180 @@
       },
       "autoLayout": true,
       "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": null,
+      "iconSize": null,
+      "clearActionReserve": null
+    },
+    "Input/White Surface/Default": {
+      "family": "Input",
+      "previewSelector": ".tui-input",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": null,
+      "iconSize": null,
+      "clearActionReserve": null
+    },
+    "List Container/Gray Canvas": {
+      "family": "List Container",
+      "previewSelector": ".list",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": "hug"
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Primary": "Body_L",
+        "Secondary": "Body_M"
+      },
+      "direction": "vertical",
+      "gapToken": "gap/list-item"
+    },
+    "List Container/White Canvas": {
+      "family": "List Container",
+      "previewSelector": ".list",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": "hug"
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Primary": "Body_L",
+        "Secondary": "Body_M"
+      },
+      "direction": "vertical",
+      "gapToken": "gap/list-item"
+    },
+    "List Item/Gray Surface/Default": {
+      "family": "List Item",
+      "previewSelector": ".list-item",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": 48
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Primary": "Body_L",
+        "Secondary": "Body_M"
+      },
+      "direction": "horizontal",
+      "gap": 12,
+      "paddingX": 12,
+      "radiusToken": "radius/list-item"
+    },
+    "List Item/White Surface/Default": {
+      "family": "List Item",
+      "previewSelector": ".list-item",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": 48
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Primary": "Body_L",
+        "Secondary": "Body_M"
+      },
+      "direction": "horizontal",
+      "gap": 12,
+      "paddingX": 12,
+      "radiusToken": "radius/list-item"
+    },
+    "Menubar/Default": {
+      "family": "Menubar",
+      "previewSelector": ".tui-advanced-menubar",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": "hug"
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Menu Items"
+      ],
+      "itemQuantity": 1,
+      "effectStyle": "Effect/Foundation/shadow-2"
+    },
+    "Metric Card/Default": {
+      "family": "Metric Card",
+      "previewSelector": ".metric-card",
+      "sizing": {
+        "masterWidth": 320,
+        "placementWidth": "fill",
+        "height": 148
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M",
+        "Value": "Display_M",
+        "Context": "Subtitle_S"
+      },
+      "direction": "vertical",
+      "paddingToken": "padding/card"
+    },
+    "Number Selector/Default": {
+      "family": "Number Selector",
+      "previewSelector": ".tui-number-selector",
+      "sizing": {
+        "masterWidth": 92,
+        "placementWidth": "fixed",
+        "height": 62
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M",
         "Value": "Body_L"
       },
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSize": 16
-    },
-    "Time Picker/Default": {
-      "family": "Time Picker",
-      "previewSelector": ".time-picker-trigger",
-      "sizing": {
-        "masterWidth": 280,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Value": "Body_L"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSize": 16
-    },
-    "Titlebar/S/Normal": {
-      "family": "Titlebar",
-      "previewSelector": ".pc-titlebar-s",
-      "sizing": {
-        "masterWidth": 640,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "App Name": "Subtitle_M"
-      },
-      "direction": "horizontal",
-      "transparent": true,
+      "direction": "vertical",
+      "gapToken": "space/2",
+      "controlHeight": 40,
+      "valueWidth": 52,
+      "stepperWidth": 40,
+      "iconSize": 16,
+      "radiusToken": "radius/control",
       "nestedGroups": [
-        "Leading",
-        "Window Controls"
-      ],
-      "exactAssetIcons": [
-        "window/minimize",
-        "window/maximize",
-        "window/close"
+        "Control",
+        "Stepper"
       ]
     },
-    "Titlebar/M/Normal": {
-      "family": "Titlebar",
-      "previewSelector": ".pc-titlebar-m",
+    "Pagination Item/Default": {
+      "family": "Pagination Item",
+      "previewSelector": ".pagination-item",
       "sizing": {
-        "masterWidth": 640,
-        "placementWidth": "fill",
-        "height": 56
+        "masterWidth": 32,
+        "placementWidth": "fixed",
+        "height": 32
       },
       "autoLayout": true,
       "textRoles": {
-        "App Name": "Subtitle_M"
-      },
-      "direction": "horizontal",
-      "transparent": true,
-      "nestedGroups": [
-        "Leading",
-        "Window Controls"
-      ],
-      "exactAssetIcons": [
-        "window/minimize",
-        "window/maximize",
-        "window/close"
-      ]
+        "Label": "Body_M"
+      }
     },
-    "Titlebar/L/Normal": {
-      "family": "Titlebar",
-      "previewSelector": ".pc-titlebar-l",
+    "Pagination/Default": {
+      "family": "Pagination",
+      "previewSelector": ".tui-pagination",
       "sizing": {
-        "masterWidth": 640,
-        "placementWidth": "fill",
-        "height": 64
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "App Name": "Subtitle_M"
-      },
-      "direction": "horizontal",
-      "transparent": true,
-      "nestedGroups": [
-        "Leading",
-        "Window Controls"
-      ],
-      "exactAssetIcons": [
-        "window/minimize",
-        "window/maximize",
-        "window/close"
-      ]
-    },
-    "Titlebar/XL/Normal": {
-      "family": "Titlebar",
-      "previewSelector": ".pc-titlebar-xl",
-      "sizing": {
-        "masterWidth": 640,
-        "placementWidth": "fill",
-        "height": 72
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "App Name": "Subtitle_M"
-      },
-      "direction": "horizontal",
-      "transparent": true,
-      "nestedGroups": [
-        "Leading",
-        "Window Controls"
-      ],
-      "exactAssetIcons": [
-        "window/minimize",
-        "window/maximize",
-        "window/close"
-      ]
-    },
-    "Sidebar Item/Default": {
-      "family": "Sidebar Item",
-      "previewSelector": ".nav-link",
-      "sizing": {
-        "masterWidth": 240,
-        "placementWidth": "fill",
+        "masterWidth": "hug",
+        "placementWidth": "hug",
         "height": 40
       },
       "autoLayout": true,
@@ -702,23 +937,13 @@
         "Label": "Body_L"
       },
       "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
-      "iconSize": 20
-    },
-    "Sidebar Group Header/Collapsed": {
-      "family": "Sidebar Group Header",
-      "previewSelector": ".pattern-secondary-heading",
-      "sizing": {
-        "masterWidth": 240,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Subtitle_S"
-      },
-      "direction": "horizontal",
-      "iconSize": 16
+      "gapToken": "space/1",
+      "iconSize": 20,
+      "nestedGroups": [
+        "Previous",
+        "Pages",
+        "Next"
+      ]
     },
     "Primary Level Icon/Default": {
       "family": "Primary Level Icon",
@@ -735,6 +960,438 @@
         "navigation/grid"
       ],
       "transparent": true
+    },
+    "Progress/Default": {
+      "family": "Progress",
+      "previewSelector": ".tui-progress",
+      "sizing": {
+        "masterWidth": 320,
+        "placementWidth": "fill",
+        "height": 32
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_S",
+        "Description": "Body_S"
+      },
+      "direction": "vertical",
+      "gapToken": "space/2",
+      "trackHeight": 8,
+      "trackRadiusToken": "radius/full",
+      "nestedGroups": [
+        "Track"
+      ]
+    },
+    "Radio/Unselected/Default": {
+      "family": "Radio",
+      "previewSelector": ".tui-radio",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/choice-label",
+      "controlSize": 20
+    },
+    "Search/Gray Surface/Default": {
+      "family": "Search",
+      "previewSelector": ".tui-search",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 16,
+      "clearActionReserve": 32
+    },
+    "Search/White Surface/Default": {
+      "family": "Search",
+      "previewSelector": ".tui-search",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 16,
+      "clearActionReserve": 32
+    },
+    "Segmented Button/Default": {
+      "family": "Segmented Button",
+      "previewSelector": ".tui-segmented",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Option": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "space/1",
+      "paddingX": 2,
+      "paddingY": 2,
+      "radiusToken": "radius/08",
+      "pixsoDefaultVariant": {
+        "count": "3"
+      }
+    },
+    "Select/Gray Surface/Default": {
+      "family": "Select",
+      "previewSelector": ".tui-select",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 16,
+      "clearActionReserve": null
+    },
+    "Select/White Surface/Default": {
+      "family": "Select",
+      "previewSelector": ".tui-select",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 16,
+      "clearActionReserve": null
+    },
+    "Selection Dropdown/Default": {
+      "family": "Selection Dropdown",
+      "previewSelector": ".selection-dropdown-trigger",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 16,
+      "radiusToken": "radius/control",
+      "pixsoDefaultVariant": {
+        "size": "Medium",
+        "state": "Default"
+      }
+    },
+    "Sidebar Group Header/Collapsed": {
+      "family": "Sidebar Group Header",
+      "previewSelector": ".pattern-secondary-heading",
+      "sizing": {
+        "masterWidth": 240,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Subtitle_S"
+      },
+      "direction": "horizontal",
+      "iconSize": 16
+    },
+    "Sidebar Item/Default": {
+      "family": "Sidebar Item",
+      "previewSelector": ".tui-sidebar-item",
+      "sizing": {
+        "masterWidth": 240,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 20
+    },
+    "Skeleton/Avatar": {
+      "family": "Skeleton",
+      "previewSelector": ".skeleton",
+      "sizing": {
+        "masterWidth": 48,
+        "placementWidth": "fixed",
+        "height": 48
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "direction": "vertical"
+    },
+    "Skeleton/Card": {
+      "family": "Skeleton",
+      "previewSelector": ".skeleton",
+      "sizing": {
+        "masterWidth": 320,
+        "placementWidth": "fill",
+        "height": 160
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "direction": "vertical"
+    },
+    "Skeleton/List Row": {
+      "family": "Skeleton",
+      "previewSelector": ".skeleton",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": 64
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "direction": "horizontal"
+    },
+    "Skeleton/Text": {
+      "family": "Skeleton",
+      "previewSelector": ".skeleton",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 52
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "direction": "vertical"
+    },
+    "Slider/Default": {
+      "family": "Slider",
+      "previewSelector": ".tui-slider",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 24
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "trackHeight": 4,
+      "thumbSize": 16,
+      "value": 84,
+      "variants": {
+        "style-1": {
+          "trackHeight": 4,
+          "thumbSize": 16,
+          "thumbFill": "brand/100",
+          "thumbOffset": 0,
+          "trackRadiusToken": "radius/full"
+        },
+        "style-2": {
+          "trackHeight": 20,
+          "thumbSize": 12,
+          "thumbFill": "neutral-light/100",
+          "thumbOffset": -10,
+          "trackRadiusToken": "size/24"
+        }
+      },
+      "intentionalOverlapWrapper": "Slider Visual"
+    },
+    "Snackbar/Default": {
+      "family": "Snackbar",
+      "previewSelector": ".tui-snackbar",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 48
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Title": "Subtitle_S",
+        "Subtitle": "Body_S",
+        "Text Action": "Body_M"
+      },
+      "minWidth": 328,
+      "maxWidth": 400,
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Snackbar Main",
+        "Snackbar Actions"
+      ],
+      "iconSize": 24,
+      "paddingLeftToken": "space/4",
+      "contentGapToken": "space/1",
+      "closeTargetSize": 40,
+      "closeIconSize": 20,
+      "effectStyle": "Effect/Foundation/shadow-3",
+      "pixsoDefaultVariant": {
+        "左侧区域": "1"
+      }
+    },
+    "Spinner/Default": {
+      "family": "Spinner",
+      "previewSelector": ".spinner",
+      "sizing": {
+        "masterWidth": 20,
+        "placementWidth": "fixed",
+        "height": 20
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "exactGeometry": "css-ring"
+    },
+    "Split Dropdown Button/Icon Only/Default": {
+      "family": "Split Dropdown Button",
+      "previewSelector": ".split-control",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {},
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSizes": [
+        20,
+        16
+      ]
+    },
+    "Split Dropdown Button/Icon Text/Default": {
+      "family": "Split Dropdown Button",
+      "previewSelector": ".split-control",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L"
+      },
+      "direction": "horizontal",
+      "nestedGroups": [
+        "Main Action",
+        "Dropdown Trigger"
+      ],
+      "gapToken": "gap/button-icon-label",
+      "iconSizes": [
+        20,
+        16
+      ]
+    },
+    "Sub Tabs/Default": {
+      "family": "Sub Tabs Item",
+      "previewSelector": ".tui-sub-tabs__list > [role=tab]",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Subtitle_M"
+      },
+      "direction": "horizontal",
+      "minWidth": 64,
+      "radiusToken": "radius/08",
+      "pixsoDefaultVariant": {
+        "state": "Unselected"
+      },
+      "mappingScope": "every child .tui-sub-tabs__list [role=tab]",
+      "stateResolution": {
+        "default": "Unselected",
+        "selected": "Selected"
+      }
+    },
+    "Switch/Off/Default": {
+      "family": "Switch",
+      "previewSelector": ".tui-switch",
+      "sizing": {
+        "masterWidth": "hug",
+        "placementWidth": "hug",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/choice-label",
+      "trackSize": [
+        44,
+        24
+      ],
+      "thumbSize": 20
+    },
+    "Table Header/Default": {
+      "family": "Table Header",
+      "previewSelector": ".data-table thead tr",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Cell": "Subtitle_S"
+      },
+      "direction": "horizontal"
+    },
+    "Table Row/Default": {
+      "family": "Table Row",
+      "previewSelector": ".data-table tbody tr",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": 48
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Cell": "Body_L"
+      },
+      "direction": "horizontal"
+    },
+    "Table/Default": {
+      "family": "Table",
+      "previewSelector": ".table-card",
+      "sizing": {
+        "masterWidth": 720,
+        "placementWidth": "fill",
+        "height": "hug"
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Header": "Subtitle_S",
+        "Cell": "Body_L"
+      },
+      "direction": "vertical",
+      "paddingToken": "padding/table"
     },
     "Tabs/Filled/Default": {
       "family": "Tabs",
@@ -778,561 +1435,165 @@
       },
       "direction": "vertical"
     },
-    "Breadcrumb/Default": {
-      "family": "Breadcrumb",
-      "previewSelector": ".breadcrumb",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_M"
-      },
-      "direction": "horizontal",
-      "gapToken": "gap/breadcrumb-item",
-      "iconSize": 16
-    },
-    "Pagination Item/Default": {
-      "family": "Pagination Item",
-      "previewSelector": ".pagination-item",
-      "sizing": {
-        "masterWidth": 32,
-        "placementWidth": "fixed",
-        "height": 32
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_M"
-      }
-    },
-    "Accordion/Collapsed": {
-      "family": "Accordion",
-      "previewSelector": ".accordion-trigger",
-      "sizing": {
-        "masterWidth": 360,
-        "placementWidth": "fill",
-        "height": 44
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_L"
-      },
-      "direction": "horizontal",
-      "iconSize": 16
-    },
-    "Collapsible/Collapsed": {
-      "family": "Collapsible",
-      "previewSelector": ".collapsible-trigger",
-      "sizing": {
-        "masterWidth": 360,
-        "placementWidth": "fill",
-        "height": 44
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_L"
-      },
-      "direction": "horizontal",
-      "iconSize": 16
-    },
-    "Card/Default": {
-      "family": "Card",
-      "previewSelector": ".card",
-      "sizing": {
-        "masterWidth": 320,
-        "placementWidth": "fill",
-        "height": 160
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Title": "Title_S",
-        "Body": "Body_M",
-        "Footer": "Body_M"
-      },
-      "direction": "vertical",
-      "paddingToken": "padding/card",
-      "radiusToken": "radius/card"
-    },
-    "Card/Header Body Footer": {
-      "family": "Card",
-      "previewSelector": ".card",
-      "sizing": {
-        "masterWidth": 320,
-        "placementWidth": "fill",
-        "height": 200
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Title": "Title_S",
-        "Body": "Body_M",
-        "Footer": "Body_M"
-      },
-      "direction": "vertical",
-      "paddingToken": "padding/card",
-      "radiusToken": "radius/card"
-    },
-    "Metric Card/Default": {
-      "family": "Metric Card",
-      "previewSelector": ".metric-card",
-      "sizing": {
-        "masterWidth": 320,
-        "placementWidth": "fill",
-        "height": 148
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_M",
-        "Value": "Display_M",
-        "Context": "Subtitle_S"
-      },
-      "direction": "vertical",
-      "paddingToken": "padding/card"
-    },
-    "List Item/White Surface/Default": {
-      "family": "List Item",
-      "previewSelector": ".list-item",
-      "sizing": {
-        "masterWidth": 360,
-        "placementWidth": "fill",
-        "height": 48
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Primary": "Body_L",
-        "Secondary": "Body_M"
-      },
-      "direction": "horizontal",
-      "gap": 12,
-      "paddingX": 12,
-      "radiusToken": "radius/list-item"
-    },
-    "List Item/Gray Surface/Default": {
-      "family": "List Item",
-      "previewSelector": ".list-item",
-      "sizing": {
-        "masterWidth": 360,
-        "placementWidth": "fill",
-        "height": 48
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Primary": "Body_L",
-        "Secondary": "Body_M"
-      },
-      "direction": "horizontal",
-      "gap": 12,
-      "paddingX": 12,
-      "radiusToken": "radius/list-item"
-    },
-    "List Container/White Canvas": {
-      "family": "List Container",
-      "previewSelector": ".list",
-      "sizing": {
-        "masterWidth": 360,
-        "placementWidth": "fill",
-        "height": "hug"
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Primary": "Body_L",
-        "Secondary": "Body_M"
-      },
-      "direction": "vertical",
-      "gapToken": "gap/list-item"
-    },
-    "List Container/Gray Canvas": {
-      "family": "List Container",
-      "previewSelector": ".list",
-      "sizing": {
-        "masterWidth": 360,
-        "placementWidth": "fill",
-        "height": "hug"
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Primary": "Body_L",
-        "Secondary": "Body_M"
-      },
-      "direction": "vertical",
-      "gapToken": "gap/list-item"
-    },
-    "Table/Default": {
-      "family": "Table",
-      "previewSelector": ".table-card",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": "hug"
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Header": "Subtitle_S",
-        "Cell": "Body_L"
-      },
-      "direction": "vertical",
-      "paddingToken": "padding/table"
-    },
-    "Table Header/Default": {
-      "family": "Table Header",
-      "previewSelector": ".data-table thead tr",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Cell": "Subtitle_S"
-      },
-      "direction": "horizontal"
-    },
-    "Table Row/Default": {
-      "family": "Table Row",
-      "previewSelector": ".data-table tbody tr",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 48
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Cell": "Body_L"
-      },
-      "direction": "horizontal"
-    },
-    "Badge/Neutral": {
-      "family": "Badge",
-      "previewSelector": ".badge",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 24
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_S"
-      },
-      "direction": "horizontal",
-      "paddingX": 8,
-      "radiusToken": "radius/badge"
-    },
-    "Badge/Info": {
-      "family": "Badge",
-      "previewSelector": ".badge",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 24
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_S"
-      },
-      "direction": "horizontal",
-      "paddingX": 8,
-      "radiusToken": "radius/badge"
-    },
-    "Badge/Success": {
-      "family": "Badge",
-      "previewSelector": ".badge",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 24
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_S"
-      },
-      "direction": "horizontal",
-      "paddingX": 8,
-      "radiusToken": "radius/badge"
-    },
-    "Badge/Warning": {
-      "family": "Badge",
-      "previewSelector": ".badge",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 24
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Label": "Body_S"
-      },
-      "direction": "horizontal",
-      "paddingX": 8,
-      "radiusToken": "radius/badge"
-    },
-    "Avatar/32/Image": {
-      "family": "Avatar",
-      "previewSelector": ".avatar",
-      "sizing": {
-        "masterWidth": 32,
-        "placementWidth": "fixed",
-        "height": 32
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Initials": "Body_S"
-      },
-      "iconSize": 20,
-      "radiusToken": "radius/avatar"
-    },
-    "Avatar/32/Fallback": {
-      "family": "Avatar",
-      "previewSelector": ".avatar",
-      "sizing": {
-        "masterWidth": 32,
-        "placementWidth": "fixed",
-        "height": 32
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Initials": "Body_S"
-      },
-      "iconSize": 20,
-      "radiusToken": "radius/avatar"
-    },
-    "Avatar/40/Image": {
-      "family": "Avatar",
-      "previewSelector": ".avatar",
-      "sizing": {
-        "masterWidth": 40,
-        "placementWidth": "fixed",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Initials": "Body_S"
-      },
-      "iconSize": 24,
-      "radiusToken": "radius/avatar"
-    },
-    "Avatar/40/Fallback": {
-      "family": "Avatar",
-      "previewSelector": ".avatar",
-      "sizing": {
-        "masterWidth": 40,
-        "placementWidth": "fixed",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Initials": "Body_S"
-      },
-      "iconSize": 24,
-      "radiusToken": "radius/avatar"
-    },
-    "Progress/Default": {
-      "family": "Progress",
-      "previewSelector": ".progress",
-      "sizing": {
-        "masterWidth": 320,
-        "placementWidth": "fill",
-        "height": 8
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "intentionalOverlapWrapper": "Progress Visual"
-    },
-    "Spinner/Default": {
-      "family": "Spinner",
-      "previewSelector": ".spinner",
-      "sizing": {
-        "masterWidth": 20,
-        "placementWidth": "fixed",
-        "height": 20
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "exactGeometry": "css-ring"
-    },
-    "Skeleton/Text": {
-      "family": "Skeleton",
-      "previewSelector": ".skeleton",
+    "Textarea/Gray Surface/Default": {
+      "family": "Textarea",
+      "previewSelector": ".tui-textarea",
       "sizing": {
         "masterWidth": 280,
         "placementWidth": "fill",
-        "height": 52
+        "height": 126
       },
       "autoLayout": true,
-      "textRoles": {},
-      "direction": "vertical"
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "vertical",
+      "gapToken": null,
+      "iconSize": null,
+      "clearActionReserve": null
     },
-    "Skeleton/Avatar": {
-      "family": "Skeleton",
-      "previewSelector": ".skeleton",
+    "Textarea/White Surface/Default": {
+      "family": "Textarea",
+      "previewSelector": ".tui-textarea",
       "sizing": {
-        "masterWidth": 48,
-        "placementWidth": "fixed",
-        "height": 48
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 126
       },
       "autoLayout": true,
-      "textRoles": {},
-      "direction": "vertical"
+      "textRoles": {
+        "Value": "Body_L",
+        "Placeholder": "Body_L"
+      },
+      "direction": "vertical",
+      "gapToken": null,
+      "iconSize": null,
+      "clearActionReserve": null
     },
-    "Skeleton/List Row": {
-      "family": "Skeleton",
-      "previewSelector": ".skeleton",
+    "Time Picker/Default": {
+      "family": "Time Picker",
+      "previewSelector": ".time-picker-trigger",
       "sizing": {
-        "masterWidth": 360,
+        "masterWidth": 280,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Value": "Body_L"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "iconSize": 16
+    },
+    "Titlebar/L/Normal": {
+      "family": "Titlebar",
+      "previewSelector": ".pc-titlebar-l",
+      "sizing": {
+        "masterWidth": 640,
         "placementWidth": "fill",
         "height": 64
       },
       "autoLayout": true,
+      "textRoles": {
+        "App Name": "Subtitle_M"
+      },
+      "direction": "horizontal",
+      "transparent": true,
+      "nestedGroups": [
+        "Leading",
+        "Window Controls"
+      ],
+      "exactAssetIcons": [
+        "window/minimize",
+        "window/maximize",
+        "window/close"
+      ]
+    },
+    "Titlebar/M/Normal": {
+      "family": "Titlebar",
+      "previewSelector": ".pc-titlebar-m",
+      "sizing": {
+        "masterWidth": 640,
+        "placementWidth": "fill",
+        "height": 56
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "App Name": "Subtitle_M"
+      },
+      "direction": "horizontal",
+      "transparent": true,
+      "nestedGroups": [
+        "Leading",
+        "Window Controls"
+      ],
+      "exactAssetIcons": [
+        "window/minimize",
+        "window/maximize",
+        "window/close"
+      ]
+    },
+    "Titlebar/S/Normal": {
+      "family": "Titlebar",
+      "previewSelector": ".pc-titlebar-s",
+      "sizing": {
+        "masterWidth": 640,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "App Name": "Subtitle_M"
+      },
+      "direction": "horizontal",
+      "transparent": true,
+      "nestedGroups": [
+        "Leading",
+        "Window Controls"
+      ],
+      "exactAssetIcons": [
+        "window/minimize",
+        "window/maximize",
+        "window/close"
+      ]
+    },
+    "Titlebar/XL/Normal": {
+      "family": "Titlebar",
+      "previewSelector": ".pc-titlebar-xl",
+      "sizing": {
+        "masterWidth": 640,
+        "placementWidth": "fill",
+        "height": 72
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "App Name": "Subtitle_M"
+      },
+      "direction": "horizontal",
+      "transparent": true,
+      "nestedGroups": [
+        "Leading",
+        "Window Controls"
+      ],
+      "exactAssetIcons": [
+        "window/minimize",
+        "window/maximize",
+        "window/close"
+      ]
+    },
+    "Toggle/Off/Default": {
+      "family": "Toggle",
+      "previewSelector": ".toggle-btn",
+      "sizing": {
+        "masterWidth": 56,
+        "placementWidth": "fixed",
+        "height": 32
+      },
+      "autoLayout": true,
       "textRoles": {},
-      "direction": "horizontal"
-    },
-    "Skeleton/Card": {
-      "family": "Skeleton",
-      "previewSelector": ".skeleton",
-      "sizing": {
-        "masterWidth": 320,
-        "placementWidth": "fill",
-        "height": 160
-      },
-      "autoLayout": true,
-      "textRoles": {},
-      "direction": "vertical"
-    },
-    "Alert/Info": {
-      "family": "Alert",
-      "previewSelector": ".alert",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Detail": "Subtitle_S",
-        "Text Action": "Body_M"
-      },
-      "direction": "horizontal",
-      "nestedGroups": [
-        "Alert Main",
-        "Alert Actions"
-      ],
-      "iconSize": 20,
-      "closeTargetSize": 32,
-      "closeIconSize": 16,
-      "paddingLeftToken": "padding/alert-left",
-      "paddingRightToken": "padding/alert-right"
-    },
-    "Alert/Success": {
-      "family": "Alert",
-      "previewSelector": ".alert",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Detail": "Subtitle_S",
-        "Text Action": "Body_M"
-      },
-      "direction": "horizontal",
-      "nestedGroups": [
-        "Alert Main",
-        "Alert Actions"
-      ],
-      "iconSize": 20,
-      "closeTargetSize": 32,
-      "closeIconSize": 16,
-      "paddingLeftToken": "padding/alert-left",
-      "paddingRightToken": "padding/alert-right"
-    },
-    "Alert/Error": {
-      "family": "Alert",
-      "previewSelector": ".alert",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Detail": "Subtitle_S",
-        "Text Action": "Body_M"
-      },
-      "direction": "horizontal",
-      "nestedGroups": [
-        "Alert Main",
-        "Alert Actions"
-      ],
-      "iconSize": 20,
-      "closeTargetSize": 32,
-      "closeIconSize": 16,
-      "paddingLeftToken": "padding/alert-left",
-      "paddingRightToken": "padding/alert-right"
-    },
-    "Alert/Warning": {
-      "family": "Alert",
-      "previewSelector": ".alert",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Detail": "Subtitle_S",
-        "Text Action": "Body_M"
-      },
-      "direction": "horizontal",
-      "nestedGroups": [
-        "Alert Main",
-        "Alert Actions"
-      ],
-      "iconSize": 20,
-      "closeTargetSize": 32,
-      "closeIconSize": 16,
-      "paddingLeftToken": "padding/alert-left",
-      "paddingRightToken": "padding/alert-right"
-    },
-    "Alert/Neutral": {
-      "family": "Alert",
-      "previewSelector": ".alert",
-      "sizing": {
-        "masterWidth": 720,
-        "placementWidth": "fill",
-        "height": 40
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Detail": "Subtitle_S",
-        "Text Action": "Body_M"
-      },
-      "direction": "horizontal",
-      "nestedGroups": [
-        "Alert Main",
-        "Alert Actions"
-      ],
-      "iconSize": 20,
-      "closeTargetSize": 32,
-      "closeIconSize": 16,
-      "paddingLeftToken": "padding/alert-left",
-      "paddingRightToken": "padding/alert-right"
-    },
-    "Snackbar/Default": {
-      "family": "Snackbar",
-      "previewSelector": ".toast",
-      "sizing": {
-        "masterWidth": "hug",
-        "placementWidth": "hug",
-        "height": 48
-      },
-      "autoLayout": true,
-      "textRoles": {
-        "Message": "Body_L"
-      },
-      "minWidth": 240,
-      "maxWidth": 480,
-      "effectStyle": "Effect/Foundation/shadow-3"
+      "iconSize": 20
     },
     "Tooltip/Default": {
       "family": "Tooltip",

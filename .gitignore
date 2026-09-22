@@ -30,3 +30,14 @@ _font_probe*
 font_probe.py
 build_email_test_doc.py
 *.docx
+
+# Local issue-analysis exports and browser probes
+.tmp*
+输出/
+
+# Generated local delivery verification metadata
+skill/.delivery-manifest.json
+
+# Local backup copies and screenshot probes
+*.bak-*
+runtime-renderer-*.png

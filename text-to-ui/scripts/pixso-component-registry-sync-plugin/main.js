@@ -3,6 +3,7 @@
 // This development plugin keeps the current Pixso library as the source of
 // truth. It never detaches instances and never deletes native components.
 
+// BEGIN EMBEDDABLE_COMPONENT_SYNC_CORE
 const COREMAIL_TARGETS = [
   {
     logicalName: "Titlebar/L/Normal",
@@ -24,8 +25,8 @@ const COREMAIL_TARGETS = [
   },
   {
     logicalName: "Icon Text Button/Ghost/Default",
-    componentSet: "Icon Text Button",
-    variant: { type: "Ghost", size: "Medium", state: "Default" },
+    componentSet: "icon-text",
+    variant: { type: "ghost", size: "Medium", state: "Default" },
     slots: ["Label", "Leading"],
   },
   {
@@ -47,10 +48,10 @@ const SLOT_REPAIRS = [
     slot: "Label",
   },
   {
-    componentSet: "Icon Text Button",
+    componentSet: "icon-text",
     variants: [
-      { type: "Primary", size: "Medium", state: "Default" },
-      { type: "Ghost", size: "Medium", state: "Default" },
+      { type: "primary", size: "Medium", state: "Default" },
+      { type: "ghost", size: "Medium", state: "Default" },
     ],
     slot: "Label",
   },
@@ -88,8 +89,8 @@ const SEMANTIC_ICONS = {
 };
 
 const ICON_REPAIRS = [
-  { componentSet: "Icon Text Button", variant: { type: "Primary", size: "Medium", state: "Default" }, slot: "Leading", alias: "action/add" },
-  { componentSet: "Icon Text Button", variant: { type: "Ghost", size: "Medium", state: "Default" }, slot: "Leading", alias: "action/add" },
+  { componentSet: "icon-text", variant: { type: "primary", size: "Medium", state: "Default" }, slot: "Leading", alias: "action/add" },
+  { componentSet: "icon-text", variant: { type: "ghost", size: "Medium", state: "Default" }, slot: "Leading", alias: "action/add" },
   { componentSet: "Icon Button", variant: { type: "Ghost", size: "Medium", state: "Default" }, slot: "Icon", alias: "action/more" },
   { componentSet: "Selection Dropdown", variant: { size: "Medium", state: "Default" }, slot: "Trailing", alias: "navigation/chevron-down" },
   { componentSet: "Search", variant: { surface: "white", state: "Default" }, slot: "Leading", alias: "field/search" },
@@ -123,6 +124,232 @@ async function componentSets() {
     throw new Error("当前 Pixso API 不支持 findAllAsync；请更新 Pixso 后重试。");
   }
   return page.findAllAsync((node) => node.type === "COMPONENT_SET");
+}
+
+const COMPONENT_FACTS_POLICY = {
+  identity: "组件名称必须与当前 Pixso Component Set 或 COMPONENT 的 name 完全一致，区分大小写。",
+  ids: "不保存 GUID、node ID、file key；执行时必须从当前 Pixso 文件重新解析。",
+  variantSource: "Variant 轴和值只读取 variantProperties；不从 Variant 显示名称推断已删除的轴。",
+  geometrySource: "几何事实只读取当前 COMPONENT 的 Plugin API 属性，用于同步 Token 映射。",
+};
+
+function safeValue(node, key) {
+  try { return node?.[key]; } catch (_) { return undefined; }
+}
+
+function safeNumber(value) {
+  try {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return null;
+    return Math.round(number * 1000) / 1000;
+  } catch (_) {
+    // Pixso may expose some mixed/automatic geometry values as Symbols on
+    // older document runtimes. An unreadable optional field must not abort
+    // the complete component snapshot; the remaining facts stay usable.
+    return null;
+  }
+}
+
+function safeString(value) {
+  const result = String(value ?? "").trim();
+  return result || null;
+}
+
+function variantPropertiesFromNode(node, allowedAxes) {
+  const direct = safeValue(node, "variantProperties");
+  if (direct && typeof direct === "object") {
+    return Object.fromEntries(
+      Object.entries(direct)
+        .map(([key, value]) => [safeString(key), safeString(value)])
+        .filter(([key, value]) => key && value)
+        .sort(([left], [right]) => left.localeCompare(right)),
+    );
+  }
+  const parsed = {};
+  for (const segment of String(safeValue(node, "name") ?? "").split(/\s*,\s*/)) {
+    const separator = segment.indexOf("=");
+    if (separator < 1) continue;
+    const axis = segment.slice(0, separator).trim();
+    const value = segment.slice(separator + 1).trim();
+    if (axis && value && (!allowedAxes || allowedAxes.has(axis))) parsed[axis] = value;
+  }
+  return Object.fromEntries(Object.entries(parsed).sort(([left], [right]) => left.localeCompare(right)));
+}
+
+function normalizedVariantName(properties) {
+  return Object.entries(properties).map(([key, value]) => `${key}=${value}`).join(", ");
+}
+
+function componentClassification(name) {
+  if (name.startsWith("Text-to-UI Icon/")) return "supporting";
+  if (name.startsWith(".")) return "helper";
+  return "business";
+}
+
+function captureGeometry(component) {
+  const geometry = {};
+  for (const key of ["width", "height", "itemSpacing", "cornerRadius"]) {
+    const number = safeNumber(safeValue(component, key));
+    if (number !== null) geometry[key] = number;
+  }
+  const padding = {};
+  for (const key of ["top", "right", "bottom", "left"]) {
+    const number = safeNumber(safeValue(component, `padding${key[0].toUpperCase()}${key.slice(1)}`));
+    if (number !== null) padding[key] = number;
+  }
+  if (Object.keys(padding).length) geometry.padding = padding;
+  for (const key of [
+    "layoutMode",
+    "primaryAxisAlignItems",
+    "counterAxisAlignItems",
+    "layoutSizingHorizontal",
+    "layoutSizingVertical",
+  ]) {
+    const value = safeString(safeValue(component, key));
+    if (value) geometry[key] = value;
+  }
+  return Object.keys(geometry).length ? geometry : undefined;
+}
+
+function captureVariant(component, allowedAxes) {
+  const variantProperties = variantPropertiesFromNode(component, allowedAxes);
+  if (!Object.keys(variantProperties).length) return null;
+  const result = {
+    // This is intentionally regenerated from variantProperties. A stale
+    // display name such as `density=Default` must never re-enter the facts.
+    name: normalizedVariantName(variantProperties),
+    variantProperties,
+  };
+  const geometry = captureGeometry(component);
+  if (geometry) result.geometry = geometry;
+  return result;
+}
+
+function variantAxisName(key, definition) {
+  return safeString(safeValue(definition, "name"))
+    || safeString(key)?.split("#")[0]
+    || null;
+}
+
+function variantAxesFromSet(componentSet, variants) {
+  const axes = new Map();
+  const definitions = safeValue(componentSet, "componentPropertyDefinitions") || {};
+  for (const [key, definition] of Object.entries(definitions)) {
+    if (!definition || String(definition.type).toUpperCase() !== "VARIANT") continue;
+    const axis = variantAxisName(key, definition);
+    if (!axis) continue;
+    axes.set(axis, new Set((definition.variantOptions || []).map(safeString).filter(Boolean)));
+  }
+  for (const variant of variants) {
+    for (const [axis, value] of Object.entries(variant.variantProperties)) {
+      if (!axes.has(axis)) axes.set(axis, new Set());
+      axes.get(axis).add(value);
+    }
+  }
+  return Object.fromEntries(
+    [...axes.entries()]
+      .map(([axis, values]) => [axis, [...values].sort((left, right) => left.localeCompare(right))])
+      .sort(([left], [right]) => left.localeCompare(right)),
+  );
+}
+
+function captureComponentSet(componentSet, warnings) {
+  const name = safeString(safeValue(componentSet, "name"));
+  if (!name) return null;
+  const children = Array.isArray(safeValue(componentSet, "children"))
+    ? safeValue(componentSet, "children").filter((node) => node.type === "COMPONENT")
+    : [];
+  const definitions = safeValue(componentSet, "componentPropertyDefinitions") || {};
+  const allowedAxes = new Set(Object.entries(definitions)
+    .filter(([, definition]) => String(definition?.type).toUpperCase() === "VARIANT")
+    .map(([key, definition]) => variantAxisName(key, definition))
+    .filter(Boolean));
+  const variants = [];
+  const seen = new Set();
+  for (const child of children) {
+    const variant = captureVariant(child, allowedAxes);
+    if (!variant) continue;
+    const fingerprint = JSON.stringify(variant.variantProperties);
+    if (seen.has(fingerprint)) {
+      warnings.push({
+        kind: "duplicate-variant-properties",
+        componentSet: name,
+        variantProperties: variant.variantProperties,
+        count: 2,
+        message: "多个 Variant 解析为同一组真实 variantProperties；已只保留一份事实。",
+      });
+      continue;
+    }
+    seen.add(fingerprint);
+    variants.push(variant);
+  }
+  variants.sort((left, right) => left.name.localeCompare(right.name));
+  return {
+    name,
+    classification: componentClassification(name),
+    variantAxes: variantAxesFromSet(componentSet, variants),
+    ...(variants.length ? { variants } : {}),
+  };
+}
+
+async function readComponentFacts() {
+  const page = await libraryPage();
+  if (typeof page.findAllAsync !== "function") {
+    throw new Error("当前 Pixso API 不支持全页组件扫描；为避免误删组件事实，已停止同步。");
+  }
+  // Library authors commonly organize component sets inside SECTION or FRAME
+  // containers. `page.children` only sees those containers, so treating it as
+  // the inventory silently turns a valid library into an empty snapshot. Scan
+  // the whole NewComponents page, while excluding variants and helper
+  // components nested inside a component definition.
+  const allCandidates = await page.findAllAsync(
+    (node) => node.type === "COMPONENT_SET" || node.type === "COMPONENT",
+  );
+  const direct = allCandidates.filter((node) => {
+    let parent = safeValue(node, "parent");
+    const visited = new Set();
+    while (parent && parent !== page && parent.id !== page.id && !visited.has(parent.id)) {
+      visited.add(parent.id);
+      if (parent.type === "COMPONENT_SET" || parent.type === "COMPONENT") return false;
+      parent = safeValue(parent, "parent");
+    }
+    return true;
+  });
+  const warnings = [];
+  const componentSets = direct
+    .filter((node) => node.type === "COMPONENT_SET")
+    .map((node) => captureComponentSet(node, warnings))
+    .filter((item) => item && item.name);
+  const standaloneComponents = direct
+    .filter((node) => node.type === "COMPONENT")
+    .map((node) => {
+      const name = safeString(safeValue(node, "name"));
+      return name ? { name, classification: componentClassification(name), variantAxes: {} } : null;
+    })
+    .filter((item) => item && item.classification !== "supporting");
+  const inventoryCount = direct.filter((node) => node.type === "COMPONENT_SET" || node.type === "COMPONENT").length;
+  return {
+    $schema: "./pixso-component-facts.schema.json",
+    schemaVersion: 1,
+    kind: "text-to-ui.pixso-component-facts",
+    document: safeString(safeValue(pixso.root, "name")) || "Pixso document",
+    page: safeString(safeValue(page, "name")) || "NewComponents",
+    source: "Pixso Plugin API read-only component facts; Variant 轴来自 variantProperties，几何来自当前 COMPONENT",
+    capturedAt: new Date().toISOString(),
+    scope: "page-wide-top-level-component-inventory-with-geometry",
+    policy: {
+      ...COMPONENT_FACTS_POLICY,
+      captureTraversal: "page-descendant-top-level",
+    },
+    componentSets: componentSets.sort((left, right) => left.name.localeCompare(right.name)),
+    standaloneComponents: standaloneComponents.sort((left, right) => left.name.localeCompare(right.name)),
+    supportingComponents: {
+      description: "语义图标和局部辅助 COMPONENT 不进入业务组件映射身份，但会在同步提案中作为事实来源统计。",
+      inventoryCountFromPixso: inventoryCount,
+      supportingStandaloneCount: direct.filter((node) => node.type === "COMPONENT" && componentClassification(String(safeValue(node, "name") || "")) === "supporting").length,
+    },
+    ...(warnings.length ? { warnings } : {}),
+  };
 }
 
 function localVariablesAsync() {
@@ -489,11 +716,29 @@ async function repairSlots() {
   return changed;
 }
 
+// END EMBEDDABLE_COMPONENT_SYNC_CORE
+
+if (pixso.ui && typeof pixso.ui === "object") {
+  pixso.ui.onmessage = (message) => {
+    if (message?.type === "CLOSE") pixso.closePlugin();
+  };
+}
+
 async function run() {
   const command = pixso.command || "health";
   pixso.notify("Text-to-UI 组件同步已启动：" + command);
   let changed = 0;
-  if (command === "health") {
+  if (command === "sync") {
+    pixso.showUI(__html__, {
+      width: 420,
+      height: 560,
+      themeColors: true,
+    });
+    const facts = await readComponentFacts();
+    pixso.ui.postMessage({ type: "COMPONENT_FACTS", facts });
+    pixso.notify("已读取当前 Pixso 组件事实，正在生成安全同步提案。");
+    return;
+  } else if (command === "health") {
     pixso.notify("Pixso 安全自检通过：本次未读取或修改任何节点。");
   } else if (command === "slots") {
     changed = await repairSlots();
@@ -511,7 +756,7 @@ async function run() {
   } else {
     pixso.notify("未知命令：本次未读取或修改任何节点。", { error: true });
   }
-  // v4 deliberately does not call commitUndo. Pixso has been resolving stale
+  // v5 deliberately does not call commitUndo. Pixso has been resolving stale
   // internal S_Guid values while committing plugin operations after a refresh.
   // A safe plugin must prefer a small, recoverable write over an undo checkpoint.
   pixso.closePlugin();

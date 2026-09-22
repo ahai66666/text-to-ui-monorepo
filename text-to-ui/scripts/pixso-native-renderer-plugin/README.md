@@ -4,9 +4,12 @@
 `pixso-component-library-plan.json`。页面计划在目标页创建 Instance；组件库计划只在
 `NewComponents` 创建带命名槽位、组件属性和 Token 来源证据的真实 Component。
 
-页面按“布局与内容 → 图标填充”两阶段生成。第一阶段只创建业务组合、组件 Instance
-和稳定 Icon Slot；第二阶段在 Slot 内替换占位节点。SVG 只在资源表保存一次，描边与
-实心图标分别保持原有 Stroke/Fill 通道，因此换图标不会改变 Auto Layout。
+页面按“布局与内容 → 图标填充 → 图片资源优化”顺序生成。前两阶段先完成业务组合、
+组件 Instance 和稳定 Icon Slot；最后才处理图片资源。SVG 图片通过 Pixso 原生 SVG
+导入，栅格图片通过 `createImage`；若页面级图标或图片 API 失败，保留已测量的资源盒为可见降级
+占位并在读回审计中记录 `iconFailures` / `imageFailures`，不会回滚已经完成的页面结构。SVG 只在资源
+表保存一次，描边与实心图标分别保持原有 Stroke/Fill 通道，因此换图标不会改变
+Auto Layout。
 
 图标显示契约固定为：24px 使用 1.5px 描边、20px 使用 1.25px 描边、16px 使用
 1px 描边；Icon Slot 是独立热区，水平和垂直都使用 `CENTER`，并在图标填充后按实际
@@ -45,12 +48,13 @@ node ./pixso-plugin-bridge.mjs publish ./pixso-operation-plan.json
 - `GET /service-status` 查看当前发布、插件连接、Runtime/协议兼容性和任务状态；
 - `GET /official-adapter` 查看官方 Pixso 资源预检、执行器路由和导入后验收计划；
 - `GET /job` 查看当前任务的排队、执行、成功或失败结果；
+- `/claim` 只会发出 15 秒领取租约，UI 必须用 `POST /start` 证明 Pixso 执行器已真正开始，才会把任务标为 `running`；断开的轮询不会再占住导入锁；
 - `POST /result` 只接受当前 revision 和当前 import run 的结果；
-- 插件 UI 会把 Kernel `5.0.0`、协议 `4`、Operation Plan 版本和能力清单发给服务；Bridge 会隔离旧计划、排队等待重连，并在 `/claim` 前完成能力协商。
-- 导入期间新草稿保持可见，便于及时暂停；完整读回成功后才原子替换旧正式画板。暂停或失败会清理草稿并保留旧正式画板，正常导入最终只留下一个托管画板。
+- 插件 UI 会把 Kernel `5.0.0`、协议 `4`、Operation Plan 版本和能力清单发给服务；Bridge 会隔离旧计划、排队等待重连，并在 `/claim` 前完成能力协商。新版本页面计划要求 `asset.icon.deferred` 与 `asset.image.deferred`，旧插件会被拒绝执行。
+- 导入期间新草稿保持可见，便于及时暂停；页面级图标或图片优化失败时提交结构并留下可追踪的降级占位，后续再修复资源；暂停、结构失败或最终读回失败仍会清理草稿并保留旧正式画板，正常导入最终只留下一个托管画板。
+- 插件结果在 Bridge 确认前会保存在 UI 本地并自动重试；Bridge 收到结果后自动同步运行清单。取消、成功或失败的终态计划不会因插件重开而再次执行。
 
-服务可以持续接收新的 Operation Plan，因此远程或外部编排端只需要更新计划、映射和规则即可；
-插件代码/API 发生变化时，仍必须重新加载或安装新的 Pixso 插件包，服务不会静默下载并执行任意远程 JavaScript。
+插件是自包含的 Permanent Executor v1：它安装后可直接打开本地 `Operation Plan`，不依赖 Bridge，也不会从服务下载或执行代码。Text-to-UI 服务、映射与编译器可以持续演进，但新计划必须保持在固定的 v1 操作词表内；Bridge 只在用户本机存在时提供自动投递。只有 Pixso API 发生破坏性变化或确实需要新增操作词表时，才需要发布下一代插件包。
 
 排查命令：
 

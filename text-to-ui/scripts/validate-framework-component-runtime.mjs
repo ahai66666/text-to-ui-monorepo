@@ -82,21 +82,21 @@ for (const state of ["default", "hover", "pressed", "selected"]) {
     failures.push(`Sidebar fallback matrix is missing its ${state} state.`);
   }
 }
-const buttonLogicalGroups = ["Button/Size/Standard", "Button/Size/Small", "Button/Icon Text/Default", "Button/Icon/Default", "Button/Selection Dropdown/Default", "Button/Split Dropdown/Default"];
+const buttonLogicalGroups = ["Button/Size/Standard", "Button/Size/Small", "Button/Icon Text/Default", "Button/Icon/Default", "Button/Split Dropdown/Default"];
 
 const catalogModules = {
-  buttons: ["Button/Primary/Default", "Button/Secondary/Default", "Button/Ghost/Default", "Button/Danger/Default", "Button/Icon Text/Default", "Button/Icon/Default", "Button/Selection Dropdown/Default", "Button/Split Dropdown/Default"],
+  buttons: ["Button/Primary/Default", "Button/Secondary/Default", "Button/Ghost/Default", "Button/Danger/Default", "Button/Icon Text/Default", "Button/Icon/Default", "Button/Split Dropdown/Default"],
   titlebars: ["Titlebar"],
   fields: ["Input", "Search", "Textarea", "Select"],
   choices: ["Checkbox", "Radio Group", "Switch", "Badge"],
   navigation: ["Tabs", "List"],
   "data-display": ["Avatar", "Badge", "Card", "Table", "Data Table", "Progress", "Pagination", "Empty"],
-  disclosure: ["Breadcrumb", "Accordion", "Collapsible", "Navigation Menu", "Menubar", "Separator", "Sidebar", "Item"],
+  disclosure: ["Breadcrumb", "Accordion", "Collapsible", "Menubar", "Separator", "Sidebar", "Item"],
   overlays: ["Dialog", "Alert Dialog", "Semi-modal", "Popover", "Hover Card", "Context Menu"],
   "form-plus": ["Field", "Label", "Combobox", "Native Select", "Slider", "Toggle", "Input OTP", "Kbd"],
   "loading-data": ["Skeleton", "Spinner", "Chart", "Calendar", "Date Picker", "Time Picker"],
-  specialized: ["Aspect Ratio", "Attachment", "Carousel", "Bubble", "Typography"],
-  feedback: ["Alert", "Tooltip", "Toast"]
+  specialized: ["Attachment", "Carousel"],
+  feedback: ["Alert", "Tooltip", "Snackbar"]
 };
 const catalogLoader = read("shared/catalog-module.js");
 function catalogSelectFailures(source) {

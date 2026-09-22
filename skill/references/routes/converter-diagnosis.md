@@ -1,5 +1,8 @@
 # Converter diagnosis route
 
+Read `references/pixso-import-details.md` and
+`references/pixso-execution-invariants.md` for mapping and executor rules.
+
 Use after a normal import stops at a named gate. Diagnosis is a separate run and
 cannot publish into the failed normal run.
 

@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
-  "bridgeVersion": 4,
+  "bridgeVersion": 6,
   "bridgeProtocolVersion": 4,
   "supportedPluginProtocols": [3, 4],
   "preferredPluginProtocol": 4,
   "preferredKernelVersion": "5.0.0",
+  "permanentExecutorProtocol": 1,
   "legacyRuntimeFloor": "4.16",
   "planSchemaVersions": {
     "1": {
@@ -19,6 +20,8 @@
   },
   "policy": {
     "arbitraryRemoteJavaScript": "forbidden",
+    "executableRuntimeDelivery": "forbidden",
+    "sharedPluginMode": "self-contained-data-plan-executor",
     "localhostOnly": true,
     "capabilityNegotiationRequiredForV5": true,
     "mcpAutomaticFallback": "forbidden"

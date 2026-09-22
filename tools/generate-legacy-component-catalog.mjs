@@ -51,7 +51,7 @@ const sprite = source.slice(spriteStart, spriteEnd + "</svg>".length);
 
 const markup = `${sprite}\n${sections.join("\n")}`;
 const componentNames = [
-  "Accordion", "Alert", "Alert Dialog", "Aspect Ratio", "Attachment", "Avatar", "Badge", "Breadcrumb", "Bubble", "Button", "Calendar", "Card", "Carousel", "Chart", "Checkbox", "Collapsible", "Combobox", "Context Menu", "Data Table", "Date Picker", "Time Picker", "Dialog", "Dropdown Menu", "Empty", "Field", "Hover Card", "Input", "Input OTP", "Item", "Kbd", "Label", "Menubar", "Native Select", "Navigation Menu", "Pagination", "Popover", "Progress", "Radio Group", "Select", "Separator", "Sidebar", "Skeleton", "Slider", "Spinner", "Switch", "Table", "Tabs", "Textarea", "Toast", "Toggle", "Tooltip", "Typography", "Semi-modal"
+  "Accordion", "Alert", "Alert Dialog", "Attachment", "Avatar", "Badge", "Breadcrumb", "Button", "Calendar", "Card", "Carousel", "Chart", "Checkbox", "Collapsible", "Combobox", "Context Menu", "Data Table", "Date Picker", "Time Picker", "Dialog", "Dropdown Menu", "Empty", "Field", "Hover Card", "Input", "Input OTP", "Item", "Kbd", "Label", "Menubar", "Native Select", "Pagination", "Popover", "Progress", "Radio Group", "Select", "Sidebar", "Skeleton", "Slider", "Spinner", "Switch", "Table", "Tabs", "Textarea", "Toast", "Toggle", "Tooltip", "Semi-modal"
 ];
 
 const output = `// Generated from skill/preview/component-gallery.html. Do not edit by hand.\n// Regenerate with: node tools/generate-legacy-component-catalog.mjs\nexport const legacyCatalogComponentNames = Object.freeze(${JSON.stringify(componentNames, null, 2)});\nexport const legacyCatalogSectionIds = Object.freeze(${JSON.stringify(sectionIds, null, 2)});\nexport const legacyCatalogMarkup = ${JSON.stringify(markup)};\n`;

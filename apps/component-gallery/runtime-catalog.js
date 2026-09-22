@@ -1,7 +1,10 @@
 import contracts from "../../packages/component-contracts/src/components-runtime.js";
+import { resolveComponentReadiness } from "../../packages/component-contracts/src/readiness-policy.js";
+import readinessPolicy from "../../text-to-ui/references/components/component-readiness-policy.json" with { type: "json" };
+import coreAcceptanceBatch from "../../text-to-ui/references/components/core-component-acceptance.json" with { type: "json" };
 
-export const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "tabs", "accordion", "collapsible", "avatar", "badge", "card", "item", "table", "data-table", "pagination", "breadcrumb", "progress", "empty", "separator", "label", "alert", "tooltip", "toast", "dialog", "alert-dialog", "semi-modal", "navigation-menu", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "input-otp", "kbd", "chart", "calendar", "date-picker", "time-picker", "attachment", "carousel"]);
-const fullWidthPreviewIds = new Set(["titlebar"]);
+export const coreIds = new Set(["button", "input", "search", "primary-navigation-item", "sidebar", "list-card", "titlebar", "textarea", "field", "form-field", "select", "combobox", "native-select", "checkbox", "radio", "radio-group", "switch", "segmented-button", "number-selector", "chips", "tabs", "sub-tabs", "tree-view", "accordion", "collapsible", "avatar", "badge", "table", "pagination", "breadcrumb", "progress", "label", "alert", "tooltip", "toast", "dialog", "alert-dialog", "semi-modal", "menubar", "context-menu", "dropdown-menu", "popover", "hover-card", "slider", "color-picker", "calendar", "date-picker", "time-picker", "attachment"]);
+const fullWidthPreviewIds = new Set(["titlebar", "button"]);
 
 export const frameworkLabels = { html: "HTML", react: "React", vue: "Vue" };
 export const frameworkSources = {
@@ -11,21 +14,16 @@ export const frameworkSources = {
 };
 
 export const categoryOrder = contracts.registryPolicy?.categoryOrder ?? [
-  "titlebars", "buttons", "fields", "choices", "navigation", "data-display", "disclosure", "overlays", "form-plus", "loading-data", "specialized", "feedback"
+  "navigation", "actions", "display", "input", "choices", "containers", "specialized"
 ];
 export const categoryLabels = {
-  titlebars: "标题栏",
-  buttons: "按钮",
-  fields: "输入与字段",
-  choices: "选择控件",
-  navigation: "导航",
-  "data-display": "卡片与数据",
-  disclosure: "披露与导航",
-  overlays: "浮层与命令",
-  "form-plus": "复合表单",
-  "loading-data": "加载与日期",
-  specialized: "专用内容",
-  feedback: "提示与反馈"
+  navigation: "导航类",
+  actions: "操作类",
+  display: "展示类",
+  input: "输入类",
+  choices: "选择类",
+  containers: "容器类",
+  specialized: "特殊组件"
 };
 
 const componentById = new Map(contracts.components.map((component) => [component.id, component]));
@@ -68,16 +66,30 @@ export const sourceFor = (component, framework) => component.frameworks?.[framew
   ?? component.implementations?.[framework]
   ?? frameworkSources[framework];
 export const readinessFor = (component) => component.readiness ?? {};
-export const isReady = (component) => ["sourceReady", "contractReady", "visualParity", "behaviorParity", "accessibilityParity", "tokenParity"].every((key) => readinessFor(component)[key] === true);
-export const readyCount = runtimeComponents.filter(isReady).length;
-export const partialCount = runtimeComponents.length - readyCount;
+export const readinessInfoFor = (component) => resolveComponentReadiness(component, readinessPolicy);
+export const readinessLabels = { approved: "Approved", provisional: "Provisional", blocked: "Blocked" };
+export const readinessDimensionLabels = {
+  sourceReady: "源码", contractReady: "契约", visualParity: "视觉", behaviorParity: "行为", accessibilityParity: "可访问性", tokenParity: "Token"
+};
+export const coreAcceptanceLogicalNames = new Set(coreAcceptanceBatch.components);
+export const isCoreAcceptanceComponent = (component) => coreAcceptanceLogicalNames.has(component.logicalName);
+export const readinessSummary = runtimeComponents.reduce((summary, component) => {
+  summary[readinessInfoFor(component).level] += 1;
+  return summary;
+}, { approved: 0, provisional: 0, blocked: 0 });
+export const isReady = (component) => readinessInfoFor(component).level === "approved";
+export const readyCount = readinessSummary.approved;
+export const partialCount = readinessSummary.provisional + readinessSummary.blocked;
 export const cardClass = (component) => {
   const sizing = component.sizing === "fill" ? " tui-runtime-card--fill" : component.sizing === "overlay" ? " tui-runtime-card--overlay" : " tui-runtime-card--intrinsic";
   return `tui-runtime-card${coreIds.has(component.id) ? " tui-runtime-card--core" : ""}${fullWidthPreviewIds.has(component.id) ? " tui-runtime-card--wide" : ""}${sizing}`;
 };
-export const cardDescription = (component) => component.status === "ready"
-  ? "已通过三框架契约验收；默认态展示，交互状态由真实组件触发。"
-  : "Partial · 已接入契约和适配器，视觉、行为与可访问性仍按批次验收。";
+export const cardDescription = (component) => {
+  const readiness = readinessInfoFor(component);
+  if (readiness.level === "approved") return "Approved · 已通过正式交付所需的全部验收维度。";
+  if (readiness.level === "blocked") return `Blocked · ${readiness.reason}`;
+  return `Provisional · 可用于预览；待验收：${readiness.unresolvedDimensions.map((key) => readinessDimensionLabels[key] ?? key).join("、")}。`;
+};
 export const specimensFor = (component) => component.specimens?.length ? component.specimens : [{ id: "default", variant: component.variants?.[0] ?? "default", state: "default" }];
 const feedbackCopy = {
   info: { label: "Info / 信息", message: "系统将在今晚自动完成更新。", action: "查看详情" },

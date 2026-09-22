@@ -5,6 +5,7 @@ import {
   generatedIndexDir, locateMonorepo, parseArgs, readJson, resolveSkillRoot,
   sha256File, stableJson
 } from './navigation-index-lib.mjs';
+import { materialDefinitions, materialSnapshot, routeMaterialIndexDigest } from './route-material-lib.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const located = locateMonorepo({ start: args.start || process.cwd(), explicitRepo: args.repo });
@@ -21,6 +22,8 @@ const sources = {
   packages: path.join(repo, 'package.json'),
   tasks: path.join(indexRoot, 'task-routes.source.json'),
   layouts: path.join(indexRoot, 'layout-routes.source.json'),
+  workflowRoutes: path.join(skillRoot, 'references', 'routes', 'index.json'),
+  routeMaterials: path.join(skillRoot, 'references', 'routes', 'materials.source.json'),
   patterns: path.join(skillRoot, 'assets', 'design-system', 'pattern-contracts.json'),
   aliases: path.join(indexRoot, 'capability-aliases.source.json')
 };
@@ -34,6 +37,8 @@ const tokenMap = readJson(sources.tokens);
 const packageJson = readJson(sources.packages);
 const taskSource = readJson(sources.tasks);
 const layoutSource = readJson(sources.layouts);
+const workflowRouteSource = readJson(sources.workflowRoutes);
+const routeMaterialSource = readJson(sources.routeMaterials);
 const patternSource = readJson(sources.patterns);
 const aliasSource = readJson(sources.aliases);
 const parityById = new Map(parity.components.map((item) => [item.id, item]));
@@ -63,7 +68,7 @@ const components = registry.components.map((component) => {
       ...(framework === 'html' ? {
         rendererKey: htmlRendererKey(component),
         factoryImport: 'renderHtmlComponent',
-        styleImports: ['@text-to-ui/tokens', '@text-to-ui/components-html/styles.css']
+        styleImports: ['@text-to-ui/tokens', '@text-to-ui/components-html/styles.css', '@text-to-ui/components-html/pattern-shell.css']
       } : {})
     }];
   }));
@@ -150,6 +155,38 @@ const validationIndex = {
   },
   availablePackageScripts: packageJson.scripts
 };
+const workflowRouteIndex = {
+  schemaVersion: 1,
+  generatedFrom: [sourceEvidence.workflowRoutes],
+  kind: workflowRouteSource.kind,
+  routes: Object.entries(workflowRouteSource.routes ?? {}).map(([id, route]) => ({ id, ...route }))
+};
+const routeMaterialIndex = {
+  schemaVersion: 1,
+  kind: routeMaterialSource.kind,
+  generatedFrom: [sourceEvidence.routeMaterials, sourceEvidence.workflowRoutes],
+  policy: {
+    canonicalRoot: 'text-to-ui',
+    pathBasis: 'repository-relative',
+    missingMaterialIsBlocking: true,
+    staleSnapshotIsBlocking: true
+  },
+  routes: Object.fromEntries(Object.entries(workflowRouteSource.routes ?? {}).map(([id, workflowRoute]) => {
+    const definitions = materialDefinitions({
+      skillRoot,
+      routeId: id,
+      workflowRoute,
+    });
+    const snapshot = materialSnapshot({ repo, definitions });
+    return [id, {
+      id,
+      dynamicMaterials: routeMaterialSource.routes?.[id]?.dynamicMaterials ?? [],
+      materialsDigest: snapshot.digest,
+      materials: snapshot.materials.map(({ path: materialPath, role, required, sha256 }) => ({ path: materialPath, role, required, sha256 }))
+    }];
+  }))
+};
+routeMaterialIndex.indexDigest = routeMaterialIndexDigest(routeMaterialIndex);
 
 const outputs = {
   'task-router.json': taskRouter,
@@ -157,6 +194,8 @@ const outputs = {
   'component-index.json': componentIndex,
   'token-index.json': tokenIndex,
   'validation-index.json': validationIndex
+  , 'workflow-route-index.json': workflowRouteIndex
+  , 'route-material-index.json': routeMaterialIndex
 };
 let drift = false;
 for (const [name, value] of Object.entries(outputs)) {

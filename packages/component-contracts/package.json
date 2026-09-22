@@ -3,5 +3,5 @@
   "version": "0.1.0",
   "private": false,
   "type": "module",
-  "exports": {".": "./src/components.json", "./components.json": "./src/components.json", "./legacy-catalog": "./src/legacy-catalog.js", "./legacy-baseline": "./src/legacy-baseline.js", "./legacy-catalog.css": "./src/legacy-catalog.css"}
+  "exports": {".": "./src/components.json", "./components.json": "./src/components.json", "./readiness-policy": "./src/readiness-policy.js", "./titlebar-segments": "./src/titlebar-segments.js"}
 }

@@ -6,7 +6,9 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import {
   readMappingRegistry,
+  componentFactsEntries,
   componentFactsNames,
+  iconColorSourceForMapping,
   registryTargetDocument,
   registryTargetLibrary,
   resolveRegistryPath,
@@ -160,6 +162,18 @@ for (const profile of profiles) {
     ? readIfExists(resolveRegistryPath(registryPath, htmlSource.componentIndex), `${profile.id} HTML component index`)
     : null;
   const htmlComponentNames = new Set((htmlIndex?.components || []).map((item) => item.logicalName));
+  const htmlContract = htmlSource?.componentContract
+    ? readIfExists(resolveRegistryPath(registryPath, htmlSource.componentContract), `${profile.id} HTML component contract`)
+    : null;
+  const htmlContractComponents = Array.isArray(htmlContract)
+    ? htmlContract
+    : (htmlContract?.components || []);
+  const htmlContractIds = new Set(
+    htmlContractComponents.flatMap((item) => [
+      item.id,
+      ...(item.specimens || []).map((specimen) => specimen.id),
+    ]).filter(Boolean),
+  );
   const targetDocument = pixsoDocumentById.get(profile.targetPixsoDocument);
   if (!targetDocument) errors.push(`${profile.id}: unknown targetPixsoDocument ${profile.targetPixsoDocument}`);
   const targetLibrary = libraryById.get(profile.targetComponentLibrary);
@@ -199,6 +213,7 @@ for (const profile of profiles) {
   }
   const targetRegistryNames = new Set(Object.values(targetRegistry?.categories || {}).flat());
   const targetNames = targetFacts ? componentFactsNames(targetFacts) : targetRegistryNames;
+  const targetFactsByName = new Map(componentFactsEntries(targetFacts).map((item) => [item.name, item]));
   const targetSpecs = targetLibrary?.specs
     ? readIfExists(resolveRegistryPath(registryPath, targetLibrary.specs), `${profile.id} Pixso component specs`)
     : null;
@@ -313,9 +328,57 @@ for (const profile of profiles) {
       else if (!targetNames.has(mapping.pixsoTarget)) errors.push(`${label}: target is not in Pixso registry: ${mapping.pixsoTarget}`);
       if (!mapping.pixsoSpecKey) errors.push(`${label}: registered target is missing pixsoSpecKey`);
       else if (!specNames.has(mapping.pixsoSpecKey)) errors.push(`${label}: pixsoSpecKey is not in Pixso specs: ${mapping.pixsoSpecKey}`);
+      const runtime = mapping.runtimeBinding ?? {};
+      const targetFact = targetFactsByName.get(runtime.componentSetName ?? runtime.pixsoName ?? mapping.pixsoTarget);
+      for (const [htmlVariant, pixsoVariant] of objectEntries(runtime.variantByHtml)) {
+        if (!pixsoVariant || typeof pixsoVariant !== "object" || Array.isArray(pixsoVariant)) {
+          errors.push(`${label}.runtimeBinding.variantByHtml.${htmlVariant} must be an object`);
+          continue;
+        }
+        for (const [axis, value] of Object.entries(pixsoVariant)) {
+          const values = targetFact?.variantAxes?.[axis] ?? [];
+          if (!values.some((candidate) => String(candidate).toLowerCase() === String(value).toLowerCase())) {
+            errors.push(`${label}.runtimeBinding.variantByHtml.${htmlVariant}: missing Pixso variant ${axis}=${value}`);
+          }
+        }
+      }
+      for (const [propName, propVariants] of objectEntries(runtime.variantByProp)) {
+        for (const [propValue, pixsoVariant] of objectEntries(propVariants)) {
+          if (!pixsoVariant || typeof pixsoVariant !== "object" || Array.isArray(pixsoVariant)) {
+            errors.push(`${label}.runtimeBinding.variantByProp.${propName}.${propValue} must be an object`);
+            continue;
+          }
+          for (const [axis, value] of Object.entries(pixsoVariant)) {
+            const values = targetFact?.variantAxes?.[axis] ?? [];
+            if (!values.some((candidate) => String(candidate).toLowerCase() === String(value).toLowerCase())) {
+              errors.push(`${label}.runtimeBinding.variantByProp.${propName}.${propValue}: missing Pixso variant ${axis}=${value}`);
+            }
+          }
+        }
+      }
+    }
+    if (mapping?.pixsoTargetStatus === "pending-review") {
+      if (!mapping.pixsoTarget) errors.push(`${label}: pending-review target is missing pixsoTarget`);
+      if (!mapping.pixsoMappingReason || typeof mapping.pixsoMappingReason !== "string") {
+        errors.push(`${label}: pending-review mapping requires pixsoMappingReason`);
+      }
+      const message = `${label}: Pixso target is pending review: ${mapping.pixsoTarget ?? "(missing)"}`;
+      if (args["strict-component-gates"]) errors.push(message);
+      else warnings.push(message);
     }
     if (mapping?.pixsoTargetStatus === "unregistered" && mapping.pixsoTarget != null) {
       errors.push(`${label}: unregistered target must use pixsoTarget=null`);
+    }
+    if (mapping?.pixsoMappingPolicy != null && !["required", "excluded"].includes(mapping.pixsoMappingPolicy)) {
+      errors.push(`${label}: invalid pixsoMappingPolicy`);
+    }
+    if (mapping?.pixsoMappingPolicy === "excluded") {
+      if (mapping.pixsoTargetStatus !== "unregistered" || mapping.pixsoTarget != null) {
+        errors.push(`${label}: excluded mapping must be unregistered with pixsoTarget=null`);
+      }
+      if (!mapping.pixsoMappingReason || typeof mapping.pixsoMappingReason !== "string") {
+        errors.push(`${label}: excluded mapping requires pixsoMappingReason`);
+      }
     }
     if (!["mapped-pending-verification", "mapped-needs-rebuild", "verified", "missing-target", "not-applicable"].includes(mapping?.nativeSourceStatus)) {
       errors.push(`${label}: invalid nativeSourceStatus`);
@@ -342,8 +405,61 @@ for (const profile of profiles) {
       }
     }
   }
+  const endpointComponentMappings = asArray(
+    profile.endpointComponentMappings,
+    `${profile.id}.endpointComponentMappings`,
+  );
+  const endpointComponentIds = new Set();
+  for (const [index, mapping] of endpointComponentMappings.entries()) {
+    const label = `${profile.id}.endpointComponentMappings[${index}]`;
+    asString(mapping?.endpointComponentId, `${label}.endpointComponentId`);
+    asString(mapping?.contractId, `${label}.contractId`);
+    asString(mapping?.htmlLogicalName, `${label}.htmlLogicalName`);
+    if (mapping?.endpointComponentId && endpointComponentIds.has(mapping.endpointComponentId)) {
+      errors.push(`Duplicate endpoint component ID: ${mapping.endpointComponentId}`);
+    }
+    if (mapping?.endpointComponentId) endpointComponentIds.add(mapping.endpointComponentId);
+    if (htmlContractIds.size && mapping?.endpointComponentId && !htmlContractIds.has(mapping.endpointComponentId)) {
+      errors.push(`${label}: endpointComponentId is not in HTML component contract: ${mapping.endpointComponentId}`);
+    }
+    if (
+      mapping?.htmlLogicalName &&
+      !specNames.has(mapping.htmlLogicalName) &&
+      !componentNames.has(mapping.htmlLogicalName)
+    ) {
+      errors.push(`${label}: htmlLogicalName is neither an HTML component identity nor a Pixso spec key: ${mapping.htmlLogicalName}`);
+    }
+    if (!mapping?.pixsoTargetStatus || !["registered", "pending-review", "unregistered"].includes(mapping.pixsoTargetStatus)) {
+      errors.push(`${label}: invalid pixsoTargetStatus`);
+    }
+    if (mapping?.pixsoTargetStatus === "registered") {
+      if (!mapping.pixsoTarget) errors.push(`${label}: registered target is missing pixsoTarget`);
+      else if (!targetNames.has(mapping.pixsoTarget)) errors.push(`${label}: target is not in Pixso registry: ${mapping.pixsoTarget}`);
+      if (!mapping.pixsoVariant || typeof mapping.pixsoVariant !== "object" || Array.isArray(mapping.pixsoVariant)) {
+        errors.push(`${label}: registered target requires pixsoVariant object`);
+      }
+    }
+    if (mapping?.pixsoTargetStatus === "pending-review") {
+      if (!mapping.pixsoTarget) errors.push(`${label}: pending-review target is missing pixsoTarget`);
+      const message = `${label}: Pixso target is pending review: ${mapping.pixsoTarget ?? "(missing)"}`;
+      if (args["strict-component-gates"]) errors.push(message);
+      else warnings.push(message);
+    }
+    if (mapping?.pixsoTargetStatus === "unregistered" && mapping.pixsoTarget != null) {
+      errors.push(`${label}: unregistered target must use pixsoTarget=null`);
+    }
+    if (![
+      "mapped-pending-verification",
+      "verified",
+      "mapped-needs-rebuild",
+      "unavailable",
+    ].includes(mapping?.mappingStatus)) {
+      errors.push(`${label}: invalid mappingStatus`);
+    }
+  }
   if (profile.status === "active" && htmlComponentNames.size) {
-    for (const name of htmlComponentNames) if (!componentNames.has(name)) errors.push(`${profile.id}: active profile is missing component mapping ${name}`);
+    const declaredComponentNames = new Set([...componentNames, ...(profile.componentAliases || []).map((item) => item.logicalName)]);
+    for (const name of htmlComponentNames) if (!declaredComponentNames.has(name)) errors.push(`${profile.id}: active profile is missing component mapping ${name}`);
     for (const name of componentNames) if (!htmlComponentNames.has(name)) errors.push(`${profile.id}: component mapping is outside HTML contract ${name}`);
   }
 
@@ -382,6 +498,7 @@ for (const profile of profiles) {
       semanticColorMappings: semanticColors.length,
       styleMappings: styleMappings.length,
       htmlComponents: componentMappings.length,
+      endpointComponentMappings: endpointComponentMappings.length,
       registeredPixsoTargets: targetNames.size,
       htmlToPixsoExactMatches: componentMappings.filter((item) => item.pixsoTargetStatus === "registered").length,
       nativeSourceMappings: nativeMappings.length,
@@ -407,6 +524,10 @@ if (args["check-projections"]) {
   const dual = readIfExists(
     resolveRegistryPath(registryPath, projectionPaths.dualOutputTokenMap),
     "dual-output token projection",
+  );
+  const native = readIfExists(
+    resolveRegistryPath(registryPath, projectionPaths.pixsoNativeComponentMap),
+    "Pixso native component projection",
   );
   const canonical = new Map(
     (profile?.tokenMappings || []).map((item) => [
@@ -480,6 +601,17 @@ if (args["check-projections"]) {
   );
   for (const [role, value] of runtimeSemantic) {
     if (projectedRuntimeSemantic.get(role) !== value) errors.push(`token-runtime semantic projection drift: ${role}`);
+  }
+  if (native) {
+    if (native.projectionKind !== "generated-compatibility-projection") errors.push("Pixso native component projection is not marked generated");
+    if (native.generatedFrom !== "mapping-registry.json") errors.push("Pixso native component projection has an invalid source marker");
+    if (native.readOnly !== true) errors.push("Pixso native component projection must be readOnly");
+    for (const mapping of native.mappings || []) {
+      const expectedIconColorSource = iconColorSourceForMapping(mapping);
+      if (expectedIconColorSource && mapping.iconColorSource !== expectedIconColorSource) {
+        errors.push(`Pixso native component projection missing ${expectedIconColorSource}: ${mapping.logicalName}`);
+      }
+    }
   }
   if (!runtime || !dual) warnings.push("Projection check skipped because a projection file is unavailable.");
 }

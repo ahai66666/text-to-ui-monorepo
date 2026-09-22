@@ -38,5 +38,8 @@ for (const contract of map.displayContracts ?? []) {
 for (const [name, spec] of Object.entries(specs.components ?? {})) {
   for (const size of [spec.iconSize, ...(spec.iconSizes ?? [])].filter((value) => value != null)) if (![16, 20, 24].includes(size)) failures.push(`${name}: invalid iconSize ${size}`);
 }
+const registryAliases = new Set(Object.keys(registry.aliases ?? {}));
+for (const alias of registryAliases) if (!seenAliases.has(alias)) failures.push(`alias registry entry has no Pixso display contract: ${alias}`);
+for (const alias of seenAliases) if (!registryAliases.has(alias)) failures.push(`Pixso display contract has no alias registry entry: ${alias}`);
 if (failures.length) { console.error("Pixso icon map is invalid:"); for (const failure of failures) console.error(`- ${failure}`); process.exit(1); }
 console.log(`Pixso icon map valid: ${seenAliases.size} aliases, ${Object.keys(specs.components ?? {}).length} component specs.`);

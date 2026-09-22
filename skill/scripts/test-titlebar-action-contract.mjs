@@ -7,9 +7,20 @@
  */
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { renderRuntimeHtmlComponent } from "../../packages/components-html/src/index.js";
+import { renderHtmlComponent } from "../../packages/components-html/src/index.js";
 
-const html = renderRuntimeHtmlComponent("titlebar");
+// Keep this contract test independent from the gallery's chosen specimen copy.
+// The gallery may intentionally show a smaller action set, while the contract
+// still needs to prove uniform icon-text normalization and More ordering.
+const html = renderHtmlComponent("titlebar", {
+  layout: "three-column",
+  paneRole: "final-pane",
+  mainDetailActions: [
+    { id: "reply", label: "回复", icon: "action/reply", buttonType: "icon-text-ghost" },
+    { id: "reply-all", label: "回复全部", icon: "action/reply-all", buttonType: "icon-text-ghost" },
+    { id: "forward", label: "转发", icon: "action/forward", buttonType: "icon-text-ghost" }
+  ]
+});
 const action = (id) => html.match(new RegExp(`<button[^>]+data-action="${id}"[\\s\\S]*?<\\/button>`))?.[0] ?? "";
 const reply = action("reply");
 const replyAll = action("reply-all");

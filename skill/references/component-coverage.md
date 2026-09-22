@@ -6,35 +6,30 @@ Last checked: 2026-07-22
 
 Official source: [shadcn/ui Components](https://ui.shadcn.com/docs/components)
 
-The official directory currently lists 64 component or guide entries. The bundled component system intentionally supports 51 upstream entries, and all 51 have a visible representative example or documented variant in `preview/component-gallery.html`. The project-specific Semi-modal composition raises the visible gallery total to 52. “Covered” means the bundled gallery includes a representative visual and interaction baseline; it does not mean every upstream example or product-specific composition is reproduced.
+The official directory currently lists 64 component or guide entries. The bundled component system intentionally supports 48 upstream entries, and all 48 have a visible representative example or documented variant in `preview/component-gallery.html`. The project-specific Semi-modal composition raises the visible gallery total to 49. “Covered” means the bundled gallery includes a representative visual and interaction baseline; it does not mean every upstream example or product-specific composition is reproduced.
 
-## Covered In The Gallery — 51/51 Supported Entries
+## Covered In The Gallery — 48/48 Supported Entries
 
 ```text
 Accordion
 Alert
 Alert Dialog
-Aspect Ratio
 Attachment
 Avatar
 Badge
 Breadcrumb
-Bubble
 Button
 Calendar
 Card
 Carousel
-Chart
 Checkbox
 Collapsible
 Combobox
 Context Menu
-Data Table
 Date Picker
 Time Picker
 Dialog
 Dropdown Menu
-Empty
 Field
 Hover Card
 Input
@@ -59,11 +54,12 @@ Spinner
 Switch
 Table
 Tabs
+Sub Tabs
 Textarea
 Toast
 Toggle
 Tooltip
-Typography
+Tree View
 ```
 
 ## Project-specific Compositions

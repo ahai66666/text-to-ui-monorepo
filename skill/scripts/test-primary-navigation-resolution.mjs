@@ -2,6 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -10,6 +11,7 @@ const index = readJson("text-to-ui/references/index/generated/component-index.js
 const aliases = readJson("text-to-ui/references/index/capability-aliases.source.json").aliases;
 const contract = readJson("packages/component-contracts/src/components.json").components.find((item) => item.id === "primary-navigation-item");
 const sidebar = readJson("packages/component-contracts/src/components.json").components.find((item) => item.id === "sidebar");
+const taskRoutes = readJson("text-to-ui/references/index/task-routes.source.json");
 const failures = [];
 
 const resolve = (capability) => index.components.find((item) => item.capabilities.includes(capability));
@@ -26,6 +28,22 @@ if (JSON.stringify(contract?.iconAliases) !== JSON.stringify(["navigation/grid",
 if (sidebar?.id === primary?.id) failures.push("primary-navigation-item and sidebar must not share a registry identity");
 for (const framework of ["html", "react", "vue"]) {
   if (!primary?.frameworks?.[framework]?.exists) failures.push(`primary-navigation-item ${framework} adapter source is missing`);
+}
+const communicationRoute = taskRoutes.routes.find((item) => item.id === "communication-workbench");
+for (const capability of ["sidebar", "button"]) {
+  if (!communicationRoute?.requiredCapabilities?.includes(capability)) failures.push(`communication-workbench must require ${capability} so page bindings cannot outrun the renderer contract`);
+}
+const contextFile = path.join("/tmp", `text-to-ui-context-${process.pid}.json`);
+try {
+  execFileSync(process.execPath, [path.join(root, "text-to-ui/scripts/resolve-context.mjs"), "--task", "Coremail 邮件工作台", "--framework", "html", "--mode", "fast-preview", "--confirmed", "--out", contextFile], { stdio: "ignore" });
+  const context = JSON.parse(fs.readFileSync(contextFile, "utf8"));
+  for (const logicalName of ["Sidebar Item/Default", "Button/Primary/Default"]) {
+    if (!context.renderer?.components?.some((item) => item.logicalName === logicalName && item.rendererKey)) failures.push(`Coremail HTML renderer contract must include ${logicalName}`);
+  }
+} catch (error) {
+  failures.push(`Coremail context resolution failed: ${error.message}`);
+} finally {
+  try { fs.rmSync(contextFile, { force: true }); } catch {}
 }
 
 if (failures.length) {

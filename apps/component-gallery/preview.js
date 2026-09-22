@@ -2,14 +2,15 @@ import contracts from "../../packages/component-contracts/src/components-runtime
 import "../../packages/components-html/src/styles.css";
 import "./framework-runtime.css";
 import "./gallery.css";
+import { mountPatternBaseline } from "./pattern-baseline.js";
 
 const viewAliases = {
-  "contract-view": "contract",
+  "contract-view": "runtime",
   "pattern-view": "pattern",
   "runtime-view": "runtime",
   "regression-view": "regression",
-  "contract-components": "contract",
-  "all-components": "contract",
+  "contract-components": "runtime",
+  "all-components": "runtime",
   "framework-runtime": "runtime",
   "legacy-catalog": "regression",
   "skill-baseline": "regression",
@@ -17,29 +18,45 @@ const viewAliases = {
 };
 const views = [...document.querySelectorAll("[data-view]")];
 const viewLinks = [...document.querySelectorAll("[data-view-link]")];
-const viewTabs = [...document.querySelectorAll("[data-view-tab]")];
 const setPreviewView = (requested, updateHash = false) => {
   const alias = viewAliases[requested] ?? requested;
-  const view = ["contract", "pattern", "runtime", "regression"].includes(alias) ? alias : "contract";
+  const view = ["pattern", "runtime", "regression"].includes(alias) ? alias : "runtime";
   views.forEach((section) => { section.hidden = section.dataset.view !== view; });
   viewLinks.forEach((link) => {
     const selected = link.dataset.viewLink === view;
     if (selected) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
-  viewTabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.viewTab === view)));
-  if (view === "contract" || view === "pattern") window.__loadLegacyFrames?.();
-  if (updateHash && location.hash !== `#${view}-view`) history.replaceState(null, "", `#${view}-view`);
+  const migratedContractRoute = ["contract-view", "contract-components", "all-components"].includes(requested);
+  if ((updateHash || migratedContractRoute) && location.hash !== `#${view}-view`) history.replaceState(null, "", `#${view}-view`);
 };
-viewTabs.forEach((tab) => tab.addEventListener("click", () => setPreviewView(tab.dataset.viewTab, true)));
 window.addEventListener("hashchange", () => setPreviewView(location.hash.slice(1)));
 setPreviewView(location.hash.slice(1));
+
+const galleryShell = document.querySelector(".gallery-shell");
+const sidebarToggle = document.querySelector("[data-sidebar-toggle]");
+if (galleryShell && sidebarToggle && sidebarToggle.dataset.bound !== "true") {
+  const setSidebarCollapsed = (collapsed) => {
+    galleryShell.dataset.sidebarCollapsed = String(collapsed);
+    sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+    sidebarToggle.setAttribute("aria-label", collapsed ? "展开导航" : "收起导航");
+    sidebarToggle.title = collapsed ? "展开导航" : "收起导航";
+  };
+  sidebarToggle.dataset.bound = "true";
+  sidebarToggle.addEventListener("click", () => {
+    setSidebarCollapsed(galleryShell.dataset.sidebarCollapsed !== "true");
+  });
+  setSidebarCollapsed(false);
+}
+
+mountPatternBaseline(document.querySelector("[data-pattern-baseline]"));
 
 const status = document.querySelector("#gallery-status");
 const setStatus = (message) => { if (status) status.textContent = message; };
 const runtimeCoverageCount = document.querySelector("#runtime-coverage-count");
-const verifiedCount = contracts.components.filter((component) => component.status === "ready").length;
-if (runtimeCoverageCount) runtimeCoverageCount.textContent = `${contracts.components.length} registered · ${verifiedCount} verified · ${contracts.components.length - verifiedCount} partial`;
+if (runtimeCoverageCount) runtimeCoverageCount.textContent = `${contracts.components.length} 个已注册`;
+const runtimeDirectoryTitle = document.querySelector("#runtime-directory-title");
+if (runtimeDirectoryTitle) runtimeDirectoryTitle.textContent = `框架组件适配器目录 · ${contracts.components.length} 个`;
 
 const runtimeMount = document.querySelector('[data-component-mount="component-catalog"]');
 const runtimeFrameworkButtons = [...document.querySelectorAll("[data-runtime-framework]")].filter((element) => element.matches("button"));
@@ -47,6 +64,10 @@ const standaloneFile = location.protocol === "file:";
 let runtimeUnmount = () => {};
 const requestedFramework = new URLSearchParams(location.search).get("framework");
 let selectedRuntimeFramework = standaloneFile || !["html", "react", "vue"].includes(requestedFramework) ? "html" : requestedFramework;
+const revealHashTarget = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+  const target = document.getElementById(location.hash.slice(1));
+  target?.closest("[data-component-card]")?.scrollIntoView({ block: "start" });
+}));
 
 if (standaloneFile) {
   runtimeFrameworkButtons.forEach((button) => {
@@ -92,8 +113,8 @@ const loadRuntimeFramework = async (framework) => {
     const mount = module[`mount${framework[0].toUpperCase()}${framework.slice(1)}Runtime`];
     if (typeof mount !== "function") throw new Error(`缺少 ${framework} runtime mount`);
     runtimeUnmount = mount(runtimeMount, { onStatus: setStatus });
-    const ready = contracts.components.filter((component) => component.status === "ready").length;
-    setStatus(`${framework.toUpperCase()} 运行时已加载 ${contracts.components.length} 个组件；${ready} 个 Ready，其余按批次验收；默认态可直接交互`);
+    revealHashTarget();
+    setStatus(`${framework.toUpperCase()} 运行时已加载 ${contracts.components.length} 个组件。`);
   } catch (error) {
     console.error(`Failed to mount ${framework} runtime`, error);
     runtimeMount.innerHTML = `<p class="status tui-runtime-framework-missing">${framework.toUpperCase()} 运行时加载失败，请查看控制台。</p>`;
@@ -122,16 +143,6 @@ const coverageBody = document.querySelector("#coverage-body");
 if (coverageBody) {
   const cell = (status) => `<span class="coverage-status coverage-status--${status}">${status}</span>`;
   coverageBody.innerHTML = contracts.components.map((component) => `<tr><td>${component.logicalName}</td><td>${cell(component.frameworks?.html?.status ?? "pending")}</td><td>${cell(component.frameworks?.react?.status ?? "pending")}</td><td>${cell(component.frameworks?.vue?.status ?? "pending")}</td><td><code>NewComponents · logical mapping</code></td></tr>`).join("");
-}
-
-const runtimeFrameworkSummary = document.querySelector("#runtime-framework-summary");
-if (runtimeFrameworkSummary) {
-  const frameworkLabels = [["html", "HTML"], ["react", "React"], ["vue", "Vue"]];
-  runtimeFrameworkSummary.innerHTML = frameworkLabels.map(([key, label]) => {
-    const ready = contracts.components.filter((component) => component.frameworks?.[key]?.status === "ready").length;
-    const state = ready === contracts.components.length ? "ready" : "partial";
-    return `<span class="runtime-framework-summary__${state}" data-framework="${key}">${label} <strong>${ready}/${contracts.components.length} ready</strong></span>`;
-  }).join("");
 }
 
 // Runtime behavior is owned by each framework adapter. The gallery shell only

@@ -7,7 +7,7 @@ import { loadComponentMap, loadTokenResources, parseArgs, permanentAgentContract
 import { validateImportRun } from "./validate-pixso-import-run.mjs";
 
 const args = parseArgs(process.argv.slice(2));
-const usage = "Usage: compile-dom-visual-ir.mjs --run-manifest <json> --visual-manifest <json> --component-map <json> --ir-out <json> --plan-out <json> [--mapping-registry <mapping-registry.json> --mapping-profile <profile-id>] [--component-specs <json>] [--name <board-name>] [--target-page <page>] [--minimum-selector-coverage 0.95] [--minimum-visual-evidence-coverage 0.95]";
+const usage = "Usage: compile-dom-visual-ir.mjs --run-manifest <json> --visual-manifest <json> --component-map <json> --ir-out <json> --plan-out <json> [--mapping-registry <mapping-registry.json> --mapping-profile <profile-id>] [--component-specs <json>] [--name <board-name>] [--target-page <page>] [--single-transaction] [--minimum-selector-coverage 0.95] [--minimum-visual-evidence-coverage 0.95]";
 if (args.help || !args["run-manifest"] || !args["visual-manifest"] || !args["component-map"] || !args["ir-out"] || !args["plan-out"]) {
   if (!args.help) console.error(usage);
   process.exit(args.help ? 0 : 2);
@@ -45,6 +45,15 @@ const ir = buildDomVisualIr(visualManifest, { tokens, componentMap, componentSpe
 const images = [];
 for (const node of ir.nodes.filter((entry) => entry.kind === "image")) images.push(await imageResource(node, visualManifest.url));
 const plan = compileDomVisualIrPlan(ir, { tokens, componentMap, images });
+const singleTransaction = args["single-transaction"] === true || String(args["single-transaction"]).toLowerCase() === "true";
+if (singleTransaction) {
+  // Compatibility mode for a currently-open legacy plugin session. Keep the
+  // normal resource/layout/icon/image operation order, but execute it in one
+  // plugin transaction so the session does not need to rehydrate newly-created
+  // nested nodes between modules. New sessions should use the modular plan.
+  delete plan.modules;
+  plan.execution.moduleExecution = "single-transaction-compatibility";
+}
 plan.page.htmlSourceFingerprint = runManifest.source?.htmlSourceFingerprint;
 plan.page.visualSnapshot = {
   source: visualManifest.source,

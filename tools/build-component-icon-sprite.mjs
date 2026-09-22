@@ -11,20 +11,6 @@ const aliasRegistry = JSON.parse(await fs.readFile(path.join(root, "text-to-ui/a
 const lucideAliases = Object.fromEntries(Object.entries(aliasRegistry.aliases)
   .filter(([, definition]) => definition.source === "lucide")
   .map(([alias, definition]) => [alias, definition.name]));
-// Compatibility aliases are still used by existing component contracts. Keep
-// them resolved centrally until the contracts migrate to their newer names.
-Object.assign(lucideAliases, {
-  "action/check": "circle-check",
-  "action/minimize": "minimize-2",
-  "action/maximize": "maximize-2",
-  "field/calendar": "calendar-days",
-  "field/clock": "clock-3",
-  "navigation/grid": "layout-grid",
-  "navigation/list": "list",
-  "navigation/recent": "history",
-  "action/settings": "settings",
-  "navigation/chevron-right": "chevron-right"
-});
 const symbols = [];
 for (const [alias, source] of Object.entries(lucideAliases)) {
   const iconModule = await import(pathToFileURL(path.join(lucideIconDir, `${source}.mjs`)).href);
@@ -36,7 +22,7 @@ for (const [alias, source] of Object.entries(lucideAliases)) {
   }).join("");
   // Keep the symbol shape compatible with build-inline-icon-map.mjs. Provenance
   // stays in the semantic alias registry rather than adding attributes here.
-  symbols.push(`    <symbol id="tui-${alias.replaceAll("/", "-")}" viewBox="0 0 24 24">${geometry}</symbol>`);
+  symbols.push(`    <symbol id="tui-${alias.replaceAll("/", "-")}" data-icon-alias="${alias}" data-icon-source="lucide@${aliasRegistry.lucideVersion}" data-icon-name="${source}" viewBox="0 0 24 24">${geometry}</symbol>`);
 }
 // Asset-sourced aliases are kept in the same canonical sprite as Lucide
 // aliases. This prevents a future sprite rebuild from silently replacing a

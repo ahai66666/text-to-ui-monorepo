@@ -4,11 +4,73 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const registryPath = path.join(root, "assets/design-system/pixso-component-registry.json");
+const mappingRegistryPath = path.join(root, "assets/design-system/mapping-registry.json");
+const componentFactsPath = path.join(root, "assets/design-system/pixso-component-facts.json");
 const iconMapPath = path.join(root, "assets/design-system/pixso-icon-map.json");
 const outputPath = path.join(root, "assets/design-system/pixso-component-specs.json");
 const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
+const mappingRegistry = JSON.parse(fs.readFileSync(mappingRegistryPath, "utf8"));
+const componentFacts = JSON.parse(fs.readFileSync(componentFactsPath, "utf8"));
 const iconMap = JSON.parse(fs.readFileSync(iconMapPath, "utf8"));
-const componentNames = Object.values(registry.categories).flat();
+const spacingTokens = JSON.parse(
+  fs.readFileSync(path.join(root, "assets/design-system/tokens.spacing.json"), "utf8"),
+);
+const registeredComponentNames = Object.values(registry.categories).flat();
+const mappingProfiles = mappingRegistry.profiles ?? Object.values(mappingRegistry.mappingProfiles ?? {});
+const mappedComponentNames = mappingProfiles
+  .flatMap((profile) => [
+    ...(profile.componentMappings ?? []),
+    ...(profile.componentAliases ?? []),
+  ])
+  .map((mapping) => mapping.pixsoSpecKey)
+  .filter(Boolean);
+const componentNames = [...new Set([...registeredComponentNames, ...mappedComponentNames])].sort();
+
+function numberFromToken(value) {
+  const match = String(value ?? "").match(/(-?\d+(?:\.\d+)?)px$/i);
+  return match ? Number(match[1]) : Number(value);
+}
+
+function closeNumber(left, right) {
+  return Number.isFinite(left) && Number.isFinite(right) && Math.abs(left - right) < 0.001;
+}
+
+function iconTextFactVariant(name) {
+  const profile = (mappingRegistry.profiles ?? []).find(
+    (item) => item.id === mappingRegistry.defaultProfile,
+  ) ?? mappingRegistry.profiles?.[0];
+  const mapping = (profile?.endpointComponentMappings ?? []).find(
+    (item) => item.htmlLogicalName === name,
+  );
+  const targetName = mapping?.pixsoTarget ?? "icon-text";
+  const target = (componentFacts.componentSets ?? []).find((item) => item.name === targetName);
+  if (!target) return null;
+  const requested = mapping?.pixsoVariant ?? {};
+  const supported = new Set(Object.keys(target.variantAxes ?? {}));
+  return (target.variants ?? []).find((variant) => Object.entries(requested)
+    .filter(([axis]) => supported.has(axis))
+    .every(([axis, value]) => String(variant.variantProperties?.[axis] ?? "").toLowerCase() === String(value).toLowerCase())) ?? null;
+}
+
+function iconTextPaddingToken(name) {
+  if (!name.startsWith("Icon Text Button/")) return "padding/button-x";
+  const geometry = iconTextFactVariant(name)?.geometry;
+  const left = geometry?.padding?.left;
+  const right = geometry?.padding?.right;
+  if (!closeNumber(left, right)) return "padding/button-x";
+  const candidates = Object.entries(spacingTokens.padding ?? {})
+    .filter(([, value]) => {
+      const spaceKey = String(value).match(/^space\.(.+)$/)?.[1];
+      return spaceKey != null && closeNumber(numberFromToken(spacingTokens.space?.[spaceKey]), left);
+    })
+    .map(([key]) => key);
+  const preferred = ["button-sm-x", "button-x", "select-x", "search-x", "textarea-x"];
+  return preferred.find((key) => candidates.includes(key))
+    ? `padding/${preferred.find((key) => candidates.includes(key))}`
+    : candidates[0]
+      ? `padding/${candidates[0]}`
+      : "padding/button-x";
+}
 
 const shared = {
   componentStateScope: "static-default-only",
@@ -69,7 +131,7 @@ const spec = (
 
 function componentSpec(name) {
   if (name.startsWith("Button/")) {
-    return spec("Button", ".btn", "hug", "hug", 40, { Label: "Body_L" }, {
+    return spec("Button", ".tui-button", "hug", "hug", 40, { Label: "Body_L" }, {
       direction: "horizontal",
       gapToken: null,
       paddingXToken: "padding/button-x",
@@ -77,28 +139,19 @@ function componentSpec(name) {
     });
   }
   if (name.startsWith("Icon Text Button/")) {
-    return spec("Icon Text Button", ".btn.btn-icon-text", "hug", "hug", 40, { Label: "Body_L" }, {
+    return spec("Icon Text Button", ".tui-button[data-mode=\"icon-text\"]", "hug", "hug", 40, { Label: "Body_L" }, {
       direction: "horizontal",
       gapToken: "gap/button-icon-label",
-      paddingXToken: "padding/button-x",
+      paddingXToken: iconTextPaddingToken(name),
       iconSize: 20,
       radiusToken: "radius/control",
     });
   }
   if (name.startsWith("Icon Button/")) {
-    return spec("Icon Button", ".icon-btn", 40, "fixed", 40, {}, {
+    return spec("Icon Button", ".tui-button[data-mode=\"icon\"]", 40, "fixed", 40, {}, {
       direction: "horizontal",
       iconSize: 20,
       radiusToken: "radius/control",
-    });
-  }
-  if (name === "Selection Dropdown/Default") {
-    return spec("Selection Dropdown", ".selection-dropdown-trigger", "hug", "hug", 40, { Value: "Body_L" }, {
-      minWidth: 132,
-      direction: "horizontal",
-      gapToken: "gap/button-icon-label",
-      paddingXToken: "padding/button-x",
-      iconSize: 16,
     });
   }
   if (name === "Split Dropdown Button/Icon Text/Default") {
@@ -119,6 +172,28 @@ function componentSpec(name) {
   if (name === "Toggle/Off/Default") {
     return spec("Toggle", ".toggle-btn", 56, "fixed", 32, {}, { iconSize: 20 });
   }
+  if (name === "Selection Dropdown/Default") {
+    return spec("Selection Dropdown", ".selection-dropdown-trigger", "hug", "hug", 40, {
+      Label: "Body_L",
+    }, {
+      direction: "horizontal",
+      gapToken: "gap/button-icon-label",
+      iconSize: 16,
+      radiusToken: "radius/control",
+      pixsoDefaultVariant: { size: "Medium", state: "Default" },
+    });
+  }
+  if (name === "Form Field/Default") {
+    return spec("Form Field", ".tui-form-field", 280, "fill", 64, {
+      Label: "Subtitle_S",
+      Error: "Body_S",
+    }, {
+      direction: "vertical",
+      gapToken: "gap/field-label",
+      nestedGroups: ["Control"],
+      pixsoDefaultVariant: { surface: "White", state: "Default" },
+    });
+  }
   if (name.startsWith("Field/")) {
     return spec("Field", ".form-field", 280, "fill", name.endsWith("With Description") ? 92 : 68, {
       Label: "Body_L",
@@ -133,13 +208,13 @@ function componentSpec(name) {
   if (/^(Input|Search|Textarea|Select|Combobox)\//.test(name)) {
     const family = name.split("/")[0];
     const selectors = {
-      Input: ".field",
-      Search: ".field.search",
-      Textarea: ".textarea",
-      Select: ".select-trigger",
-      Combobox: ".combobox-trigger",
+      Input: ".tui-input",
+      Search: ".tui-search",
+      Textarea: ".tui-textarea",
+      Select: ".tui-select",
+      Combobox: ".tui-combobox",
     };
-    const height = family === "Textarea" ? 80 : 40;
+    const height = family === "Textarea" ? 126 : 40;
     return spec(family, selectors[family], 280, "fill", height, {
       Value: "Body_L",
       Placeholder: "Body_L",
@@ -150,6 +225,21 @@ function componentSpec(name) {
       clearActionReserve: family === "Search" ? 32 : null,
     });
   }
+  if (name === "Number Selector/Default") {
+    return spec("Number Selector", ".tui-number-selector", 92, "fixed", 62, {
+      Label: "Body_M",
+      Value: "Body_L",
+    }, {
+      direction: "vertical",
+      gapToken: "space/2",
+      controlHeight: 40,
+      valueWidth: 52,
+      stepperWidth: 40,
+      iconSize: 16,
+      radiusToken: "radius/control",
+      nestedGroups: ["Control", "Stepper"],
+    });
+  }
   if (name === "Input OTP/Default") {
     return spec("Input OTP", ".otp", "hug", "hug", 44, { Digit: "Body_L" }, {
       direction: "horizontal",
@@ -157,21 +247,21 @@ function componentSpec(name) {
     });
   }
   if (name === "Checkbox/Unchecked/Default") {
-    return spec("Checkbox", ".choice", "hug", "hug", 20, { Label: "Body_M" }, {
+    return spec("Checkbox", ".tui-checkbox", "hug", "hug", 40, { Label: "Body_M" }, {
       direction: "horizontal",
       gapToken: "gap/choice-label",
       controlSize: 20,
     });
   }
   if (name === "Radio/Unselected/Default") {
-    return spec("Radio", ".choice", "hug", "hug", 20, { Label: "Body_M" }, {
+    return spec("Radio", ".tui-radio", "hug", "hug", 40, { Label: "Body_M" }, {
       direction: "horizontal",
       gapToken: "gap/choice-label",
       controlSize: 20,
     });
   }
   if (name === "Switch/Off/Default") {
-    return spec("Switch", ".choice .switch", "hug", "hug", 24, { Label: "Body_M" }, {
+    return spec("Switch", ".tui-switch", "hug", "hug", 40, { Label: "Body_M" }, {
       direction: "horizontal",
       gapToken: "gap/choice-label",
       trackSize: [44, 24],
@@ -179,10 +269,37 @@ function componentSpec(name) {
     });
   }
   if (name === "Slider/Default") {
-    return spec("Slider", ".range-field", 280, "fill", 24, {}, {
+    return spec("Slider", ".tui-slider", 280, "fill", 24, {}, {
       trackHeight: 4,
-      thumbSize: 20,
+      thumbSize: 16,
+      value: 84,
+      variants: {
+        "style-1": {
+          trackHeight: 4,
+          thumbSize: 16,
+          thumbFill: "brand/100",
+          thumbOffset: 0,
+          trackRadiusToken: "radius/full",
+        },
+        "style-2": {
+          trackHeight: 20,
+          thumbSize: 12,
+          thumbFill: "neutral-light/100",
+          thumbOffset: -10,
+          trackRadiusToken: "size/24",
+        },
+      },
       intentionalOverlapWrapper: "Slider Visual",
+    });
+  }
+  if (name === "Segmented Button/Default") {
+    return spec("Segmented Button", ".tui-segmented", "hug", "hug", 40, { Option: "Body_M" }, {
+      direction: "horizontal",
+      gapToken: "space/1",
+      paddingX: 2,
+      paddingY: 2,
+      radiusToken: "radius/08",
+      pixsoDefaultVariant: { count: "3" },
     });
   }
   if (name === "Date Picker/Default" || name === "Time Picker/Default") {
@@ -210,10 +327,20 @@ function componentSpec(name) {
     });
   }
   if (name === "Sidebar Item/Default") {
-    return spec("Sidebar Item", ".nav-link", 240, "fill", 40, { Label: "Body_L" }, {
+    return spec("Sidebar Item", ".tui-sidebar-item", 240, "fill", 40, { Label: "Body_L" }, {
       direction: "horizontal",
       gapToken: "gap/button-icon-label",
       iconSize: 20,
+    });
+  }
+  if (name === "Sub Tabs/Default") {
+    return spec("Sub Tabs Item", ".tui-sub-tabs__list > [role=tab]", "hug", "hug", 40, { Label: "Subtitle_M" }, {
+      direction: "horizontal",
+      minWidth: 64,
+      radiusToken: "radius/08",
+      pixsoDefaultVariant: { state: "Unselected" },
+      mappingScope: "every child .tui-sub-tabs__list [role=tab]",
+      stateResolution: { default: "Unselected", selected: "Selected" },
     });
   }
   if (name === "Sidebar Group Header/Collapsed") {
@@ -229,6 +356,14 @@ function componentSpec(name) {
       transparent: true,
     });
   }
+  if (name === "Menubar/Default") {
+    return spec("Menubar", ".tui-advanced-menubar", "hug", "hug", "hug", { Label: "Body_L" }, {
+      direction: "horizontal",
+      nestedGroups: ["Menu Items"],
+      itemQuantity: 1,
+      effectStyle: "Effect/Foundation/shadow-2",
+    });
+  }
   if (name.startsWith("Tabs/")) {
     const type = name.split("/")[1];
     return spec("Tabs", type === "Filled" ? ".tabs-filled" : type === "Line" ? ".tabs-line" : ".tabs-vertical", type === "Vertical" ? 220 : 360, "fill", type === "Vertical" ? "hug" : 40, {
@@ -236,7 +371,7 @@ function componentSpec(name) {
     }, { direction: type === "Vertical" ? "vertical" : "horizontal" });
   }
   if (name === "Breadcrumb/Default") {
-    return spec("Breadcrumb", ".breadcrumb", "hug", "hug", 40, { Label: "Body_M" }, {
+    return spec("Breadcrumb", ".tui-breadcrumb", "hug", "hug", 40, { Label: "Body_M" }, {
       direction: "horizontal",
       gapToken: "gap/breadcrumb-item",
       iconSize: 16,
@@ -245,9 +380,17 @@ function componentSpec(name) {
   if (name === "Pagination Item/Default") {
     return spec("Pagination Item", ".pagination-item", 32, "fixed", 32, { Label: "Body_M" });
   }
+  if (name === "Pagination/Default") {
+    return spec("Pagination", ".tui-pagination", "hug", "hug", 40, { Label: "Body_L" }, {
+      direction: "horizontal",
+      gapToken: "space/1",
+      iconSize: 20,
+      nestedGroups: ["Previous", "Pages", "Next"],
+    });
+  }
   if (name === "Accordion/Collapsed" || name === "Collapsible/Collapsed") {
     const accordion = name.startsWith("Accordion");
-    return spec(accordion ? "Accordion" : "Collapsible", accordion ? ".accordion-trigger" : ".collapsible-trigger", 360, "fill", 44, {
+    return spec(accordion ? "Accordion" : "Collapsible", accordion ? '.tui-disclosure[data-component="accordion"] .tui-disclosure__trigger' : '.tui-disclosure[data-component="collapsible"] .tui-disclosure__trigger', 360, "fill", accordion ? 24 : 32, {
       Label: "Body_L",
     }, { direction: "horizontal", iconSize: 16 });
   }
@@ -303,10 +446,14 @@ function componentSpec(name) {
     });
   }
   if (name.startsWith("Badge/")) {
-    return spec("Badge", ".badge", "hug", "hug", 24, { Label: "Body_S" }, {
+    return spec("Badge", ".tui-badge", "hug", "hug", 24, { Label: "Body_S" }, {
       direction: "horizontal",
       paddingX: 8,
-      radiusToken: "radius/badge",
+      // The production framework implementation (`.tui-badge`) uses the
+      // 4px foundational radius.  Do not inherit the older gallery-only
+      // `.badge` pill treatment here: Pixso components must follow the
+      // framework component that the importer actually reuses.
+      radiusToken: "radius/04",
     });
   }
   if (name.startsWith("Avatar/")) {
@@ -317,8 +464,15 @@ function componentSpec(name) {
     });
   }
   if (name === "Progress/Default") {
-    return spec("Progress", ".progress", 320, "fill", 8, {}, {
-      intentionalOverlapWrapper: "Progress Visual",
+    return spec("Progress", ".tui-progress", 320, "fill", 32, {
+      Label: "Body_S",
+      Description: "Body_S",
+    }, {
+      direction: "vertical",
+      gapToken: "space/2",
+      trackHeight: 8,
+      trackRadiusToken: "radius/full",
+      nestedGroups: ["Track"],
     });
   }
   if (name === "Spinner/Default") {
@@ -341,7 +495,7 @@ function componentSpec(name) {
     });
   }
   if (name.startsWith("Alert/")) {
-    return spec("Alert", ".alert", 720, "fill", 40, {
+    return spec("Alert", ".tui-alert", 720, "fill", 40, {
       Detail: "Subtitle_S",
       "Text Action": "Body_M",
     }, {
@@ -355,10 +509,78 @@ function componentSpec(name) {
     });
   }
   if (name === "Snackbar/Default") {
-    return spec("Snackbar", ".toast", "hug", "hug", 48, { Message: "Body_L" }, {
-      minWidth: 240,
-      maxWidth: 480,
+    return spec("Snackbar", ".tui-snackbar", "hug", "hug", 48, { Title: "Subtitle_S", Subtitle: "Body_S", "Text Action": "Body_M" }, {
+      minWidth: 328,
+      maxWidth: 400,
+      direction: "horizontal",
+      nestedGroups: ["Snackbar Main", "Snackbar Actions"],
+      iconSize: 24,
+      paddingLeftToken: "space/4",
+      contentGapToken: "space/1",
+      closeTargetSize: 40,
+      closeIconSize: 20,
       effectStyle: "Effect/Foundation/shadow-3",
+      pixsoDefaultVariant: { "左侧区域": "1" },
+    });
+  }
+  if (name === "Chips/Default") {
+    return spec("Chips", ".tui-chip", "hug", "hug", 28, { Label: "Body_M" }, {
+      direction: "horizontal",
+      gapToken: "space/2",
+      paddingLeftToken: "space/4",
+      paddingRightToken: "space/3",
+      radiusToken: "radius/control",
+      iconSize: 16,
+      pixsoDefaultVariant: { "状态": "Default" },
+      slotContracts: {
+        leading: { cardinality: "0..1", iconSize: 16 },
+        label: { cardinality: "1", typographyRole: "Body_M" },
+        close: { cardinality: "0..1", iconAlias: "action/close", iconSize: 16 },
+      },
+    });
+  }
+  if (name === "Dialog/Default") {
+    return spec("Dialog-2in1", ".tui-dialog", 400, "fixed", "hug", {
+      Title: "Title_S",
+      Subtitle: "Body_M",
+      Description: "Body_M",
+    }, {
+      minWidth: 400,
+      direction: "vertical",
+      nestedGroups: ["Dialog Titlebar", "Dialog Content", "Dialog Actions"],
+      slotContracts: {
+        titlebar: {
+          cardinality: "1",
+          variants: ["title-only", "title-subtitle"],
+          pixsoComponent: ".Title",
+          pixsoVariants: { "title-only": "2 Line=OFF", "title-subtitle": "2 Line=ON" },
+        },
+        actions: {
+          cardinality: "1",
+          acceptedComponent: "Button",
+          buttonCount: { min: 1, max: 3 },
+          variants: ["one-button", "two-buttons", "three-buttons"],
+          pixsoComponent: ".Dialog_Container",
+          pixsoVariants: {
+            "one-button": "quantity=1_normal",
+            "two-buttons": ["quantity=2_normal", "quantity=2_emphasize"],
+            "three-buttons": "quantity=3_emphasize_port",
+          },
+        },
+      },
+    });
+  }
+  if (name === "ColorPicker/Tablet") {
+    return spec("ColorPicker", ".tui-color-picker", 360, "hug", 515, {
+      Title: "Title_S",
+      Label: "Body_M",
+      Value: "Body_S",
+    }, {
+      minWidth: 320,
+      direction: "vertical",
+      nestedGroups: ["ColorPicker Tabs", "ColorPicker Controls", "ColorPicker Favorites"],
+      iconSize: 24,
+      radiusToken: "radius/card",
     });
   }
   if (name === "Tooltip/Default") {
@@ -366,6 +588,21 @@ function componentSpec(name) {
       maxWidth: 240,
       paddingToken: "padding/tooltip",
       effectStyle: "Effect/Foundation/shadow-1",
+    });
+  }
+  if (name === "Context Menu/quantity=3") {
+    return spec("Context Menu", ".tui-generated__menu[role=\"menu\"]", 224, "fixed", 132, {
+      "Menu Item": "Body_L",
+    }, {
+      direction: "vertical",
+      pixsoDefaultVariant: { quantity: "3" },
+      slotContracts: {
+        content: { cardinality: "1", itemCount: 3 },
+        "item-leading": { cardinality: "0..3", iconSize: 20 },
+        "item-label": { cardinality: "3", typographyRole: "Body_L" },
+        "item-trailing": { cardinality: "0..3", iconSize: 20 },
+      },
+      mappingScope: "Coremail mail menu only",
     });
   }
   throw new Error(`No component specification rule for ${name}`);
@@ -376,6 +613,7 @@ const output = {
   schemaVersion: 1,
   generatedFrom: [
     "assets/design-system/pixso-component-registry.json",
+    "assets/design-system/pixso-component-facts.json",
     "preview/component-gallery.html",
     "preview/component-gallery.css",
     "assets/design-system/tokens.*.json",

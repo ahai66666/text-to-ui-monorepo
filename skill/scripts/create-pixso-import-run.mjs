@@ -8,6 +8,17 @@ import { computeHtmlSourceFingerprint } from "./html-visual-contract.mjs";
 import { parseArgs, writeJson } from "./pixso-native-scene-lib.mjs";
 import { acquireActiveRunLock, releaseActiveRunLock } from "./pixso-import-run-state.mjs";
 import { resolvePixsoImportUrl } from "./resolve-pixso-import-url.mjs";
+import {
+  CLAIM_LEASE_MS,
+  MODULE_HEARTBEAT_INTERVAL_MS,
+  MODULE_HEARTBEAT_TIMEOUT_MS,
+  RESULT_ACK_DEADLINE_MS,
+  WAITING_FOR_PLUGIN_DEADLINE_MS,
+  WAITING_FOR_PLUGIN_RETRY_AFTER_MS,
+  MAX_CONNECTION_RECOVERY_ATTEMPTS,
+  MAX_RESOURCE_RETRIES,
+  IMPORT_LIFECYCLE_STATES,
+} from "./pixso-import-governance.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const usage = "Usage: create-pixso-import-run.mjs --html-root <directory> --url <rendered-url> [--allow-virtual-route] [--runs-root <directory>] [--width 1728] [--height 1152] [--state default-visible] [--component-map <json|mapping-registry.json>] [--mapping-profile <profile-id>] [--mode normal|diagnostic]";
@@ -34,6 +45,7 @@ const componentMapPath = path.resolve(args["component-map"] || path.join(skillRo
 const mappingRegistryPath = path.resolve(args["mapping-registry"] || path.join(skillRoot, "assets/design-system/mapping-registry.json"));
 const mappingProfile = args["mapping-profile"] ? String(args["mapping-profile"]) : null;
 const componentSpecsPath = path.join(skillRoot, "assets/design-system/pixso-component-specs.json");
+const componentFactsPath = path.join(skillRoot, "assets/design-system/pixso-component-facts.json");
 const tokenManifestPath = path.join(skillRoot, "assets/design-system/pixso-variables.json");
 const runtimePath = path.join(skillRoot, "scripts/pixso-native-execution-runtime.js");
 const visualCollectorPath = path.join(skillRoot, "scripts/browser-visual-manifest.js");
@@ -59,6 +71,9 @@ try {
 const artifacts = {
   visualManifest: path.join(runDirectory, "html-visual-manifest.json"),
   htmlScreenshot: path.join(runDirectory, "html-reference.png"),
+  captureBundle: path.join(runDirectory, "capture-bundle.json"),
+  preflightReport: path.join(runDirectory, "preflight-report.json"),
+  resourceRepair: path.join(runDirectory, "resource-repair.json"),
   domVisualIr: path.join(runDirectory, "dom-visual-ir.json"),
   scene: path.join(runDirectory, "pixso-scene.json"),
   operationPlan: path.join(runDirectory, "pixso-operation-plan.json"),
@@ -95,7 +110,7 @@ const diagnosticBudgetsMs = {
 const normalAttemptLimits = Object.fromEntries(Object.keys(normalBudgetsMs).filter((key) => key !== "total").map((key) => [key, 1]));
 const diagnosticAttemptLimits = Object.fromEntries(Object.keys(diagnosticBudgetsMs).filter((key) => key !== "total").map((key) => [key, 3]));
 const manifest = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   kind: "text-to-ui-pixso-import-run",
   runId,
   status: "initialized",
@@ -113,6 +128,7 @@ const manifest = {
   inputs: {
     componentMap: { path: componentMapPath, sha256: digestFile(componentMapPath) },
     mappingRegistry: { path: mappingRegistryPath, sha256: digestFile(mappingRegistryPath), profile: mappingProfile },
+    componentFacts: { path: componentFactsPath, sha256: digestFile(componentFactsPath) },
     componentSpecs: { path: componentSpecsPath, sha256: digestFile(componentSpecsPath) },
     tokenManifest: { path: tokenManifestPath, sha256: digestFile(tokenManifestPath) },
     pluginRuntime: { path: runtimePath, sha256: digestFile(runtimePath) },
@@ -124,6 +140,8 @@ const manifest = {
     mode,
     mappingProfile,
     sourceCapture: "single-current-browser-state",
+    captureBundle: "required",
+    captureCommit: "calibrated-css-viewport-and-png-dimensions",
     visualBaseline: mode === "normal" ? "disabled-use-current-browser-screenshot" : "optional-diagnostic-code-to-design-only",
     planCompilation: "single-current-run-only",
     pixsoWrite: "single-transaction",
@@ -132,7 +150,32 @@ const manifest = {
     runtimeMutation: mode === "diagnostic" ? "allowed-with-new-run" : "forbidden-during-run",
     diagnosticEscalation: "stop-current-run-and-report",
     attemptLimits: mode === "diagnostic" ? diagnosticAttemptLimits : normalAttemptLimits,
-    budgetsMs: mode === "diagnostic" ? diagnosticBudgetsMs : normalBudgetsMs
+    budgetsMs: mode === "diagnostic" ? diagnosticBudgetsMs : normalBudgetsMs,
+    retryPolicy: {
+      resourceTransient: { maxRetries: MAX_RESOURCE_RETRIES, action: "retain-measured-placeholder-and-repair" },
+      pluginDisconnect: { maxRetries: MAX_CONNECTION_RECOVERY_ATTEMPTS, action: "reconnect-and-requeue-once" },
+      deterministic: { maxRetries: 0, action: "fail-before-bridge-queue" },
+      oldPlan: { maxRetries: 0, action: "start-new-run" },
+    },
+    bridgeTimeoutsMs: {
+      claimLease: CLAIM_LEASE_MS,
+      recoveryAfterNoClaim: WAITING_FOR_PLUGIN_RETRY_AFTER_MS,
+      pluginStartDeadline: WAITING_FOR_PLUGIN_DEADLINE_MS,
+      moduleHeartbeatInterval: MODULE_HEARTBEAT_INTERVAL_MS,
+      moduleHeartbeatTimeout: MODULE_HEARTBEAT_TIMEOUT_MS,
+      resultAckDeadline: RESULT_ACK_DEADLINE_MS,
+    },
+  },
+  lifecycle: {
+    state: IMPORT_LIFECYCLE_STATES.PRECHECKING,
+    phase: "preflight",
+    attempt: 0,
+    lastHeartbeatAt: now.toISOString(),
+    deadline: null,
+    blockingReason: null,
+    nextAction: "capture-current-browser-state",
+    recoveryAttempt: 0,
+    retryClassification: null,
   },
   timing: {
     startedAt: null,
@@ -150,12 +193,21 @@ const manifest = {
     pixsoCallCount: 0,
     retryCount: 0,
     operationCount: 0,
-    visualNodeCount: 0
+    visualNodeCount: 0,
+    preflightMs: 0,
+    queueWaitMs: 0,
+    claimMs: 0,
+    startConfirmationMs: 0,
+    resultConfirmationMs: 0,
+    moduleTimings: [],
+    retryReasons: [],
+    resourceRepairItems: [],
   },
   artifacts,
   gates: {
     freshSource: "pending",
     visualManifest: "pending",
+    captureBundle: "pending",
     operationPlan: "pending",
     pluginReadback: "pending",
     visualParity: "pending",

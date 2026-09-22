@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Alert, Attachment, Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Radio, Toast, Tooltip } from "../../packages/components-react/src/index.jsx?rev=20260812-1";
+import { Alert, Attachment, Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Radio, Toast, Tooltip, SubTabs, TreeView } from "../../packages/components-react/src/index.jsx?rev=20260907-1";
 import * as Generated from "../../packages/components-react/src/generated/index.jsx?rev=20260807-1";
 import contracts from "../../packages/component-contracts/src/components-runtime.js";
 import { feedbackSpecimensFor } from "./runtime-catalog.js";
@@ -10,7 +10,7 @@ const h = React.createElement;
 const pascal = (value) => value.split(/[-_]/g).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
 const stateLabels = { default: "Default", hover: "Hover", pressed: "Pressed", focus: "Focus", disabled: "Disabled", selected: "Selected", error: "Error", open: "Open" };
 const states = (component) => (component.states ?? ["default"]).map((state) => h("span", { key: state }, stateLabels[state] ?? state));
-const directComponents = { alert: Alert, attachment: Attachment, radio: Radio, toast: Toast, tooltip: Tooltip };
+const directComponents = { alert: Alert, attachment: Attachment, radio: Radio, toast: Toast, tooltip: Tooltip, "sub-tabs": SubTabs, "tree-view": TreeView };
 
 function ButtonPreview({ setStatus }) {
   const variants = [["primary", "确认操作"], ["secondary", "次要操作"], ["ghost", "文本操作"], ["danger", "删除项目"]];

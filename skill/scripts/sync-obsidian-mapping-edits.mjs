@@ -100,6 +100,21 @@ function targetFacts(profile) {
   const targetSpecs = targetSpecsPath && fs.existsSync(targetSpecsPath)
     ? JSON.parse(fs.readFileSync(targetSpecsPath, "utf8"))
     : {};
+  const htmlSource = (nextRegistry.sources?.html || []).find((source) => source.id === profile.sourceHtml);
+  const contractPath = htmlSource?.componentContract
+    ? resolveRegistryPath(registryPath, htmlSource.componentContract)
+    : null;
+  const contract = contractPath && fs.existsSync(contractPath)
+    ? JSON.parse(fs.readFileSync(contractPath, "utf8"))
+    : {};
+  const contractComponents = Array.isArray(contract) ? contract : (contract.components || []);
+  const contractById = new Map();
+  for (const item of contractComponents) {
+    if (item.id) contractById.set(item.id, item);
+    for (const specimen of item.specimens || []) {
+      if (specimen.id) contractById.set(specimen.id, { ...specimen, contractId: item.id });
+    }
+  }
   const targetFacts = targetFactsPath && fs.existsSync(targetFactsPath)
     ? JSON.parse(fs.readFileSync(targetFactsPath, "utf8"))
     : null;
@@ -107,7 +122,7 @@ function targetFacts(profile) {
     ? componentFactsNames(targetFacts)
     : new Set(Object.values(targetRegistry.categories || {}).flat());
   const specNames = new Set(Object.keys(targetSpecs.components || {}));
-  return { targetNames, specNames };
+  return { targetNames, specNames, contractIds: new Set(contractById.keys()) };
 }
 
 function refreshProfileSummary(profile) {
@@ -122,6 +137,7 @@ function refreshProfileSummary(profile) {
     semanticColorMappings: (profile.semanticColorMappings || []).length,
     styleMappings: (profile.styleMappings || []).length,
     htmlComponents: (profile.componentMappings || []).length,
+    endpointComponentMappings: (profile.endpointComponentMappings || []).length,
     registeredPixsoTargets: targetNames.size,
     htmlToPixsoExactMatches: (profile.componentMappings || []).filter(
       (item) => item.pixsoTargetStatus === "registered",
@@ -147,6 +163,19 @@ function normalizeMappingType(value) {
 }
 
 function applyComponent(row, profile) {
+  // The workbook has one component table. A runtime component ID is an
+  // optional implementation alias of the same HTML logical component, not a
+  // separate mapping category.
+  if (row.runtimeComponentId !== undefined) {
+    if (!row.contractId) {
+      throw new Error("runtimeComponentId requires contractId (for example button).");
+    }
+    return applyEndpointComponent({
+      ...row,
+      endpointComponentId: row.runtimeComponentId,
+      sourceMappingTarget: row.sourceMappingTarget ?? row.htmlLogicalName,
+    }, profile);
+  }
   const key = `component:${profile.id}:${row.htmlLogicalName}`;
   if (seen.has(key)) throw new Error(`Duplicate pending edit: ${key}`);
   seen.add(key);
@@ -278,6 +307,84 @@ function applyComponentSlot(row, profile) {
   }
 }
 
+function applyEndpointComponent(row, profile) {
+  const key = `endpoint-component:${profile.id}:${row.endpointComponentId}`;
+  if (seen.has(key)) throw new Error(`Duplicate pending edit: ${key}`);
+  seen.add(key);
+  const mappings = profile.endpointComponentMappings || (profile.endpointComponentMappings = []);
+  const index = mappings.findIndex((item) => item.endpointComponentId === row.endpointComponentId);
+  const action = row.action || "update";
+  if (!["add", "update", "unlink"].includes(action)) throw new Error(`${key}: unsupported action ${action}.`);
+  if (action === "add" && index >= 0) throw new Error(`${key}: mapping already exists; use action=update.`);
+  if (action === "update" && index < 0) throw new Error(`${key}: mapping does not exist; use action=add.`);
+
+  const current = index >= 0 ? mappings[index] : null;
+  const target = current ? { ...current } : {
+    endpointComponentId: row.endpointComponentId,
+    contractId: row.contractId,
+    htmlLogicalName: row.htmlLogicalName,
+    pixsoTarget: null,
+    pixsoTargetStatus: "unregistered",
+    pixsoVariant: null,
+    mappingStatus: "unavailable",
+    sourceMappingTarget: null,
+  };
+  const facts = targetFacts(profile);
+  if (!facts.contractIds.has(target.endpointComponentId)) {
+    throw new Error(`${key}: endpointComponentId is not in the HTML component contract: ${target.endpointComponentId}`);
+  }
+  const isHtmlComponentIdentity = (profile.componentMappings || []).some(
+    (mapping) => mapping.htmlLogicalName === target.htmlLogicalName,
+  );
+  if (!facts.specNames.has(target.htmlLogicalName) && !isHtmlComponentIdentity) {
+    throw new Error(`${key}: htmlLogicalName is neither an HTML component identity nor a Pixso spec key: ${target.htmlLogicalName}`);
+  }
+  if (row.contractId !== undefined) target.contractId = row.contractId;
+  if (row.htmlLogicalName !== undefined) target.htmlLogicalName = row.htmlLogicalName;
+  if (action === "unlink") {
+    target.pixsoTarget = null;
+    target.pixsoTargetStatus = "unregistered";
+    target.pixsoVariant = null;
+    target.mappingStatus = "unavailable";
+  } else {
+    setOptional(target, "pixsoTarget", row.pixsoTarget);
+    setOptional(target, "pixsoTargetStatus", row.pixsoTargetStatus);
+    const pixsoVariant = parseJsonCell(row.pixsoVariant, `${key}.pixsoVariant`, "object");
+    if (pixsoVariant !== undefined) target.pixsoVariant = pixsoVariant;
+    setOptional(target, "mappingStatus", row.mappingStatus);
+    setOptional(target, "sourceMappingTarget", row.sourceMappingTarget);
+    if (row.note !== undefined) {
+      if (row.note === null) delete target.notes;
+      else target.notes = row.note;
+    }
+    if (row.pixsoTarget !== undefined && row.pixsoTargetStatus === undefined) {
+      target.pixsoTargetStatus = row.pixsoTarget === null ? "unregistered" : "registered";
+    }
+    if (target.pixsoTargetStatus === "registered" && row.mappingStatus === undefined && !target.mappingStatus) {
+      target.mappingStatus = "mapped-pending-verification";
+    }
+  }
+  if (target.pixsoTargetStatus === "registered") {
+    if (!target.pixsoTarget) throw new Error(`${key}: registered target requires pixsoTarget.`);
+    if (!facts.targetNames.has(target.pixsoTarget)) {
+      throw new Error(`${key}: Pixso target is not an exact registered name: ${target.pixsoTarget}`);
+    }
+    if (!target.pixsoVariant || typeof target.pixsoVariant !== "object" || Array.isArray(target.pixsoVariant)) {
+      throw new Error(`${key}: registered target requires pixsoVariant JSON object.`);
+    }
+  }
+  if (target.pixsoTargetStatus === "unregistered" && target.pixsoTarget !== null) {
+    throw new Error(`${key}: unregistered target must use pixsoTarget=—.`);
+  }
+  if (action === "add") {
+    mappings.push(target);
+    addChange(key, null, target);
+  } else {
+    mappings[index] = target;
+    addChange(key, current, target);
+  }
+}
+
 function applyToken(row, profile) {
   const mappingType = normalizeMappingType(row.mappingType);
   if (!mappingType) throw new Error(`Unknown token mappingType: ${row.mappingType || "(missing)"}`);
@@ -389,6 +496,11 @@ for (const row of pendingRows) {
     } else if (row.type === "component-slot") {
       if (!row.htmlParent || !row.htmlSlot || !row.htmlRole) throw new Error("htmlParent, htmlSlot and htmlRole are required.");
       applyComponentSlot(row, profile);
+    } else if (row.type === "endpoint-component") {
+      if (!row.endpointComponentId || !row.contractId || !row.htmlLogicalName) {
+        throw new Error("endpointComponentId, contractId and htmlLogicalName are required.");
+      }
+      applyEndpointComponent(row, profile);
     } else {
       applyToken(row, profile);
     }

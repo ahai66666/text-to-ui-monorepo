@@ -20,6 +20,50 @@ Vue 组件实现
 Pixso 映射、组件画廊、浏览器验证
 ```
 
+## 系统架构 / System Architecture
+
+下面的双语框架图说明 Text-to-UI 从技能入口、设计系统契约、跨框架编译到 Pixso 导入和最终验收的完整职责边界。英文名称用于代码、目录和协作检索，中文名称用于产品与设计沟通。
+
+```text
+Text-to-UI Skill（Text-to-UI 技能编排系统）
+├── Skill Entry & Task Instructions（技能入口与任务说明）
+├── Workflow Router（工作流路由器）
+│   ├── Existing HTML to Pixso（已有 HTML 导入 Pixso）
+│   ├── New Page（新页面生成）
+│   ├── Micro Revision（已确认产物的微调）
+│   ├── Pixso Component Library（Pixso 组件库维护）
+│   └── Converter Diagnosis（转换链路诊断）
+├── Analysis, Proposal & Confirmation Gate（需求分析、方案与确认门禁）
+├── Design-System Contract Layer（设计系统契约层）
+│   ├── Token Contract（Token 契约）
+│   ├── Component Contract（组件契约）
+│   ├── Pattern Contract（页面 Pattern 契约）
+│   └── Typography & Icon Rules（字排与图标规则）
+├── Cross-Source Mapping Registry（跨端映射注册表）
+│   ├── Token to Pixso Variable Mapping（Token 到 Pixso Variable 映射）
+│   ├── Component to Native Instance Mapping（组件到原生实例映射）
+│   ├── Style & Typography Mapping（样式与文字样式映射）
+│   └── Component Slot Mapping（组件 Slot 映射）
+├── Shared Page Specification & UI Scene（共享页面规格与 UI 场景）
+├── Framework Adapters & Page Compiler（框架适配器与页面编译器）
+│   ├── HTML Adapter（HTML 适配器）
+│   ├── React Adapter（React 适配器）
+│   └── Vue Adapter（Vue 适配器）
+├── Browser Capture, Preview & Visual Manifest（浏览器采集、预览与视觉清单）
+├── Pixso Import Pipeline（Pixso 页面导入管线）
+│   ├── DOM Visual IR（DOM 视觉中间表示）
+│   ├── Pixso Native Scene（Pixso 原生场景）
+│   └── Page Import Operation Plan（页面导入执行计划）
+├── Pixso Native Renderer Plugin（Pixso 原生渲染插件）
+├── Bridge Service & Persistent-Agent Protocol（桥接服务与常驻 Agent 协议）
+├── Preview Hub & Component Gallery（预览中心与组件画廊）
+└── Readback, Visual QA & Audit（读回、视觉验收与审计）
+    ├── Token Usage Audit（Token 使用审计）
+    ├── Component Instance Audit（组件实例审计）
+    ├── Variable & Style Binding Audit（变量与样式绑定审计）
+    └── HTML–Pixso Visual Parity Check（HTML 与 Pixso 视觉一致性检查）
+```
+
 其中有一条必须保持清晰的边界：
 
 > Skill 负责分析需求、选择组件、组织页面和调用规范；生产组件包负责真正的 HTML、React、Vue 实现。
@@ -126,11 +170,13 @@ HTML / React / Vue 运行时与自动校验
 
 `apps/component-gallery/` 是唯一正式组件画廊，用于：
 
-- 设计师查看真实视觉、完整状态和交互表现。
-- HTML、React、Vue 在相同位置逐项对照。
+- 设计师查看 Pattern 组合规则与真实组件视觉、状态和交互表现。
+- HTML、React、Vue 在相同位置逐项对照，并通过卡片标题栏右侧的“组件规范”弹窗查看契约。
 - 开发者调试组件结构和行为。
 - 验收 Token、样式和框架适配是否一致。
 - 为 Skill 和 Pixso 映射提供可检查的组件目录。
+
+组件契约不是第二套视觉画廊。`packages/component-contracts/src/components.json` 是唯一可编辑的契约源；生成的运行时模块、验收 manifest 和交付镜像只能通过构建更新。对外组件身份使用 `logicalName`，运行时 `id`、fixture 与选择器仅用于内部渲染和测试。
 
 开发服务器启动后，可在浏览器中切换 HTML、React、Vue 运行时。推荐通过 HTTP 访问；`file://` 只支持静态 HTML fallback，不能验证真实 React/Vue 入口。
 

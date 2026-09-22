@@ -153,13 +153,23 @@ function makeSearchLibrary() {
     iconInstance.name = "Text-to-UI Icon/action/add";
     iconInstance.componentPropertyReferences = { mainComponent: "Text-to-UI Icon/action/add" };
     iconInstance.fills = [{ type: "SOLID", color: { r: 0, g: 0, b: 0 } }];
+    iconInstance.boundVariables = {
+      fills: [{ type: "VARIABLE_ALIAS", id: "variable-neutral-light-100" }],
+    };
     const vector = makeNode("VECTOR");
     vector.strokes = [{ type: "SOLID", color: { r: 0, g: 0, b: 0 } }];
+    vector.boundVariables = {
+      strokes: [{ type: "VARIABLE_ALIAS", id: "variable-neutral-light-100" }],
+    };
     iconInstance.appendChild(vector);
     const label = makeNode("TEXT");
     label.name = "Label";
     label.characters = "旧文字";
-    label.fills = [{ type: "SOLID", color: { r: 0, g: 0, b: 0 } }];
+    label.fills = [{
+      type: "SOLID",
+      color: { r: 1, g: 1, b: 1 },
+      boundVariables: { color: { type: "VARIABLE_ALIAS", id: "variable-neutral-light-100" } },
+    }];
     instance.appendChild(iconInstance);
     instance.appendChild(label);
     return instance;
@@ -258,7 +268,7 @@ function makePlan(targetPage, suffix) {
           pixsoName: "Icon Text Button",
           componentSetName: "Icon Text Button",
           variant: { type: "Primary", size: "Medium", state: "Default" },
-          contentColor: { text: "$variable/neutral-light/100", icon: "$variable/neutral-light/100" },
+          iconColorSource: "variant-content",
         },
         props: { label: "写邮件", variant: "primary", mode: "icon-text" },
         slots: { icon: "action/add", label: "写邮件" },

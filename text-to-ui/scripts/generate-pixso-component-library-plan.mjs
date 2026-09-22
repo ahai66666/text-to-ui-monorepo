@@ -275,7 +275,101 @@ function makeContractProperties(contract) {
   return properties;
 }
 
+// Slider is not a generic row of textual slots. Its usable visual contract is
+// a layered track, progress fill, and thumb. Keeping this explicit prevents a
+// component-library import from degrading it to the old placeholder trio of
+// `label/content/description` frames.
+function sliderOperations(contract) {
+  const logicalName = contract.logicalName;
+  const rootId = `component-${slug(logicalName)}`;
+  const controlWidth = 200;
+  const value = 84;
+  const trackX = 8;
+  const trackWidth = controlWidth - 16;
+  const fillWidth = trackWidth * (value / 100);
+  const operations = [];
+  const add = (operation) => operations.push({ phase: "library", region: contract.category ?? "component-library", ...operation });
+  const addText = (nodeId, parentId, name, characters, role, propName = null) => add({
+    nodeId,
+    parentId,
+    op: "create-text",
+    name,
+    layout: { direction: "HORIZONTAL", width: "hug", height: "hug", align: "CENTER", padding: {} },
+    style: { fill: token(propName === "value" ? "text/secondary" : "text/primary"), textStyle: textStyle(role) },
+    characters,
+    ...(propName ? { propertyBinding: { propName, slotName: propName } } : {}),
+    metadata: { source: "html-slider-visual-contract", namedSlot: propName, textRole: role },
+  });
+  const addRect = (nodeId, parentId, name, layout, fill, radiusToken) => add({
+    nodeId,
+    parentId,
+    op: "create-rectangle",
+    name,
+    layout: { direction: "NONE", positioning: "ABSOLUTE", ...layout, padding: {} },
+    style: { fill: token(fill), radius: token(radiusToken) },
+    metadata: { source: "html-slider-visual-contract" },
+  });
+  const addEllipse = (nodeId, parentId, name, layout, fill) => add({
+    nodeId,
+    parentId,
+    op: "create-ellipse",
+    name,
+    layout: { direction: "NONE", positioning: "ABSOLUTE", ...layout, padding: {} },
+    style: { fill: token(fill) },
+    metadata: { source: "html-slider-visual-contract" },
+  });
+
+  add({
+    nodeId: rootId,
+    parentId: null,
+    op: "create-component",
+    name: logicalName,
+    layout: { direction: "HORIZONTAL", width: 280, height: 24, gap: token("space/3"), align: "CENTER", padding: {} },
+    style: { fill: { kind: "transparent" } },
+    componentContract: {
+      logicalName,
+      rendererKey: rendererKey(contract),
+      sourceEvidence: {
+        html: contract.implementations?.html ?? contract.frameworks?.html?.source ?? null,
+        contractId: contract.id,
+        contractPath: path.relative(repositoryRoot, contractsPath),
+        pixsoSpec: logicalName,
+      },
+      props: contract.props ?? [],
+      properties: {
+        ...makeContractProperties(contract),
+        // Component properties are the editable Pixso defaults; leaving them
+        // empty overwrites the visible specimen text after binding.
+        label: { type: "TEXT", defaultValue: "透明度" },
+        value: { type: "TEXT", defaultValue: String(value) },
+      },
+      slots: ["label", "control", "value"],
+      slotContracts: {
+        label: { role: "body-m" },
+        control: { role: "slider-visual", overlap: true },
+        value: { role: "body-m" },
+      },
+      variants: contract.variants ?? ["style-1", "style-2"],
+      states: contract.states ?? [],
+      tokenRoles: ["brand/100", "neutral-dark/05", "neutral-light/100", "text/primary", "text/secondary"],
+    },
+  });
+  const labelId = `${rootId}-slot-label`;
+  add({ nodeId: labelId, parentId: rootId, op: "create-frame", name: "#label", layout: { direction: "HORIZONTAL", width: "hug", height: 24, align: "CENTER", padding: {} }, style: { fill: { kind: "transparent" } }, slotName: "label", metadata: { source: "html-slider-visual-contract", namedSlot: "label" } });
+  addText(`${labelId}-text`, labelId, "label text", "透明度", "body-m", "label");
+  const controlId = `${rootId}-slot-control`;
+  add({ nodeId: controlId, parentId: rootId, op: "create-frame", name: "#control", layout: { direction: "NONE", width: controlWidth, height: 24, align: "CENTER", padding: {} }, style: { fill: { kind: "transparent" } }, slotName: "control", metadata: { source: "html-slider-visual-contract", namedSlot: "control", intentionalOverlap: true } });
+  addRect(`${controlId}-track`, controlId, "Track · neutral-dark/05", { x: trackX, y: 10, width: trackWidth, height: 4 }, "neutral-dark/05", "radius/full");
+  addRect(`${controlId}-fill`, controlId, "Fill · brand/100 · 84%", { x: trackX, y: 10, width: fillWidth, height: 4 }, "brand/100", "radius/full");
+  addEllipse(`${controlId}-thumb`, controlId, "Thumb · brand/100 · 16px", { x: trackX + fillWidth - 8, y: 4, width: 16, height: 16 }, "brand/100");
+  const valueId = `${rootId}-slot-value`;
+  add({ nodeId: valueId, parentId: rootId, op: "create-frame", name: "#value", layout: { direction: "HORIZONTAL", width: "hug", height: 24, align: "CENTER", padding: {} }, style: { fill: { kind: "transparent" } }, slotName: "value", metadata: { source: "html-slider-visual-contract", namedSlot: "value" } });
+  addText(`${valueId}-text`, valueId, "value text", String(value), "body-m", "value");
+  return { operations, rootId, iconSlots: [] };
+}
+
 function componentOperations(contract) {
+  if (contract.logicalName === "Slider/Default") return sliderOperations(contract);
   const logicalName = contract.logicalName;
   const resolvedSpec = resolveSpec(logicalName, contract);
   const spec = resolvedSpec.value;
@@ -510,7 +604,14 @@ const plan = {
     reviewGrid,
     excludedComponents: [...excluded],
     minimumRuntimeVersion: PIXSO_PLUGIN_RUNTIME_VERSION,
-    agentContract: permanentAgentContract(`component-library:${libraryPage}`),
+    // A partial library import must not reuse the last publication for the
+    // whole page.  Include the exact ordered component selection so a Slider
+    // plan is independently idempotent from a previous navigation batch.
+    // Include the plan grammar revision as well as the selection. A component
+    // can keep the same logical name while its generated visual structure
+    // changes (for example Slider's former generic slots became real track,
+    // fill, and thumb geometry); that must publish a new bridge job.
+    agentContract: permanentAgentContract(`component-library:v3:${libraryPage}:${selected.map((contract) => contract.logicalName).join("|")}`),
   },
   page: { name: libraryPage, targetPage: libraryPage, reviewOnly: libraryPage !== "NewComponents", excludedComponents: [...excluded] },
   resources: {

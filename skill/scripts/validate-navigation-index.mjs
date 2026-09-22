@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { findComponent, generatedIndexDir, loadIndexes, locateMonorepo, parseArgs, resolveSkillRoot } from './navigation-index-lib.mjs';
+import { materialSnapshot, routeMaterialIndexDigest } from './route-material-lib.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const located = locateMonorepo({ start: args.start || process.cwd(), explicitRepo: args.repo });
@@ -19,6 +20,36 @@ for (const route of indexes['task-router'].routes) {
     if (!findComponent(indexes['component-index'], capability)) errors.push(`${route.id}: missing required capability ${capability}`);
   }
 }
+for (const route of indexes['workflow-route-index'].routes) {
+  if (!route.id || !route.description || !Array.isArray(route.exactReferencesToRead)) errors.push(`workflow route is incomplete: ${route.id ?? 'unknown'}`);
+  for (const reference of route.exactReferencesToRead ?? []) if (!fs.existsSync(path.join(skillRoot, reference))) errors.push(`${route.id}: missing workflow reference ${reference}`);
+}
+const routeMaterialIndex = indexes['route-material-index'];
+if (routeMaterialIndex.indexDigest !== routeMaterialIndexDigest(routeMaterialIndex)) errors.push('route-material-index: indexDigest is invalid');
+for (const route of Object.values(routeMaterialIndex.routes ?? {})) {
+  const workflowRoute = indexes['workflow-route-index'].routes.find((candidate) => candidate.id === route.id);
+  if (!workflowRoute) {
+    errors.push(`route-material-index: unknown workflow route ${route.id}`);
+    continue;
+  }
+  if (!Array.isArray(route.materials) || route.materials.length === 0) {
+    errors.push(`${route.id}: route material list is empty`);
+    continue;
+  }
+  try {
+    const snapshot = materialSnapshot({
+      repo,
+      definitions: route.materials.map(({ path: materialPath, role, required }) => ({ path: materialPath, role, required }))
+    });
+    if (snapshot.digest !== route.materialsDigest) errors.push(`${route.id}: route material hashes are stale`);
+    for (const material of route.materials) {
+      const current = snapshot.materials.find((entry) => entry.path === material.path);
+      if (!current || current.sha256 !== material.sha256) errors.push(`${route.id}: material hash mismatch ${material.path}`);
+    }
+  } catch (error) {
+    errors.push(`${route.id}: ${error.message}`);
+  }
+}
 for (const component of indexes['component-index'].components) {
   for (const [framework, entry] of Object.entries(component.frameworks)) {
     if (!entry.exists) errors.push(`${component.id}: ${framework} source missing (${entry.source})`);
@@ -32,4 +63,4 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
-console.log(`Navigation indexes valid: ${indexes['component-index'].componentCount} components, ${indexes['task-router'].routes.length} task routes.`);
+console.log(`Navigation indexes valid: ${indexes['component-index'].componentCount} components, ${indexes['task-router'].routes.length} task routes, ${indexes['workflow-route-index'].routes.length} workflow routes.`);

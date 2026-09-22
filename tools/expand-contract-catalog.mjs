@@ -10,7 +10,7 @@ const source = JSON.parse(await fs.readFile(contractPath, "utf8"));
 const existing = new Map(source.components.map((component) => [component.logicalName, component]));
 
 const names = [
-  "Accordion", "Alert", "Alert Dialog", "Aspect Ratio", "Attachment", "Avatar", "Badge", "Breadcrumb", "Bubble", "Button", "Calendar", "Card", "Carousel", "Chart", "Checkbox", "Collapsible", "Combobox", "Context Menu", "Data Table", "Date Picker", "Time Picker", "Dialog", "Dropdown Menu", "Empty", "Field", "Hover Card", "Input", "Input OTP", "Item", "Kbd", "Label", "Menubar", "Native Select", "Navigation Menu", "Primary Navigation Item", "Pagination", "Popover", "Progress", "Radio", "Radio Group", "Search", "Select", "Separator", "Sidebar", "Slider", "Switch", "Table", "Tabs", "Textarea", "Toast", "Tooltip", "Typography", "List Card", "Semi-modal", "Titlebar"
+  "Accordion", "Alert", "Alert Dialog", "Attachment", "Avatar", "Badge", "Breadcrumb", "Button", "Calendar", "Card", "Chart", "Checkbox", "Collapsible", "Combobox", "Context Menu", "Data Table", "Date Picker", "Time Picker", "Dialog", "Dropdown Menu", "Empty", "Field", "Hover Card", "Input", "Input OTP", "Item", "Kbd", "Label", "Menubar", "Native Select", "Primary Navigation Item", "Pagination", "Popover", "Progress", "Radio", "Radio Group", "Search", "Select", "Sidebar", "Slider", "Switch", "Table", "Tabs", "Sub Tabs", "Tree View", "Textarea", "Toast", "Tooltip", "List Card", "Semi-modal", "Titlebar"
 ];
 
 const idFor = (name) => name
@@ -21,8 +21,9 @@ const idFor = (name) => name
 
 const stateFor = (name) => {
   const states = ["default", "hover", "focus", "disabled"];
-  if (["Accordion", "Collapsible", "Dialog", "Alert Dialog", "Dropdown Menu", "Popover", "Hover Card", "Context Menu", "Menubar", "Navigation Menu", "Select", "Combobox", "Date Picker", "Time Picker", "Titlebar"].includes(name)) states.push("open");
-  if (["Checkbox", "Radio", "Radio Group", "Switch", "Tabs", "Sidebar", "Table", "Data Table", "List Card"].includes(name)) states.push("selected");
+  if (["Accordion", "Collapsible", "Dialog", "Alert Dialog", "Dropdown Menu", "Popover", "Hover Card", "Context Menu", "Menubar", "Select", "Combobox", "Date Picker", "Time Picker", "Titlebar"].includes(name)) states.push("open");
+  if (["Checkbox", "Radio", "Radio Group", "Switch", "Tabs", "Sub Tabs", "Sidebar", "Table", "Data Table", "List Card"].includes(name)) states.push("selected");
+  if (name === "Tree View") states.push("selected", "expanded");
   if (["Input", "Textarea", "Field", "Search", "Combobox", "Select", "Date Picker", "Time Picker"].includes(name)) states.push("error");
   if (["Progress", "Chart", "Toast"].includes(name)) states.push("loading");
   return [...new Set(states)];
@@ -33,12 +34,14 @@ const slotsFor = (name) => {
   if (["Input", "Search", "Textarea", "Select", "Native Select", "Combobox", "Date Picker", "Time Picker", "Field"].includes(name)) return ["label", "leading", "value", "trailing", "help"];
   if (["Dialog", "Alert Dialog", "Semi-modal", "Popover", "Hover Card"].includes(name)) return ["title", "description", "content", "actions"];
   if (["Card", "Item", "List Card", "Table", "Data Table"].includes(name)) return ["leading", "title", "description", "content", "trailing"];
+  if (name === "Sub Tabs") return ["label", "content"];
+  if (name === "Tree View") return ["leading", "label", "trailing"];
   return ["label", "content", "description"];
 };
 
 const tokenRolesFor = (name) => {
   const roles = ["color.text", "color.surface", "color.border", "typography.body-l", "spacing.component-gap"];
-  if (["Button", "Alert", "Badge", "Progress", "Toast", "Tabs", "Switch"].includes(name)) roles.push("color.primary");
+  if (["Button", "Alert", "Badge", "Progress", "Toast", "Tabs", "Sub Tabs", "Tree View", "Switch"].includes(name)) roles.push("color.primary");
   if (["Dialog", "Alert Dialog", "Semi-modal", "Popover", "Hover Card", "Context Menu", "Dropdown Menu", "Tooltip"].includes(name)) roles.push("shadow.overlay", "radius.card");
   if (["Table", "Data Table", "Calendar", "Date Picker", "Time Picker", "Pagination"].includes(name)) roles.push("spacing.content-inset");
   return [...new Set(roles)];
@@ -55,7 +58,7 @@ const variantFor = (name) => {
 
 const baseContracts = {
   Button: {
-    id: "button", logicalName: "Button/Primary/Default", variants: ["primary", "secondary", "ghost", "danger"], sizes: ["standard", "small"], modes: ["text", "icon-text", "icon", "selection-dropdown", "split-dropdown"], states: ["default", "hover", "pressed", "focus", "disabled"], props: ["label", "variant", "size", "mode", "disabled", "menuItems"], slots: ["icon", "label", "trigger", "menu"], tokenRoles: ["color.primary", "color.primary-text", "color.text", "size.button-height", "size.button-sm-height", "radius.button", "spacing.padding-button-x", "spacing.padding-button-sm-x", "typography.body-m", "typography.body-l"], sizePolicy: { defaultSize: "standard", defaultHeightToken: "size.button-height", defaultHeight: "40px", compactSize: "small", compactHeightToken: "size.button-sm-height", compactHeight: "28px", compactRequiresExplicitContract: true }, iconAliases: ["action/add", "action/download", "action/settings", "action/close", "navigation/chevron-down", "action/refresh", "action/more"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/button", react: "@text-to-ui/components-react/Button", vue: "@text-to-ui/components-vue/Button" }
+    id: "button", logicalName: "Button/Primary/Default", variants: ["primary", "secondary", "ghost", "danger"], sizes: ["standard", "small"], modes: ["text", "icon-text", "icon", "split-dropdown"], states: ["default", "hover", "pressed", "focus", "disabled"], props: ["label", "variant", "size", "mode", "icon", "disabled", "menuItems"], slots: ["icon", "label", "trigger", "menu"], tokenRoles: ["color.primary", "color.primary-text", "color.text", "size.button-height", "size.button-sm-height", "radius.button", "spacing.padding-button-x", "spacing.padding-button-sm-x", "typography.body-m", "typography.body-l"], sizePolicy: { defaultSize: "standard", defaultHeightToken: "size.button-height", defaultHeight: "40px", compactSize: "small", compactHeightToken: "size.button-sm-height", compactHeight: "28px", compactRequiresExplicitContract: true }, iconAliases: ["action/add", "action/download", "action/settings", "action/close", "navigation/chevron-down", "action/refresh", "action/more"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/button", react: "@text-to-ui/components-react/Button", vue: "@text-to-ui/components-vue/Button" }
   },
   Input: {
     id: "input", logicalName: "Input/White Surface/Default", variants: ["default", "error", "disabled"], states: ["default", "hover", "focus", "disabled", "error"], props: ["value", "placeholder", "disabled", "error"], slots: ["leading", "value", "trailing", "help"], tokenRoles: ["color.input-bg", "color.text", "color.border", "size.input-height", "radius.input", "typography.body-l"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/input", react: "@text-to-ui/components-react/Input", vue: "@text-to-ui/components-vue/Input" }
@@ -74,6 +77,12 @@ const baseContracts = {
   },
   "List Card": {
     id: "list-card", logicalName: "List Item/White Surface/Default", variants: ["default", "selected", "unread"], states: ["default", "hover", "pressed", "focus", "selected", "disabled"], props: ["title", "description", "meta", "selected", "unread"], slots: ["leading", "title", "description", "trailing"], tokenRoles: ["color.surface", "color.sidebar-selected", "color.text", "color.text-muted", "size.list-item-height", "radius.list-item", "typography.body-l", "typography.body-m"], iconAliases: ["navigation/list", "navigation/grid"], source: "skill-canonical", status: "ready", implementations: { html: "@text-to-ui/components-html/list-card", react: "@text-to-ui/components-react/ListCard", vue: "@text-to-ui/components-vue/ListCard" }
+  },
+  "Sub Tabs": {
+    id: "sub-tabs", logicalName: "Sub Tabs/Default", variants: ["default"], states: ["default", "hover", "focus", "selected", "disabled"], props: ["tabs", "value", "defaultValue", "disabled", "onChange"], slots: ["label", "content"], tokenRoles: ["color.neutral-dark-05", "color.text-muted", "color.brand-10", "color.brand-100", "spacing.gap-subtab-item", "spacing.space-5", "radius.subtab", "size.size-10", "typography.subtitle-m"], source: "canonical-custom", status: "partial", implementations: { html: "packages/components-html/src/index.js#subTabs", react: "packages/components-react/src/index.jsx#SubTabs", vue: "packages/components-vue/src/SubTabs.vue" }
+  },
+  "Tree View": {
+    id: "tree-view", logicalName: "Tree View/Default", variants: ["default"], states: ["default", "hover", "focus", "selected", "expanded", "disabled"], props: ["nodes", "selectedId", "expandedIds", "defaultSelectedId", "defaultExpandedIds", "disabled", "onSelect", "onToggle"], slots: ["leading", "label", "trailing"], tokenRoles: ["color.text", "color.text-muted", "color.surface", "color.border", "color.primary", "spacing.menu-item-content", "size.tree-item-height", "radius.subtab", "typography.body-l", "typography.body-m"], iconAliases: ["navigation/chevron-right", "navigation/grid", "object/file"], source: "canonical-custom", status: "partial", implementations: { html: "packages/components-html/src/index.js#treeView", react: "packages/components-react/src/index.jsx#TreeView", vue: "packages/components-vue/src/TreeView.vue" }
   }
 };
 

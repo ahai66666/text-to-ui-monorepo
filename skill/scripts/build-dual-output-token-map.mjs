@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from "node:fs";
+import { output as runtimeMap } from "./build-token-runtime-map.mjs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -10,7 +11,6 @@ const skillDir = path.resolve(scriptDir, "..");
 const tokenDir = path.join(skillDir, "assets", "design-system");
 const outputPath = path.join(tokenDir, "dual-output-token-map.json");
 const pixsoPath = path.join(tokenDir, "pixso-variables.json");
-const runtimePath = path.join(tokenDir, "token-runtime-map.json");
 const colorPath = path.join(tokenDir, "tokens.colors.json");
 const cssFiles = [
   "tokens.colors.css",
@@ -29,7 +29,7 @@ const mode = process.argv.includes("--write")
     : "print";
 
 const pixsoManifest = JSON.parse(fs.readFileSync(pixsoPath, "utf8"));
-const runtimeMap = JSON.parse(fs.readFileSync(runtimePath, "utf8"));
+
 const colorTokens = JSON.parse(fs.readFileSync(colorPath, "utf8"));
 const cssSource = cssFiles
   .map((filename) => fs.readFileSync(path.join(tokenDir, filename), "utf8"))
@@ -356,7 +356,7 @@ for (const [name, raw] of Object.entries(colorTokens.semantic)) {
   throw new Error(`Unsupported semantic color token: ${name}`);
 }
 
-const output = {
+export const output = {
   schemaVersion: 1,
   generatedFrom: [
     "assets/design-system/tokens.*.json",
@@ -386,6 +386,7 @@ const output = {
 };
 
 const serialized = `${JSON.stringify(output, null, 2)}\n`;
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 if (mode === "write") {
   fs.writeFileSync(outputPath, serialized);
   console.log(`Wrote ${outputPath}`);
@@ -406,4 +407,6 @@ if (mode === "write") {
   );
 } else {
   process.stdout.write(serialized);
+}
+
 }

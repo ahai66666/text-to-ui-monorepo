@@ -16,8 +16,10 @@ export function parseArgs(argv) {
     if (!token.startsWith('--')) continue;
     const key = token.slice(2);
     const next = argv[index + 1];
-    if (!next || next.startsWith('--')) args[key] = true;
-    else { args[key] = next; index += 1; }
+    let value = true;
+    if (next && !next.startsWith('--')) { value = next; index += 1; }
+    if (Object.hasOwn(args, key)) args[key] = (Array.isArray(args[key]) ? args[key] : [args[key]]).concat(value);
+    else args[key] = value;
   }
   return args;
 }
@@ -105,7 +107,7 @@ export function generatedIndexDir(skillRoot) {
 
 export function loadIndexes(skillRoot) {
   const directory = generatedIndexDir(skillRoot);
-  const names = ['task-router', 'layout-index', 'component-index', 'token-index', 'validation-index'];
+  const names = ['task-router', 'layout-index', 'component-index', 'token-index', 'validation-index', 'workflow-route-index', 'route-material-index'];
   return Object.fromEntries(names.map((name) => [name, readJson(path.join(directory, `${name}.json`))]));
 }
 

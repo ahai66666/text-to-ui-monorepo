@@ -90,11 +90,49 @@ for (const collection of pixsoVariablesManifest.collections || []) {
   }
 }
 const componentMappings = profile.componentMappings || [];
+const endpointComponentMappings = profile.endpointComponentMappings || [];
 const formalComponentMappings = componentMappings.filter(
   (mapping) => mapping.pixsoTargetStatus === "registered" && mapping.pixsoTarget,
 );
+const runtimeAliasMappings = endpointComponentMappings.filter(
+  (mapping) => mapping.pixsoTargetStatus === "registered" && mapping.pixsoTarget,
+);
+const runtimeAliasesByLogicalName = new Set(
+  runtimeAliasMappings.map((mapping) => mapping.htmlLogicalName),
+);
+const unifiedComponentMappings = [
+  ...formalComponentMappings
+    .filter((mapping) => !runtimeAliasesByLogicalName.has(mapping.htmlLogicalName))
+    .map((mapping) => ({
+    runtimeComponentId: null,
+    contractId: null,
+    htmlLogicalName: mapping.htmlLogicalName,
+    htmlRendererKey: mapping.htmlRendererKey,
+    pixsoTarget: mapping.pixsoTarget,
+    pixsoSpecKey: mapping.pixsoSpecKey,
+    pixsoTargetStatus: mapping.pixsoTargetStatus,
+    variant: mapping.runtimeBinding?.variant || null,
+    mappingStatus: mapping.nativeSourceStatus,
+    notes: null,
+    })),
+  ...runtimeAliasMappings.map((mapping) => ({
+    runtimeComponentId: mapping.endpointComponentId,
+    contractId: mapping.contractId,
+    htmlLogicalName: mapping.htmlLogicalName,
+    htmlRendererKey: mapping.contractId,
+    pixsoTarget: mapping.pixsoTarget,
+    pixsoSpecKey: mapping.sourceMappingTarget || mapping.htmlLogicalName,
+    pixsoTargetStatus: mapping.pixsoTargetStatus,
+    variant: mapping.pixsoVariant,
+    mappingStatus: mapping.mappingStatus,
+    notes: mapping.notes,
+  })),
+];
 const pendingComponentMappings = componentMappings.filter(
-  (mapping) => !(mapping.pixsoTargetStatus === "registered" && mapping.pixsoTarget),
+  (mapping) => !(mapping.pixsoTargetStatus === "registered" && mapping.pixsoTarget) && mapping.pixsoMappingPolicy !== "excluded",
+);
+const excludedComponentMappings = componentMappings.filter(
+  (mapping) => mapping.pixsoMappingPolicy === "excluded",
 );
 const semanticTokenMappings = profile.semanticTokenMappings || [];
 const runtimeSemanticMappings = runtimeSemanticMappingsForProfile(profile);
@@ -170,6 +208,12 @@ for (const mapping of componentMappings) {
     subcomponentMappingsByTarget.set(submapping.pixsoTarget, existingMappings);
   }
 }
+const endpointMappingsByTarget = new Map();
+for (const mapping of endpointComponentMappings) {
+  const existingMappings = endpointMappingsByTarget.get(mapping.pixsoTarget) || [];
+  existingMappings.push(`${mapping.endpointComponentId} → ${mapping.htmlLogicalName}`);
+  endpointMappingsByTarget.set(mapping.pixsoTarget, existingMappings);
+}
 
 const nativeSpecsByTarget = new Map();
 for (const mapping of profile.nativeSourceMappings || []) {
@@ -186,6 +230,8 @@ function inventoryMappingSummary(item) {
   if (htmlMappings.length) return "HTML 正式映射：" + htmlMappings.map((name) => code(name)).join("<br>");
   const subcomponentMappings = subcomponentMappingsByTarget.get(item.name) || [];
   if (subcomponentMappings.length) return "已关联内部子映射：" + subcomponentMappings.map((name) => code(name)).join("<br>");
+  const endpointMappings = endpointMappingsByTarget.get(item.name) || [];
+  if (endpointMappings.length) return "HTML 正式映射：" + endpointMappings.map((name) => code(name)).join("<br>");
   const nativeSpecs = nativeSpecsByTarget.get(item.name) || [];
   return nativeSpecs.length
     ? "已关联 spec：" + nativeSpecs.map((name) => code(name)).join("<br>") + "<br>未建立 HTML 一对一映射"
@@ -240,7 +286,8 @@ lines.push("");
 lines.push("正式关系的核心方向是：");
 lines.push("");
 lines.push("```text");
-lines.push("HTML logicalName  ──componentMappings──>  Pixso exact Component Set/COMPONENT name");
+lines.push("HTML logicalName  ──正式组件映射──>  Pixso exact Component Set/COMPONENT name + Variant");
+lines.push("运行时组件 ID（可选） ──同一行的实现别名──>  HTML logicalName");
 lines.push("HTML CSS Token    ──tokenMappings──────>  Pixso Variable");
 lines.push("``` ");
 lines.push("");
@@ -281,21 +328,23 @@ for (const item of componentInventory) {
 lines.push("");
 lines.push("说明：当前清单中的 `.2in1 Container` 和 `.text` 是 Dialog-2in1 内部依赖；ColorPicker-Tablet 是独立 COMPONENT，不是 Component Set。支持性图标组件不进入这张业务清单。");
 lines.push("");
-lines.push(`## 4. 当前组件正式映射（${formalComponentMappings.length} 条）`);
+lines.push(`## 4. 当前 HTML 正式映射（${unifiedComponentMappings.length} 条）`);
 lines.push("");
-lines.push("只有 `pixsoTargetStatus=registered` 且存在 `pixsoTarget` 的行，才是允许自动实例化的正式映射。`pixsoTarget` 是当前 Pixso 的 exact name；具体 Variant 在 Runtime binding 中记录。`pixsoSpecKey` 只是 Text-to-UI 的视觉规格键，不是当前 Pixso 名称。");
+lines.push("每行都以 `htmlLogicalName` 为正式身份。`运行时组件 ID` 只是可选的代码调用别名；为空表示该映射不依赖具体 ID。只有 `pixsoTargetStatus=registered` 且存在 `pixsoTarget` 的行，才允许自动实例化。`pixsoTarget` 是当前 Pixso 的 exact name；`pixsoSpecKey` 是 Text-to-UI 的视觉规格键，不是当前 Pixso 名称。");
 lines.push("");
-lines.push(renderTableRow(["HTML logicalName", "HTML renderer", "Pixso exact component", "Text-to-UI spec key", "Target status", "Native source status", "Runtime binding / Variant"]));
-lines.push(renderTableRow(["---", "---", "---", "---", "---", "---", "---"]));
-for (const mapping of formalComponentMappings) {
+lines.push(renderTableRow(["运行时组件 ID（可选）", "HTML logicalName", "HTML renderer / contract", "Pixso exact component", "Text-to-UI spec key", "Pixso Variant", "映射状态", "说明"]));
+lines.push(renderTableRow(["---", "---", "---", "---", "---", "---", "---", "---"]));
+for (const mapping of unifiedComponentMappings) {
+  const notes = Array.isArray(mapping.notes) ? mapping.notes.join("<br>") : mapping.notes;
   lines.push(renderTableRow([
+    mapping.runtimeComponentId ? code(mapping.runtimeComponentId) : "—",
     code(mapping.htmlLogicalName),
     code(mapping.htmlRendererKey),
     code(mapping.pixsoTarget),
     mapping.pixsoSpecKey ? code(mapping.pixsoSpecKey) : "—",
-    html(mapping.pixsoTargetStatus),
-    html(mapping.nativeSourceStatus),
-    runtimeSummary(mapping),
+    mapping.variant ? html(JSON.stringify(mapping.variant)) : "—",
+    html(mapping.mappingStatus || mapping.pixsoTargetStatus),
+    html(notes || "—"),
   ]));
 }
 lines.push("");
@@ -306,7 +355,7 @@ const subcomponentMappings = componentMappings.flatMap((mapping) =>
   })),
 );
 if (subcomponentMappings.length) {
-  lines.push(`## 5. Titlebar / 组件内部子映射（${subcomponentMappings.length} 条）`);
+lines.push(`## 5. Titlebar / 组件内部子映射（${subcomponentMappings.length} 条）`);
   lines.push("");
   lines.push("这张表专门记录父组件内部的结构化子组件。它不会把父组件改成子组件，也不会新增独立 HTML logicalName；当前 Titlebar 的窗口三键组就是这种关系。");
   lines.push("");
@@ -332,7 +381,21 @@ if (subcomponentMappings.length) {
   }
   lines.push("");
 }
-lines.push(`## 6. 当前未正式映射的组件（${pendingComponentMappings.length} 条）`);
+lines.push(`## 6.1 当前明确不映射的组件（${excludedComponentMappings.length} 条）`);
+lines.push("");
+lines.push("这些组件继续保留 HTML、React、Vue 实现，但不创建或解析 Pixso 组件，也不计入待补映射。");
+lines.push("");
+lines.push(renderTableRow(["HTML logicalName", "映射策略", "原因"]));
+lines.push(renderTableRow(["---", "---", "---"]));
+for (const mapping of excludedComponentMappings) {
+  lines.push(renderTableRow([
+    code(mapping.htmlLogicalName),
+    html(mapping.pixsoMappingPolicy),
+    html(mapping.pixsoMappingReason),
+  ]));
+}
+lines.push("");
+lines.push(`## 6.2 当前未正式映射的组件（${pendingComponentMappings.length} 条）`);
 lines.push("");
 lines.push("这些 HTML 组件目前没有正式 Pixso 目标。下面的候选名称只是同族参考，不能直接当成映射；要提交映射，请在人工编辑区填写并确认当前 Pixso exact Component Set/COMPONENT name。");
 lines.push("");
@@ -355,6 +418,7 @@ lines.push(renderTableRow(["`htmlLogicalName`", "HTML 组件的正式身份，�
 lines.push(renderTableRow(["`pixsoTarget`", "当前 Pixso Component Set 或 COMPONENT 的 exact name，例如 `Button`、`Input`、`Sidebar Item`；这是 HTML ↔ Pixso 的核心关系。"]));
 lines.push(renderTableRow(["`pixsoSpecKey`", "Text-to-UI 生成规格的键，例如 `Button/Primary/Default`；它不能代替当前 Pixso 的 Component Set 名称。"]));
 lines.push(renderTableRow(["`nativeSourceStatus`", "HarmonyOS 原生组件适配状态，与 Pixso target 是否注册是两件事。"]));
+lines.push(renderTableRow(["`runtimeComponentId`", "代码组件库中的可选调用 ID，例如 `icon-text-primary`；它只是该 HTML 正式映射的实现别名。"]));
 lines.push("");
 const typographyStyleMappings = (profile.styleMappings || []).filter((mapping) => mapping.kind === "text");
 lines.push(`## 8. Typography 映射规则（直接引用 Pixso Text Style，${typographyStyleMappings.length} 条）`);
@@ -426,7 +490,7 @@ for (const mapping of semanticTokenMappings) {
 }
 lines.push("");
 if (runtimeSemanticAliases.length) {
-  lines.push("### 9.3 Runtime-only Semantic Role Aliases");
+  lines.push("### 11.3 Runtime-only Semantic Role Aliases");
   lines.push("");
   lines.push("这些是运行时专用语义别名，不重复列出已经在 Semantic Token 表中的角色；仍然指向 Pixso Variable。");
   lines.push("");
@@ -445,7 +509,7 @@ if (runtimeSemanticAliases.length) {
   }
   lines.push("");
 }
-lines.push("### 10.4 Semantic Color ↔ Pixso Variables");
+lines.push("### 11.4 Semantic Color ↔ Pixso Variables");
 lines.push("");
 lines.push("Semantic Color 允许一个 HTML 语义角色对应一个或多个 Pixso Variable；没有 Variable 的行会明确标为 `literal-only`。");
 lines.push("");
@@ -464,7 +528,7 @@ for (const mapping of semanticColorMappings) {
 lines.push("");
 lines.push("Token、Typography Style 和 HTML 文件证据仍可查看 " + renderEditLink() + "；本维护台现在已经包含 Typography Style 与 Token ↔ Variable 的关系，但旧笔记仍保留更完整的审计快照。");
 lines.push("");
-lines.push("## 11. 同步步骤");
+lines.push("## 12. 同步步骤");
 lines.push("");
 lines.push("在 Obsidian 人工编辑区填写 `state=pending` 后，告诉 Codex“同步 Text-to-UI 映射”。也可以在终端执行：");
 lines.push("");
@@ -481,7 +545,7 @@ lines.push("");
 lines.push("同步成功后，人工编辑行会被标记为 `applied`；若要再次修改同一条关系，把它改回 `pending` 并更新目标值。");
 lines.push("");
 
-const markdown = lines.join("\n") + "\n";
+const markdown = lines.join("\n").replace(/\n+$/, "\n");
 if (outputPath) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, markdown);

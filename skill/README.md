@@ -6,6 +6,50 @@
 
 `text-to-ui/` 是 Skill 的规范源，`skill/` 是由它同步生成的独立安装镜像；两者都只承载规则、索引、预览和工具，不等于生产组件库。HTML、React、Vue 真实组件、共享样式、Token、组件契约和 Pixso 映射位于同一代码仓的 `packages/` 下。
 
+## 系统架构 / System Architecture
+
+下面的双语框架图说明 Text-to-UI 从技能入口、设计系统契约、跨框架编译到 Pixso 导入和最终验收的完整职责边界。英文名称用于代码、目录和协作检索，中文名称用于产品与设计沟通。
+
+```text
+Text-to-UI Skill（Text-to-UI 技能编排系统）
+├── Skill Entry & Task Instructions（技能入口与任务说明）
+├── Workflow Router（工作流路由器）
+│   ├── Existing HTML to Pixso（已有 HTML 导入 Pixso）
+│   ├── New Page（新页面生成）
+│   ├── Micro Revision（已确认产物的微调）
+│   ├── Pixso Component Library（Pixso 组件库维护）
+│   └── Converter Diagnosis（转换链路诊断）
+├── Analysis, Proposal & Confirmation Gate（需求分析、方案与确认门禁）
+├── Design-System Contract Layer（设计系统契约层）
+│   ├── Token Contract（Token 契约）
+│   ├── Component Contract（组件契约）
+│   ├── Pattern Contract（页面 Pattern 契约）
+│   └── Typography & Icon Rules（字排与图标规则）
+├── Cross-Source Mapping Registry（跨端映射注册表）
+│   ├── Token to Pixso Variable Mapping（Token 到 Pixso Variable 映射）
+│   ├── Component to Native Instance Mapping（组件到原生实例映射）
+│   ├── Style & Typography Mapping（样式与文字样式映射）
+│   └── Component Slot Mapping（组件 Slot 映射）
+├── Shared Page Specification & UI Scene（共享页面规格与 UI 场景）
+├── Framework Adapters & Page Compiler（框架适配器与页面编译器）
+│   ├── HTML Adapter（HTML 适配器）
+│   ├── React Adapter（React 适配器）
+│   └── Vue Adapter（Vue 适配器）
+├── Browser Capture, Preview & Visual Manifest（浏览器采集、预览与视觉清单）
+├── Pixso Import Pipeline（Pixso 页面导入管线）
+│   ├── DOM Visual IR（DOM 视觉中间表示）
+│   ├── Pixso Native Scene（Pixso 原生场景）
+│   └── Page Import Operation Plan（页面导入执行计划）
+├── Pixso Native Renderer Plugin（Pixso 原生渲染插件）
+├── Bridge Service & Persistent-Agent Protocol（桥接服务与常驻 Agent 协议）
+├── Preview Hub & Component Gallery（预览中心与组件画廊）
+└── Readback, Visual QA & Audit（读回、视觉验收与审计）
+    ├── Token Usage Audit（Token 使用审计）
+    ├── Component Instance Audit（组件实例审计）
+    ├── Variable & Style Binding Audit（变量与样式绑定审计）
+    └── HTML–Pixso Visual Parity Check（HTML 与 Pixso 视觉一致性检查）
+```
+
 推荐上传/克隆完整代码仓，并从根目录运行：
 
 ```bash
@@ -16,6 +60,20 @@ pnpm delivery:validate
 从仓库复制或安装 `skill/` 本身不会自动把 `packages/` 注册为组件库，也不会自动把 Skill 注册到 Codex。独立安装 Skill 时，如果没有可发现的 Monorepo 根目录和组件包，Skill 必须明确报告“组件包不可用”，不能把旧预览、截图或视觉相似物宣称为生产组件复用。完整接入协议见 [`references/component-package-integration.md`](references/component-package-integration.md)。
 
 更新 Skill 时只编辑 `text-to-ui/` 规范源，再将相同文件同步到 `skill/`；不要在两个目录中维护不同规则。
+
+新页面推荐只调用一个入口：
+
+```bash
+pnpm page:generate --project <generated-project> --framework html \
+  --task "<页面需求>" --blueprint <page-blueprint.json> \
+  --content-recipes <page-content-recipes.json> \
+  --bindings <page-bindings.json> --page-css <page-composition.css>
+```
+
+该入口会自动解析并验证路由、Context Packet、Pattern/Layout Contract、组件
+适配器、Token、图标和页面组合边界；所有生成文件通过后才一次性提交，并写出
+`.text-to-ui/generation-receipt.json`。普通页面不要直接调用底层
+`generate-framework-page.mjs`。
 
 当前配套 Monorepo 提供 55 个组件契约、4 个页面 Pattern，以及 HTML、React、Vue 三套真实 UI 组件实现。组件包、Tokens、共享样式、Pixso 映射和正式画廊位于 Monorepo 的 `packages/` 与 `apps/` 下；本 Skill 负责规则、索引、页面编排和导入工具，不替代生产组件源码。
 

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { assertReadinessStage, loadReadinessPolicy, resolveComponentReadiness } from "./component-readiness-policy.mjs";
 
 const args = process.argv.slice(2);
 const valueFor = (flag) => {
@@ -9,6 +10,8 @@ const valueFor = (flag) => {
 
 const manifestArg = valueFor("--manifest");
 const projectRoot = path.resolve(valueFor("--project-root") ?? process.cwd());
+const validationStage = valueFor("--stage") ?? "fast-preview";
+assertReadinessStage(validationStage);
 if (!manifestArg) {
   console.error("Usage: validate-web-component-reuse.mjs --manifest <file> [--project-root <dir>]");
   process.exit(2);
@@ -62,7 +65,18 @@ if (fs.existsSync(registryPath)) {
   const parsed = readJson(registryPath);
   registry = Array.isArray(parsed) ? parsed : parsed.components ?? [];
 }
+const skillRoot = path.resolve(valueFor("--skill-root") ?? path.join(projectRoot, "text-to-ui"));
+const readinessPolicy = loadReadinessPolicy(skillRoot);
 const registryByLogicalName = new Map(registry.map((item) => [item.logicalName, item]));
+const normalizeCapability = (value) => String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const registryCapabilityMatches = (query) => {
+  const normalized = normalizeCapability(query);
+  if (!normalized) return [];
+  return registry.filter((item) => {
+    const names = [item.id, item.logicalName, String(item.logicalName ?? "").split("/")[0]];
+    return names.some((name) => normalizeCapability(name) === normalized);
+  });
+};
 
 const registered = Array.isArray(manifest.registered) ? manifest.registered : [];
 for (const [index, usage] of registered.entries()) {
@@ -77,9 +91,11 @@ for (const [index, usage] of registered.entries()) {
   }
   const implementation = contract.implementations?.[manifest.targetFramework] ?? contract.frameworks?.[manifest.targetFramework]?.source;
   if (!implementation) failures.push(`${usage.logicalName} has no ${manifest.targetFramework} implementation`);
-  if (contract.readiness?.sourceReady !== true) failures.push(`${usage.logicalName} is not sourceReady; record it as a blocked gap, not a page replacement`);
-  const unverified = Object.entries(contract.readiness ?? {}).filter(([, ready]) => ready !== true).map(([dimension]) => dimension);
-  if (unverified.length > 0) warnings.push(`${usage.logicalName} remains partial: ${unverified.join(", ")}`);
+  const readiness = resolveComponentReadiness(contract, readinessPolicy);
+  if (!readiness.allowedStages.includes(validationStage)) failures.push(`${usage.logicalName} readiness is ${readiness.level} and is not allowed at ${validationStage}: ${readiness.reason}`);
+  else if (readiness.level === "provisional") warnings.push(`${usage.logicalName} is provisional and preview-only: ${readiness.unresolvedDimensions.join(", ")}`);
+  if (strictSource && usage.readinessLevel && usage.readinessLevel !== readiness.level) failures.push(`${usage.logicalName} readinessLevel is stale; expected ${readiness.level}`);
+  if (strictSource && Array.isArray(usage.unresolvedParity) && JSON.stringify(usage.unresolvedParity) !== JSON.stringify(readiness.unresolvedDimensions)) failures.push(`${usage.logicalName} unresolvedParity is stale`);
   if (strictSource) {
     if (!usage.rendererKey) failures.push(`registered[${index}].rendererKey is required in strict-source mode`);
     if (!usage.usage) failures.push(`registered[${index}].usage is required in strict-source mode`);
@@ -110,6 +126,14 @@ const custom = Array.isArray(manifest.custom) ? manifest.custom : [];
 for (const [index, usage] of custom.entries()) {
   validatePageOwnedBase(usage, "custom", index);
   if (!Array.isArray(usage.contractQueries) || usage.contractQueries.length === 0) failures.push(`custom[${index}].contractQueries must prove no matching contract exists`);
+  if (strictSource && !["no-matching-component", "specialized-business-surface"].includes(usage.exceptionKind)) failures.push(`custom[${index}].exceptionKind must be no-matching-component or specialized-business-surface`);
+  for (const query of usage.registryQueries ?? []) {
+    const availableMatches = registryCapabilityMatches(query).filter((item) => {
+      const implementation = item.implementations?.[manifest.targetFramework] ?? item.frameworks?.[manifest.targetFramework]?.source;
+      return implementation && item.readiness?.sourceReady === true;
+    });
+    if (availableMatches.length) failures.push(`custom[${index}] overlaps available ${manifest.targetFramework} component(s) for query '${query}': ${availableMatches.map((item) => item.logicalName).join(", ")}; use the registered component or a contract-based composition`);
+  }
 }
 if (registered.length + contractBased.length + custom.length === 0) failures.push("component-usage must declare at least one registered, contractBased, or custom UI region");
 
@@ -139,6 +163,20 @@ const collectStyles = (candidate) => {
 };
 for (const root of sourceRoots) collectStyles(path.resolve(projectRoot, root));
 const source = sourceFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n");
+const registeredSelector = /\.tui-(?:button|sidebar-item|primary-navigation-item|list-card|item|checkbox|attachment|titlebar|search)\b/;
+const protectedComponentProperties = new Set([
+  "height", "min-height", "max-height", "padding", "padding-block", "padding-inline", "padding-top", "padding-right", "padding-bottom", "padding-left",
+  "border", "border-width", "border-color", "border-radius", "background", "background-color", "color", "font", "font-size", "font-weight", "line-height", "box-shadow"
+]);
+for (const file of styleFiles) {
+  const css = fs.readFileSync(file, "utf8");
+  for (const match of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const selector = match[1].trim();
+    if (!registeredSelector.test(selector)) continue;
+    const protectedOverrides = [...match[2].matchAll(/(?:^|;)\s*([a-z-]+)\s*:/g)].map((entry) => entry[1]).filter((property) => protectedComponentProperties.has(property));
+    if (protectedOverrides.length) failures.push(`page-owned CSS overrides protected registered-component properties in ${path.relative(projectRoot, file)}: ${selector} -> ${[...new Set(protectedOverrides)].join(", ")}; use component Props, Slots, or Tokens`);
+  }
+}
 const expectedPackage = packageByFramework[manifest.targetFramework];
 const hasImport = (packageName) => {
   const escapedPackage = packageName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -156,7 +194,7 @@ if (strictSource) {
   const renderer = manifest.renderer ?? {};
   if (renderer.package !== "@text-to-ui/components-html") failures.push("renderer.package must equal @text-to-ui/components-html");
   if (renderer.factoryImport !== "renderHtmlComponent") failures.push("renderer.factoryImport must equal renderHtmlComponent");
-  for (const styleImport of ["@text-to-ui/tokens", "@text-to-ui/components-html/styles.css"]) {
+  for (const styleImport of ["@text-to-ui/tokens", "@text-to-ui/components-html/styles.css", "@text-to-ui/components-html/pattern-shell.css"]) {
     if (!hasImport(styleImport)) failures.push(`strict HTML source must import ${styleImport}`);
   }
   if (!/import\s*\{[^}]*\brenderHtmlComponent\b[^}]*\}\s*from\s*["']@text-to-ui\/components-html["']/.test(source)) failures.push("strict HTML source must import the renderHtmlComponent factory");
@@ -182,4 +220,4 @@ if (failures.length > 0) {
   warnings.forEach((warning) => console.error(`warning: ${warning}`));
   process.exit(1);
 }
-console.log(JSON.stringify({ ok: true, enforcement: strictSource ? "strict-source" : "legacy-import", targetFramework: manifest.targetFramework, componentPackage: expectedPackage, registeredCount: registered.length, contractBasedCount: contractBased.length, customCount: custom.length, sourceFileCount: sourceFiles.length, styleFileCount: styleFiles.length, warnings }, null, 2));
+console.log(JSON.stringify({ ok: true, validationStage, deliveryStatus: validationStage === "release" ? "release-ready" : (warnings.length ? "preview-ready-with-provisional-components" : "preview-ready"), enforcement: strictSource ? "strict-source" : "legacy-import", targetFramework: manifest.targetFramework, componentPackage: expectedPackage, registeredCount: registered.length, contractBasedCount: contractBased.length, customCount: custom.length, sourceFileCount: sourceFiles.length, styleFileCount: styleFiles.length, warnings }, null, 2));

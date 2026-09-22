@@ -82,7 +82,14 @@ export function bindTitlebarOverflow(root, { onAction = () => {} } = {}) {
     else state.forEach((entry) => entry.update());
   };
   const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(schedule) : null;
-  state.forEach((entry) => resizeObserver?.observe(entry.group));
+  state.forEach((entry) => {
+    resizeObserver?.observe(entry.group);
+    // The available action width is determined by the final titlebar segment
+    // after reserving the fixed window-control area. Observe that segment as
+    // well, so actions are rebalanced before they can paint over controls.
+    const titlebar = entry.group.closest('.tui-titlebar');
+    if (titlebar) resizeObserver?.observe(titlebar);
+  });
   const win = root.ownerDocument?.defaultView;
   win?.addEventListener("resize", schedule);
   schedule();

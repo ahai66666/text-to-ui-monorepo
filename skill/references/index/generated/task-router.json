@@ -3,11 +3,11 @@
   "generatedFrom": [
     {
       "path": "text-to-ui/references/index/task-routes.source.json",
-      "sha256": "869134949538bc20353cbb1d46ed18d2af2c1e5814bcabc254a9e90308f8d3ae"
+      "sha256": "5d6f00a0128fda016d2dfe432e5bb0a39a53f13411b7f1c8ca4e27a7eaf26d42"
     },
     {
       "path": "packages/component-contracts/src/components.json",
-      "sha256": "8480f5758724239ff9290b8efb0c0120ba220ed3deacb69221d2b8a59151ca7b"
+      "sha256": "f0e4c4f40a27a3b54b81be7f6cafc0a831b7eaacd1e4686a68fba311d2362c37"
     },
     {
       "path": "text-to-ui/references/index/layout-routes.source.json",
@@ -46,9 +46,11 @@
       "requiredCapabilities": [
         "titlebar",
         "primary-navigation-item",
+        "sidebar",
         "search",
         "list-item",
         "checkbox",
+        "button",
         "icon-button",
         "tooltip",
         "context-menu"
@@ -57,9 +59,14 @@
         "avatar",
         "badge",
         "empty-state",
-        "toast"
+        "toast",
+        "attachment",
+        "collapsible",
+        "select",
+        "dialog"
       ],
       "customCompositions": [
+        "email-message-row",
         "mail-message-list",
         "mail-detail-content"
       ]

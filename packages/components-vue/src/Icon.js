@@ -1,12 +1,12 @@
 import { h } from "vue";
-import { iconDefinitions, iconStrokeWidths } from "./icon-map.js";
+import { resolveIcon, iconStrokeWidths } from "./icon-map.js";
 
 const attrNames = { "stroke-width": "strokeWidth", "stroke-linecap": "strokeLinecap", "stroke-linejoin": "strokeLinejoin", "fill-rule": "fillRule", "clip-rule": "clipRule" };
 const parseAttributes = (source) => Object.fromEntries([...source.matchAll(/([\w-]+)="([^"]*)"/g)].map(([, key, value]) => [attrNames[key] ?? key, value]));
 
 export default function Icon(props) {
-  const definition = iconDefinitions[props.name];
-  if (!definition) throw new Error(`Unknown icon semantic alias: ${props.name}`);
+  const requestedName = String(props.name ?? "").trim();
+  const definition = resolveIcon(requestedName);
   const size = Number(props.size ?? 20);
   if (![16, 20, 24].includes(size)) throw new Error(`Unsupported icon display size: ${size}`);
   const iconStyle = props.iconStyle ?? "regular";
@@ -22,9 +22,16 @@ export default function Icon(props) {
     viewBox: definition.viewBox,
     width: size,
     height: size,
-    "data-icon-alias": props.name,
+    "data-icon-alias": requestedName,
     "data-icon-size": size,
+    "data-display-size-token": `size/${size}`,
     "data-icon-kind": iconStyle,
+    "data-icon-resolution": definition.resolution,
+    "data-icon-resolved-alias": definition.resolvedAlias ?? undefined,
+    "data-icon-source": definition.source,
+    "data-icon-name": definition.name,
+    "data-icon-path": definition.path,
+    "data-icon-manual-fallback": definition.manualFallback ? `unresolved:${requestedName}` : undefined,
     "aria-hidden": props.decorative !== false ? "true" : undefined,
     role: props.decorative === false ? "img" : undefined,
     "aria-label": props.decorative === false ? props.ariaLabel : undefined

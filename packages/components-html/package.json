@@ -4,5 +4,5 @@
   "private": false,
   "type": "module",
   "dependencies": {"@text-to-ui/component-contracts": "workspace:*", "@text-to-ui/component-styles": "workspace:*", "@text-to-ui/tokens": "workspace:*"},
-  "exports": {".": "./src/index.js", "./styles.css": "./src/styles.css", "./legacy.css": "./src/legacy.css", "./legacy": "./src/legacy.js", "./button": "./src/button.html", "./input": "./src/input.html", "./search": "./src/search.html", "./sidebar": "./src/sidebar.html", "./primary-navigation-item": "./src/primary-navigation-item.html", "./list-card": "./src/list-card.html", "./generated": "./src/generated/index.js", "./generated-gallery": "./src/generated/gallery.js"}
+  "exports": {".": "./src/index.js", "./styles.css": "./src/styles.css", "./pattern-shell.css": "./src/pattern-shell.css", "./button": "./src/button.html", "./input": "./src/input.html", "./search": "./src/search.html", "./sidebar": "./src/sidebar.html", "./primary-navigation-item": "./src/primary-navigation-item.html", "./list-card": "./src/list-card.html", "./generated": "./src/generated/index.js", "./generated-gallery": "./src/generated/gallery.js"}
 }

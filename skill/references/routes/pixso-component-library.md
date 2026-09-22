@@ -1,5 +1,8 @@
 # Pixso component-library route
 
+Read `references/pixso-import-details.md` and
+`references/pixso-execution-invariants.md` for mapping and executor rules.
+
 Read only the references needed for the requested operation:
 
 - cross-source relationship selection and maintenance: `references/mapping-registry.md`

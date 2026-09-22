@@ -548,7 +548,7 @@ for (const role of Object.values(semanticRoles)) {
   role.valueTransform = mapped.valueTransform;
 }
 
-const output = {
+export const output = {
   schemaVersion: 1,
   purpose:
     "One-to-one bridge between HTML CSS variables and the approved Pixso core/runtime variables.",
@@ -620,6 +620,7 @@ for (const [role, item] of Object.entries(semanticRoles)) {
 }
 tableLines.push("");
 const tableSerialized = `${tableLines.join("\n").trimEnd()}\n`;
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 if (process.argv.includes("--check")) {
   if (
     !fs.existsSync(outputPath) ||
@@ -636,4 +637,6 @@ if (process.argv.includes("--check")) {
   fs.writeFileSync(tableOutputPath, tableSerialized);
   console.log(`Wrote ${outputPath} (${mappings.length} mappings).`);
   console.log(`Wrote ${tableOutputPath} (${nonColorMappings.length} non-color variables).`);
+}
+
 }

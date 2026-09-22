@@ -27,6 +27,24 @@ export function validatePatternRegistry(registry) {
     const regionIds = (pattern.regions ?? []).map((region) => region.id);
     if (new Set(regionIds).size !== regionIds.length) errors.push(`${pattern.id}: duplicate region id`);
     if (paneOrder.join("|") !== regionIds.join("|")) errors.push(`${pattern.id}: region order must exactly match paneOrder`);
+    const geometry = pattern.geometry;
+    if (geometry?.owner !== "pattern-renderer") errors.push(`${pattern.id}: geometry must be owned by pattern-renderer`);
+    if (geometry?.gridGapToken !== "space/0") errors.push(`${pattern.id}: geometry.gridGapToken must be space/0`);
+    if (geometry?.titleLayer?.heightToken !== pattern.titleLayer?.heightToken || geometry?.titleLayer?.alignToPaneBoundaries !== true) {
+      errors.push(`${pattern.id}: geometry.titleLayer must align to the canonical title layer`);
+    }
+    const geometryRegions = geometry?.regions && typeof geometry.regions === "object" ? Object.keys(geometry.regions) : [];
+    if (geometryRegions.join("|") !== regionIds.join("|")) errors.push(`${pattern.id}: geometry.regions must exactly match paneOrder`);
+    for (const region of pattern.regions ?? []) {
+      const profile = geometry?.regions?.[region.id];
+      if (!profile) continue;
+      if (!profile.title || !["global-shell-slot", "pane-segment", "none"].includes(profile.title.kind)) errors.push(`${pattern.id}/${region.id}: invalid title geometry kind`);
+      if (profile.title?.heightToken !== pattern.titleLayer?.heightToken) errors.push(`${pattern.id}/${region.id}: title geometry must use the canonical title height`);
+      if (profile.scrollBody?.overflow !== "auto") errors.push(`${pattern.id}/${region.id}: scrollBody must use auto overflow`);
+      if (!profile.scrollBody?.owner) errors.push(`${pattern.id}/${region.id}: scrollBody owner is required`);
+      if (!profile.surfaceInset || !profile.scrollBody?.inset) errors.push(`${pattern.id}/${region.id}: surface and scroll insets are required`);
+      if (!Array.isArray(profile.contentAxes) || profile.contentAxes.length === 0) errors.push(`${pattern.id}/${region.id}: at least one content axis is required`);
+    }
     const slotIds = (pattern.slots ?? []).map((slot) => slot.id);
     if (new Set(slotIds).size !== slotIds.length) errors.push(`${pattern.id}: duplicate slot id`);
     for (const segment of pattern.titleLayer?.segments ?? []) {
@@ -34,6 +52,20 @@ export function validatePatternRegistry(registry) {
     }
     for (const slot of pattern.slots ?? []) {
       if (slot.owner !== "page" && !regionIds.includes(slot.owner)) errors.push(`${pattern.id}: slot ${slot.id} has unknown owner ${slot.owner}`);
+    }
+    const modeIds = new Set();
+    for (const mode of pattern.navigationModes ?? []) {
+      if (modeIds.has(mode.id)) errors.push(`${pattern.id}: duplicate navigation mode ${mode.id}`);
+      modeIds.add(mode.id);
+      if (!regionIds.includes(mode.region)) errors.push(`${pattern.id}: navigation mode ${mode.id} has unknown region ${mode.region}`);
+      const shellSlotIds = new Set();
+      for (const shellSlot of mode.shellSlots ?? []) {
+        if (shellSlotIds.has(shellSlot.id)) errors.push(`${pattern.id}: navigation mode ${mode.id} repeats shell slot ${shellSlot.id}`);
+        shellSlotIds.add(shellSlot.id);
+        if (!slotIds.includes(shellSlot.id)) errors.push(`${pattern.id}: navigation mode ${mode.id} references unknown slot ${shellSlot.id}`);
+      }
+      const placements = (mode.shellSlots ?? []).map((slot) => slot.placement);
+      if (mode.id === "two-level" && (placements.filter((placement) => placement === "bottom").length !== 1 || !placements.includes("middle-scroll"))) errors.push(`${pattern.id}: two-level navigation requires one bottom slot and one middle-scroll slot`);
     }
   }
   for (const required of ["pattern-a-two-pane", "pattern-b-three-pane", "pattern-c-tool-workspace", "pattern-d-inspector"]) {

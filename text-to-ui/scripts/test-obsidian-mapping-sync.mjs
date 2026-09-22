@@ -30,9 +30,10 @@ try {
   fs.copyFileSync(DEFAULT_MAPPING_REGISTRY, registryPath);
   let note = defaultEditQueue();
   note = note.replace(
-    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n",
-    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n" +
-      "| pending | update | html-to-pixso-harmonyos-client | Select/Default | select | Selection Dropdown | Select/White Surface/Default | registered | not-applicable | parser test |\n",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n" +
+      "| pending | update | html-to-pixso-harmonyos-client | Select/Default |  |  | select | Selection Dropdown | Select/White Surface/Default | registered |  |  | not-applicable | parser test |\n" +
+      "| pending | update | html-to-pixso-harmonyos-client | Icon Text Button/Secondary/Default | icon-text-secondary | button |  | icon-text |  | registered | {\"size\":\"Medium\",\"state\":\"Default\",\"type\":\"secondary\"} | mapped-pending-verification |  | parser test |\n",
   );
   note = note.replace(
     "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n\n### 填写示例",
@@ -47,14 +48,14 @@ try {
   );
   fs.writeFileSync(notePath, note);
   const parsed = parseEditQueue(note);
-  assert.equal(parsed.rows.filter((row) => row.state === "pending").length, 4);
+  assert.equal(parsed.rows.filter((row) => row.state === "pending").length, 5);
 
   const output = execFileSync(
     process.execPath,
     [script, "--write", "--note", notePath, "--registry", registryPath],
     { cwd: SKILL_ROOT, encoding: "utf8" },
   );
-  assert.match(output, /4 pending row\(s\)/);
+  assert.match(output, /5 pending row\(s\)/);
   const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
   const profile = registry.profiles.find((item) => item.id === registry.defaultProfile);
   const component = profile.componentMappings.find((item) => item.htmlLogicalName === "Select/Default");
@@ -70,6 +71,10 @@ try {
   assert.equal(windowControls.pixsoTarget, "control button");
   assert.equal(windowControls.variantByHtmlSize.small["状态"], "Small size");
   assert.equal(windowControls.actions.find((item) => item.htmlAction === "close").pixsoLayer, "关闭");
+  const endpointMapping = profile.endpointComponentMappings.find((item) => item.endpointComponentId === "icon-text-secondary");
+  assert.equal(endpointMapping.pixsoTarget, "icon-text");
+  assert.equal(endpointMapping.pixsoVariant.type, "secondary");
+  assert.equal(endpointMapping.mappingStatus, "mapped-pending-verification");
   assert.match(fs.readFileSync(notePath, "utf8"), /\| applied \| update \|/);
 
   execFileSync(
@@ -89,10 +94,14 @@ try {
   assert.match(rebuiltNote, /## 3\. 当前 Pixso 组件清单（事实快照）/);
   assert.match(rebuiltNote, /\| `Button` \|/);
   assert.match(rebuiltNote, /\| `CheckBox` \|/);
-  assert.match(rebuiltNote, /\| `ColorPicker-Tablet` \|/);
+  assert.match(rebuiltNote, /\| `Snackbar\/ColorPicker-Tablet` \|/);
   assert.match(rebuiltNote, /Pixso exact component/);
   assert.match(rebuiltNote, /Titlebar \/ 组件内部子映射/);
   assert.match(rebuiltNote, /`control button`/);
+  assert.match(rebuiltNote, /当前 HTML 正式映射/);
+  assert.match(rebuiltNote, /运行时组件 ID（可选）/);
+  assert.match(rebuiltNote, /`icon-text-secondary`/);
+  assert.match(rebuiltNote, /`Icon Button`/);
   assert.match(rebuiltNote, /## \d+\. Typography 映射规则（直接引用 Pixso Text Style，13 条）/);
   assert.match(rebuiltNote, /`body-l`/);
   assert.match(rebuiltNote, /`body-s`/);

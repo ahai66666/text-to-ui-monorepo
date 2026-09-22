@@ -1,34 +1,80 @@
-import { createApp, h, ref } from "vue";
-import { Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Titlebar, Textarea, Field, Select, Combobox, NativeSelect, Checkbox, Radio, RadioGroup, Switch, Tabs, Accordion, Collapsible, Avatar, Badge, Card, Item, Table, DataTable, Pagination, Breadcrumb, Progress, Empty, Separator, Label, Alert, Tooltip, Toast, Icon } from "../../packages/components-vue/src/index.js?rev=20260812-1";
-import { AlertDialog, Attachment, Calendar, Carousel, Chart, ContextMenu, DatePicker, Dialog, DropdownMenu, HoverCard, InputOtp, Kbd, Menubar, NavigationMenu, Popover, Slider, SemiModal, TimePicker } from "../../packages/components-vue/src/advanced.js?rev=20260812-1";
+import { createApp, h, onBeforeUnmount, onMounted, ref } from "vue";
+import { createTitlebarPreviewScenes } from "../../packages/component-contracts/src/titlebar-segments.js";
+import { Button, Input, Search, Sidebar, PrimaryNavigationItem, ListCard, Titlebar, Textarea, Field, FormField, Select, Combobox, NativeSelect, Checkbox, Radio, RadioGroup, Switch, SegmentedButton, NumberSelector, Chips, Tabs, SubTabs, TreeView, Accordion, Collapsible, Avatar, Badge, Table, DataTable, Pagination, Breadcrumb, Progress, Empty, Label, Alert, Tooltip, Toast, Icon } from "../../packages/components-vue/src/index.js?rev=20260907-1";
+import { AlertDialog, Attachment, Calendar, Chart, ColorPicker, ContextMenu, DatePicker, Dialog, DropdownMenu, HoverCard, InputOtp, Kbd, Menubar, Popover, Slider, SemiModal, TimePicker } from "../../packages/components-vue/src/advanced.js?rev=20260812-1";
 import * as Generated from "../../packages/components-vue/src/generated/index.js?rev=20260810-1";
-import { cardClass, comparisonMetaFor, componentTitle, coreIds, feedbackSpecimensFor, runtimeCategories } from "./runtime-catalog.js";
+import { cardClass, comparisonMetaFor, componentTitle, coreIds, feedbackSpecimensFor, readinessInfoFor, runtimeCategories } from "./runtime-catalog.js";
+import { contractInspectorData, contractInspectorGroups } from "./contract-inspector.js";
 import "./framework-runtime.css";
 
 const pascal = (value) => value.split(/[-_]/g).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
 const iconNode = (name, size = 20) => h(Icon, { name, size });
 
+const ContractDialog = {
+  props: { component: Object, framework: String, onClose: Function },
+  setup(props) {
+    const data = contractInspectorData(props.component, props.framework);
+    const groups = contractInspectorGroups(props.component, props.framework);
+    const closeButton = ref(null);
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") { event.preventDefault(); props.onClose?.("已关闭"); }
+    };
+    onMounted(() => { closeButton.value?.focus(); document.addEventListener("keydown", onKeyDown); });
+    onBeforeUnmount(() => document.removeEventListener("keydown", onKeyDown));
+    return () => h("div", {
+      class: "tui-contract-dialog",
+      role: "presentation",
+      "data-contract-dialog": "",
+      "data-contract-logical-name": data.logicalName
+    }, [
+      h("div", { class: "tui-contract-dialog__backdrop", onClick: () => props.onClose?.("已关闭") }),
+      h("section", { class: "tui-contract-dialog__surface", role: "dialog", "aria-modal": "true", "aria-labelledby": `contract-dialog-vue-${props.component.id}-title` }, [
+        h("header", { class: "tui-contract-dialog__header" }, [
+          h("div", [
+            h("h4", { id: `contract-dialog-vue-${props.component.id}-title` }, `${data.logicalName} · 组件规范`),
+            h("p", `${data.statusLabel} · ${data.completeCount}/${data.readiness.length} 个验收维度已通过`)
+          ]),
+          h("button", { ref: closeButton, type: "button", class: "tui-contract-dialog__close", "aria-label": "关闭组件规范", onClick: () => props.onClose?.("关闭") }, "×")
+        ]),
+        h("div", { class: "tui-contract-inspector__body" }, [
+          h("div", { class: "tui-contract-inspector__identity" }, [h("span", "逻辑身份"), h("code", data.logicalName), h("strong", { class: `tui-readiness-pill tui-readiness-pill--${data.status}` }, data.statusLabel)]),
+          ...groups.map((group) => h("section", { class: "tui-contract-inspector__group", key: group.label }, [
+            h("h5", group.label),
+            h("dl", group.rows.map(([label, value]) => h("div", { class: "tui-contract-inspector__row", key: label }, [h("dt", label), h("dd", value)])))
+          ])),
+          h("div", { class: "tui-contract-inspector__readiness", "aria-label": "验收维度" }, data.readiness.map((item) => h("span", { class: `tui-contract-inspector__badge${item.complete ? " is-complete" : ""}`, key: item.key }, item.label))),
+          data.note ? h("p", { class: "tui-contract-inspector__note" }, data.note) : null
+        ])
+      ])
+    ]);
+  }
+};
+
 const InteractiveButtonVariant = {
-  props: { mode: String, variant: String, label: String, setStatus: Function },
+  props: { mode: String, variant: String, label: String, iconOnly: Boolean, setStatus: Function },
   setup(props) {
     const open = ref(false);
+    const root = ref(null);
+    const onPointerDown = (event) => {
+      if (open.value && !root.value?.contains(event.target)) open.value = false;
+    };
+    onMounted(() => document.addEventListener("pointerdown", onPointerDown));
+    onBeforeUnmount(() => document.removeEventListener("pointerdown", onPointerDown));
     return () => {
-      if (props.mode === "selection-dropdown") return h("div", { class: "tui-button-dropdown" }, [
-        h(Button, { label: props.label, variant: props.variant, mode: props.mode, menuOpen: open.value, onClick: () => { open.value = !open.value; } }),
-        h("div", { class: "tui-button-dropdown__menu", role: "menu", hidden: !open.value }, ["列表视图", "网格视图", "紧凑视图"].map((item) => h("button", { type: "button", role: "menuitem", class: "tui-button-dropdown__item", key: item, onClick: () => { open.value = false; props.setStatus?.(`已选择 ${item}`); } }, item)))
-      ]);
-      return h("div", { class: "tui-split-button" }, [
+      const logicalName = `Split Dropdown Button/${props.iconOnly ? "Icon Only" : "Icon Text"}/Default`;
+      const menuItems = props.iconOnly ? ["重新加载", "同步数据", "清理缓存并刷新"] : ["导出为 PDF", "复制分享链接", "发送到设备"];
+      return h("div", { ref: root, class: `tui-component tui-split-button${props.iconOnly ? " tui-split-button--icon" : ""}`, "data-component": "button", "data-logical-component": logicalName, "data-variant": "ghost", "data-state": "default", "data-framework": "vue", "data-mode": "split-dropdown" }, [
         h("div", { class: "tui-split-button__control" }, [
-          h(Button, { label: props.label, variant: "ghost", mode: "split-dropdown", icon: "action/download", onClick: () => props.setStatus?.("Split Dropdown · 主操作") }),
-          h("button", { type: "button", class: "tui-component tui-button tui-split-button__trigger", "aria-label": "展开更多操作", "aria-haspopup": "menu", "aria-expanded": open.value, onClick: () => { open.value = !open.value; } }, iconNode("navigation/chevron-down"))
+          h(Button, { label: props.label, variant: "ghost", mode: "split-dropdown", icon: props.iconOnly ? "action/refresh" : "action/download", iconOnly: props.iconOnly, logicalName, class: `tui-split-button__main${props.iconOnly ? " tui-split-button__main--icon" : ""}`, "aria-label": props.iconOnly ? props.label : undefined, onClick: () => props.setStatus?.(`Split Dropdown · ${props.iconOnly ? "Icon" : "Icon + Text"} · 主操作`) }),
+          h("button", { type: "button", class: "tui-component tui-button tui-split-button__trigger", "data-component": "button", "data-logical-component": logicalName, "data-variant": "ghost", "data-state": "default", "data-framework": "vue", "data-mode": "split-dropdown", "data-size": "standard", "aria-label": "展开更多操作", "aria-haspopup": "menu", "aria-expanded": open.value, onClick: () => { open.value = !open.value; } }, iconNode("navigation/chevron-down", 16))
         ]),
-        h("div", { class: "tui-button-dropdown__menu", role: "menu", hidden: !open.value }, ["导出为 PDF", "复制分享链接", "发送到设备"].map((item) => h("button", { type: "button", role: "menuitem", class: "tui-button-dropdown__item", key: item, onClick: () => { open.value = false; props.setStatus?.(`已选择 ${item}`); } }, item)))
+        h("div", { class: "tui-button-dropdown__menu", role: "menu", hidden: !open.value }, menuItems.map((item) => h("button", { type: "button", role: "menuitem", class: "tui-button-dropdown__item", key: item, onClick: () => { open.value = false; props.setStatus?.(`已选择 ${item}`); } }, item)))
       ]);
     };
   }
 };
 
-const RuntimeStructuralButton = (props) => h("div", { class: "tui-runtime-structural-grid", "data-runtime-component": "button" }, [
+const RuntimeStructuralButton = (props) => h("div", { class: "tui-runtime-structural-grid tui-runtime-structural-grid--button", "data-runtime-component": "button" }, [
   ["primary", "primary", "确认操作", "text"],
   ["secondary", "secondary", "次要操作", "text"],
   ["ghost", "ghost", "文本操作", "text"],
@@ -37,34 +83,77 @@ const RuntimeStructuralButton = (props) => h("div", { class: "tui-runtime-struct
   ["small-secondary", "secondary", "次要操作", "text", "small"],
   ["small-ghost", "ghost", "文本操作", "text", "small"],
   ["small-danger", "danger", "删除项目", "text", "small"],
-  ["icon", "ghost", "更多操作", "icon"],
   ["icon-text-primary", "primary", "新建项目", "icon-text"],
   ["icon-text-secondary", "secondary", "导出文件", "icon-text"],
   ["icon-text-ghost", "ghost", "更多设置", "icon-text"],
-  ["selection-dropdown", "secondary", "列表视图", "selection-dropdown"],
-  ["split-dropdown", "ghost", "导出文件", "split-dropdown"]
-].map(([id, variant, label, mode, size]) => h("div", { class: "tui-runtime-structural-cell", key: id }, [
+  ["icon", "ghost", "更多操作", "icon"],
+  ["split-dropdown", "ghost", "导出文件", "split-dropdown", undefined, false],
+  ["split-dropdown-icon", "ghost", "刷新", "split-dropdown", undefined, true]
+].map(([id, variant, label, mode, size, iconOnly]) => h("div", { class: "tui-runtime-structural-cell", "data-specimen": id, key: id }, [
   h("span", { class: "tui-runtime-surface-label", key: "label" }, id),
-  (mode === "selection-dropdown" || mode === "split-dropdown")
-    ? h(InteractiveButtonVariant, { key: "button", mode, variant, label, setStatus: props.setStatus })
+  mode === "split-dropdown"
+    ? h(InteractiveButtonVariant, { key: "button", mode, variant, label, iconOnly, setStatus: props.setStatus })
     : h(Button, { key: "button", label, variant, mode, size, icon: mode === "icon-text" ? "action/add" : mode === "icon" ? "action/more" : undefined, state: "default", onClick: () => props.setStatus(`Button · ${id} · 已触发`) })
 ])));
 
-const RuntimeTitlebarGallery = (props) => h("div", { class: "tui-runtime-titlebar-gallery", "data-runtime-component": "titlebar" }, [
-  h("div", { class: "tui-runtime-titlebar-layouts", key: "layouts" }, [
-    h("div", { key: "two-column" }, [h("span", { class: "tui-runtime-surface-label" }, "两栏 · 左侧品牌 / 右侧标题与窗口控制"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--two" }, [h(Titlebar, { key: "brand", layout: "two-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "final", layout: "two-column", paneRole: "final-pane", paneTitle: "项目详情", size: "large", onAction: (action) => props.setStatus?.(`Titlebar · 两栏 · ${action}`) })])]),
-    h("div", { key: "three-column" }, [h("span", { class: "tui-runtime-surface-label" }, "三栏 · Main Detail 操作：Icon Button / Icon Text Button"), h("div", { class: "tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--three" }, [h(Titlebar, { key: "brand", layout: "three-column", paneRole: "primary-navigation", label: "项目空间", size: "large" }), h(Titlebar, { key: "secondary", layout: "three-column", paneRole: "secondary-pane", size: "large" }), h(Titlebar, { key: "final", layout: "three-column", paneRole: "final-pane", size: "large", mainDetailActions: [{ id: "save", label: "保存", icon: "action/save", buttonType: "icon" }, { id: "expand", label: "展开", icon: "window/maximize", buttonType: "icon-text-ghost" }], onMainDetailAction: (action) => props.setStatus?.(`Titlebar · Main Detail · ${action}`), onAction: (action) => props.setStatus?.(`Titlebar · 三栏 · ${action}`) })])])
-  ]),
-  ...[
-  ["small", "S · 40px"],
-  ["medium", "M · 56px"],
-  ["large", "L · 64px"],
-  ["xlarge", "XL · 72px"]
-].map(([size, label]) => h("div", { class: "tui-runtime-titlebar-row", key: size }, [
-  h("span", { class: "tui-runtime-surface-label", key: "label" }, label),
-  h(Titlebar, { key: "normal", label: "项目空间", size, state: "default", onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) }),
-  h(Titlebar, { key: "unfocus", label: "项目空间", size, state: "unfocus", onAction: (action) => props.setStatus?.(`Titlebar · ${size} · ${action}`) })
-]))]);
+const RuntimeChips = (props) => h("div", { class: "tui-runtime-chips-gallery", "data-runtime-component": "chips" }, h(Chips, { label: "操作块", onClose: () => props.setStatus?.("Chips · 已移除") }));
+
+const RuntimeSearchGallery = {
+  props: { setStatus: Function },
+  setup(props) {
+    const whiteValue = ref(""); const grayValue = ref("");
+    const sample = (surface, value) => h(Search, { placeholder: "搜索项目", surface, advancedSearch: true, modelValue: value.value, "onUpdate:modelValue": (next) => { value.value = next; props.setStatus?.("Search · 已输入"); }, onClear: () => { value.value = ""; props.setStatus?.("Search · 已清除"); }, "onAdvanced-search": () => props.setStatus?.("Search · 高级搜索") });
+    return () => h("div", { class: "tui-runtime-surface-pair" }, [
+      h("div", { "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label" }, "白色内容面 · 灰色搜索面 · 高级搜索槽位"), sample("white", whiteValue)]),
+      h("div", { "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label" }, "灰色内容面 · 白色搜索面 · 高级搜索槽位"), sample("gray", grayValue)])
+    ]);
+  }
+};
+
+const RuntimePrimaryNavigationGallery = {
+  props: { setStatus: Function },
+  setup(props) {
+    const selected = ref("项目");
+    const items = [["工作台", "navigation/grid"], ["项目", "field/calendar"], ["消息", "navigation/mail-unread"], ["设置", "action/settings"]];
+    return () => h("div", { class: "tui-runtime-core-gallery tui-runtime-primary-navigation-gallery" }, [
+      h("p", { class: "tui-runtime-note" }, "一级导航使用独立的原生 Primary Navigation Item；Pattern 只负责把它放入底部对齐的 primary-navigation-shell。"),
+      h("nav", { class: "tui-primary-navigation-items", "aria-label": "一级导航" }, items.map(([label, icon]) => h(PrimaryNavigationItem, { key: label, label, icon, selected: label === selected.value, onSelect: (next) => { selected.value = next; props.setStatus?.(`Primary Navigation Item · ${next}`); } })))
+    ]);
+  }
+};
+
+const RuntimeSidebarGallery = {
+  props: { setStatus: Function },
+  setup(props) {
+    const selected = ref("projects");
+    const items = [{ id: "projects", label: "项目", icon: "navigation/grid", count: 24 }, { id: "recent", label: "最近访问", icon: "navigation/recent" }, { id: "shared", label: "与我共享", icon: "action/more" }];
+    return () => h(Sidebar, { items, selected: selected.value, onSelect: (next) => { selected.value = next; props.setStatus?.(`Sidebar · ${next}`); } });
+  }
+};
+
+const RuntimeListCardGallery = {
+  props: { setStatus: Function },
+  setup(props) {
+    const selected = ref("");
+    const cards = [["one", "项目设置", { lines: 1, trailing: "text-arrow", trailingText: "详情" }], ["two", "成员权限", { description: "管理角色和访问范围", lines: 2, trailing: "icon" }], ["three", "通知方式", { description: "邮件通知", supporting: "已同步到云端", lines: 3, trailing: "radio" }], ["switch", "自动同步", { lines: 1, trailing: "switch" }], ["checkbox", "项目归档", { lines: 1, trailing: "checkbox" }], ["event", "更新动态", { lines: 1, trailing: "notification-arrow" }]];
+    return () => h("div", { class: "tui-list-card-group", role: "list" }, cards.map(([id, title, cardProps]) => h(ListCard, { ...cardProps, key: id, title, selected: id === selected.value, onClick: () => { selected.value = id; props.setStatus?.(`List Item · ${title}`); } })));
+  }
+};
+
+const RuntimeTitlebarGallery = (props) => h("div", { class: "tui-runtime-titlebar-gallery", "data-runtime-component": "titlebar" }, createTitlebarPreviewScenes().map(({ size, label, scenes }) =>
+  h("section", { key: size, class: "tui-runtime-titlebar-size-group", "data-preview-size": size }, [
+    h("h4", { class: "tui-runtime-titlebar-size-title" }, label),
+    h("div", { class: "tui-runtime-titlebar-layouts" }, scenes.map(scene => h("div", { key: scene.layout, "data-preview-layout": scene.layout }, [
+      h("strong", { class: "tui-runtime-titlebar-scenario-title" }, scene.label),
+      h("span", { class: "tui-runtime-titlebar-scenario-slots" }, scene.description),
+      h("div", { class: `tui-runtime-titlebar-layout-shell tui-runtime-titlebar-layout-shell--${scene.columns}` }, scene.segments.map((options, index) => h(Titlebar, { ...options, key: index,
+        onAction: action => props.setStatus?.(`Titlebar · ${label} · ${scene.label} · ${action}`),
+        onMainContentAction: action => props.setStatus?.(`Titlebar · ${label} · ${scene.label} · Main Content · ${action}`),
+        onMainDetailAction: action => props.setStatus?.(`Titlebar · ${label} · ${scene.label} · ${action}`)
+      })))
+    ])))
+  ])
+));
 
 const RuntimeSemiModal = {
   props: { setStatus: Function },
@@ -84,53 +173,44 @@ const RuntimeSemiModal = {
 
 const runtimeCore = (id, setStatus, component) => {
   if (id === "button") return h(RuntimeStructuralButton, { setStatus });
+  if (id === "chips") return h(RuntimeChips, { setStatus });
   if (id === "input") return h("div", { class: "tui-runtime-surface-pair" }, [
     h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色输入面"), h(Input, { key: "input", placeholder: "项目名称", surface: "white" })]),
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色输入面"), h(Input, { key: "input", placeholder: "项目名称", surface: "gray" })])
   ]);
-  if (id === "search") return h("div", { class: "tui-runtime-surface-pair" }, [
-    h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "white", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })]),
-    h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色搜索面 · 高级搜索槽位"), h(Search, { key: "search", placeholder: "搜索项目", surface: "gray", advancedSearch: true, onAdvancedSearch: () => setStatus("Search · 高级搜索") })])
-  ]);
-  if (id === "primary-navigation-item") return h("div", { class: "tui-runtime-core-gallery tui-runtime-primary-navigation-gallery" }, [
-    h("p", { class: "tui-runtime-note", key: "note" }, "一级导航使用独立的原生 Primary Navigation Item；Pattern 只负责把它放入底部对齐的 primary-navigation-shell。"),
-    h("nav", { class: "tui-primary-navigation-items", "aria-label": "一级导航", key: "items" }, [
-      h(PrimaryNavigationItem, { key: "workspace", label: "工作台", icon: "navigation/grid" }),
-      h(PrimaryNavigationItem, { key: "projects", label: "项目", icon: "field/calendar", selected: true }),
-      h(PrimaryNavigationItem, { key: "messages", label: "消息", icon: "navigation/mail-unread" }),
-      h(PrimaryNavigationItem, { key: "settings", label: "设置", icon: "action/settings" })
-    ])
-  ]);
-  if (id === "sidebar") return h(Sidebar, { items: [
-    { id: "projects", label: "项目", icon: "navigation/grid", count: 24, state: "selected" },
-    { id: "recent", label: "最近访问", icon: "navigation/recent" },
-    { id: "shared", label: "与我共享", icon: "action/more" }
-  ], onSelect: (selected) => setStatus(`Sidebar · ${selected}`) });
-  if (id === "list-card") return h("div", { class: "tui-list-card-group", role: "list" }, [
-    h(ListCard, { key: "one", title: "项目设置", lines: 1, trailing: "text-arrow", trailingText: "详情", onClick: () => setStatus("List Item · 项目设置") }),
-    h(ListCard, { key: "two", title: "成员权限", description: "管理角色和访问范围", lines: 2, trailing: "icon", onClick: () => setStatus("List Item · 成员权限") }),
-    h(ListCard, { key: "three", title: "通知方式", description: "邮件通知", supporting: "已同步到云端", lines: 3, trailing: "radio", onClick: () => setStatus("List Item · 通知方式") }),
-    h(ListCard, { key: "switch", title: "自动同步", lines: 1, trailing: "switch", onClick: () => setStatus("List Item · 自动同步") }),
-    h(ListCard, { key: "checkbox", title: "项目归档", lines: 1, trailing: "checkbox", onClick: () => setStatus("List Item · 项目归档") }),
-    h(ListCard, { key: "event", title: "更新动态", lines: 1, trailing: "notification-arrow", onClick: () => setStatus("List Item · 更新动态") })
-  ]);
+  if (id === "search") return h(RuntimeSearchGallery, { setStatus });
+  if (id === "primary-navigation-item") return h(RuntimePrimaryNavigationGallery, { setStatus });
+  if (id === "sidebar") return h(RuntimeSidebarGallery, { setStatus });
+  if (id === "list-card") return h(RuntimeListCardGallery, { setStatus });
   if (id === "titlebar") return h(RuntimeTitlebarGallery, { setStatus });
   if (id === "textarea") return h("div", { class: "tui-runtime-surface-pair tui-runtime-textarea-pair" }, [
     h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色输入面"), h(Textarea, { key: "textarea", label: "项目说明", modelValue: "统一 HarmonyOS PC 客户端中的布局、组件与交互规则。", help: "支持多行输入，最多 500 字", surface: "white", "onUpdate:modelValue": () => setStatus("Textarea · 已输入") })]),
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色输入面"), h(Textarea, { key: "textarea", label: "项目说明", modelValue: "统一 HarmonyOS PC 客户端中的布局、组件与交互规则。", help: "支持多行输入，最多 500 字", surface: "gray", "onUpdate:modelValue": () => setStatus("Textarea · 已输入") })])
   ]);
   if (id === "field") return h(Field, { label: "项目名称", modelValue: "客户端设计系统", help: "这是一个必填字段", "onUpdate:modelValue": () => setStatus("Field · 已输入") });
+  if (id === "form-field") return h("div", { class: "tui-runtime-form-field-states" }, [
+    h("div", { key: "default-white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "默认 · 白色内容面 / 灰色输入面"), h(FormField, { key: "field", label: "项目名称", surface: "white" }, { default: () => h(Input, { modelValue: "客户端设计系统", surface: "white", ariaLabel: "项目名称", "onUpdate:modelValue": () => setStatus("Form Field · 已输入") }) })]),
+    h("div", { key: "default-gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "默认 · 灰色内容面 / 白色输入面"), h(FormField, { key: "field", label: "项目名称", surface: "gray" }, { default: () => h(Input, { modelValue: "客户端设计系统", surface: "gray", ariaLabel: "项目名称", "onUpdate:modelValue": () => setStatus("Form Field · 已输入") }) })]),
+    h("div", { key: "required-white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "必填 · 白色内容面 / 灰色选择面"), h(FormField, { key: "field", label: "项目状态", required: true, surface: "white" }, { default: () => h(Select, { id: "form-field-white-status", surface: "white", ariaLabel: "项目状态", onChange: (value) => setStatus(`Form Field · ${value}`) }) })]),
+    h("div", { key: "required-gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "必填 · 灰色内容面 / 白色选择面"), h(FormField, { key: "field", label: "项目状态", required: true, surface: "gray" }, { default: () => h(Select, { id: "form-field-gray-status", surface: "gray", ariaLabel: "项目状态", onChange: (value) => setStatus(`Form Field · ${value}`) }) })]),
+    h("div", { key: "error-white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "错误 · 白色内容面 / 灰色输入面"), h(FormField, { key: "field", label: "项目名称", surface: "white", error: "项目名称不能为空" }, { default: () => h(Input, { modelValue: "", surface: "white", ariaLabel: "项目名称", error: true, "onUpdate:modelValue": () => setStatus("Form Field · 已输入") }) })]),
+    h("div", { key: "error-gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "错误 · 灰色内容面 / 白色输入面"), h(FormField, { key: "field", label: "项目名称", surface: "gray", error: "项目名称不能为空" }, { default: () => h(Input, { modelValue: "", surface: "gray", ariaLabel: "项目名称", error: true, "onUpdate:modelValue": () => setStatus("Form Field · 已输入") }) })])
+  ]);
   if (id === "select") return h("div", { class: "tui-runtime-surface-pair" }, [
     h("div", { key: "white", "data-surface-context": "white" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "白色内容面 · 灰色选择面"), h(Select, { key: "select", label: "状态", surface: "white", onChange: (value) => setStatus(`Select · ${value}`) })]),
     h("div", { key: "gray", "data-surface-context": "gray" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "灰色内容面 · 白色选择面"), h(Select, { key: "select", label: "状态", surface: "gray", onChange: (value) => setStatus(`Select · ${value}`) })])
   ]);
-  if (id === "combobox") return h(Combobox, { label: "负责人", options: ["选择成员", "林晓", "赵博海"], onChange: (value) => setStatus(`Combobox · ${value}`) });
+  if (id === "combobox") return h(Combobox, { label: "字体", modelValue: "思源黑体", options: ["思源黑体", "源然雅黑", "鸿蒙黑体", "宋体", "黑体"], onChange: (value) => setStatus(`Combobox · ${value}`) });
   if (id === "native-select") return h(NativeSelect, { label: "视图", onChange: (event) => setStatus(`Native Select · ${event?.target?.value ?? event}`) });
   if (id === "checkbox") return h(Checkbox, { onChange: (value) => setStatus(`Checkbox · ${value ? "选中" : "取消"}`) });
   if (id === "radio") return h("div", { class: "tui-runtime-structural-grid" }, [h(Radio, { key: "unselected", label: "未选中", value: "unselected", name: "runtime-radio", onChange: () => setStatus("Radio · 未选中") }), h(Radio, { key: "selected", label: "已选中", value: "selected", name: "runtime-radio", modelValue: true, onChange: () => setStatus("Radio · 已选中") })]);
   if (id === "radio-group") return h(RadioGroup, { onChange: (value) => setStatus(`Radio Group · ${value}`) });
   if (id === "switch") return h(Switch, { onChange: (value) => setStatus(`Switch · ${value ? "开启" : "关闭"}`) });
+  if (id === "segmented-button") return h(SegmentedButton, { onChange: (value) => setStatus(`Segmented Button · ${value}`) });
+  if (id === "number-selector") return h(NumberSelector, { onChange: (value) => setStatus(`Number Selector · ${value}`) });
   if (id === "tabs") return h(Tabs, { onChange: (value) => setStatus(`Tabs · ${value}`) });
+  if (id === "sub-tabs") return h(SubTabs, { onChange: (value) => setStatus(`Sub Tabs · ${value}`) });
+  if (id === "tree-view") return h(TreeView, { onSelect: (value) => setStatus(`Tree View · ${value}`), onToggle: (value, open) => setStatus(`Tree View · ${value} · ${open ? "展开" : "收起"}`) });
   if (id === "accordion") return h(Accordion, { onChange: (open) => setStatus(`Accordion · ${open ? "展开" : "收起"}`) });
   if (id === "collapsible") return h(Collapsible, { onChange: (open) => setStatus(`Collapsible · ${open ? "展开" : "收起"}`) });
   if (id === "avatar") return h("div", { class: "tui-runtime-avatar-pair" }, [
@@ -144,36 +224,29 @@ const runtimeCore = (id, setStatus, component) => {
     h(Badge, { key: "danger", label: "错误", tone: "danger" }),
     h(Badge, { key: "neutral", label: "未开始", tone: "neutral" })
   ]);
-  if (id === "card") return h(Card, { title: "HarmonyOS 组件规范", description: "统一客户端中的布局、组件与交互规则。" });
-  if (id === "item") return h("div", { class: "tui-item-group", role: "list" }, [
-    h(Item, { key: "one", title: "项目设置", lines: 1, trailing: "text-arrow", trailingText: "详情", onClick: () => setStatus("Item · 项目设置") }),
-    h(Item, { key: "two", title: "成员权限", description: "管理角色和访问范围", lines: 2, trailing: "icon", onClick: () => setStatus("Item · 成员权限") }),
-    h(Item, { key: "three", title: "通知方式", description: "邮件通知", supporting: "已同步到云端", lines: 3, trailing: "radio", onClick: () => setStatus("Item · 通知方式") }),
-    h(Item, { key: "switch", title: "自动同步", lines: 1, trailing: "switch", onClick: () => setStatus("Item · 自动同步") }),
-    h(Item, { key: "checkbox", title: "项目归档", lines: 1, trailing: "checkbox", onClick: () => setStatus("Item · 项目归档") }),
-    h(Item, { key: "event", title: "更新动态", lines: 1, trailing: "notification-arrow", onClick: () => setStatus("Item · 更新动态") })
-  ]);
   if (id === "table") return h(Table, { title: "项目列表" });
   if (id === "data-table") return h(DataTable, { title: "数据列表" });
   if (id === "pagination") return h(Pagination, { onChange: (page) => setStatus(`Pagination · 第 ${page} 页`) });
   if (id === "breadcrumb") return h(Breadcrumb, { onNavigate: (item) => setStatus(`Breadcrumb · ${item}`) });
   if (id === "progress") return h(Progress, { value: 68 });
   if (id === "empty") return h(Empty, { onCreate: () => setStatus("Empty · 新建项目") });
-  if (id === "separator") return h(Separator);
-  if (id === "label") return h(Label, { text: "项目名称", forId: "runtime-project-name" });
+  if (id === "label") return h(Label, { text: "邮箱", forId: "runtime-project-name" });
   if (id === "alert") return h("div", { class: "tui-feedback-specimens", "data-runtime-component": "alert" }, feedbackSpecimensFor(component).map((specimen) => h("div", { class: "tui-feedback-specimen", "data-specimen": specimen.id, key: specimen.id }, [h("span", { class: "tui-runtime-surface-label" }, specimen.label), h(Alert, { tone: specimen.variant, message: specimen.message, action: specimen.action, onAction: () => setStatus(`Alert · ${specimen.variant}`) })])));
   if (id === "tooltip") return h(Tooltip);
   if (id === "toast") return h(Toast);
-  if (id === "dialog") return h("div", { class: "tui-overlay-specimens" }, [h(Dialog, { key: "single", actionLayout: "single", onConfirm: () => setStatus("Dialog · 已确认") }), h(Dialog, { key: "double", actionLayout: "double", onConfirm: () => setStatus("Dialog · 已确认"), onCancel: () => setStatus("Dialog · 已取消") })]);
+  if (id === "dialog") return h("div", { class: "tui-overlay-specimens" }, [h(Dialog, { key: "single", actionLayout: "single", onConfirm: () => setStatus("Dialog · 已确认") }), h(Dialog, { key: "double", actionLayout: "double", onConfirm: () => setStatus("Dialog · 已确认"), onCancel: () => setStatus("Dialog · 已取消") }), h(Dialog, { key: "triple", actionLayout: "triple", onConfirm: () => setStatus("Dialog · 已确认"), onCancel: () => setStatus("Dialog · 已取消"), onThird: () => setStatus("Dialog · 已保存草稿") })]);
   if (id === "alert-dialog") return h(AlertDialog, { onConfirm: () => setStatus("Alert Dialog · 已删除"), onCancel: () => setStatus("Alert Dialog · 已取消") });
   if (id === "semi-modal") return h(RuntimeSemiModal, { setStatus });
-  if (id === "navigation-menu") return h(NavigationMenu);
   if (id === "menubar") return h(Menubar);
   if (id === "context-menu") return h(ContextMenu);
   if (id === "dropdown-menu") return h(DropdownMenu);
   if (id === "popover") return h(Popover);
   if (id === "hover-card") return h(HoverCard);
-  if (id === "slider") return h(Slider, { onChange: (value) => setStatus(`Slider · ${value}`) });
+  if (id === "slider") return h("div", { class: "tui-slider-gallery", "data-runtime-component": "slider" }, [
+    h("div", { class: "tui-slider-specimen", "data-slider-style": "style-1", key: "style-1" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "样式 1 · 4px 背景条 / 16px 圆形把手"), h(Slider, { key: "slider", variant: "style-1", onChange: (value) => setStatus(`Slider · ${value}`) })]),
+    h("div", { class: "tui-slider-specimen", "data-slider-style": "style-2", key: "style-2" }, [h("span", { class: "tui-runtime-surface-label", key: "label" }, "样式 2 · 20px 背景条 / 12px 圆形把手"), h(Slider, { key: "slider", variant: "style-2", onChange: (value) => setStatus(`Slider · ${value}`) })])
+  ]);
+  if (id === "color-picker") return h(ColorPicker, { onChange: (value) => setStatus(`ColorPicker · ${typeof value === "string" ? value : `${value.axis} · ${value.value}`}`) });
   if (id === "input-otp") return h(InputOtp, { onComplete: () => setStatus("Input OTP · 已完成") });
   if (id === "kbd") return h(Kbd);
   if (id === "chart") return h(Chart);
@@ -181,33 +254,45 @@ const runtimeCore = (id, setStatus, component) => {
   if (id === "date-picker") return h(DatePicker);
   if (id === "time-picker") return h(TimePicker);
   if (id === "attachment") return h(Attachment, { onAction: (action) => setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) });
-  if (id === "carousel") return h(Carousel);
   return null;
 };
 
-const RuntimeCard = (props) => {
-  const Component = Generated[pascal(props.component.id)];
-  const comparison = comparisonMetaFor(props.component);
-  const directProps = props.component.id === "attachment" ? { onAction: (action) => props.setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) } : {};
-  const preview = coreIds.has(props.component.id)
-    ? runtimeCore(props.component.id, props.setStatus, props.component)
-    : (Component ? h(Component, { state: "default", fixtureId: props.component.fixtureId, ...directProps }) : h("p", { class: "tui-runtime-framework-missing" }, `Vue 适配器缺失：${props.component.id}`));
-  return h("article", {
-    class: cardClass(props.component),
-    "data-component-card": props.component.id,
-    "data-contract-id": props.component.id,
-    "data-category": comparison.groupId,
-    "data-order": String(comparison.comparisonOrder),
-    "data-registry-category": props.component.category,
-    "data-registry-order": String(props.component.order),
-    "data-fixture-id": props.component.fixtureId,
-    "data-framework": "vue",
-    "data-readiness": props.component.status,
-    "aria-labelledby": `runtime-vue-${props.component.id}-title`
-  }, [
-    h("header", { class: "tui-runtime-card__head", key: "head" }, h("div", null, h("h3", { id: `runtime-vue-${props.component.id}-title` }, componentTitle(props.component)))),
-    h("div", { class: "tui-runtime-card__preview", key: "preview", "data-fixture-id": props.component.fixtureId }, preview)
-  ]);
+const RuntimeCard = {
+  props: { component: Object, setStatus: Function },
+  setup(props) {
+    const contractOpen = ref(false);
+    return () => {
+    const Component = Generated[pascal(props.component.id)];
+    const comparison = comparisonMetaFor(props.component);
+    const readiness = readinessInfoFor(props.component);
+    const directProps = props.component.id === "attachment" ? { onAction: (action) => props.setStatus(`Attachment · ${action === "preview" ? "已预览" : "已下载"}`) } : {};
+    const preview = coreIds.has(props.component.id)
+      ? runtimeCore(props.component.id, props.setStatus, props.component)
+      : (Component ? h(Component, { state: "default", fixtureId: props.component.fixtureId, ...directProps }) : h("p", { class: "tui-runtime-framework-missing" }, `Vue 适配器缺失：${props.component.id}`));
+    return h("article", {
+      class: cardClass(props.component),
+      "data-component-card": props.component.id,
+      "data-contract-id": props.component.id,
+      "data-category": comparison.groupId,
+      "data-order": String(comparison.comparisonOrder),
+      "data-registry-category": props.component.category,
+      "data-registry-order": String(props.component.order),
+      "data-fixture-id": props.component.fixtureId,
+      "data-framework": "vue",
+      "data-readiness": readiness.level,
+      "aria-labelledby": `runtime-vue-${props.component.id}-title`
+    }, [
+      h("header", { class: "tui-runtime-card__head", key: "head" }, [
+        h("div", { key: "title" }, [
+          h("h3", { id: `runtime-vue-${props.component.id}-title` }, componentTitle(props.component)),
+        ]),
+        h("button", { type: "button", class: "tui-component tui-button tui-runtime-card__contract-trigger", "data-component": "button", "data-renderer-key": "button", "data-logical-component": "Icon Text Button/Ghost/Default", "data-variant": "ghost", "data-state": "default", "data-framework": "vue", "data-mode": "icon-text", "data-size": "small", "data-button-type": "icon-text-ghost", "data-contract-dialog-trigger": "", "aria-haspopup": "dialog", "aria-expanded": contractOpen.value, onClick: () => { contractOpen.value = true; }, key: "contract-trigger" }, "组件规范")
+      ]),
+      h("div", { class: "tui-runtime-card__preview", key: "preview", "data-fixture-id": props.component.fixtureId }, preview),
+      contractOpen.value ? h(ContractDialog, { component: props.component, framework: "vue", onClose: (reason) => { contractOpen.value = false; props.setStatus(`组件规范 · ${reason}`); }, key: "contract" }) : null
+    ]);
+    };
+  }
 };
 
 const RuntimeApp = {

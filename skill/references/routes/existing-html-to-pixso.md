@@ -1,5 +1,8 @@
 # Existing HTML to Pixso — normal route
 
+Read `references/pixso-import-details.md` and
+`references/pixso-execution-invariants.md` for mapping and executor rules.
+
 Use only for an existing, rendered page whose structure is already approved.
 The task is exact-output conversion, not product design. Do not read the new-page
 route or broad Pixso manuals during a normal run.
@@ -30,7 +33,7 @@ route or broad Pixso manuals during a normal run.
 ## Normal sequence
 
 ```text
-services → fresh run → capture → compile → validate → publish → readback/diff
+services → fresh run → calibrated capture bundle → compile → validate → publish → readback/diff
 ```
 
 Public lifecycle commands:
@@ -38,14 +41,18 @@ Public lifecycle commands:
 ```bash
 node scripts/start-text-to-ui-services.mjs start
 node scripts/pixso-import-orchestrator.mjs start --html-root <root> --url <url> --width 1728 --height 1152 --mode normal
+node scripts/pixso-import-orchestrator.mjs capture --run-manifest <run-manifest>
 node scripts/pixso-import-orchestrator.mjs compile --run-manifest <run-manifest> --visual-manifest <visual-manifest> --component-map assets/design-system/mapping-registry.json --minimum-selector-coverage 0.95 --minimum-visual-evidence-coverage 0.95
 node scripts/pixso-import-orchestrator.mjs publish --run-manifest <run-manifest>
 node scripts/pixso-import-orchestrator.mjs diff --run-manifest <run-manifest> --reference <html-reference.png> --actual <pixso-structured.png> --out <visual-diff.json> --pixel-threshold 20 --max-different-ratio 0.005
 ```
 
-Browser capture is the only browser-tool step. Save its manifest and screenshot
-at the artifact paths declared by the run. Do not recapture or retry in normal
-mode.
+Browser capture is the only browser-tool step. First calibrate the requested CSS
+viewport and save its manifest and normalized PNG at the artifact paths declared
+by the run. Then call `capture`: it writes the current-run `capture-bundle.json`
+only when the PNG's real dimensions, browser viewport, state, fingerprint and
+artifact hashes agree. Compile and publish reject a missing, cropped or mutated
+bundle before a Pixso draft is created. Do not recapture or retry in normal mode.
 
 `publish` performs plan/run validation, checks plugin readiness once, starts the
 execution stage, and publishes exactly once. If the plugin is unavailable, stop

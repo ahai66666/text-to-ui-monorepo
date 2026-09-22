@@ -160,7 +160,9 @@
         "htmlLogicalName": { "type": "string", "minLength": 1 },
         "htmlRendererKey": { "type": ["string", "null"] },
         "pixsoTarget": { "type": ["string", "null"] },
-        "pixsoTargetStatus": { "enum": ["registered", "unregistered"] },
+        "pixsoTargetStatus": { "enum": ["registered", "pending-review", "unregistered"] },
+        "pixsoMappingPolicy": { "enum": ["required", "excluded"] },
+        "pixsoMappingReason": { "type": "string", "minLength": 1 },
         "pixsoSpecKey": { "type": ["string", "null"] },
         "nativeSourceStatus": { "enum": ["mapped-pending-verification", "mapped-needs-rebuild", "verified", "missing-target", "not-applicable"] },
         "runtimeBinding": { "type": ["object", "null"] },
@@ -168,6 +170,30 @@
           "type": "array",
           "items": { "$ref": "#/$defs/componentSubMapping" }
         }
+      },
+      "additionalProperties": true
+    },
+    "endpointComponentMapping": {
+      "type": "object",
+      "required": [
+        "endpointComponentId",
+        "contractId",
+        "htmlLogicalName",
+        "pixsoTarget",
+        "pixsoTargetStatus",
+        "pixsoVariant",
+        "mappingStatus"
+      ],
+      "properties": {
+        "endpointComponentId": { "type": "string", "minLength": 1 },
+        "contractId": { "type": "string", "minLength": 1 },
+        "htmlLogicalName": { "type": "string", "minLength": 1 },
+        "pixsoTarget": { "type": ["string", "null"] },
+        "pixsoTargetStatus": { "enum": ["registered", "pending-review", "unregistered"] },
+        "pixsoVariant": { "type": ["object", "null"] },
+        "mappingStatus": { "enum": ["mapped-pending-verification", "verified", "mapped-needs-rebuild", "unavailable"] },
+        "sourceMappingTarget": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "array"] }
       },
       "additionalProperties": true
     },
@@ -222,6 +248,7 @@
         "semanticColorMappings",
         "styleMappings",
         "componentMappings",
+        "endpointComponentMappings",
         "nativeSourceMappings",
         "sourceOnly"
       ],
@@ -249,6 +276,17 @@
         "semanticColorMappings": { "type": "array", "items": { "$ref": "#/$defs/semanticColorMapping" } },
         "styleMappings": { "type": "array", "items": { "$ref": "#/$defs/styleMapping" } },
         "componentMappings": { "type": "array", "items": { "$ref": "#/$defs/componentMapping" } },
+        "componentAliases": {
+          "type": "array",
+          "description": "Explicit compatibility variants, not a second component catalog. Names must not duplicate formal mappings or other aliases.",
+          "items": {
+            "type": "object",
+            "required": ["logicalName"],
+            "properties": { "logicalName": { "type": "string", "minLength": 1 } },
+            "additionalProperties": true
+          }
+        },
+        "endpointComponentMappings": { "type": "array", "items": { "$ref": "#/$defs/endpointComponentMapping" } },
         "nativeSourceMappings": { "type": "array", "items": { "type": "object", "minProperties": 1 } },
         "sourceOnly": { "type": "array", "items": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string", "minLength": 1 } }, "additionalProperties": true } },
         "projections": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } },

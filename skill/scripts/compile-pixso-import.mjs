@@ -5,9 +5,10 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parseArgs, readJson } from "./pixso-native-scene-lib.mjs";
+import { validateImportRun } from "./validate-pixso-import-run.mjs";
 
 const args = parseArgs(process.argv.slice(2));
-const usage = "Usage: compile-pixso-import.mjs --run-manifest <json> --visual-manifest <json> --component-map <json> [--mapping-registry <mapping-registry.json> --mapping-profile <profile-id>] [--pipeline dom-visual-ir|legacy-semantic] [--name <board-name>] [legacy: --page-spec <json> --layout-contract <json> --page-data <json>]";
+const usage = "Usage: compile-pixso-import.mjs --run-manifest <json> --visual-manifest <json> --component-map <json> [--mapping-registry <mapping-registry.json> --mapping-profile <profile-id>] [--pipeline dom-visual-ir|legacy-semantic] [--name <board-name>] [--single-transaction] [legacy: --page-spec <json> --layout-contract <json> --page-data <json>]";
 if (args.help || !args["run-manifest"] || !args["visual-manifest"] || !args["component-map"]) {
   if (!args.help) console.error(usage);
   process.exit(args.help ? 0 : 2);
@@ -30,6 +31,7 @@ if (mappingProfile) mappingArgs.push("--mapping-profile", String(mappingProfile)
 const sceneOut = path.resolve(manifest.artifacts?.scene ?? path.join(path.dirname(manifestPath), "pixso-scene.json"));
 const planOut = path.resolve(manifest.artifacts?.operationPlan ?? path.join(path.dirname(manifestPath), "pixso-operation-plan.json"));
 const irOut = path.resolve(manifest.artifacts?.domVisualIr ?? path.join(path.dirname(manifestPath), "dom-visual-ir.json"));
+const visualManifestPath = path.resolve(args["visual-manifest"]);
 
 function run(script, scriptArgs) {
   const result = spawnSync(process.execPath, [path.join(scripts, script), ...scriptArgs], { encoding: "utf8" });
@@ -44,13 +46,17 @@ function update(status, detail, metrics = null) {
   return run("update-pixso-import-run.mjs", updateArgs);
 }
 
-update("start", "compile Scene and Operation Plan from the current run only");
+const captureValidation = validateImportRun({ runManifest: manifest, visualManifest: readJson(visualManifestPath) });
+if (!captureValidation.ok) {
+  throw new Error(`compile requires a verified capture bundle: ${captureValidation.failures.join("; ")}`);
+}
+update("start", "compile Scene and Operation Plan from the verified current-run capture bundle only");
 const compileStartedAt = Date.now();
 try {
   if (pipeline === "dom-visual-ir") {
     const result = run("compile-dom-visual-ir.mjs", [
       "--run-manifest", manifestPath,
-      "--visual-manifest", path.resolve(args["visual-manifest"]),
+      "--visual-manifest", visualManifestPath,
       "--component-map", path.resolve(args["component-map"]),
       ...mappingArgs,
       "--ir-out", irOut,
@@ -59,6 +65,7 @@ try {
       "--minimum-visual-evidence-coverage", String(args["minimum-visual-evidence-coverage"] ?? 0.95),
       ...(args.name ? ["--name", String(args.name)] : []),
       ...(args["target-page"] ? ["--target-page", String(args["target-page"])] : []),
+      ...(args["single-transaction"] === true || String(args["single-transaction"]).toLowerCase() === "true" ? ["--single-transaction"] : []),
     ]);
     const operationPlan = readJson(planOut);
     const metrics = {

@@ -10,6 +10,13 @@ Use the generated component index to locate candidates, then read only the exact
 
 Lookalike markup, copied DOM/CSS, screenshots, `data-component`, or matching class names do not count as component reuse. Patterns and domain compositions are allowed to arrange components but must not recreate component internals.
 
+The selection result is binding, not advisory. Once a target-framework
+implementation is found, page generation must use its registered renderer.
+Only a documented missing capability may enter `contractBased` or `custom`;
+the preflight rejects a custom registry query that overlaps an available,
+source-ready component. This keeps a one-shot page build from silently falling
+back to a handwritten visual duplicate.
+
 ## Pattern shell versus navigation item
 
 `primary-navigation-shell` is a Pattern layout slot, not a component query. The
@@ -23,10 +30,12 @@ visual and interaction authority for both structures; it is not a second
 runtime component package. The HTML/React/Vue packages are the framework
 runtime adapter implementation source.
 
-The framework `primary-navigation-item` adapters use an approved 24px Lucide Regular
-semantic icon. Pass only `navigation/grid`, `field/calendar`,
-`navigation/contacts`, `navigation/mail-unread`, or `action/settings`; do not
-use filled or solid geometry for this component.
+The framework `primary-navigation-item` adapters prefer the approved 24px
+Lucide Regular semantic icons: `navigation/grid`, `field/calendar`,
+`navigation/contacts`, `navigation/mail-unread`, and `action/settings`. A
+direct or not-yet-registered icon is still allowed to render through the shared
+icon resolver; it is recorded as a non-blocking diagnostic and must not use
+filled or solid geometry when a Lucide source is available.
 
 ## Attachment/Default
 
@@ -50,12 +59,42 @@ node text-to-ui/scripts/query-components.mjs \
   --capabilities search,checkbox,list-item,tooltip
 ```
 
+When a capability has multiple semantic forms, pass `--context`. A
+`context-required` result is a blocking ambiguity, not permission to use the
+first variant or draw a custom replacement. Selection recipes are maintained in
+`references/components/component-selection-rules.json`.
+
+## Readiness and delivery stage
+
+After resolving the exact logical component, evaluate it with
+`references/components/component-readiness-policy.json`:
+
+- `approved`: allowed in Fast Preview and release;
+- `provisional`: source and contract are usable, allowed only in Fast Preview
+  with unresolved parity dimensions reported;
+- `blocked`: do not generate or replace it with page-owned lookalike markup.
+
+Use `scripts/validate-web-component-reuse.mjs --stage release` for formal
+delivery. A successful Fast Preview does not promote provisional components.
+
+For staged library acceptance, use
+`scripts/build-component-acceptance-report.mjs`. The first maintained batch is
+`references/components/core-component-acceptance.json`; it contains the eight
+Pattern-critical components. Automated foundation checks prove that the
+canonical contract, all framework sources, specimens, Token roles, and declared
+behaviors exist. They do not replace visual, interaction, or accessibility
+evidence and cannot promote a component by themselves.
+
 ## Titlebar/Default · Main Detail action slot
+
+For segmented scenarios and executable slot values, read
+`references/components/titlebar-segments.md`. Use the resolved Pattern's
+title segments instead of drawing a separate titlebar layout.
 
 - In a three-column shell, place actions scoped to the complete third pane in
   the native `main-detail-actions` slot.
 - The slot accepts only the `ghost` Button variant in one of two modes:
-  `icon` or `icon-text-ghost`.
+  `icon` or `icon-text`.
 - Keep page-global Primary actions, Secondary buttons, text-only buttons, and
   dropdown controls outside this slot. Window controls remain in the far-right
   system-action area.

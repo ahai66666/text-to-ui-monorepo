@@ -16,6 +16,17 @@ const iconAliases = JSON.parse(read("text-to-ui/assets/icons/icon-aliases.json")
 const sprite = read("packages/components-html/src/component-icons.svg");
 
 const failures = [];
+// Compare declarations rather than a serialized rule; whitespace/order are not behavior.
+const buttonRule = packageCss.match(/\.tui-button\[data-mode="icon-text"\]\[data-variant="ghost"\]\s*\{([^}]+)\}/)?.[1] ?? "";
+const declarations = Object.fromEntries(buttonRule.split(";").filter(x => x.includes(":")).map(x => { const i = x.indexOf(":"); return [x.slice(0, i).trim(), x.slice(i + 1).trim()]; }));
+for (const [property, expected] of Object.entries({ color: "var(--color-text)", gap: "var(--gap-button-icon-label)", "padding-inline": "var(--space-3)" })) {
+  if (declarations[property] !== expected) failures.push("icon-text ghost " + property + ": expected " + expected + ", got " + declarations[property]);
+}
+const tabsListRule = packageCss.match(/\.tui-tabs__list\s*\{([^}]+)\}/)?.[1] ?? "";
+const tabsListDeclarations = Object.fromEntries(tabsListRule.split(";").filter(x => x.includes(":")).map(x => { const i = x.indexOf(":"); return [x.slice(0, i).trim(), x.slice(i + 1).trim()]; }));
+for (const [property, expected] of [["height", "var(--height-tab-line)"], ["box-sizing", "border-box"]]) {
+  if (tabsListDeclarations[property] !== expected) failures.push(`tabs list ${property}: expected ${expected}, got ${tabsListDeclarations[property]}`);
+}
 const requireText = (source, text, label) => { if (!source.includes(text)) failures.push(`${label}: missing ${text}`); };
 
 for (const token of [
@@ -33,7 +44,7 @@ for (const token of [
   "--color-sidebar-selected",
   "--state-layer-pressed"
 ]) requireText(canonicalCss, token, "canonical Skill CSS");
-requireText(canonicalCss, ".btn-icon-text-ghost { color: var(--color-text); gap: var(--space-3); padding-inline: var(--space-3);", "canonical Skill Button CSS");
+requireText(canonicalCss, ".btn-icon-text-ghost { color: var(--color-text); gap: var(--space-2); padding-inline: var(--space-3);", "canonical Skill Button CSS");
 
 for (const selector of [
   ".tui-button",
@@ -47,7 +58,7 @@ for (const selector of [
   ".tui-titlebar[data-size=\"large\"]",
   ".tui-titlebar[data-size=\"xlarge\"]",
   ".tui-button--icon[data-variant=\"ghost\"]",
-  ".tui-button[data-mode=\"icon-text\"][data-variant=\"ghost\"] { color: var(--color-text); gap: var(--space-3); padding-inline: var(--space-3); }",
+  ".tui-button[data-mode=\"icon-text\"][data-variant=\"ghost\"]",
   ".tui-split-button__control > .tui-button[data-variant=\"ghost\"]"
 ]) requireText(packageCss, selector, "component contract CSS");
 for (const token of ["--height-button", "--padding-button-x", "--type-body-l-size", "--height-input", "--height-titlebar-sm", "--height-titlebar-md", "--height-titlebar-lg", "--height-titlebar-xl", "--size-icon-button", "--color-sidebar-selected", "--state-layer-pressed"]) requireText(packageCss, token, "component contract CSS");

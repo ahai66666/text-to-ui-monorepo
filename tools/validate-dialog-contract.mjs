@@ -21,7 +21,7 @@ const dialog = component("dialog");
 const alertDialog = component("alert-dialog");
 const semiModal = component("semi-modal");
 if (!dialog || !alertDialog || !semiModal) failures.push("dialog family is incomplete in the registry");
-if (dialog && !sameMembers(dialog.variants, ["single", "double"])) failures.push("dialog variants must be single/double only");
+if (dialog && !sameMembers(dialog.variants, ["single", "double", "triple"])) failures.push("dialog variants must be single/double/triple");
 if (dialog?.surface !== "white") failures.push("dialog must use the white surface only");
 if (alertDialog && !sameMembers(alertDialog.variants, ["danger"])) failures.push("alert-dialog must expose danger only");
 if (alertDialog?.surface !== "white") failures.push("alert-dialog must use the white surface only");
@@ -33,7 +33,7 @@ if ((semiModal?.specimens ?? []).length < 7) failures.push("semi-modal must reco
 for (const marker of [
   "var(--width-dialog)", "var(--width-modal-sm)", "var(--width-modal-md)", "var(--width-modal-lg)",
   "var(--shadow-4)", "var(--height-dialog-header)", "var(--height-modal-footer)",
-  '[data-action-layout="single"]', '[data-surface="gray"] [data-field-control]'
+  '[data-action-layout="single"]', '[data-action-layout="triple"] { grid-auto-flow: row;', '[data-surface="gray"] [data-field-control]'
 ]) mustInclude(css, marker, "dialog CSS");
 for (const marker of ["data-overlay-trigger", "data-action-layout", "tui-dialog--semi", "data-semi-axis=\"size\"", "data-semi-axis=\"surface\"", "data-semi-axis=\"mode\""]) mustInclude(html, marker, "HTML dialog family");
 for (const marker of ["createPortal", "actionLayout", "tui-dialog--semi", "onOpenChange", "triggerRef"]) mustInclude(react, marker, "React dialog family");
@@ -41,6 +41,8 @@ for (const marker of ["Teleport", "actionLayout", "tui-dialog--semi", 'emit("upd
 
 const dialogSource = html.slice(html.indexOf("export const dialog"), html.indexOf("export const semiModal"));
 if (dialogSource.includes("tui-dialog__close")) failures.push("Dialog and Alert Dialog must not render a close icon");
+const tripleSource = dialogSource.slice(dialogSource.indexOf('id: "dialog-triple"'));
+if (!tripleSource.includes('action: "confirm", variant: "primary"') || tripleSource.indexOf('action: "confirm", variant: "primary"') > tripleSource.indexOf('action: "third"') || tripleSource.indexOf('action: "third"') > tripleSource.indexOf('action: "cancel"')) failures.push("triple dialog must order primary, third action, then cancel");
 if (!html.slice(html.indexOf("export const semiModal"), html.indexOf("const menuComponent")).includes("tui-dialog__close")) failures.push("Semi-modal must render a close icon");
 
 const result = { ok: failures.length === 0, family: ["dialog", "alert-dialog", "semi-modal"], failures };
