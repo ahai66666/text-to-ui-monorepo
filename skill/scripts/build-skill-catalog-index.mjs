@@ -36,7 +36,7 @@ const catalog = {
   deliveryTargets: [
     'skill/',
     '$CODEX_HOME/skills/text-to-ui',
-    '$HOME/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2'
+    'TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT (optional user-selected directory)'
   ],
   groups: groups.map(([id, purpose, files]) => ({ id, purpose, files: files.map((relative) => {
     const absolute = path.join(repo, relative);

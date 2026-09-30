@@ -18,17 +18,11 @@
 - 路由器给出多个候选项时先澄清意图，不要猜测并强行继续。
 - 替换旧版独立 Permanent Agent 插件为统一 v2 插件，不要同时运行两个插件。
 
-## Pixso 插件源码与安装位置
+## Pixso 插件源码与安装
 
 仓库中的规范源码目录：`text-to-ui/scripts/pixso-unified-agent-plugin/`。
 
-本机默认插件交付/安装目录：
-
-```text
-~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/
-```
-
-在 Pixso Developer Mode 中加载 `<插件目录>/manifest.json`。该目录是本机交付位置，不是第二份源码。需要自定义目录时使用 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`；兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT` 仍可用。同步脚本只会更新已经存在的插件目标目录。
+将构建后的插件包放在使用者自行选择的位置，并在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。需要把插件包同步到已存在的额外目录时，设置 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`；兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT` 仍可用。未设置交付目录时，脚本不会访问机器专属目录。
 
 在 Monorepo 根目录构建并同步：
 

@@ -221,7 +221,13 @@ text-to-ui-monorepo/
 - `skill/` 是可独立安装的规则包，但它本身不是生产组件库。
 - `packages/` 才包含 HTML、React、Vue 的真实实现和共享设计系统能力。
 - 只安装 Skill 而没有组件包时，Skill 必须明确报告组件库不可用，不能静默生成视觉相似替代品。
-- 克隆仓库不会自动把 Skill 注册到 Codex；仍需安装 `skill/`，并为组件复用提供完整仓库或已发布包。
+- 克隆仓库不会自动把 Skill 注册到 AI 工具；仍需按宿主工具的方式导入 Skill 文件夹，并为组件复用提供完整仓库或已发布包。
+
+### 在其他 AI 工具中导入 Skill
+
+部分工具只检查所选文件夹顶层是否存在 `SKILL.md`，也有工具要求文件夹名与其中的 `name: text-to-ui` 一致。下载 GitHub 仓库源码 ZIP 并解压后，推荐选择“解压后的仓库目录”中的 `text-to-ui/`；独立 Skill ZIP 解压后同样选择 `text-to-ui/`。所选文件夹应直接包含 `SKILL.md`、`references/` 和 `scripts/`。仓库内的 `skill/` 是交付镜像，按顶层文件识别的工具也能发现它，但跨工具导入推荐使用 `text-to-ui/`。具体导入入口由所用工具提供。
+
+独立 Skill 包可供工具发现规则和索引，但不包含 `packages/` 中的 HTML、React、Vue 组件与运行时。需要生成使用真实组件的页面时，还须提供完整 Monorepo 或兼容的组件包；缺少这些依赖时，应将组件能力标为不可用。
 
 ## Text-to-UI 与 Pixso 插件交付
 
@@ -243,10 +249,10 @@ HTML / 浏览器最终计算样式
 | `text-to-ui/` | Skill 唯一规范源、导入编译器、映射规则和测试 | 否 |
 | `skill/` | 可独立安装的 Skill 同步镜像 | 否；`.text-to-ui/` 运行状态不发布 |
 | `text-to-ui/scripts/pixso-unified-agent-plugin/` | Pixso Unified Agent v2 插件源码，包含 `manifest.json` | 否 |
-| `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/` | 本机默认插件交付/安装目录；在 Pixso Developer Mode 加载其中的 `manifest.json` | 插件包 |
+| 使用者自行选择的插件目录 | 在 Pixso Developer Mode 加载该目录中的 `manifest.json`；目录不属于仓库 | 插件包 |
 | `packages/` | HTML、React、Vue 组件和共享设计系统源码 | 否 |
 
-插件源码位于 `text-to-ui/scripts/pixso-unified-agent-plugin/`。默认交付目录为 `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，应在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。这是本机默认路径，不是仓库源码路径；其他开发者可以通过 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（或兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）指定自己的插件目录。
+插件源码位于 `text-to-ui/scripts/pixso-unified-agent-plugin/`。使用者可将构建后的插件包放在自行选择的位置，并在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。如需由交付脚本同步到已存在的额外目录，设置 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）；未设置时不会写入任何机器专属目录。
 
 插件包负责在已打开的 Pixso 文件中执行 Operation Plan，并持续监听本地桥接服务；Skill 负责采集 HTML、锁定几何、生成计划和提供规则。正常整页导入只使用插件执行，不与 MCP 整页绘制并行，也不读取旧计划、旧截图、旧 GUID 或旧画板作为新运行输入。插件代码/API 变更后需要重新加载插件包；规则、映射或页面内容变化只需要重新生成并发布新的 Operation Plan。
 

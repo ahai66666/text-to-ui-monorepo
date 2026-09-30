@@ -1,6 +1,6 @@
 # text-to-ui Skill · v2.0.0
 
-`text-to-ui v2.0.0` 是一个 Codex Skill：将文本产品需求转换为符合 HarmonyOS PC 客户端设计语言的可编辑 Pixso 设计稿和可交互 Demo，并让需求、Token、组件、布局和状态在全过程可追溯。Skill 通过 Monorepo 中的组件契约和真实组件包复用 HTML、React/Next、Vue 三种 Web 实现；它本身保存规则和索引，不替代生产组件源码。
+`text-to-ui v2.0.0` 是一个以 `SKILL.md` 为入口的 AI Skill：将文本产品需求转换为符合 HarmonyOS PC 客户端设计语言的可编辑 Pixso 设计稿和可交互 Demo，并让需求、Token、组件、布局和状态在全过程可追溯。Skill 通过 Monorepo 中的组件契约和真实组件包复用 HTML、React/Next、Vue 三种 Web 实现；它本身保存规则和索引，不替代生产组件源码。
 
 ## v2.0.0 更新摘要
 
@@ -9,7 +9,7 @@
 - 补齐 Secondary Page 页面续接与 Pattern 约束，并明确 Dropdown Menu 在 Pixso 中采用原生节点组合的边界。
 - 更新组件、Token 和 Pixso 映射资料，合并常驻 Agent 与组件映射同步能力为 Pixso Unified Agent v2。
 
-完整迁移说明见 [Text-to-UI Skill v2.0.0 更新记录](../docs/releases/text-to-ui-v2.0.0.md)。
+完整迁移说明见仓库文档 [Text-to-UI Skill v2.0.0 更新记录](https://github.com/ahai66666/text-to-ui-monorepo/blob/main/docs/releases/text-to-ui-v2.0.0.md)。
 
 ## 与完整组件仓的交付边界
 
@@ -66,7 +66,7 @@ pnpm install
 pnpm delivery:validate
 ```
 
-从仓库复制或安装 `skill/` 本身不会自动把 `packages/` 注册为组件库，也不会自动把 Skill 注册到 Codex。独立安装 Skill 时，如果没有可发现的 Monorepo 根目录和组件包，Skill 必须明确报告“组件包不可用”，不能把旧预览、截图或视觉相似物宣称为生产组件复用。完整接入协议见 [`references/component-package-integration.md`](references/component-package-integration.md)。
+从仓库复制或安装 `skill/` 本身不会自动把 `packages/` 注册为组件库，也不会自动把 Skill 注册到宿主工具。独立安装 Skill 时，如果没有可发现的 Monorepo 根目录和组件包，Skill 必须明确报告“组件包不可用”，不能把旧预览、截图或视觉相似物宣称为生产组件复用。完整接入协议见 [`references/component-package-integration.md`](references/component-package-integration.md)。
 
 更新 Skill 时只编辑 `text-to-ui/` 规范源，再将相同文件同步到 `skill/`；不要在两个目录中维护不同规则。
 
@@ -292,26 +292,15 @@ Pixso 并非直接把画面“导出”为不可维护的代码。确认设计�
 
 ### 安装
 
-#### 从 Release 安装
+#### 从独立 Skill ZIP 安装
 
-1. 下载最新的 [`text-to-ui-skill` 安装包](https://github.com/ahai66666/text-to-ui/releases/latest)。
-2. 解压后，将 `text-to-ui` 文件夹放入 Codex Skills 目录：
+取得独立 `text-to-ui-skill` ZIP（仓库根目录执行 `pnpm skill:package` 可生成；工作流 Artifact 或另行发布的 [GitHub Release](https://github.com/ahai66666/text-to-ui-monorepo/releases) 也可提供）。解压后，在支持导入 Skill 的工具中选择 `text-to-ui/` 文件夹；其顶层应直接包含 `SKILL.md`。不同工具的导入菜单可能不同，请以所用工具的说明为准。
 
-   ```text
-   ~/.codex/skills/text-to-ui
-   ```
+#### 从完整仓库源码 ZIP 安装
 
-3. 重新打开 Codex，确认技能列表中出现 `text to ui`。
+下载 [本仓库](https://github.com/ahai66666/text-to-ui-monorepo) 的源码 ZIP 并解压，推荐在工具中选择“解压后的仓库目录”中的 `text-to-ui/`。该目录顶层有 `SKILL.md`，目录名也与入口中的 `name: text-to-ui` 一致。仓库最外层没有 `SKILL.md`；`skill/` 是交付镜像，按顶层文件识别的工具可发现它，但校验目录名的工具可能拒绝。使用 Git 克隆时同样推荐选择仓库内的 `text-to-ui/`。
 
-#### 从仓库安装
-
-```bash
-git clone https://github.com/ahai66666/text-to-ui.git ~/.codex/skills/text-to-ui
-cd ~/.codex/skills/text-to-ui
-pnpm install
-```
-
-`pnpm install` 用于安装图标搜索、导出和审计所需的本地依赖。仅使用已有静态资源时可以稍后执行。
+这两种导入方式只让工具发现 Skill。需要运行依赖真实组件的页面生成流程时，还须提供包含 `packages/` 的完整 Monorepo 或兼容组件包，并安装相应依赖；只有独立 Skill 时应报告组件能力不可用。
 
 ## 项目结构
 
@@ -402,11 +391,11 @@ HTML 初稿导入 Pixso 后，代码中的字面量会先成为图层属性；�
 
 - 当前工作区 Skill 版本：`v2.0.0`（以 `package.json` 为准）
 - 工作流编号：`V1`（HTML 初稿 → Pixso 细化）、`V2`（视觉优先）、`V3`（直接生成 HTML）。
-- 最新稳定发布：[`v1.1.0`](https://github.com/ahai66666/text-to-ui/releases/tag/v1.1.0)
+- 已发布版本：以 [本仓库 Releases](https://github.com/ahai66666/text-to-ui-monorepo/releases) 为准；工作区版本号不代表独立包已经发布。
 
-完整安装包和历史版本请查看 [GitHub Releases](https://github.com/ahai66666/text-to-ui/releases)。
+完整安装包和历史版本请查看 [本仓库 Releases](https://github.com/ahai66666/text-to-ui-monorepo/releases)。
 
-Pixso 插件源码在 `scripts/pixso-unified-agent-plugin/`；本机默认交付/安装目录为 `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，加载文件是该目录下的 `manifest.json`。其他机器可通过 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT` 自定义目录；详见仓库根目录的 Pixso 插件交付说明。
+Pixso 插件源码在 `scripts/pixso-unified-agent-plugin/`。使用者可将构建后的插件包放在自行选择的位置，并在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。如需交付脚本同步到已存在的额外目录，设置 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（兼容 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）；详见仓库根目录的 Pixso 插件交付说明。
 
 ## 许可证
 

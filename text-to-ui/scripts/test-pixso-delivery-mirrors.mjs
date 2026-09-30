@@ -20,8 +20,8 @@ const digest = (file) => crypto.createHash("sha256").update(fs.readFileSync(file
 for (const mirror of mirrors) verifySkill(source, mirror.root);
 const unifiedDelivery = process.env.TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT
   ?? process.env.TEXT_TO_UI_PLUGIN_DELIVERY_ROOT
-  ?? path.join(os.homedir(), "Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2");
-if (fs.existsSync(unifiedDelivery)) {
+  ?? null;
+if (unifiedDelivery && fs.existsSync(unifiedDelivery)) {
   for (const relative of [
     "main.js", "main.template.js", "pixso-native-execution-runtime.js", "manifest.json",
     "pixso-plugin-bridge.mjs", "pixso-capture-bundle.mjs", "pixso-official-adapter.mjs",
@@ -37,7 +37,9 @@ if (fs.existsSync(unifiedDelivery)) {
     digest(path.join(source, "assets/design-system/pixso-native-component-map.json")),
     "unified plugin delivery differs for component map",
   );
+} else if (unifiedDelivery) {
+  console.log("Configured Pixso plugin delivery was not found; set TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT to validate it.");
 } else {
-  console.log(`Unified plugin delivery not found at ${unifiedDelivery}; set TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT to validate it.`);
+  console.log("No external Pixso plugin delivery target configured; optional delivery check skipped.");
 }
 console.log(`Pixso delivery mirrors passed: ${mirrors.length} repository/installed skill mirror(s).`);
