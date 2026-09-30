@@ -23,13 +23,15 @@
     "new-page": {
       "materials": [
         { "path": "text-to-ui/references/routes/new-page.md", "role": "route" },
+        { "path": "text-to-ui/references/index/task-routes.source.json", "role": "task-route-registry" },
         { "path": "text-to-ui/references/page-design-guidance.md", "role": "page-guidance" },
         { "path": "text-to-ui/references/page-blueprint-design.md", "role": "page-blueprint" },
         { "path": "text-to-ui/references/components/page-composition.md", "role": "page-composition" },
         { "path": "text-to-ui/assets/design-system/titlebar-scene-contracts.json", "role": "titlebar-scene-contract" },
+        { "path": "packages/pattern-runtime/README.md", "role": "pattern-runtime-api" },
         { "path": "text-to-ui/references/workflows/fast-preview.md", "role": "validation" }
       ],
-      "dynamicMaterials": ["pattern-references", "domain-reference", "titlebar-segments"]
+      "dynamicMaterials": ["pattern-references", "task-route-domain-reference", "titlebar-segments"]
     },
     "micro-revision": {
       "materials": [

@@ -78,7 +78,7 @@ const commands = [
   [path.join(skillRoot, 'scripts/validate-page-spec.mjs'), [path.resolve(args['page-spec'])]],
   [path.join(skillRoot, 'scripts/validate-page-layout-binding.mjs'), ['--page-spec', path.resolve(args['page-spec']), '--layout-contract', path.resolve(args['layout-contract']), '--component-usage', path.resolve(args['component-usage'])]],
   [path.join(skillRoot, 'scripts/validate-page-css-boundaries.mjs'), componentUsage.sourceRoots.flatMap((sourceRoot) => ['--source', path.resolve(projectRoot, sourceRoot)])],
-  [path.join(skillRoot, 'scripts/validate-layout-markers.mjs'), ['--artifact', artifact, '--layout-contract', path.resolve(args['layout-contract']), ...((componentUsage.sourceRoots || []).flatMap((sourceRoot) => ['--source', path.resolve(projectRoot, sourceRoot)]))]],
+  [path.join(skillRoot, 'scripts/validate-layout-markers.mjs'), ['--artifact', artifact, '--layout-contract', path.resolve(args['layout-contract']), ...(args['runtime-evidence'] ? ['--runtime-evidence', path.resolve(args['runtime-evidence'])] : []), ...((componentUsage.sourceRoots || []).flatMap((sourceRoot) => ['--source', path.resolve(projectRoot, sourceRoot)]))]],
   [path.join(skillRoot, 'scripts/validate-web-component-reuse.mjs'), ['--manifest', path.resolve(args['component-usage']), '--project-root', projectRoot, '--skill-root', skillRoot, '--stage', 'fast-preview']]
 ];
 if ((frameworkManifest.pageModules ?? []).length) {

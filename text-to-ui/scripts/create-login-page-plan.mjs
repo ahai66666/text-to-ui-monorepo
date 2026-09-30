@@ -138,7 +138,7 @@ frame("login-root", null, rootName, "login-page", frameLayout({
   pad: padding(7),
   counterAlign: "CENTER",
   clipsContent: true,
-}), "neutral-dark/05", "16", "Effect/Foundation/shadow-1");
+}), "neutral-dark/05", "16");
 
 frame("login-brand", "login-root", "Brand introduction", "login-brand", frameLayout({
   direction: "VERTICAL", width: 760, height: 1088, gap: space(6), pad: padding(7), primaryAlign: "CENTER", counterAlign: "MIN"
@@ -162,7 +162,7 @@ frame("login-main", "login-root", "Login content", "login-content", frameLayout(
 }), "neutral-light/100", "16");
 frame("login-card", "login-main", "Login card", "login-card", frameLayout({
   direction: "VERTICAL", width: 480, height: 624, gap: space(5), pad: padding(7), primaryAlign: "MIN", counterAlign: "MIN"
-}), "neutral-light/100", "16", "Effect/Foundation/shadow-1");
+}), "neutral-light/100", "16");
 frame("login-header", "login-card", "Login header", "login-card", frameLayout({ direction: "VERTICAL", width: 416, height: 72, gap: space(3), counterAlign: "MIN" }), null, null);
 text("login-title", "login-header", "Login title", "login-card", "欢迎登录", frameLayout({ direction: "NONE", width: "fill", height: "hug" }), "Title_M");
 text("login-subtitle", "login-header", "Login subtitle", "login-card", "使用 Coremail 账户继续", frameLayout({ direction: "NONE", width: "fill", height: "hug" }), "Body_M", "neutral-dark/60");

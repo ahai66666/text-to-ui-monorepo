@@ -13,7 +13,7 @@ const repo = located.root;
 const skillRoot = resolveSkillRoot(repo, args['skill-root']);
 
 const groups = [
-  ['routing-and-receipts', 'Route selection, Context Packet material closure, and read-receipt verification.', ['text-to-ui/references/routes/index.json', 'text-to-ui/references/routes/materials.source.json', 'text-to-ui/references/routes/skill-maintenance.md', 'text-to-ui/scripts/resolve-workflow-route.mjs', 'text-to-ui/scripts/resolve-context.mjs', 'text-to-ui/scripts/verify-route-materials.mjs', 'text-to-ui/scripts/verify-context-materials.mjs']],
+  ['routing-and-receipts', 'Route selection, Context Packet material closure, and read-receipt verification.', ['text-to-ui/references/routes/index.json', 'text-to-ui/references/routes/materials.source.json', 'text-to-ui/references/routes/skill-maintenance.md', 'text-to-ui/scripts/resolve-workflow-route.mjs', 'text-to-ui/scripts/task-route-lib.mjs', 'text-to-ui/scripts/resolve-context.mjs', 'text-to-ui/scripts/test-task-route-resolution.mjs', 'text-to-ui/scripts/verify-route-materials.mjs', 'text-to-ui/scripts/verify-context-materials.mjs']],
   ['patterns-and-runtime', 'Pattern contracts, Skeleton/Runtime renderers, deterministic Titlebar scenes, and Secondary Page composition.', ['text-to-ui/assets/design-system/pattern-contracts.json', 'text-to-ui/assets/design-system/pattern-contracts.schema.json', 'text-to-ui/assets/design-system/titlebar-scene-contracts.json', 'packages/pattern-runtime/src/index.js', 'packages/pattern-runtime/src/styles.css', 'text-to-ui/scripts/resolve-pattern-contract.mjs', 'text-to-ui/scripts/titlebar-scene.mjs', 'text-to-ui/scripts/validate-pattern-contracts.mjs', 'text-to-ui/scripts/test-pattern-runtime.mjs', 'text-to-ui/scripts/test-ui-scene-pattern-binding.mjs']],
   ['component-contracts-and-adapters', 'Component identity, Props, Slots, framework adapters, and registered reuse.', ['packages/component-contracts/src/components.json', 'packages/component-contracts/src/components-runtime.js', 'packages/component-contracts/src/parity-manifest.json', 'packages/component-contracts/src/titlebar-segments.js', 'text-to-ui/assets/design-system/framework-component-adapter-map.json', 'text-to-ui/scripts/validate-framework-component-adapter-map.mjs', 'text-to-ui/scripts/validate-runtime-component-reuse.mjs', 'text-to-ui/scripts/validate-web-component-reuse.mjs']],
   ['tokens-type-and-icons', 'Semantic Token maps, colors, typography, layout, and icon aliases.', ['packages/tokens/src/token-runtime-map.json', 'packages/tokens/src/tokens.colors.css', 'packages/tokens/src/tokens.typography.css', 'packages/tokens/src/tokens.layout.css', 'packages/tokens/src/tokens.spacing.css', 'packages/tokens/src/tokens.icon.css', 'text-to-ui/assets/icons/icon-aliases.json', 'text-to-ui/assets/design-system/pixso-icon-map.json', 'text-to-ui/scripts/validate-page-token-usage.mjs', 'text-to-ui/scripts/validate-pixso-icon-map.mjs']],
@@ -36,7 +36,7 @@ const catalog = {
   deliveryTargets: [
     'skill/',
     '$CODEX_HOME/skills/text-to-ui',
-    '/Users/zhaobohai/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2'
+    '$HOME/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2'
   ],
   groups: groups.map(([id, purpose, files]) => ({ id, purpose, files: files.map((relative) => {
     const absolute = path.join(repo, relative);

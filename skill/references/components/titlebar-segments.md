@@ -5,6 +5,13 @@ ordered title segments, their widths, dividers and height. Do not give Titlebar
 a separate grid or hard-code a navigation width. Preserve the existing size
 and visual variants. Existing `paneRole` calls remain compatible.
 
+The brand image is the canonical `logo` slot. Global and
+primary-navigation (first-level) segments always show it. Secondary-pane and
+final-pane (second-level and third-level) segments hide it by default and may
+opt in or out with `showLogo`; when shown, they use the same `logo` slot and
+the same size alignment as the first-level brand. The old `leading` image slot
+remains a compatibility alias for `logo` on first-level segments only.
+
 Titlebar has no outer frame. Its segment boundary is a Runtime-owned divider;
 the component itself uses a transparent surface and `border-bottom: 0` except
 for any explicitly contracted final-pane separator. Do not add an outline,
@@ -49,6 +56,15 @@ four-column/overlap bug and is a blocking layout error.
   resolved `pattern.titleLayer.segments`; it returns configurations only and
   does not render a competing layout.
 
+## Title typography
+
+The standalone `Titlebar_S` title uses `Subtitle_M` (`16px / 20px / 500`).
+Pane-aligned title slots on Titlebar M/L/XL use `Title_S` (`20px / 24px / 700`);
+the brand/app `label` uses `Subtitle_M` at every size. The component selects the
+role from its registered size and emits the matching typography marker. Do not
+copy a Dialog or Semi-modal title role onto Titlebar S, and do not add a
+page-owned font override.
+
 ## Trailing inset
 
 The rendered Titlebar keeps a 12px trailing inset. This applies to the S / 40px
@@ -61,7 +77,8 @@ style is the shared source for HTML, React, and Vue.
 
 | Slot | Value | Segment |
 | --- | --- | --- |
-| `leading` | `{ src, alt? }` logo image | Brand |
+| `logo` | `{ src, alt? }` logo image | All segments; visible by default only for global/primary-navigation |
+| `leading` | `{ src, alt? }` legacy alias for `logo` | Global/primary-navigation only |
 | `label` | Text | Brand |
 | `main-content-leading` | `{ id, label, icon, buttonType? }` action object | Two-pane final segment; leading action such as Back; 24×24 icon, 4px gap to title |
 | `main-content-title` | Text | Standalone final title or two-pane final segment |
@@ -72,6 +89,11 @@ style is the shared source for HTML, React, and Vue.
 These are controlled content slots, not arbitrary HTML or containers. Titles
 are escaped text, actions render through library buttons, and window controls
 remain component-owned. Invalid slot/segment combinations fail before render.
+Use `showLogo` to control secondary-pane/final-pane visibility; setting it to
+`false` on a first-level segment is invalid because first-level Titlebars must
+always expose the logo. If `slots.logo` is supplied for a secondary or final
+segment, it is shown unless `showLogo: false` is supplied. Do not provide both
+`slots.logo` and the legacy `slots.leading` alias.
 `showWindowControls: false` hides the built-in controls only where the Pattern
 permits it. Pattern B requires the final segment controls. Only a standalone
 global Titlebar or a final segment may show them.
@@ -135,7 +157,7 @@ or a page-owned window control is a scene mismatch and stops compilation.
 ```js
 import { createTitlebarSegments, renderHtmlComponent } from '@text-to-ui/components-html';
 const segments = createTitlebarSegments(resolvedPattern, {
-  'primary-navigation': { slots: { leading: { src: './logo.svg', alt: '产品' }, label: '项目空间' } },
+  'primary-navigation': { slots: { logo: { src: './logo.svg', alt: '产品' }, label: '项目空间' } },
   'main-detail': { slots: { 'main-detail-actions': [
     { id: 'reply', label: '回复', icon: 'action/reply', buttonType: 'icon-text-ghost' }
   ] } }

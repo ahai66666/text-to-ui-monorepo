@@ -3,7 +3,7 @@
   "generatedFrom": [
     {
       "path": "text-to-ui/references/index/task-routes.source.json",
-      "sha256": "5d6f00a0128fda016d2dfe432e5bb0a39a53f13411b7f1c8ca4e27a7eaf26d42"
+      "sha256": "f6703979ad7e71f5f0d54d5924857886ae8fdcff50b62931190af54703a9195c"
     },
     {
       "path": "packages/component-contracts/src/components.json",
@@ -16,11 +16,20 @@
   ],
   "policy": {
     "lookupOrder": [
-      "task-route",
+      "exact-task-route",
+      "complete-alias-or-domain-phrase",
+      "unambiguous-complete-word",
+      "explicit-pattern-for-unknown-task",
       "layout",
       "components",
       "exact-contract"
     ],
+    "normalizeBeforeMatch": [
+      "unicode-nfkc",
+      "lowercase",
+      "punctuation-to-space"
+    ],
+    "ambiguityPolicy": "stop-and-list-candidate-route-ids; --task-route explicitly selects among matching candidates",
     "componentSourceOrder": [
       "real-framework-component",
       "matching-contract",
@@ -42,6 +51,7 @@
         "mail",
         "communication"
       ],
+      "domainReference": "references/domains/email-workbench.md",
       "layout": "pattern-b-three-pane",
       "requiredCapabilities": [
         "titlebar",

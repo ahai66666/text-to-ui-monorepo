@@ -16,7 +16,8 @@ route or broad Pixso manuals during a normal run.
   appended to its directory URL, use the corrected directory entry and record
   both URLs in the run manifest. Preserve real files. Use
   `--allow-virtual-route` only for an intentional SPA route.
-- Start managed services once.
+- The `start` command checks and starts managed services automatically; do not
+  ask the user to start the Bridge or Preview Hub separately.
 - Use a fresh isolated run under the HTML root's `.text-to-ui/pixso-runs/` or an
   explicitly supplied runs root. Generated evidence is excluded from the HTML
   fingerprint.
@@ -33,13 +34,12 @@ route or broad Pixso manuals during a normal run.
 ## Normal sequence
 
 ```text
-services → fresh run → calibrated capture bundle → compile → validate → publish → readback/diff
+automatic services → fresh run → calibrated capture bundle → compile → validate → publish → readback/diff
 ```
 
 Public lifecycle commands:
 
 ```bash
-node scripts/start-text-to-ui-services.mjs start
 node scripts/pixso-import-orchestrator.mjs start --html-root <root> --url <url> --width 1728 --height 1152 --mode normal
 node scripts/pixso-import-orchestrator.mjs capture --run-manifest <run-manifest>
 node scripts/pixso-import-orchestrator.mjs compile --run-manifest <run-manifest> --visual-manifest <visual-manifest> --component-map assets/design-system/mapping-registry.json --minimum-selector-coverage 0.95 --minimum-visual-evidence-coverage 0.95
@@ -54,22 +54,49 @@ only when the PNG's real dimensions, browser viewport, state, fingerprint and
 artifact hashes agree. Compile and publish reject a missing, cropped or mutated
 bundle before a Pixso draft is created. Do not recapture or retry in normal mode.
 
-`publish` performs plan/run validation, checks plugin readiness once, starts the
-execution stage, and publishes exactly once. If the plugin is unavailable, stop
-and report its precise connection/runtime/protocol state. Do not auto-fallback
-to MCP or repeatedly create new runs. Reconnect Permanent Agent Kernel `5.0.0`, then use
-one fresh run.
+`publish` performs plan/run validation, starts the execution stage, and publishes
+exactly once. If the plugin panel is closed, report that the user should open it
+in the target Pixso file. Keep the same publication waiting for the plugin;
+opening the panel claims and executes it automatically without a second user
+action or a new import run. A disconnected plugin has a ten-minute opening
+window; an already connected plugin has 45 seconds to confirm startup. A
+runtime, protocol, or capability mismatch requires loading the current plugin
+build. Do not auto-fallback to MCP or repeatedly create new runs. A timed-out
+publication is terminal and requires a fresh run.
 
 The plugin creates one hidden managed draft. It swaps that draft into the
 canonical position only after readback succeeds and removes it on pause or
 failure, so a normal import leaves exactly one managed artboard.
 
-## Stop conditions
+## Outcome classification and stopping
 
-Stop immediately when source hashes, run IDs, viewport/state, geometry coverage,
-plugin version, execution, readback, or visual diff fails. Do not edit the
-converter during that run. Cancel or fail it, then use `converter-diagnosis`.
-Never weaken the gate or replay the plan.
+- Separate **page presence** from **acceptance quality**. Read the current
+  run-manifest and the single plugin result; inspect their phase, failed
+  module/operation, and canonical-frame commit status. A lone `ok: false` or
+  module-level component/icon/color readback message is not proof that no page
+  was imported.
+- Component fallback, component-slot/icon readback, or visual-audit issues do
+  not make an acceptance gate pass, but report them separately from whether the
+  top-level page exists.
+- If the current-run root was committed to the target page, or the user
+  explicitly confirms they can see the page in Pixso, report **page imported**
+  and list any outstanding execution/quality warning separately. Stop there:
+  do not investigate component details, publish again, or edit the canvas
+  unless the user asks.
+- If the user has not confirmed the page is present and the run state does not
+  identify a committed root, allow at most one targeted read-only check of the
+  expected target page/frame. Do not perform broad component inspection to
+  decide page presence.
+- If no current-run frame was committed and the failed phase is structural
+  execution/commit/readback, report **import incomplete** with the exact phase.
+  Do not retry or create a new run for the same failure; use
+  `converter-diagnosis` only when further diagnosis is requested or required.
+
+Stop further writes when source hashes, run IDs, viewport/state, geometry
+coverage, plugin version, or schema/preflight fails. An execution, readback, or
+visual-diff failure stops the current publication, but use the outcome
+classification above before saying the page itself was not imported. Never
+weaken a gate or replay the plan.
 
 Normal target: 30–90 seconds wall time. Capture and compile should normally take
 seconds; if orchestration dominates, report its exact stage rather than calling

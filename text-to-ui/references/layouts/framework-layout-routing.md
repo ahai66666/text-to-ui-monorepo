@@ -42,3 +42,23 @@ region and must never scroll away or be masked. The legacy
 `primary-navigation-shell` slot is optional, not a second Sidebar container.
 The Sidebar slot's internal padding is `space/4` (16px) on all four sides;
 empty optional legacy slots must not create additional spacing.
+The `primary-navigation-bottom` slot is a responsive distribution row owned by
+the Runtime. When it contains four level-one icon items, the slot fills the
+available width, each direct item wrapper receives an equal flexible track,
+and the registered icon control is centered in that track. Generated HTML may
+emit one behavior/component `span` wrapper per item; legacy content may emit a
+direct `nav`, so Runtime selectors must support the actual renderer shapes
+instead of assuming only `> nav`. Fixed gaps, leading-edge packing, and
+page-owned spacing repairs are invalid. Verify the rendered DOM and computed
+positions at the target viewport before accepting the page.
+If the items need a shared behavior host, make it a `nav` group with the
+`tui-primary-navigation-items` class; keep the behavior module on that group.
+Do not give the group a page-owned flex direction, gap, or width. Four icons
+must appear on one row at the bottom of the primary pane, not as a vertical
+rail. The framework generator rejects grouped content without this container.
+
+For callable Pattern previews and generated pages, use the registered
+`@text-to-ui/pattern-runtime` contract. Its Skeleton/Runtime and Secondary Page
+APIs are documented in `packages/pattern-runtime/README.md`; geometry and
+slot-placement rules remain in `references/harmonyos-layout-patterns.md` and
+`references/components/titlebar-segments.md`.

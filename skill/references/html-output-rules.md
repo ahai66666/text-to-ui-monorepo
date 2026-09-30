@@ -15,7 +15,7 @@ Use this reference before implementing the final HTML/CSS.
   Declare and consume the exact CSS custom property; never copy its resolved
   value from Pixso or browser computed styles.
 - Reuse component classes (`.button`, `.field`, `.card`, `.nav-item`) instead of one-off selectors when the project may grow.
-- Prefer CSS gradients, shadows, border, backdrop-filter, and pseudo-elements for decorative UI.
+- Prefer CSS gradients, borders, backdrop-filter, and pseudo-elements for decorative UI. The shared shadow Tokens have nine standard overlay contexts in `assets/design-system/design.md` §4.6; other elements normally have no shadow. Any project-specific exception needs an explicit project design rule.
 - Avoid external image or font dependencies unless the user asks or assets are supplied.
 - Resolve product icons through `assets/icons/icon-aliases.json`. Generate Lucide and approved asset symbols with `scripts/export-icon-sprite.mjs`; do not hand-author approximate SVG paths.
 - In a single-file HTML output, inject the generated sprite into the document and render instances with semantic `<use href="#icon-...">` references. Preserve `data-icon-source` provenance on generated symbols.

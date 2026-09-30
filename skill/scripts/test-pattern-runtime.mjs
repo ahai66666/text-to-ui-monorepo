@@ -14,12 +14,23 @@ import {
 
 const patternRuntimeCss = fs.readFileSync(new URL("../../packages/pattern-runtime/src/styles.css", import.meta.url), "utf8");
 const patternShellCss = fs.readFileSync(new URL("../../packages/components-html/src/pattern-shell.css", import.meta.url), "utf8");
+const patternBaselineSource = fs.readFileSync(new URL("../../apps/component-gallery/pattern-baseline.js", import.meta.url), "utf8");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime\s*\{[\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/, "Pattern Runtime must keep Global Title Layer and pane grid in one column");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime\[data-pattern\][\s\S]*grid-template-columns:\s*minmax\(0,\s*1fr\)/, "Pattern Runtime root override must win over pattern shell pane columns");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__navigation-top\s*\{[\s\S]*padding-inline:\s*0/, "Runtime navigation top must neutralize static pattern-shell inset so the primary action has one canonical inset");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__pane\s*\{[\s\S]*box-sizing:\s*border-box/, "Runtime panes must not depend on a host page's global box-sizing reset");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__slot\s*\{[\s\S]*box-sizing:\s*border-box/, "Runtime slots must use the same box model in Renderer and generated pages");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__scroll-body\s*\{[\s\S]*box-sizing:\s*border-box/, "Runtime scroll bodies must use the same box model in Renderer and generated pages");
+const patternBSecondaryList = registry.patterns.find((pattern) => pattern.id === "pattern-b-three-pane").geometry.regions["secondary-list"];
+assert.equal(patternBSecondaryList.scrollBody.inset.blockStart, "space/3", "Pattern B Secondary List scroll body must use an 8px top inset");
+assert.equal(patternBSecondaryList.scrollBody.inset.blockEnd, "space/0", "Pattern B Secondary List scroll body must end flush with the pane");
+assert.match(patternRuntimeCss, /\[data-pattern="pattern-b-three-pane"\] \.tui-pattern-runtime__pane\[data-tui-pane-role="secondary-list"\] > \.tui-pattern-runtime__scroll-body\s*\{[\s\S]*padding-block-start:\s*var\(--space-3,\s*8px\);[\s\S]*padding-block-end:\s*var\(--space-0,\s*0px\);/, "Pattern B Secondary List runtime must use an 8px top and 0px bottom scroll-body inset");
+assert.match(patternBaselineSource, /data-typography-role="title-s">全部任务/, "Pattern B list heading must use Title_S");
+assert.match(patternBaselineSource, /renderHtmlComponent\("button"[\s\S]*action\/filter/, "Pattern B list heading must use a registered operation button");
+assert.match(patternBaselineSource, /pattern-runtime-preview-list-heading-actions/, "Pattern B list heading must expose a right-side operation group");
+assert.match(patternBaselineSource, /data-pattern-content-slot="secondary-list-card-\$\{card\.id\}"[\s\S]*data-slot="leading"[\s\S]*data-slot="content"/, "Pattern B list cards must remain distinct page-owned content slots with explicit sub-slots");
+assert.match(patternRuntimeCss, /\[data-pattern="pattern-b-three-pane"\] \.tui-pattern-runtime__slot\[data-pattern-slot="primary-navigation-bottom"\]\s*\{[\s\S]*width:\s*100%;[\s\S]*justify-content:\s*space-between;/, "Pattern B primary navigation runtime must use the full available slot width");
+assert.match(patternRuntimeCss, /\[data-pattern="pattern-b-three-pane"\] \.tui-pattern-runtime__slot\[data-pattern-slot="primary-navigation-bottom"\]\s*>\s*span\s*\{[\s\S]*display:\s*flex;[\s\S]*flex:\s*1 1 0;[\s\S]*justify-content:\s*center;/, "Pattern B primary navigation runtime must center direct component or behavior wrappers in equal flexible tracks");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment:first-child\s*\{[\s\S]*background:\s*var\(--color-sidebar-bg/, "Primary title segment surface must come from the shell");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment:not\(:first-child\)\s*\{[\s\S]*background:\s*var\(--color-surface/, "Non-primary title segment surface must come from the shell");
 assert.match(patternRuntimeCss, /\.tui-pattern-runtime__title-segment \.tui-titlebar\s*\{[\s\S]*background:\s*var\(--color-titlebar-normal-bg,\s*transparent\)/, "Titlebar must remain transparent inside the shell title segment");
@@ -136,6 +147,9 @@ const secondaryNewPageRuntime = createSecondaryPageRuntime({
   slots: { titlebar: renderHtmlComponent("titlebar", { label: "项目设置", size: "small", layout: "standalone", paneRole: "global" }), content: "<main>内容</main>" }
 }).render();
 assert.match(secondaryNewPageRuntime, /data-size="small"/);
+assert.match(secondaryNewPageRuntime, /data-secondary-page-layout="new-page"/);
+assert.doesNotMatch(secondaryNewPageRuntime, /role="dialog"|aria-modal=/, "a pop-up Secondary Page remains a page frame, not Dialog markup");
+assert.match(patternRuntimeCss, /\.tui-secondary-page-runtime--new-page > \.tui-secondary-page-runtime__content\s*\{[^}]*padding:\s*var\(--space-5, 16px\) var\(--space-6, 24px\) 0;/, "Independent Secondary Page content must use the 16/24/0 safe area");
 assert.throws(() => renderSecondaryPageHtml({ layout: "continuation", mode: "runtime", slots: {} }), /requires a value/);
 
 console.log("Pattern Runtime tests passed.");

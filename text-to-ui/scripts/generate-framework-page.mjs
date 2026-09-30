@@ -284,13 +284,32 @@ const behaviorPlanById = new Map(behaviorPlan.interactions.map((entry) => [entry
 if (behaviorPlanById.size !== behaviorPlan.interactions.length) throw new Error("behaviorPlan interaction ids must be unique");
 const interactiveRendererKeys = new Set(["button", "primary-navigation-item", "sidebar", "search", "checkbox", "input", "select", "date-picker", "number-selector", "tabs"]);
 for (const interaction of behaviorPlan.interactions) {
-  if (!interaction.id || !["component-native", "toggle-hidden", "set-selected", "filter-collection", "open-overlay", "close-overlay"].includes(interaction.kind)) throw new Error(`behaviorPlan interaction '${interaction.id ?? "unknown"}' has an unsupported kind`);
+  if (!interaction.id || !["component-native", "toggle-hidden", "set-selected", "filter-collection", "open-overlay", "close-overlay", "open-secondary-page"].includes(interaction.kind)) throw new Error(`behaviorPlan interaction '${interaction.id ?? "unknown"}' has an unsupported kind`);
+  if (interaction.kind === "open-secondary-page" && !["continuation", "new-page"].includes(interaction.secondaryPage?.layout)) {
+    throw new Error(`behaviorPlan interaction '${interaction.id}' must declare secondaryPage.layout as continuation or new-page`);
+  }
   if (!Array.isArray(interaction.triggerBindingIds) || interaction.triggerBindingIds.length === 0) throw new Error(`behaviorPlan interaction '${interaction.id}' requires triggerBindingIds`);
   if (!interaction.outcome || typeof interaction.outcome !== "string") throw new Error(`behaviorPlan interaction '${interaction.id}' requires an observable outcome`);
   if (pageBlueprint && interaction.sourceGroup && !pageBlueprint.contentGroups?.some((group) => group.id === interaction.sourceGroup)) throw new Error(`behaviorPlan interaction '${interaction.id}' references undeclared sourceGroup '${interaction.sourceGroup}'`);
   for (const bindingId of interaction.triggerBindingIds) if (!bindings.some((binding) => binding.id === bindingId)) throw new Error(`behaviorPlan interaction '${interaction.id}' references unknown binding '${bindingId}'`);
 }
+if (context.route?.id === "communication-workbench") {
+  for (const interaction of behaviorPlan.interactions.filter((item) => ["compose-message", "reply-message", "forward-message"].includes(item.id))) {
+    if (interaction.kind !== "open-secondary-page" || interaction.secondaryPage?.layout !== "new-page") {
+      throw new Error(`Communication workbench interaction '${interaction.id}' must use Secondary Page Runtime layout=new-page`);
+    }
+  }
+}
 for (const binding of bindings) {
+  // A button-triggered pop-up can still be a Secondary Page, not a Dialog.
+  // Keep this intent check at the binding boundary so a Dialog contract cannot
+  // make an independent mail editor pass as the wrong page type.
+  if (binding.options?.label === "写邮件" && binding.semanticContext === "page-primary-action") {
+    const interaction = behaviorPlanById.get(binding.behaviorId);
+    if (interaction?.kind !== "open-secondary-page" || interaction.secondaryPage?.layout !== "new-page") {
+      throw new Error(`${binding.id}: 写邮件 must open Secondary Page Runtime layout=new-page, not open-overlay/Dialog`);
+    }
+  }
   if (binding.actionBehaviors !== null) {
     if (!binding.actionBehaviors || typeof binding.actionBehaviors !== "object" || Array.isArray(binding.actionBehaviors)) {
       throw new Error(`${binding.id}: actionBehaviors must map Titlebar action ids to behaviorPlan ids`);
@@ -343,6 +362,15 @@ if (navigationMode) {
     const nodes = navigationShell.slots[slot.id];
     if (!Array.isArray(nodes)) throw new Error(`Navigation shell slot '${slot.id}' must be an array`);
     validateStylePlanNodes(nodes, navigationShellDefinition.region);
+  }
+  // A grouped level-one rail must retain the registered horizontal container.
+  // A generic div inherits page CSS and can silently stack the icon items.
+  for (const node of navigationShell.slots["primary-navigation-bottom"] ?? []) {
+    if (node?.kind !== "group") continue;
+    const classes = String(node.className ?? "").split(/\s+/);
+    if (node.tag !== "nav" || !classes.includes("tui-primary-navigation-items")) {
+      throw new Error(`primary-navigation-bottom group '${node.id ?? "unknown"}' must use tag 'nav' and class 'tui-primary-navigation-items' so level-one items remain horizontal`);
+    }
   }
 }
 // Pattern B has one renderer-owned global title layer.  In a two-level
@@ -480,6 +508,13 @@ if (pageCssPath) {
   for (const match of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const selector = match[1].trim();
     const body = match[2];
+    for (const node of navigationShell?.slots?.["primary-navigation-bottom"] ?? []) {
+      if (node?.kind !== "group") continue;
+      const groupClasses = String(node.className ?? "").split(/\s+/).filter(Boolean);
+      if (groupClasses.some((name) => selector.includes(`.${name}`)) && /\b(?:display|flex-direction|justify-content|align-items|(?:column-|row-)?gap|width)\s*:/i.test(body)) {
+        cssBoundaryFailures.push(`primary-navigation-bottom group '${node.id}' cannot set its axis, spacing, or width in page CSS; use the registered horizontal container`);
+      }
+    }
     if (shellLikeSelector.test(selector) && strokeProperty.test(body)) cssBoundaryFailures.push(`shell-like selector '${selector}' cannot add a border, outline, or shadow; Runtime owns structural divider edges`);
     if (!/:focus-visible\b/i.test(selector) && persistentOutline.test(body)) cssBoundaryFailures.push(`outline is reserved for :focus-visible component states: '${selector}'`);
     if (dividerSelector.test(selector) && strokeProperty.test(body) && !/var\(\s*--layout-navigation-divider-width\b/i.test(body)) cssBoundaryFailures.push(`divider/separator '${selector}' must use --layout-navigation-divider-width`);
@@ -560,8 +595,12 @@ const pageModules = (input.pageModules ?? []).map((item) => {
     }
   }
   if (mainDetailGroupIds.has(item.compositionId)) {
+    const ownsSecondaryPageTitlebar = /\bcreateSecondaryPageRuntime\b/.test(source)
+      && /layout\s*:\s*["']new-page["']/.test(source)
+      && /size\s*:\s*["']small["']/.test(source)
+      && /layout\s*:\s*["']standalone["']/.test(source);
     const detailShellMarkup = [
-      [/renderComponent\s*\(\s*['"]titlebar['"]/i, "a pane-local Titlebar"],
+      ...(!ownsSecondaryPageTitlebar ? [[/renderComponent\s*\(\s*['"]titlebar['"]/i, "a pane-local Titlebar"]] : []),
       [/(?:class|className)\s*[=:]\s*["'`][^"'`]*(?:\bdetail-toolbar\b|\btitlebar\b|\bwindow-controls\b)[^"'`]*["'`]/i, "a pane-local Titlebar or toolbar wrapper"],
       [/<(?:span|button)[^>]*>\s*(?:[?−□×]|最小化|最大化|关闭)\s*<\//i, "handwritten window controls"]
     ].find(([pattern]) => pattern.test(source));
@@ -571,6 +610,10 @@ const pageModules = (input.pageModules ?? []).map((item) => {
   }
   return { compositionId: item.compositionId, file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') };
 });
+if (framework === "html" && behaviorPlan.interactions.some((interaction) => interaction.kind === "open-secondary-page")
+  && !pageModules.some(({ file }) => /\b(?:createSecondaryPageRuntime|renderSecondaryPageHtml)\b/.test(fs.readFileSync(file, "utf8")))) {
+  throw new Error("HTML pages declaring open-secondary-page must implement the destination with @text-to-ui/pattern-runtime Secondary Page Runtime in a page module");
+}
 if (new Set(pageModules.map((item) => item.compositionId)).size !== pageModules.length) throw new Error('Only one page module may own each composition host');
 if (new Set(customUsage.map((entry) => entry.id)).size !== customUsage.length) throw new Error("Custom page-owned composition ids must be unique across bindings and content recipes");
 // Do not leave a partial UI Scene behind when a later preflight fails. The
@@ -801,7 +844,7 @@ const moduleImports = pageModules.map((item, index) => `import { mount as mountC
 const moduleMounts = pageModules.map((item, index) => `  { const host = root.querySelector(${JSON.stringify(`[data-composition-id="${item.compositionId}"]`)}); if (!host) throw new Error("Missing composite host"); const cleanup = mountComposite${index}(host, { renderComponent: renderHtmlComponent }); if (typeof cleanup === "function") cleanups.push(cleanup); }`).join("\n");
 let entrySource = framework === "html" ? `
 import { renderGeneratedPage, patternContract, runtimePatternContract, pageBlueprint, titlebarScene, stylePlan, behaviorPlan } from ${JSON.stringify(pageImport)};
-import { bindTitlebarOverflow, renderHtmlComponent } from "@text-to-ui/components-html";
+import { bindInputTagEntry, bindTitlebarOverflow, renderHtmlComponent } from "@text-to-ui/components-html";
 ${pageCssPath ? `import ${JSON.stringify(relativeImport(path.resolve(pageCssPath)))};` : ""}
 ${moduleImports}
 export { patternContract, pageBlueprint, titlebarScene, stylePlan, behaviorPlan };
@@ -819,6 +862,8 @@ export function mountGeneratedPage(root = document.querySelector("#app")) {
   // contract instead of relying on page-owned scripts to remember it.
   const titlebarOverflowCleanup = bindTitlebarOverflow(root);
   if (typeof titlebarOverflowCleanup === "function") cleanups.push(titlebarOverflowCleanup);
+  const inputTagEntryCleanup = bindInputTagEntry(root);
+  if (typeof inputTagEntryCleanup === "function") cleanups.push(inputTagEntryCleanup);
   const behaviors = new Map(behaviorPlan.interactions.map((item) => [item.id, item]));
   const execute = (event) => {
     const actionHost = event.target.closest?.("[data-tui-action-behaviors]");

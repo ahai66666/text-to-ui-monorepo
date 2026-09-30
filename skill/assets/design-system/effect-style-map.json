@@ -2,19 +2,23 @@
   "schemaVersion": "1.0.0",
   "purpose": "Canonical HTML-to-Pixso mapping for HarmonyOS PC shadows and effects.",
   "publicPixsoStyles": [
-    {"htmlToken":"shadow-1","cssVariable":"--shadow-1","pixsoStyle":"$style/Effect/Foundation/shadow-1","usage":"raised control, tooltip, compact snackbar"},
-    {"htmlToken":"shadow-2","cssVariable":"--shadow-2","pixsoStyle":"$style/Effect/Foundation/shadow-2","usage":"floating menu"},
-    {"htmlToken":"shadow-3","cssVariable":"--shadow-3","pixsoStyle":"$style/Effect/Foundation/shadow-3","usage":"floating feedback"},
-    {"htmlToken":"shadow-4","cssVariable":"--shadow-4","pixsoStyle":"$style/Effect/Foundation/shadow-4","usage":"dialog"},
-    {"htmlToken":"shadow-5","cssVariable":"--shadow-5","pixsoStyle":"$style/Effect/Foundation/shadow-5","usage":"reserved elevation"},
-    {"htmlToken":"shadow-6","cssVariable":"--shadow-6","pixsoStyle":"$style/Effect/Foundation/shadow-6","usage":"highest overlay"}
+    {"htmlToken":"shadow-1","cssVariable":"--shadow-1","pixsoStyle":"$style/Effect/Foundation/shadow-1","usage":"Snackbar and Tooltip only"},
+    {"htmlToken":"shadow-2","cssVariable":"--shadow-2","pixsoStyle":"$style/Effect/Foundation/shadow-2","usage":"Popover, Hover Card, and Dropdown Menu only"},
+    {"htmlToken":"shadow-3","cssVariable":"--shadow-3","pixsoStyle":"$style/Effect/Foundation/shadow-3","usage":"Context Menu only"},
+    {"htmlToken":"shadow-4","cssVariable":"--shadow-4","pixsoStyle":"$style/Effect/Foundation/shadow-4","usage":"Dialog and Alert Dialog only"},
+    {"htmlToken":"shadow-5","cssVariable":"--shadow-5","pixsoStyle":"$style/Effect/Foundation/shadow-5","usage":"Semi-modal only"},
+    {"htmlToken":"shadow-6","cssVariable":"--shadow-6","pixsoStyle":"$style/Effect/Foundation/shadow-6","usage":"unassigned; do not use in public page design"}
   ],
   "semanticAliases": {
-    "raised-control":"$style/Effect/Foundation/shadow-1",
-    "floating-menu":"$style/Effect/Foundation/shadow-2",
-    "floating-feedback":"$style/Effect/Foundation/shadow-3",
+    "snackbar":"$style/Effect/Foundation/shadow-1",
+    "tooltip":"$style/Effect/Foundation/shadow-1",
+    "popover":"$style/Effect/Foundation/shadow-2",
+    "hover-card":"$style/Effect/Foundation/shadow-2",
+    "dropdown-menu":"$style/Effect/Foundation/shadow-2",
+    "context-menu":"$style/Effect/Foundation/shadow-3",
     "dialog":"$style/Effect/Foundation/shadow-4",
-    "highest-overlay":"$style/Effect/Foundation/shadow-6"
+    "alert-dialog":"$style/Effect/Foundation/shadow-4",
+    "semi-modal":"$style/Effect/Foundation/shadow-5"
   },
   "nativeInternalStyles": [
     {"style":"$style/Effect/Component/menu","rule":"Imported native component dependency; still referenced."},

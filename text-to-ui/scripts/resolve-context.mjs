@@ -7,6 +7,7 @@ import { buildFrameworkRendererContract, componentRendererBinding } from './fram
 import { stableDigest } from './ui-scene-core.mjs';
 import { blueprintDigest, readPageBlueprint } from './page-blueprint.mjs';
 import { materialDefinitions, materialSnapshot, materialPathFromSkillReference, writeContextReadReceipt } from './route-material-lib.mjs';
+import { selectTaskRoute } from './task-route-lib.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const located = locateMonorepo({ start: args.start || process.cwd(), explicitRepo: args.repo });
@@ -16,7 +17,7 @@ const skillRoot = resolveSkillRoot(repo, args['skill-root']);
 const indexes = loadIndexes(skillRoot);
 const framework = args.framework || 'html';
 const mode = args.mode || 'fast-preview';
-const query = String(args.task || args.domain || '').toLowerCase();
+const query = String(args.task || args.domain || '');
 if (!query) throw new Error('Provide --task or --domain.');
 if (!['html', 'react', 'vue'].includes(framework)) throw new Error(`Unsupported framework: ${framework}`);
 if (!indexes['validation-index'].modes[mode]) throw new Error(`Unsupported mode: ${mode}`);
@@ -29,7 +30,8 @@ const blueprintPath = args.blueprint ? path.resolve(String(args.blueprint)) : nu
 if (autoPlanned && !blueprintPath) throw new Error('Automatic new-page routing requires --blueprint <page-blueprint.json> so the chosen Pattern and primary task are explicit before component resolution.');
 
 const requestedPattern = args.pattern ? String(args.pattern) : null;
-const matchedRoute = indexes['task-router'].routes.find((item) => [item.id, ...item.aliases, ...item.domains].some((value) => value.toLowerCase().includes(query) || query.includes(value.toLowerCase())));
+const routeSelection = selectTaskRoute(query, indexes['task-router'].routes, args['task-route']);
+const matchedRoute = routeSelection.route;
 let route = matchedRoute;
 if (!route) {
   if (!requestedPattern) throw new Error(`No task route matches '${query}'. Unknown tasks require an explicit --pattern <pattern-id> and --capabilities <capability,...>; the Skill must not guess a Pattern.`);
@@ -120,7 +122,7 @@ const tokenRoleNames = [...new Set(components.flatMap((item) => item.tokenRoles 
 const tokens = Object.fromEntries(tokenRoleNames.map((role) => [role, indexes['token-index'].semanticRoles[role] || { lookup: `packages/tokens; role=${role}` }]));
 const dynamicMaterials = [
   ...((layout.references ?? []).map((reference) => ({ path: materialPathFromSkillReference(reference), role: 'pattern-reference' }))),
-  ...(/email|mailbox|inbox|邮箱|邮件/.test(query) ? [{ path: 'text-to-ui/references/domains/email-workbench.md', role: 'domain-reference' }] : []),
+  ...(route.domainReference ? [{ path: materialPathFromSkillReference(route.domainReference), role: 'domain-reference' }] : []),
   ...(components.some((component) => component.component === 'titlebar') ? [{ path: 'text-to-ui/references/components/titlebar-segments.md', role: 'titlebar-contract' }] : []),
   { path: mode === 'fast-preview' ? 'text-to-ui/references/workflows/fast-preview.md' : 'text-to-ui/references/workflows/release-validation.md', role: 'validation' },
   ...approvedReferences.map((reference) => ({ path: materialPathFromSkillReference(reference.path), role: 'approved-reference' }))
@@ -153,7 +155,7 @@ const packet = {
     confirmation: { status: discovery ? 'discovery' : 'confirmed', source: discovery ? 'design-discovery' : explicitlyConfirmed ? 'explicit-cli-flag' : 'auto-page-blueprint' }
   },
   pageBlueprint: automaticBlueprint ? { id: automaticBlueprint.id, sha256: blueprintDigest(automaticBlueprint), path: blueprintPath } : null,
-  route: { id: route.id, aliases: route.aliases, domains: route.domains, source: matchedRoute ? 'task-route' : 'explicit-pattern', workflowRouteId },
+  route: { id: route.id, aliases: route.aliases, domains: route.domains, source: matchedRoute ? routeSelection.source : 'explicit-pattern', workflowRouteId, ...(route.domainReference ? { domainReference: route.domainReference } : {}) },
   routeMaterials: {
     schemaVersion: 1,
     workflowRouteId,
@@ -179,7 +181,7 @@ const packet = {
   },
   exactReferencesToRead: [
     'references/page-design-guidance.md',
-    ...(/email|mailbox|inbox|邮箱|邮件/.test(query) ? ['references/domains/email-workbench.md'] : []),
+    ...(route.domainReference ? [route.domainReference] : []),
     'references/requirement-spec.md',
     'references/layouts/framework-layout-routing.md',
     ...layout.references,

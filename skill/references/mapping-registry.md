@@ -616,12 +616,12 @@ source: assets/design-system/mapping-registry.json
 | text | <code>body-m</code> | <code>--type-body-m</code> | <code>Typography/Body_M</code> | 14px / 16px / 400 |
 | text | <code>body-s</code> | <code>--type-body-s</code> | <code>Typography/Body_S</code> | 12px / 14px / 400 |
 | text | <code>caption-m</code> | <code>--type-caption-m</code> | <code>Typography/Caption_M</code> | 10px / 12px / 400 |
-| effect | <code>shadow-1</code> | <code>--shadow-1</code> | <code>Effect/Foundation/shadow-1</code> | raised control, tooltip, compact snackbar |
-| effect | <code>shadow-2</code> | <code>--shadow-2</code> | <code>Effect/Foundation/shadow-2</code> | floating menu |
-| effect | <code>shadow-3</code> | <code>--shadow-3</code> | <code>Effect/Foundation/shadow-3</code> | floating feedback |
-| effect | <code>shadow-4</code> | <code>--shadow-4</code> | <code>Effect/Foundation/shadow-4</code> | dialog |
-| effect | <code>shadow-5</code> | <code>--shadow-5</code> | <code>Effect/Foundation/shadow-5</code> | reserved elevation |
-| effect | <code>shadow-6</code> | <code>--shadow-6</code> | <code>Effect/Foundation/shadow-6</code> | highest overlay |
+| effect | <code>shadow-1</code> | <code>--shadow-1</code> | <code>Effect/Foundation/shadow-1</code> | Snackbar and Tooltip only |
+| effect | <code>shadow-2</code> | <code>--shadow-2</code> | <code>Effect/Foundation/shadow-2</code> | Popover, Hover Card, and Dropdown Menu only |
+| effect | <code>shadow-3</code> | <code>--shadow-3</code> | <code>Effect/Foundation/shadow-3</code> | Context Menu only |
+| effect | <code>shadow-4</code> | <code>--shadow-4</code> | <code>Effect/Foundation/shadow-4</code> | Dialog and Alert Dialog only |
+| effect | <code>shadow-5</code> | <code>--shadow-5</code> | <code>Effect/Foundation/shadow-5</code> | Semi-modal only |
+| effect | <code>shadow-6</code> | <code>--shadow-6</code> | <code>Effect/Foundation/shadow-6</code> | unassigned; do not use in public page design |
 
 ## HTML Component ↔ Pixso Component
 

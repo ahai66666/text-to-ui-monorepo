@@ -38,7 +38,7 @@ assert.equal(sceneRoot.layout.padding?.right?.name, "space/6", "desktop-stage mu
 assert.equal(sceneRoot.style.fill?.kind, "linear-gradient", "desktop-stage must preserve the HTML gradient canvas");
 assert.equal(findNode(sceneRoot, "mail-shell")?.style?.stroke?.name, "neutral-dark/10", "mail-shell must own the outer border");
 assert.equal(findNode(sceneRoot, "mail-shell")?.style?.radius?.name, "radius/16", "mail-shell must own the window radius");
-assert.equal(findNode(sceneRoot, "mail-shell")?.style?.effectStyle?.role, "shadow-2", "mail-shell must own the window shadow");
+assert.equal(findNode(sceneRoot, "mail-shell")?.style?.effectStyle, undefined, "mail-shell must remain shadow-free");
 for (const segmentId of ["global-primary-title-segment", "global-secondary-title-segment", "global-detail-title-segment"]) {
   assert.equal(findNode(sceneRoot, segmentId)?.layout?.height?.name, "size/64", `${segmentId} must use the 64px Titlebar token`);
 }

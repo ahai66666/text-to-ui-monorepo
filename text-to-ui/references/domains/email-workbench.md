@@ -23,6 +23,26 @@ compose and attachment actions have visible outcomes. Loading, empty, failure,
 selected, unread, and attachment states are explicit when the request needs
 them. A static collection of unrelated cards does not satisfy this reference.
 
+Mail composition (new, reply, reply-all after any brief confirmation, forward,
+and reopening a draft) opens as a pop-up Secondary Page using Runtime
+`layout: "new-page"`, with the standalone registered Titlebar S and the compose
+form in its content slot. Here “pop-up” describes the button-triggered page
+opening, not a Dialog. Declare 写邮件 and the other compose entry points as
+`open-secondary-page` with `secondaryPage.layout: "new-page"`; keep the parent
+mail shell mounted beneath the page host, then restore its selection and focus
+on return and preserve unsent draft fields. A short confirmation such as
+“回复全部给外部联系人？” may remain a Dialog; the editor itself must use the
+Secondary Page Runtime, not a Dialog/Semi-modal contract or `open-overlay`.
+When the user requests modal sizing for this page, use the largest Semi-modal
+size envelope: `--width-modal-lg` (L, 800px), constrained to the viewport with
+scrolling content, modal surface radius, and `--shadow-5`. This borrows the
+visual envelope only; do not add Dialog/Semi-modal behavior semantics or
+replace the `new-page` Runtime frame. The standalone Titlebar S title uses its
+registered `Subtitle_M` role (`--type-subtitle-m-*`: 16px / 20px / 500); do not
+apply the larger Dialog/Semi-modal `Title_S` role. Modal-sized presentation
+does not change the Titlebar component's typography. Do not add a page-owned
+font override.
+
 ## Required content recipe: EmailMessageRow
 
 Resolve the repeated message list by capability. When no registered component

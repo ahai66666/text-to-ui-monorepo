@@ -586,6 +586,43 @@
         }
       }
     },
+    "Dropdown Menu/Default": {
+      "family": "Dropdown Menu",
+      "previewSelector": ".tui-advanced-menu",
+      "sizing": {
+        "masterWidth": 280,
+        "placementWidth": "hug",
+        "height": 68
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_M",
+        "Value": "Body_L",
+        "Menu Item": "Body_L"
+      },
+      "direction": "vertical",
+      "compositionStrategy": "direct-native-nodes",
+      "pixsoReusableTarget": false,
+      "gapToken": "gap/field-label",
+      "radiusToken": "radius/card",
+      "effectStyle": "Effect/Foundation/shadow-2",
+      "panelDefaultVisibility": "hidden",
+      "slotContracts": {
+        "label": {
+          "typographyRole": "Body_M"
+        },
+        "content": {
+          "role": "menu",
+          "compositionStrategy": "direct-native-nodes",
+          "panelEffectStyle": "Effect/Foundation/shadow-2",
+          "defaultVisibility": "hidden"
+        },
+        "description": {
+          "optional": true,
+          "typographyRole": "Body_M"
+        }
+      }
+    },
     "Field/Default": {
       "family": "Field",
       "previewSelector": ".form-field",
@@ -764,6 +801,55 @@
       "iconSize": null,
       "clearActionReserve": null
     },
+    "Input/Tag Entry/Default": {
+      "family": "Input",
+      "previewSelector": ".tui-input--tag-entry",
+      "sizing": {
+        "masterWidth": 360,
+        "placementWidth": "fill",
+        "height": 56
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Label": "Body_L",
+        "Placeholder": "Body_L",
+        "Tag": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "gap/button-icon-label",
+      "transparent": true,
+      "surfaceModes": [
+        "white",
+        "gray"
+      ],
+      "hoverContract": "underline-only-color-border-to-color-icon",
+      "slotContracts": {
+        "label": {
+          "typographyRole": "Body_L",
+          "colorRole": "text/secondary"
+        },
+        "value": {
+          "typographyRole": "Body_L",
+          "valueColorRole": "text/primary",
+          "placeholderColorRole": "text/tertiary"
+        },
+        "tags": {
+          "content": "Chips/Default",
+          "hover": false,
+          "expandedHitArea": false
+        },
+        "suggestions": {
+          "role": "listbox",
+          "menuItemRole": "option",
+          "compositionStrategy": "direct-native-nodes",
+          "panelFillToken": "neutral-light/100",
+          "panelBorderToken": "neutral-dark/10",
+          "panelRadiusToken": "radius/card",
+          "panelEffectStyle": "Effect/Foundation/shadow-2",
+          "defaultVisibility": "hidden"
+        }
+      }
+    },
     "Input/White Surface/Default": {
       "family": "Input",
       "previewSelector": ".tui-input",
@@ -866,8 +952,7 @@
       "nestedGroups": [
         "Menu Items"
       ],
-      "itemQuantity": 1,
-      "effectStyle": "Effect/Foundation/shadow-2"
+      "itemQuantity": 1
     },
     "Metric Card/Default": {
       "family": "Metric Card",
@@ -1002,7 +1087,7 @@
       "family": "Search",
       "previewSelector": ".tui-search",
       "sizing": {
-        "masterWidth": 280,
+        "masterWidth": 324,
         "placementWidth": "fill",
         "height": 40
       },
@@ -1012,15 +1097,109 @@
         "Placeholder": "Body_L"
       },
       "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
+      "gapToken": "space/0",
       "iconSize": 16,
       "clearActionReserve": 32
+    },
+    "Search/Scoped/Default": {
+      "family": "Search",
+      "previewSelector": ".tui-search:has(.tui-search__scope)",
+      "sizing": {
+        "masterWidth": 324,
+        "placementWidth": "fill",
+        "height": 40
+      },
+      "autoLayout": true,
+      "textRoles": {
+        "Scope": "Body_L",
+        "Value": "Body_L",
+        "Placeholder": "Body_L",
+        "Advanced": "Body_M"
+      },
+      "direction": "horizontal",
+      "gapToken": "space/0",
+      "iconSize": 16,
+      "clearActionReserve": 32,
+      "slotContracts": {
+        "scope-selector": {
+          "compositionStrategy": "direct-native-nodes",
+          "placement": "leading-before-search-icon",
+          "width": 73,
+          "height": 40,
+          "paddingInlineStartToken": "space/4",
+          "gapToken": "space/2",
+          "labelTypographyRole": "Body_L",
+          "labelColorToken": "neutral-dark/90",
+          "arrowIconSize": 20,
+          "arrowColorToken": "neutral-dark/90",
+          "divider": "color.border",
+          "dividerSize": "1×16",
+          "menuPanel": {
+            "role": "menu",
+            "fillToken": "neutral-light/100",
+            "borderToken": "neutral-dark/10",
+            "radiusToken": "radius/card",
+            "effectStyle": "Effect/Foundation/shadow-2",
+            "defaultVisibility": "hidden"
+          }
+        },
+        "input-region": {
+          "placement": "fills-remaining-width",
+          "paddingInlineStartToken": "space/3",
+          "paddingInlineEndToken": "space/2",
+          "gapToken": "space/3"
+        },
+        "leading": {
+          "iconAlias": "field/search",
+          "size": 16,
+          "colorToken": "neutral-dark/60"
+        },
+        "value": {
+          "typographyRole": "Body_L",
+          "colorToken": "neutral-dark/90",
+          "placeholderTypographyRole": "Body_L",
+          "placeholderColorToken": "neutral-dark/60"
+        },
+        "clear": {
+          "optional": true,
+          "iconAlias": "action/close",
+          "size": 16,
+          "colorToken": "neutral-dark/90"
+        },
+        "advanced-search": {
+          "optional": true,
+          "typographyRole": "Body_M",
+          "colorToken": "neutral-dark/60"
+        }
+      },
+      "interactionRegions": {
+        "left": "scope-selector",
+        "right": "input-region",
+        "hover": {
+          "left": {
+            "whiteContent": "neutral-dark/05",
+            "grayContent": "neutral-dark/05"
+          },
+          "right": {
+            "whiteContent": "neutral-dark/10",
+            "grayContent": "neutral-dark/05"
+          }
+        },
+        "pressed": {
+          "whiteContent": "neutral-dark/15",
+          "grayContent": "neutral-dark/10"
+        },
+        "grayContentOutline": {
+          "color": "neutral-light/100",
+          "width": 2
+        }
+      }
     },
     "Search/White Surface/Default": {
       "family": "Search",
       "previewSelector": ".tui-search",
       "sizing": {
-        "masterWidth": 280,
+        "masterWidth": 324,
         "placementWidth": "fill",
         "height": 40
       },
@@ -1030,7 +1209,7 @@
         "Placeholder": "Body_L"
       },
       "direction": "horizontal",
-      "gapToken": "gap/button-icon-label",
+      "gapToken": "space/0",
       "iconSize": 16,
       "clearActionReserve": 32
     },
@@ -1248,7 +1427,7 @@
       "contentGapToken": "space/1",
       "closeTargetSize": 40,
       "closeIconSize": 20,
-      "effectStyle": "Effect/Foundation/shadow-3",
+      "effectStyle": "Effect/Foundation/shadow-1",
       "pixsoDefaultVariant": {
         "左侧区域": "1"
       }

@@ -19,10 +19,12 @@ function configuredDuration(environmentKey, fallback) {
   return Number.isFinite(configured) && configured >= 0 ? configured : fallback;
 }
 
-// The environment overrides are intentionally test/service-diagnostics only;
-// production defaults remain the documented 15s/45s/5s/60s/15s contract.
+// The environment overrides are intentionally test/service-diagnostics only.
+// An unopened plugin gets a longer window for the user to open its panel;
+// a connected plugin still has only 45 seconds to confirm execution startup.
 export const WAITING_FOR_PLUGIN_RETRY_AFTER_MS = configuredDuration("TEXT_TO_UI_PLUGIN_RECOVERY_AFTER_MS", 15000);
 export const WAITING_FOR_PLUGIN_DEADLINE_MS = configuredDuration("TEXT_TO_UI_PLUGIN_START_DEADLINE_MS", 45000);
+export const WAITING_FOR_PLUGIN_CONNECTION_DEADLINE_MS = configuredDuration("TEXT_TO_UI_PLUGIN_CONNECTION_DEADLINE_MS", 600000);
 export const MODULE_HEARTBEAT_INTERVAL_MS = configuredDuration("TEXT_TO_UI_MODULE_HEARTBEAT_INTERVAL_MS", 5000);
 export const MODULE_HEARTBEAT_TIMEOUT_MS = configuredDuration("TEXT_TO_UI_MODULE_HEARTBEAT_TIMEOUT_MS", 60000);
 // A timer heartbeat only proves that the plugin UI is alive. Keep a separate

@@ -16,7 +16,7 @@
   "deliveryTargets": [
     "skill/",
     "$CODEX_HOME/skills/text-to-ui",
-    "/Users/zhaobohai/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2"
+    "$HOME/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2"
   ],
   "groups": [
     {
@@ -29,7 +29,7 @@
         },
         {
           "path": "text-to-ui/references/routes/materials.source.json",
-          "sha256": "a2623b2775ae691e2d72cac233674802078cec012ad141fb8b1ca96df66bed4c"
+          "sha256": "90531bb80f7f9f4e1d7859fe941b7a2d1c9b6f4f0d8856ccc1f41bfbaa490bd0"
         },
         {
           "path": "text-to-ui/references/routes/skill-maintenance.md",
@@ -40,8 +40,16 @@
           "sha256": "ee3212607f4c7b47ff3c91638f46d198aa98c156669ed06a0cbc5b80c1131ab8"
         },
         {
+          "path": "text-to-ui/scripts/task-route-lib.mjs",
+          "sha256": "9e0b570fbb8c53de758032318a5a39c7892d49ab158da2821bdf2a2ab7ae1c09"
+        },
+        {
           "path": "text-to-ui/scripts/resolve-context.mjs",
-          "sha256": "01c9beff2362f8cfe9189473282ea078a08ff88c80fe28ea3cb2977f72eed411"
+          "sha256": "57492f65c9d28be63cfe60ad2d0d7d2f16082b69897cb172ac0c254549167521"
+        },
+        {
+          "path": "text-to-ui/scripts/test-task-route-resolution.mjs",
+          "sha256": "664d9c40e2926a33bf39a9302cfb56f08797b101724171ade4826faf5643cf8f"
         },
         {
           "path": "text-to-ui/scripts/verify-route-materials.mjs",
@@ -91,7 +99,7 @@
         },
         {
           "path": "text-to-ui/scripts/test-pattern-runtime.mjs",
-          "sha256": "c359a996591ffac4f7bcfda524c11a242d599492e1bbfcd16244762ea52ef8e4"
+          "sha256": "c53b0ec20de51b644f2620b113c29d715117475b9ecc239c795f0000d031d65d"
         },
         {
           "path": "text-to-ui/scripts/test-ui-scene-pattern-binding.mjs",
@@ -213,15 +221,15 @@
         },
         {
           "path": "text-to-ui/scripts/generate-framework-page.mjs",
-          "sha256": "e17df6ab0ac72c1eacece8d0344b064093414a2f29a9a3799476f85355e1cd59"
+          "sha256": "d7b57c1c2b7e997595eafbf6d2b173f9ab46f59619f8591ffcf6f594cf0aa140"
         },
         {
           "path": "text-to-ui/scripts/generate-compliant-page.mjs",
-          "sha256": "1be1e10ec8ec3b7890daacdcba02fa0127d85e43f5e2ee0ad258c71b6405ad41"
+          "sha256": "640b35033bce902c205c8aaa1a7649d254d76df83509cc42b9c31c79a6bedb18"
         },
         {
           "path": "text-to-ui/scripts/test-framework-page-generation.mjs",
-          "sha256": "08a6779790a0db92003a996c18502b4a9be7b19269c846f5210a440d02a24142"
+          "sha256": "53105ac1be6599afd7df79d5e0499b12812e721845cdbe4ec43d19ed01eea335"
         }
       ]
     },
@@ -269,11 +277,11 @@
         },
         {
           "path": "text-to-ui/SKILL.md",
-          "sha256": "e399b1c1ce9f09f36542b60c9fe67fe10b131a0f18546d196a9f7b5a1bd455ed"
+          "sha256": "2a86b586dad12947e161a33fd893b79f7e090ddbf21671d6437efd3c74d08fa7"
         },
         {
           "path": "text-to-ui/package.json",
-          "sha256": "44e80dc879a63c81b1b63742a2ec8e780a45303fb4a09b0d96b0cb272fb3aeff"
+          "sha256": "409be0648300dbdf9919f534b109aa0c244cb956b8a603ace3c01e14d3cb7e71"
         },
         {
           "path": "text-to-ui/scripts/skill-delivery.mjs",

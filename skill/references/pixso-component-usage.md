@@ -12,7 +12,18 @@ Use this reference whenever a visual-first task creates a page from the “鸿�
 6. Create instances from the resolved component GUIDs. Never persist GUIDs in the Skill because rebuilding a component can change its GUID.
 7. Apply the registered `placementWidth` rule (`fill`, `hug`, or `fixed`) to the instance. Do not copy the source component's review width blindly.
 8. Change only instance-safe content and dimensions required by the page. Do not detach an instance or redraw its internal icon, label, fill, padding, gap, radius, or standard height.
-9. If a registered component or a declared HTML slot is missing, stop that component path and report the missing exact name/slot. Run the HTML contract → Pixso component-library plan against the profile's target page (normally `NewComponents`); do not silently create a visually similar local frame or append a neighboring control to imitate the slot.
+9. If a registered component or a declared HTML slot is missing, stop that component path and report the missing exact name/slot. Run the HTML contract → Pixso component-library plan against the profile's target page (normally `NewComponents`); do not silently create a visually similar local frame or append a neighboring control to imitate the slot. This rule does not apply to a mapping explicitly marked `excluded`.
+
+## Explicit Pixso Exclusions
+
+`Dropdown Menu/Default` is not a reusable Pixso target. Keep its HTML/framework
+contract, but when a page needs a menu, compose the trigger and menu panel from
+page-local native nodes using the declared Token and interaction contracts.
+Do not search for, create an instance of, or reference a same-named master,
+including copies on internal-only pages. The menu panel may use the prescribed
+surface, border, radius, typography, and shadow Tokens; this direct composition
+does not make the control a shared component. Other targets marked `excluded`
+follow the same no-instance rule.
 
 Component resolution uses two page phases:
 
@@ -151,7 +162,9 @@ successful read-back remains a literal-style finding, not parity.
   `missing-target`.
 - Token Gate passes.
 - Active Pixso file is “鸿蒙客户端设计规范” or the approved target library is enabled.
-- Registry names and Pixso reusable component names have a one-to-one match.
+- Mapped registry names and Pixso reusable component names have a one-to-one
+  match. Explicitly excluded targets such as `Dropdown Menu/Default` are not
+  expected on `NewComponents` and must never be resolved or instantiated.
 - There are no duplicate names or `#2` suffixes.
 - Registered components use Auto Layout and contain no unintended overlapping direct children.
 - `node scripts/build-pixso-component-specs.mjs --check` and
@@ -178,7 +191,7 @@ successful read-back remains a literal-style finding, not parity.
 
 ## Missing Component Rule
 
-A missing registered component is a library defect, not permission to improvise. Record the exact name, continue only with unaffected regions, and repair the library through the component-maintenance workflow before claiming reusable parity.
+A missing registered component is a library defect, not permission to improvise. Record the exact name, continue only with unaffected regions, and repair the library through the component-maintenance workflow before claiming reusable parity. An explicitly excluded target is not a missing-component defect: use direct Token-based native-node composition and do not add it to the reusable library.
 ### Titlebar `main-detail-actions`：两种按钮模式必须分开
 
 第三栏标题栏的 `main-detail-actions` 是一个紧凑的横向操作槽位，可以同时出现两类动作，但不能把它们登记成同一个 Button：

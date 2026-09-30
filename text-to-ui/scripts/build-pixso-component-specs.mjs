@@ -205,6 +205,91 @@ function componentSpec(name) {
       nestedGroups: ["Control"],
     });
   }
+  if (name === "Input/Tag Entry/Default") {
+    return spec("Input", ".tui-input--tag-entry", 360, "fill", 56, {
+      Label: "Body_L",
+      Placeholder: "Body_L",
+      Tag: "Body_M",
+    }, {
+      direction: "horizontal",
+      gapToken: "gap/button-icon-label",
+      transparent: true,
+      surfaceModes: ["white", "gray"],
+      hoverContract: "underline-only-color-border-to-color-icon",
+      slotContracts: {
+        label: { typographyRole: "Body_L", colorRole: "text/secondary" },
+        value: { typographyRole: "Body_L", valueColorRole: "text/primary", placeholderColorRole: "text/tertiary" },
+        tags: { content: "Chips/Default", hover: false, expandedHitArea: false },
+        suggestions: {
+          role: "listbox",
+          menuItemRole: "option",
+          compositionStrategy: "direct-native-nodes",
+          panelFillToken: "neutral-light/100",
+          panelBorderToken: "neutral-dark/10",
+          panelRadiusToken: "radius/card",
+          panelEffectStyle: "Effect/Foundation/shadow-2",
+          defaultVisibility: "hidden",
+        },
+      },
+    });
+  }
+  if (name === "Search/Scoped/Default") {
+    return spec("Search", ".tui-search:has(.tui-search__scope)", 324, "fill", 40, {
+      Scope: "Body_L",
+      Value: "Body_L",
+      Placeholder: "Body_L",
+      Advanced: "Body_M",
+    }, {
+      direction: "horizontal",
+      gapToken: "space/0",
+      iconSize: 16,
+      clearActionReserve: 32,
+      slotContracts: {
+        "scope-selector": {
+          compositionStrategy: "direct-native-nodes",
+          placement: "leading-before-search-icon",
+          width: 73,
+          height: 40,
+          paddingInlineStartToken: "space/4",
+          gapToken: "space/2",
+          labelTypographyRole: "Body_L",
+          labelColorToken: "neutral-dark/90",
+          arrowIconSize: 20,
+          arrowColorToken: "neutral-dark/90",
+          divider: "color.border",
+          dividerSize: "1×16",
+          menuPanel: {
+            role: "menu",
+            fillToken: "neutral-light/100",
+            borderToken: "neutral-dark/10",
+            radiusToken: "radius/card",
+            effectStyle: "Effect/Foundation/shadow-2",
+            defaultVisibility: "hidden",
+          },
+        },
+        "input-region": {
+          placement: "fills-remaining-width",
+          paddingInlineStartToken: "space/3",
+          paddingInlineEndToken: "space/2",
+          gapToken: "space/3",
+        },
+        leading: { iconAlias: "field/search", size: 16, colorToken: "neutral-dark/60" },
+        value: { typographyRole: "Body_L", colorToken: "neutral-dark/90", placeholderTypographyRole: "Body_L", placeholderColorToken: "neutral-dark/60" },
+        clear: { optional: true, iconAlias: "action/close", size: 16, colorToken: "neutral-dark/90" },
+        "advanced-search": { optional: true, typographyRole: "Body_M", colorToken: "neutral-dark/60" },
+      },
+      interactionRegions: {
+        left: "scope-selector",
+        right: "input-region",
+        hover: {
+          left: { whiteContent: "neutral-dark/05", grayContent: "neutral-dark/05" },
+          right: { whiteContent: "neutral-dark/10", grayContent: "neutral-dark/05" },
+        },
+        pressed: { whiteContent: "neutral-dark/15", grayContent: "neutral-dark/10" },
+        grayContentOutline: { color: "neutral-light/100", width: 2 },
+      },
+    });
+  }
   if (/^(Input|Search|Textarea|Select|Combobox)\//.test(name)) {
     const family = name.split("/")[0];
     const selectors = {
@@ -215,12 +300,13 @@ function componentSpec(name) {
       Combobox: ".tui-combobox",
     };
     const height = family === "Textarea" ? 126 : 40;
-    return spec(family, selectors[family], 280, "fill", height, {
+    const masterWidth = family === "Search" ? 324 : 280;
+    return spec(family, selectors[family], masterWidth, "fill", height, {
       Value: "Body_L",
       Placeholder: "Body_L",
     }, {
       direction: family === "Textarea" ? "vertical" : "horizontal",
-      gapToken: ["Search", "Select", "Combobox"].includes(family) ? "gap/button-icon-label" : null,
+      gapToken: family === "Search" ? "space/0" : ["Select", "Combobox"].includes(family) ? "gap/button-icon-label" : null,
       iconSize: ["Search", "Select", "Combobox"].includes(family) ? 16 : null,
       clearActionReserve: family === "Search" ? 32 : null,
     });
@@ -361,7 +447,26 @@ function componentSpec(name) {
       direction: "horizontal",
       nestedGroups: ["Menu Items"],
       itemQuantity: 1,
+    });
+  }
+  if (name === "Dropdown Menu/Default") {
+    return spec("Dropdown Menu", ".tui-advanced-menu", 280, "hug", 68, {
+      Label: "Body_M",
+      Value: "Body_L",
+      "Menu Item": "Body_L",
+    }, {
+      direction: "vertical",
+      compositionStrategy: "direct-native-nodes",
+      pixsoReusableTarget: false,
+      gapToken: "gap/field-label",
+      radiusToken: "radius/card",
       effectStyle: "Effect/Foundation/shadow-2",
+      panelDefaultVisibility: "hidden",
+      slotContracts: {
+        label: { typographyRole: "Body_M" },
+        content: { role: "menu", compositionStrategy: "direct-native-nodes", panelEffectStyle: "Effect/Foundation/shadow-2", defaultVisibility: "hidden" },
+        description: { optional: true, typographyRole: "Body_M" },
+      },
     });
   }
   if (name.startsWith("Tabs/")) {
@@ -519,7 +624,7 @@ function componentSpec(name) {
       contentGapToken: "space/1",
       closeTargetSize: 40,
       closeIconSize: 20,
-      effectStyle: "Effect/Foundation/shadow-3",
+      effectStyle: "Effect/Foundation/shadow-1",
       pixsoDefaultVariant: { "左侧区域": "1" },
     });
   }
@@ -595,6 +700,7 @@ function componentSpec(name) {
       "Menu Item": "Body_L",
     }, {
       direction: "vertical",
+      effectStyle: "Effect/Foundation/shadow-3",
       pixsoDefaultVariant: { quantity: "3" },
       slotContracts: {
         content: { cardinality: "1", itemCount: 3 },

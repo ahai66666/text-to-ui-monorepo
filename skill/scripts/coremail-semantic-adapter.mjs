@@ -328,7 +328,6 @@ function buildGlobalTitleLayer(pageData, tokens, componentMap, { visualSnapshot 
       width: { tokenRef: "size/32" },
       height: { tokenRef: "size/32" },
       radius: "radius/card",
-      effect: "shadow-1",
     }),
     textNode("brand-label", "Brand label", pageData.brand?.name ?? "Coremail", "primary-navigation", tokens, "subtitle-m", { width: "hug" }),
   ], { tokens, layout: { direction: "HORIZONTAL", width: "hug", height: "hug", gap: "space/4", align: "CENTER" } });
@@ -850,7 +849,7 @@ export function buildCoremailScene({ pageSpec, layoutContract, pageData, compone
   const mailShell = frame("mail-shell", "Mail shell", "global", [buildGlobalTitleLayer(pageData, tokens, componentMap, { visualSnapshot }), contentRow], {
     tokens,
     layout: { direction: "VERTICAL", width: "fill", height: "fill", gap: 0, align: "MIN", clipsContent: true },
-    style: { fill: "surface/canvas", stroke: "border/default", strokeEdges: ["top", "right", "bottom", "left"], radius: "radius/window", effect: "shadow-2" },
+    style: { fill: "surface/canvas", stroke: "border/default", strokeEdges: ["top", "right", "bottom", "left"], radius: "radius/window" },
     metadata: { htmlSelector: ".mail-shell", surfaceOwner: true, structure: "titlebar-row-plus-three-pane-content" },
   });
   const rootChildren = [mailShell];

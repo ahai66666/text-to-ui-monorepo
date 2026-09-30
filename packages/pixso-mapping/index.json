@@ -258,7 +258,7 @@
       "libraryPage": "NewComponents",
       "pixsoTarget": null,
       "availability": "excluded",
-      "mappingReason": "按当前 Text-to-UI 映射范围保留框架实现，但不映射为 Pixso 组件。",
+      "mappingReason": "保留 HTML/框架组件契约；Pixso 页面需要菜单时按 Token 直接组合普通节点，不导入、创建或引用可复用 Dropdown Menu 主组件。",
       "variant": {},
       "variantAxes": [],
       "slots": [

@@ -7,6 +7,16 @@
 
 ## 安装与使用
 
+插件源码目录：`text-to-ui/scripts/pixso-unified-agent-plugin/`。
+
+本机默认交付/安装目录：
+
+```text
+~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/
+```
+
+在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。构建后的插件文件会从仓库源码同步到这个目录；其他机器可以使用 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT` 指定自己的交付目录（兼容 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）。
+
 1. 在 Text-to-UI 根目录启动常驻服务：
 
    ```bash

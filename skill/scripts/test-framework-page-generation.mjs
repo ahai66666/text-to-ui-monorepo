@@ -130,9 +130,60 @@ for (const framework of ["html", "react", "vue"]) {
     assert.match(source, /data-tui-action-behaviors/, "Final Titlebar actions must keep their behavior map inside the component boundary");
     const entrySource = fs.readFileSync(entry, "utf8");
     assert.match(entrySource, /bindTitlebarOverflow/, "HTML entries must mount Titlebar overflow behavior");
+    assert.match(entrySource, /bindInputTagEntry/, "HTML entries must mount Input Tag Entry suggestion/tag behavior");
     assert.match(entrySource, /tuiActionBehaviors/, "HTML entries must resolve business actions from the final Titlebar rather than separate page buttons");
   }
 }
+const stackedNavBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+stackedNavBindings.patternShell.navigation.slots["primary-navigation-bottom"] = [{
+  kind: "group", id: "app-switcher", tag: "div", className: "app-switcher",
+  children: [{ kind: "component", bindingId: "primary-nav" }]
+}];
+stackedNavBindings.stylePlan.compositions.push({ id: "app-switcher", region: "primary-navigation", className: "app-switcher", tokenRoles: ["spacing.component-gap"], componentBoundary: "preserve" });
+const stackedNavPath = path.join(temp, "stacked-nav-bindings.json");
+fs.writeFileSync(stackedNavPath, JSON.stringify(stackedNavBindings));
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", stackedNavPath, "--out", path.join(temp, "stacked-nav.js"), "--entry-out", path.join(temp, "stacked-nav-entry.js"), "--manifest", path.join(temp, "stacked-nav-manifest.json"), "--component-usage", path.join(temp, "stacked-nav-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "a generic group must not silently stack level-one navigation items");
+assert.match(result.stderr, /primary-navigation-bottom group.*tui-primary-navigation-items/);
+assert.equal(fs.existsSync(path.join(temp, "stacked-nav.js")), false);
+const horizontalNavBindings = structuredClone(stackedNavBindings);
+horizontalNavBindings.patternShell.navigation.slots["primary-navigation-bottom"][0].tag = "nav";
+horizontalNavBindings.patternShell.navigation.slots["primary-navigation-bottom"][0].className = "app-switcher tui-primary-navigation-items";
+horizontalNavBindings.stylePlan.compositions.find((entry) => entry.id === "app-switcher").className = "app-switcher tui-primary-navigation-items";
+const horizontalNavPath = path.join(temp, "horizontal-nav-bindings.json");
+const verticalNavCss = path.join(temp, "vertical-nav.css");
+fs.writeFileSync(horizontalNavPath, JSON.stringify(horizontalNavBindings));
+fs.writeFileSync(verticalNavCss, ".app-switcher { flex-direction: column; }\n");
+result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", horizontalNavPath, "--out", path.join(temp, "vertical-nav.js"), "--entry-out", path.join(temp, "vertical-nav-entry.js"), "--manifest", path.join(temp, "vertical-nav-manifest.json"), "--component-usage", path.join(temp, "vertical-nav-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", verticalNavCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
+assert.notEqual(result.status, 0, "page CSS must not turn the registered level-one rail vertical");
+assert.match(result.stderr, /primary-navigation-bottom group.*cannot set its axis/);
+assert.equal(fs.existsSync(path.join(temp, "vertical-nav.js")), false);
+const mailComposeBindings = JSON.parse(fs.readFileSync(bindings, "utf8"));
+const mailComposeBinding = mailComposeBindings.componentBindings.find((binding) => binding.id === "compose");
+mailComposeBinding.options.label = "写邮件";
+mailComposeBinding.behaviorId = "compose-message";
+const mailComposeInteraction = mailComposeBindings.behaviorPlan.interactions.find((interaction) => interaction.id === "compose");
+mailComposeInteraction.id = "compose-message";
+mailComposeInteraction.kind = "open-overlay";
+mailComposeInteraction.triggerBindingIds = ["compose"];
+const mailComposeContext = JSON.parse(fs.readFileSync(path.join(temp, "html-context.json"), "utf8"));
+mailComposeContext.route.id = "communication-workbench";
+const mailComposeContextPath = path.join(temp, "mail-compose-context.json");
+fs.writeFileSync(mailComposeContextPath, JSON.stringify(mailComposeContext));
+const mailComposePath = path.join(temp, "mail-compose-bindings.json");
+fs.writeFileSync(mailComposePath, JSON.stringify(mailComposeBindings));
+const mailComposeArgs = ["--context", mailComposeContextPath, "--layout-contract", layout, "--bindings", mailComposePath, "--out", path.join(temp, "mail-compose.js"), "--entry-out", path.join(temp, "mail-compose-entry.js"), "--manifest", path.join(temp, "mail-compose-manifest.json"), "--component-usage", path.join(temp, "mail-compose-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", pageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"];
+result = run("generate-framework-page.mjs", mailComposeArgs);
+assert.notEqual(result.status, 0, "a button-triggered mail pop-up must still use the Secondary Page new-page frame, not Dialog behavior");
+assert.match(result.stderr, /must use Secondary Page Runtime layout=new-page/);
+mailComposeInteraction.kind = "open-secondary-page";
+mailComposeInteraction.secondaryPage = { layout: "new-page" };
+const secondaryPageModulePath = path.join(temp, "secondary-page-module.js");
+fs.writeFileSync(secondaryPageModulePath, `import { createSecondaryPageRuntime } from "@text-to-ui/pattern-runtime";\nexport function mount(host, { renderComponent }) { const runtime = createSecondaryPageRuntime({ layout: "new-page", mode: "runtime", slots: { titlebar: renderComponent("titlebar", { size: "small", layout: "standalone", paneRole: "final-pane", paneTitle: "新建" }), content: "" } }); runtime.mount(host.ownerDocument.getElementById("app")); }\n`);
+mailComposeBindings.pageModules = [{ compositionId: "search-area", source: "./secondary-page-module.js" }];
+fs.writeFileSync(mailComposePath, JSON.stringify(mailComposeBindings));
+result = run("generate-framework-page.mjs", mailComposeArgs);
+assert.equal(result.status, 0, result.stderr);
 const literalPageCss = path.join(temp, "literal-page.css");
 fs.writeFileSync(literalPageCss, ".task-list { color: #123456; padding: 12px; }\n");
 result = run("generate-framework-page.mjs", ["--context", path.join(temp, "html-context.json"), "--layout-contract", layout, "--bindings", bindings, "--out", path.join(temp, "literal-page.js"), "--entry-out", path.join(temp, "literal-page-entry.js"), "--manifest", path.join(temp, "literal-page.json"), "--component-usage", path.join(temp, "literal-page-usage.json"), "--blueprint", blueprint, "--content-recipes", contentRecipes, "--page-css", literalPageCss, "--require-blueprint", "--require-content-recipes", "--require-slots"]);
@@ -363,9 +414,9 @@ result = run("generate-compliant-page.mjs", [
   "--project", oneShotDir,
   "--repo", root,
   "--framework", "html",
-  "--context", oneShotContext,
+  "--task", "workbench",
+  "--task-route", "record-management-workbench",
   "--route-receipt", oneShotRouteReceipt,
-  "--context-receipt", oneShotContextReceipt,
   "--layout-contract", layout,
   "--blueprint", blueprint,
   "--content-recipes", contentRecipes,
@@ -379,6 +430,9 @@ result = run("generate-compliant-page.mjs", [
   "--receipt-out", oneShotReceipt
 ]);
 assert.equal(result.status, 0, result.stderr);
+const oneShotContextPacket = JSON.parse(fs.readFileSync(path.join(oneShotDir, ".text-to-ui", "context-packet.json"), "utf8"));
+assert.equal(oneShotContextPacket.route.id, "record-management-workbench", "the one-shot generator must pass --task-route to context resolution");
+assert.equal(oneShotContextPacket.request.task, "workbench", "explicit routing must preserve the original task description");
 const oneShotManifest = JSON.parse(fs.readFileSync(path.join(oneShotDir, "framework-page-manifest.json"), "utf8"));
 const oneShotGenerationReceipt = JSON.parse(fs.readFileSync(oneShotReceipt, "utf8"));
 assert.equal(oneShotGenerationReceipt.kind, "text-to-ui-compliant-generation-receipt");

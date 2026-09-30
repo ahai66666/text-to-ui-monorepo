@@ -32,7 +32,7 @@
 
 ## 弹窗族实现边界
 
-- Dialog 固定 400px、White Surface、`shadow-4`；56px Header 使用居中的 `Title_S`，不显示右上角关闭按钮。单按钮横向填满，双按钮等宽，左 Secondary、右 Primary 或 Danger，外部点击不关闭。
+- Dialog 固定 400px、White Surface、`shadow-4`；Alert Dialog 使用相同投影。Semi-modal 使用 `shadow-5`。共享投影 Token 的常规使用范围是 `assets/design-system/design.md` §4.6 的九类浮层外壳，其他场景默认无投影。Dialog 的 56px Header 使用居中的 `Title_S`，不显示右上角关闭按钮。单按钮横向填满，双按钮等宽，左 Secondary、右 Primary 或 Danger，外部点击不关闭。
 - Alert Dialog 是固定 modal 的危险确认 Dialog 兼容逻辑，不拥有 White/Gray 或 modal/non-modal 结构轴，不显示关闭按钮，不允许遮罩关闭。
 - Semi-modal 独立提供 S 480px、M 640px、L 800px，White/Gray Surface，以及默认 non-modal 和显式 modal。Header 左标题、右 40×40 Ghost Close；Content X24/Y0；Footer 80px，40px 操作组右对齐。
 - White Semi-modal 组合灰面 Field/Input/Search/Select/Textarea；Gray Semi-modal 组合白面控件。弹窗只负责容器与分区布局，不得创建弹窗专用输入框或按钮样式。

@@ -182,7 +182,8 @@ Titlebar 的第三栏业务操作必须遵循同一份 `main-detail-actions` 契
 
 ## 执行通道：整页导入强制插件，MCP 仅显式诊断
 
-默认执行器是安装在 Pixso 内的 `pixso-native-renderer-plugin`。它和
+默认执行器是 Pixso Unified Agent v2（仓库源码：`text-to-ui/scripts/pixso-unified-agent-plugin/`）。本机默认交付目录为
+`~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，在 Pixso Developer Mode 中加载其 `manifest.json`。它和
 Text-to-UI 共享执行运行时，在当前文件中解析 Variables、Styles、Component Set
 及其 Variant，并在节点加入父级后完成 Auto Layout 与绑定。它不会覆盖同名旧画板，
 也不会用覆盖层或绝对坐标重绘来掩盖组件、变量或布局失败。

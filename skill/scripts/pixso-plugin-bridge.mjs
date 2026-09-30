@@ -19,6 +19,7 @@ import {
   MODULE_NO_PROGRESS_TIMEOUT_MS,
   RESULT_ACK_DEADLINE_MS,
   WAITING_FOR_PLUGIN_DEADLINE_MS,
+  WAITING_FOR_PLUGIN_CONNECTION_DEADLINE_MS,
   WAITING_FOR_PLUGIN_RETRY_AFTER_MS,
   appendLifecycleEvent,
   elapsedMs,
@@ -746,6 +747,9 @@ async function publish(planPath, serviceOwned = false) {
   if (plan.kind === "pixso-operation-plan") validateCurrentImportPublication(plan, absolute);
   const pluginSession = readPluginSession();
   const plugin = pluginCompatibility(plan, pluginSession);
+  const pluginStartDeadlineMs = plugin.ready
+    ? WAITING_FOR_PLUGIN_DEADLINE_MS
+    : WAITING_FOR_PLUGIN_CONNECTION_DEADLINE_MS;
   const idempotencyKey = planIdempotencyKey(plan, absolute);
   const existingState = readState();
   const existingJob = currentJob(existingState);
@@ -772,7 +776,7 @@ async function publish(planPath, serviceOwned = false) {
     requiredRuntimeVersion: requiredRuntimeVersionFor(plan),
     governance: {
       queueRecoveryAfterMs: WAITING_FOR_PLUGIN_RETRY_AFTER_MS,
-      pluginStartDeadlineMs: WAITING_FOR_PLUGIN_DEADLINE_MS,
+      pluginStartDeadlineMs,
       moduleHeartbeatTimeoutMs: MODULE_HEARTBEAT_TIMEOUT_MS,
       moduleNoProgressTimeoutMs: MODULE_NO_PROGRESS_TIMEOUT_MS,
       resultAckDeadlineMs: RESULT_ACK_DEADLINE_MS,
@@ -803,8 +807,8 @@ async function publish(planPath, serviceOwned = false) {
     operationProgress: null,
     resultReadyAt: null,
     resultAckDeadlineAt: null,
-    waitDeadlineAt: isoAfter(WAITING_FOR_PLUGIN_DEADLINE_MS, Date.parse(publishedAt)),
-    startDeadlineAt: isoAfter(WAITING_FOR_PLUGIN_DEADLINE_MS, Date.parse(publishedAt)),
+    waitDeadlineAt: isoAfter(pluginStartDeadlineMs, Date.parse(publishedAt)),
+    startDeadlineAt: isoAfter(pluginStartDeadlineMs, Date.parse(publishedAt)),
     recoveryAt: isoAfter(WAITING_FOR_PLUGIN_RETRY_AFTER_MS, Date.parse(publishedAt)),
     recoveryAttempt: 0,
     deliveryAttempt: 0,
@@ -824,6 +828,15 @@ async function publish(planPath, serviceOwned = false) {
       officialAdapterVersion: pixsoOfficialAdapterVersion,
     });
   }
+  updateImportRunLifecycle(readState(), IMPORT_LIFECYCLE_STATES.WAITING_FOR_PLUGIN, {
+    at: publishedAt,
+    stage: "execute",
+    status: plugin.ready ? "queued" : "queued-awaiting-plugin",
+    phase: "wait-for-plugin",
+    deadline: isoAfter(pluginStartDeadlineMs, Date.parse(publishedAt)),
+    blockingReason: plugin.ready ? null : plugin.reason,
+    nextAction: plugin.ready ? "plugin-imports-automatically" : pluginSession.connected ? "reload-latest-plugin" : "open-pixso-plugin-panel",
+  });
   return {
     ok: true,
     jobId: publication.publicationId,
@@ -836,7 +849,7 @@ async function publish(planPath, serviceOwned = false) {
     pluginReady: plugin.ready,
     pluginReason: plugin.reason,
     missingCapabilities: plugin.missingCapabilities,
-    waitingAction: plugin.ready ? null : pluginSession.sessionId && plugin.missingCapabilities.length ? "reload-latest-plugin" : "open-pixso-plugin-panel",
+    waitingAction: plugin.ready ? null : pluginSession.connected ? "reload-latest-plugin" : "open-pixso-plugin-panel",
     pluginDeliveryPath,
     queued: !plugin.ready,
     requiredRuntimeVersion: publication.requiredRuntimeVersion,
@@ -919,7 +932,10 @@ function bridgeWatchdog() {
   }
   if (!job.startedAt && startDeadline !== null && now >= startDeadline) {
     const reason = "plugin-start-timeout";
-    const detail = `统一 Pixso 插件在 ${Math.round(WAITING_FOR_PLUGIN_DEADLINE_MS / 1000)} 秒内没有确认启动；已清除领取状态并释放运行锁，不再自动重放。`;
+    const waitSeconds = Number.isFinite(publishedAt)
+      ? Math.round((startDeadline - publishedAt) / 1000)
+      : Math.round(WAITING_FOR_PLUGIN_DEADLINE_MS / 1000);
+    const detail = `统一 Pixso 插件在 ${waitSeconds} 秒内没有确认启动；已清除领取状态并释放运行锁，不再自动重放。`;
     const updated = {
       ...job,
       status: "needs-attention",

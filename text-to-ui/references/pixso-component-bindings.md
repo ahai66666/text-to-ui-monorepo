@@ -46,6 +46,7 @@ document GUIDs are resolved fresh at runtime.
 | Icon Button | frame | `$size/control` | 40 × 40px, Ghost by default |
 | Icon Button | icon | `$size/icon/md` | 20px |
 | Input, Search, Select, Combobox, Date Picker, Time Picker | control height | `$size/control` | 40px standard field control |
+| Search | root content gap | `$space/0` | Zero is intentional; segment-specific padding owns local spacing. |
 | Input, Search, Textarea | value / entered text | `Typography/Body_L` style | 16 / 20 / 400 |
 | Select, Combobox | trigger value | `Typography/Body_L` style | Field-like displayed value |
 | Date Picker, Time Picker | trigger value | `Typography/Body_L` style | Field-like displayed value |
@@ -93,6 +94,7 @@ Checkbox, Radio, Switch, Tabs, and 28px Small Button labels use Body_M. Button i
 - Confirm semantic icons resolve through `assets/icons/icon-aliases.json`; do not leave hand-drawn line, ellipse, or stacked icon substitutes.
 - Confirm Button icon/text separation measures 8px.
 - Confirm Input/Search/Select/Date/Time visible value text resolves to `Body_L`.
+- Confirm the Search root gap binds to `$space/0` (0px); segment spacing stays in the slot padding contract.
 - Confirm Sidebar, List primary text, Dropdown, Accordion, Calendar, and Time Picker option values resolve to `Body_L`; Table headers, Checkbox, Radio, Switch, Tabs, and 28px Small Button labels resolve to `Body_M`. Confirm selected Time Picker options use Ghost styling with no solid fill.
 - Confirm Main Content and Main Detail each measure 24px from both inner pane edges.
 - Run layout check and inspect a screenshot before handoff.

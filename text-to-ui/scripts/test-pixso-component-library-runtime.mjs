@@ -114,6 +114,17 @@ const plan = {
       characters: "高级",
       propertyBinding: { propName: "advancedSearchLabel", slotName: "advanced-search" },
     },
+    {
+      op: "create-frame",
+      phase: "library",
+      nodeId: "component-search-white-surface-advanced-content",
+      parentId: "component-search-white-surface-advanced",
+      name: "#content",
+      region: "fields",
+      layout: { direction: "VERTICAL", width: 120, height: 80 },
+      style: { fill: { kind: "transparent" } },
+      metadata: { defaultVisibility: "hidden" },
+    },
   ],
 };
 
@@ -137,4 +148,8 @@ assert.equal(component.boundVariables.cornerRadius.id, "var-radius-08");
 assert.equal(component.fills[0].boundVariables.color.id, "var-neutral-dark-05");
 const label = component.findAll((node) => node.type === "TEXT")[0];
 assert.equal(label.componentPropertyReferences.characters, "advancedSearchLabel");
+assert.equal(label.characters, "高级", "text property binding must preserve its declared default copy");
+const hiddenContent = component.findAll((node) => node.name === "#content")[0];
+assert.ok(hiddenContent, "optional overlay content must be present as a named layer");
+assert.equal(hiddenContent.visible, false, "overlay slots marked hidden must default to hidden in Pixso");
 console.log("Pixso component library runtime test passed: direct Component, named slot, property and source metadata are created.");
