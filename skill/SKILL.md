@@ -45,10 +45,16 @@ task. Missing files, stale hashes, or partial receipts block the workflow.
 
 ## 2. Resolve the task and design
 
-For a new page, read `references/routes/new-page.md` and follow its discovery,
-blueprint, generation, and preview sequence. The blueprint is the design
-decision; bindings implement it. Use the selected Pattern geometry and actual
-content width, and design for the user's task rather than the component list.
+For a new page, **Mandatory Gate 0: analyze and build the page blueprint**
+before component selection or generation. Require `page-blueprint.json` as the
+page-design contract; a component list or generated page is not a substitute.
+Read `references/routes/new-page.md` and follow its discovery, blueprint,
+generation, and preview sequence. The blueprint is the design decision layer;
+bindings implement those decisions. Keep the user's task, information
+hierarchy, region responsibilities, content groups, interactions, and states
+in the blueprint; keep component instances, props, and slot assignments in
+`page-bindings.json`. Use the selected Pattern geometry and actual content
+width, and design for the user's task rather than the component list.
 Read `references/page-design-guidance.md` and
 `references/page-blueprint-design.md` as directed by that route.
 
