@@ -33,7 +33,7 @@
         },
         {
           "path": "text-to-ui/references/routes/skill-maintenance.md",
-          "sha256": "e97aa53cd2c4db48987a6dfed4d71d005813a34fb231f86645e887fcf6835c87"
+          "sha256": "b599a937bf9b1be103ccd2599520633ac7ef3b179d71cb15c85447adbdef0bd6"
         },
         {
           "path": "text-to-ui/scripts/resolve-workflow-route.mjs",

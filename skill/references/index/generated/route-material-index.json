@@ -438,7 +438,7 @@
     "skill-maintenance": {
       "id": "skill-maintenance",
       "dynamicMaterials": [],
-      "materialsDigest": "771d3bd8aafe038705fe3ed545a47a8d17212b8a8e3d68fcaee8b346ecc98351",
+      "materialsDigest": "c86c6080f56f81301ff61a8366af5082c6a74db3f0ea687b5395582985b0a37c",
       "materials": [
         {
           "path": "packages/component-contracts/src/components.json",
@@ -498,7 +498,7 @@
           "path": "text-to-ui/references/index/generated/skill-catalog-index.json",
           "role": "skill-catalog-index",
           "required": true,
-          "sha256": "21416742adeedeb9fd7d35223acbf014896a1f1d13e6522c3f6f9f8dbb3aa3d7"
+          "sha256": "6375ce08cf8cfd07d4e0f0740654d6964849a5356376a24a96a6605a8bb72b68"
         },
         {
           "path": "text-to-ui/references/layouts/framework-layout-routing.md",
@@ -528,10 +528,10 @@
           "path": "text-to-ui/references/routes/skill-maintenance.md",
           "role": "route-reference",
           "required": true,
-          "sha256": "e97aa53cd2c4db48987a6dfed4d71d005813a34fb231f86645e887fcf6835c87"
+          "sha256": "b599a937bf9b1be103ccd2599520633ac7ef3b179d71cb15c85447adbdef0bd6"
         }
       ]
     }
   },
-  "indexDigest": "ca8ccce3d12a74cec95e13fc5fe73681a8ae63c3ec4e8e0c4ed47fee93a05ea2"
+  "indexDigest": "042a16f2b889917f0a93cab6556fcdb509e11d885b3a1b98df24cfed76892c8e"
 }
