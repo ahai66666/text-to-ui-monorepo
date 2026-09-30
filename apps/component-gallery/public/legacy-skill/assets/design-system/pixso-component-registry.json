@@ -37,6 +37,7 @@
       "Icon Button/Secondary/Default",
       "Split Dropdown Button/Icon Text/Default",
       "Split Dropdown Button/Icon Only/Default",
+      "Dropdown Menu/Default",
       "Toggle/Off/Default"
     ],
     "02 Chips": [
@@ -48,8 +49,10 @@
       "Field/With Description",
       "Input/White Surface/Default",
       "Input/Gray Surface/Default",
+      "Input/Tag Entry/Default",
       "Search/White Surface/Default",
       "Search/Gray Surface/Default",
+      "Search/Scoped/Default",
       "Textarea/White Surface/Default",
       "Textarea/Gray Surface/Default",
       "Select/White Surface/Default",

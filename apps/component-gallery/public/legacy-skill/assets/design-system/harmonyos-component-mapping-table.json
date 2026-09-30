@@ -10,10 +10,10 @@
     "strictParityRequiresEveryUsedTargetVerified": true
   },
   "summary": {
-    "total": 83,
+    "total": 86,
     "mapped-pending-verification": 16,
     "mapped-needs-rebuild": 4,
-    "missing-target": 63
+    "missing-target": 66
   },
   "rows": [
     {
@@ -178,6 +178,17 @@
     },
     {
       "category": "01 Actions",
+      "target": "Dropdown Menu/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "01 Actions",
       "target": "Toggle/Off/Default",
       "status": "missing-target",
       "sourceComponentSet": null,
@@ -263,6 +274,17 @@
     },
     {
       "category": "02 Forms",
+      "target": "Input/Tag Entry/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
+    },
+    {
+      "category": "02 Forms",
       "target": "Search/White Surface/Default",
       "status": "mapped-pending-verification",
       "sourceComponentSet": "Search",
@@ -288,6 +310,17 @@
       "reuse": "structure",
       "strictEligible": false,
       "nextAction": "Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates."
+    },
+    {
+      "category": "02 Forms",
+      "target": "Search/Scoped/Default",
+      "status": "missing-target",
+      "sourceComponentSet": null,
+      "sourceVariant": null,
+      "sourceVariantAliases": [],
+      "reuse": null,
+      "strictEligible": false,
+      "nextAction": "Add a source mapping or draw a new registered target, then verify it live in Pixso."
     },
     {
       "category": "02 Forms",
