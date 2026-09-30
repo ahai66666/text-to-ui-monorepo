@@ -54,7 +54,7 @@ Text-to-UI Skill（Text-to-UI 技能编排系统）
 │   ├── DOM Visual IR（DOM 视觉中间表示）
 │   ├── Pixso Native Scene（Pixso 原生场景）
 │   └── Page Import Operation Plan（页面导入执行计划）
-├── Pixso Native Renderer Plugin（Pixso 原生渲染插件）
+├── Pixso Unified Agent Plugin（Pixso 统一 Agent 插件）
 ├── Bridge Service & Persistent-Agent Protocol（桥接服务与常驻 Agent 协议）
 ├── Preview Hub & Component Gallery（预览中心与组件画廊）
 └── Readback, Visual QA & Audit（读回、视觉验收与审计）
@@ -184,9 +184,9 @@ HTML / React / Vue 运行时与自动校验
 
 | 组件范围 | HTML | React | Vue | Pixso 映射 |
 | --- | --- | --- | --- | --- |
-| 55 个登记组件 | Partial | Partial | Partial | Logical mapping |
+| 49 个登记组件 | Partial | Partial | Partial | Logical mapping |
 
-目前 55 个组件已经具有独立的 HTML、React、Vue 源码入口，并使用 canonical CSS Variables，但仍统一标记为 `Partial`。本次新增 `AspectRatio`、`Bubble`、`PrimaryNavigationItem`、`Radio`、`Typography` 五个组件。只有以下六项都具有可重复运行的证据后，组件才会恢复为 `Ready`：
+目前 49 个组件已经具有独立的 HTML、React、Vue 源码入口，并使用 canonical CSS Variables，但仍统一标记为 `Partial`。组件数量以 `packages/component-contracts/src/components.json` 为准。只有以下六项都具有可重复运行的证据后，组件才会标记为 `Ready`：
 
 - `sourceReady`
 - `contractReady`
@@ -195,7 +195,7 @@ HTML / React / Vue 运行时与自动校验
 - `accessibilityParity`
 - `tokenParity`
 
-当前质量门是 `0 Ready / 55 Partial`。这是一项有意保留的诚实成熟度标记：Skill 和 Pixso 严格通道不能把尚未完成六维验收的组件宣称为完整复用。
+当前质量门是 `0 Ready / 49 Partial`。这是一项有意保留的诚实成熟度标记：Skill 和 Pixso 严格通道不能把尚未完成六维验收的组件宣称为完整复用。
 
 Pattern 是页面级组合契约，不是组件注册表条目。目前仓库提供 4 个可解析 Pattern：两栏工作台、三栏工作台、工具工作区和检查器页面。HTML、React、Vue 与 Pixso 必须使用同一份 Pattern 契约，不能在框架适配器中各自重新定义页面结构。
 
@@ -232,7 +232,7 @@ HTML / 浏览器最终计算样式
   → Visual Manifest
   → DOM Visual IR
   → Operation Plan
-  → Text-to-UI Pixso Native Renderer
+  → Text-to-UI Pixso Unified Agent v2
   → Pixso 变量、文字样式和组件实例
 ```
 
@@ -242,8 +242,11 @@ HTML / 浏览器最终计算样式
 | --- | --- | --- |
 | `text-to-ui/` | Skill 唯一规范源、导入编译器、映射规则和测试 | 否 |
 | `skill/` | 可独立安装的 Skill 同步镜像 | 否；`.text-to-ui/` 运行状态不发布 |
-| `text-to-ui/scripts/pixso-native-renderer-plugin/` | 可在 Pixso 开发者模式加载的插件包 | 否 |
+| `text-to-ui/scripts/pixso-unified-agent-plugin/` | Pixso Unified Agent v2 插件源码，包含 `manifest.json` | 否 |
+| `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/` | 本机默认插件交付/安装目录；在 Pixso Developer Mode 加载其中的 `manifest.json` | 插件包 |
 | `packages/` | HTML、React、Vue 组件和共享设计系统源码 | 否 |
+
+插件源码位于 `text-to-ui/scripts/pixso-unified-agent-plugin/`。默认交付目录为 `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，应在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。这是本机默认路径，不是仓库源码路径；其他开发者可以通过 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（或兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）指定自己的插件目录。
 
 插件包负责在已打开的 Pixso 文件中执行 Operation Plan，并持续监听本地桥接服务；Skill 负责采集 HTML、锁定几何、生成计划和提供规则。正常整页导入只使用插件执行，不与 MCP 整页绘制并行，也不读取旧计划、旧截图、旧 GUID 或旧画板作为新运行输入。插件代码/API 变更后需要重新加载插件包；规则、映射或页面内容变化只需要重新生成并发布新的 Operation Plan。
 
@@ -255,6 +258,7 @@ HTML / 浏览器最终计算样式
 pnpm services:start
 node text-to-ui/scripts/pixso-plugin-bridge.mjs status
 pnpm --dir text-to-ui pixso:plugin:build
+pnpm skill:sync
 pnpm --dir text-to-ui pixso:delivery:check
 ```
 
@@ -305,13 +309,13 @@ GitHub Actions 会在 push 和 pull request 时运行核心交付、契约、框
 
 Skill、组件包和 Tokens 使用独立版本，例如：
 
-- `skill-v1.4.0`
+- `skill-v2.0.0`
 - `components-v0.1.0`
 - `tokens-v0.1.0`
 
 GitHub Release 可以发布 Skill ZIP 与组件包构建产物；需要作为工程依赖使用时，再发布 React/Vue 等 npm 包。仓库不保存目标 Pixso 文件的运行时 GUID，组件和变量应在当前文件中动态解析。
 
-组件迁移与六维验收规则见 [`docs/component-migration-plan.md`](docs/component-migration-plan.md)。多人协作约定见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+Text-to-UI Skill v2.0.0 迁移说明见 [`docs/releases/text-to-ui-v2.0.0.md`](docs/releases/text-to-ui-v2.0.0.md)。组件迁移与六维验收规则见 [`docs/component-migration-plan.md`](docs/component-migration-plan.md)。多人协作约定见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
 
 ## 许可证
 

@@ -16,6 +16,12 @@ const indexes = loadIndexes(skillRoot);
 const errors = [];
 for (const route of indexes['task-router'].routes) {
   if (!indexes['layout-index'].layouts.some((layout) => layout.id === route.layout)) errors.push(`${route.id}: missing layout ${route.layout}`);
+  if (route.domainReference) {
+    const resolvedReference = path.resolve(skillRoot, route.domainReference);
+    if (!route.domainReference.startsWith('references/') || !resolvedReference.startsWith(`${path.resolve(skillRoot)}${path.sep}`) || !fs.existsSync(resolvedReference)) {
+      errors.push(`${route.id}: invalid or missing task-route domain reference ${route.domainReference}`);
+    }
+  }
   for (const capability of route.requiredCapabilities) {
     if (!findComponent(indexes['component-index'], capability)) errors.push(`${route.id}: missing required capability ${capability}`);
   }

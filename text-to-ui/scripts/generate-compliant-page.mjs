@@ -19,7 +19,7 @@ const args = parseArgs(process.argv.slice(2));
 const value = (name) => args[name] && args[name] !== true ? String(args[name]) : null;
 const flag = (name) => args[name] === true || String(args[name] ?? "").toLowerCase() === "true";
 const usage = `Usage: generate-compliant-page.mjs --project <dir> --framework <html|react|vue>
-  --task <request> [--repo <monorepo>] [--skill-root <text-to-ui>]
+  --task <request> [--task-route <canonical-task-route-id>] [--repo <monorepo>] [--skill-root <text-to-ui>]
   [--capabilities <capability,...>] [--optional-capabilities <capability,...>]
   --blueprint <page-blueprint.json> --content-recipes <page-content-recipes.json>
   --bindings <page-bindings.json> --page-css <page-composition.css>
@@ -74,6 +74,7 @@ const importPath = (from, to) => `./${posixRelative(from, to)}`;
 const routeId = value("route") || "new-page";
 const mode = value("mode") || "fast-preview";
 const task = value("task");
+const taskRouteId = value("task-route");
 const blueprintPath = path.resolve(value("blueprint") || path.join(projectRoot, "page-blueprint.json"));
 const recipesPath = path.resolve(value("content-recipes") || path.join(projectRoot, "page-content-recipes.json"));
 const bindingsPath = path.resolve(value("bindings") || path.join(projectRoot, "page-bindings.json"));
@@ -94,6 +95,7 @@ if (!fs.existsSync(contextPath)) {
   run("resolve-workflow-route.mjs", ["--route", routeId, "--repo", repoRoot, "--receipt-out", routeReceiptPath], "route resolution");
   const contextArgs = [
     "--task", task,
+    ...(taskRouteId ? ["--task-route", taskRouteId] : []),
     "--repo", repoRoot,
     "--skill-root", skillRoot,
     "--framework", frameworkArg,
@@ -113,6 +115,7 @@ if (!fs.existsSync(contextPath)) {
   run("resolve-workflow-route.mjs", ["--route", routeId, "--repo", repoRoot, "--receipt-out", routeReceiptPath], "route receipt refresh");
   const contextArgs = [
     "--task", task,
+    ...(taskRouteId ? ["--task-route", taskRouteId] : []),
     "--repo", repoRoot,
     "--skill-root", skillRoot,
     "--framework", frameworkArg,
@@ -135,6 +138,7 @@ run("verify-context-materials.mjs", ["--repo", repoRoot, "--context", contextPat
 
 const context = readJson(contextPath);
 if (context.request?.framework !== frameworkArg) throw new Error(`Context Packet framework '${context.request?.framework}' does not match --framework '${frameworkArg}'`);
+if (taskRouteId && context.route?.id !== taskRouteId) throw new Error(`Context Packet task route '${context.route?.id ?? "missing"}' does not match --task-route '${taskRouteId}'`);
 if (context.request?.confirmed !== true || context.request?.confirmation?.status !== "confirmed") throw new Error("One-shot generation requires a confirmed Context Packet");
 if (!fs.existsSync(layoutPath)) run("generate-layout-contract.mjs", ["--context", contextPath, "--out", layoutPath], "layout contract generation");
 if (!fs.existsSync(blueprintPath)) throw new Error(`Page blueprint not found: ${blueprintPath}`);

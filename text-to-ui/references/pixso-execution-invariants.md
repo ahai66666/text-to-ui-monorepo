@@ -3,6 +3,14 @@
 - Current rendered HTML is the visual authority for an existing website.
 - A normal run uses one fresh run ID, one browser capture, one compile, one
   executor, one readback, and one screenshot diff.
+- Keep page materialization separate from acceptance quality. Scope an
+  `ok: false`, `FAILED`, or module-level component/icon/style readback message
+  to its phase and module; it does not prove the canonical page frame is absent.
+  A committed current-run root or the user's direct visual confirmation means
+  report the page as present and disclose any failing audit/acceptance gate
+  separately. Do not repeat diagnosis or publish again unless asked. If no
+  current-run root is committed, report the exact incomplete phase. This
+  classification never turns a failed quality gate into a pass.
 - The browser manifest is the sole geometry source. Component and Token mapping
   happens only after geometry is locked.
 - A `TRUNCATE` text operation must carry an explicit semantic
@@ -31,8 +39,10 @@
   receive no automatic retry. Lifecycle states are `PRECHECKING`, `READY`,
   `WAITING_FOR_PLUGIN`, `CLAIMED`, `RUNNING(module)`, `RECOVERING`,
   `COMPLETED`, `NEEDS_ATTENTION`, and `FAILED`. The Bridge retries a missing
-  plugin claim once after 15 seconds, requires start confirmation within 45
-  seconds, and stops with the run lock released; the main Pixso executor emits
+  plugin claim once after 15 seconds. A disconnected plugin gets ten minutes
+  to be opened, then claims the same publication automatically. A connected
+  plugin has 45 seconds to confirm startup. After either deadline the Bridge
+  stops with the run lock released; the main Pixso executor emits
   a real module heartbeat every 5 seconds and a 60-second silence becomes
   `NEEDS_ATTENTION`.
 - Keep the plugin draft visible while importing. Complete structural modules

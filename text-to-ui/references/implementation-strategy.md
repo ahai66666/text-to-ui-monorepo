@@ -107,7 +107,7 @@ Example component layer:
 ```css
 @layer components {
   .btn-primary {
-    @apply inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white shadow-card;
+    @apply inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white;
   }
 
   .input {
@@ -115,7 +115,7 @@ Example component layer:
   }
 
   .card {
-    @apply rounded-xl border border-border bg-surface shadow-card;
+    @apply rounded-xl border border-border bg-surface;
   }
 }
 ```

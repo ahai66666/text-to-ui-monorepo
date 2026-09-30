@@ -5,6 +5,7 @@
       "id": "communication-workbench",
       "aliases": ["mail-workbench", "email-workbench", "邮件工作台", "邮箱", "coremail"],
       "domains": ["mail", "communication"],
+      "domainReference": "references/domains/email-workbench.md",
       "layout": "pattern-b-three-pane",
       "requiredCapabilities": ["titlebar", "primary-navigation-item", "sidebar", "search", "list-item", "checkbox", "button", "icon-button", "tooltip", "context-menu"],
       "optionalCapabilities": ["avatar", "badge", "empty-state", "toast", "attachment", "collapsible", "select", "dialog"],

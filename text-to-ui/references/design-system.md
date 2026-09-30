@@ -64,7 +64,7 @@ Define or reuse:
 - Typography: font family, display, heading, body, label, caption.
 - Spacing scale: common gaps and padding.
 - Radius scale: input, card, modal, pill.
-- Shadows/elevation.
+- Shadows/elevation: use the shared Tokens for the nine standard overlay surfaces in `assets/design-system/design.md` §4.6; other contexts normally have no shadow.
 - Icon style.
 - Motion/interaction feel if relevant.
 

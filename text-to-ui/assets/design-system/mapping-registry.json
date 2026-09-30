@@ -4447,42 +4447,42 @@
           "htmlToken": "shadow-1",
           "htmlCssVariable": "--shadow-1",
           "pixsoStyle": "Effect/Foundation/shadow-1",
-          "usage": "raised control, tooltip, compact snackbar"
+          "usage": "Snackbar and Tooltip only"
         },
         {
           "kind": "effect",
           "htmlToken": "shadow-2",
           "htmlCssVariable": "--shadow-2",
           "pixsoStyle": "Effect/Foundation/shadow-2",
-          "usage": "floating menu"
+          "usage": "Popover, Hover Card, and Dropdown Menu only"
         },
         {
           "kind": "effect",
           "htmlToken": "shadow-3",
           "htmlCssVariable": "--shadow-3",
           "pixsoStyle": "Effect/Foundation/shadow-3",
-          "usage": "floating feedback"
+          "usage": "Context Menu only"
         },
         {
           "kind": "effect",
           "htmlToken": "shadow-4",
           "htmlCssVariable": "--shadow-4",
           "pixsoStyle": "Effect/Foundation/shadow-4",
-          "usage": "dialog"
+          "usage": "Dialog and Alert Dialog only"
         },
         {
           "kind": "effect",
           "htmlToken": "shadow-5",
           "htmlCssVariable": "--shadow-5",
           "pixsoStyle": "Effect/Foundation/shadow-5",
-          "usage": "reserved elevation"
+          "usage": "Semi-modal only"
         },
         {
           "kind": "effect",
           "htmlToken": "shadow-6",
           "htmlCssVariable": "--shadow-6",
           "pixsoStyle": "Effect/Foundation/shadow-6",
-          "usage": "highest overlay"
+          "usage": "unassigned; do not use in public page design"
         }
       ],
       "componentMappings": [
@@ -4980,7 +4980,7 @@
           "pixsoTarget": null,
           "pixsoTargetStatus": "unregistered",
           "pixsoMappingPolicy": "excluded",
-          "pixsoMappingReason": "按当前 Text-to-UI 映射范围保留框架实现，但不映射为 Pixso 组件。",
+          "pixsoMappingReason": "保留 HTML/框架组件契约；Pixso 页面需要菜单时按 Token 直接组合普通节点，不导入、创建或引用可复用 Dropdown Menu 主组件。",
           "pixsoSpecKey": null,
           "nativeSourceStatus": "not-applicable",
           "runtimeBinding": null
@@ -5106,13 +5106,21 @@
               "placeholder",
               "surface",
               "error",
-              "disabled"
+              "disabled",
+              "variant",
+              "label",
+              "options",
+              "tags",
+              "defaultTags"
             ],
             "supportedSlots": [
+              "label",
               "leading",
               "value",
               "trailing",
-              "help"
+              "help",
+              "tags",
+              "suggestions"
             ],
             "contentColor": {
               "text": "$variable/neutral-dark/90",
@@ -5331,16 +5339,22 @@
               "value",
               "defaultValue",
               "placeholder",
+              "disabled",
+              "state",
               "surface",
+              "scope",
+              "defaultScope",
+              "scopeOptions",
+              "scopeLabel",
+              "onScopeChange",
               "advancedSearch",
               "advancedSearchLabel",
-              "state",
               "onAdvancedSearch",
               "onChange",
-              "onClear",
-              "disabled"
+              "onClear"
             ],
             "supportedSlots": [
+              "scope-selector",
               "leading",
               "value",
               "clear",
@@ -5912,6 +5926,78 @@
             "disabled"
           ],
           "supportedSlots": [
+            "leading",
+            "value",
+            "clear",
+            "advanced-search"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Input/Tag Entry/Default",
+          "rendererKey": "input",
+          "pixsoName": "Input/Tag Entry/Default",
+          "componentSetName": "Input/Tag Entry/Default",
+          "pixsoSpecKey": "Input/Tag Entry/Default",
+          "availability": "mapped",
+          "variant": {},
+          "supportedProps": [
+            "value",
+            "placeholder",
+            "disabled",
+            "error",
+            "variant",
+            "label",
+            "options",
+            "tags",
+            "defaultTags",
+            "surface"
+          ],
+          "supportedSlots": [
+            "label",
+            "leading",
+            "value",
+            "trailing",
+            "help",
+            "tags",
+            "suggestions"
+          ],
+          "contentColor": {
+            "text": "$variable/neutral-dark/90",
+            "icon": "$variable/neutral-dark/90"
+          }
+        },
+        {
+          "logicalName": "Search/Scoped/Default",
+          "rendererKey": "search",
+          "pixsoName": "Search/Scoped/Default",
+          "componentSetName": "Search/Scoped/Default",
+          "pixsoSpecKey": "Search/Scoped/Default",
+          "availability": "mapped",
+          "variant": {},
+          "supportedProps": [
+            "value",
+            "defaultValue",
+            "placeholder",
+            "disabled",
+            "state",
+            "surface",
+            "scope",
+            "defaultScope",
+            "scopeOptions",
+            "scopeLabel",
+            "onScopeChange",
+            "advancedSearch",
+            "advancedSearchLabel",
+            "onAdvancedSearch",
+            "onChange",
+            "onClear"
+          ],
+          "supportedSlots": [
+            "scope-selector",
             "leading",
             "value",
             "clear",
@@ -6577,6 +6663,8 @@
           "target": "Search/White Surface/Default",
           "reuse": "structure",
           "textStyles": {
+            "Scope": "Typography/Body_L",
+            "Value": "Typography/Body_L",
             "Placeholder": "Typography/Body_L"
           },
           "icons": {
@@ -6585,15 +6673,24 @@
           "tokens": {
             "background": "neutral-dark/05",
             "content": "neutral-dark/90",
-            "placeholder": "neutral-dark/40",
+            "placeholder": "neutral-dark/60",
             "icon": "neutral-dark/60",
+            "scope": "neutral-dark/90",
+            "scopeArrow": "neutral-dark/90",
+            "scopeDivider": "neutral-dark/10",
+            "clearIcon": "neutral-dark/90",
             "advanced": "neutral-dark/60",
-            "gap": "space/3",
+            "gap": "space/0",
+            "scopeGap": "space/2",
+            "inputGap": "space/3",
             "height": "size/40",
             "iconSize": "size/16",
             "radius": "radius/08",
-            "paddingLeft": "space/4",
-            "paddingRight": "space/2"
+            "paddingLeft": "space/0",
+            "paddingRight": "space/0",
+            "scopePaddingLeft": "space/4",
+            "inputPaddingLeft": "space/3",
+            "inputPaddingRight": "space/2"
           },
           "targetHtmlLogicalName": "Search/White Surface/Default",
           "sourceLibrary": "harmonyos-native-source"
@@ -6614,6 +6711,8 @@
           "reuse": "structure",
           "takeoverStatus": "needs-rebuild",
           "textStyles": {
+            "Scope": "Typography/Body_L",
+            "Value": "Typography/Body_L",
             "Placeholder": "Typography/Body_L"
           },
           "icons": {
@@ -6622,15 +6721,24 @@
           "tokens": {
             "background": "neutral-light/100",
             "content": "neutral-dark/90",
-            "placeholder": "neutral-dark/40",
+            "placeholder": "neutral-dark/60",
             "icon": "neutral-dark/60",
+            "scope": "neutral-dark/90",
+            "scopeArrow": "neutral-dark/90",
+            "scopeDivider": "neutral-dark/10",
+            "clearIcon": "neutral-dark/90",
             "advanced": "neutral-dark/60",
-            "gap": "space/3",
+            "gap": "space/0",
+            "scopeGap": "space/2",
+            "inputGap": "space/3",
             "height": "size/40",
             "iconSize": "size/16",
             "radius": "radius/08",
-            "paddingLeft": "space/4",
-            "paddingRight": "space/2"
+            "paddingLeft": "space/0",
+            "paddingRight": "space/0",
+            "scopePaddingLeft": "space/4",
+            "inputPaddingLeft": "space/3",
+            "inputPaddingRight": "space/2"
           },
           "notes": [
             "Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."
@@ -6898,7 +7006,7 @@
             "contentGap": "space/1",
             "closeIconSize": "size/20"
           },
-          "effectStyle": "Effect/Foundation/shadow-3",
+          "effectStyle": "Effect/Foundation/shadow-1",
           "targetHtmlLogicalName": "Snackbar/Default",
           "sourceLibrary": "harmonyos-native-source"
         }
@@ -6943,7 +7051,7 @@
         "styleMappings": 19,
         "htmlComponents": 49,
         "endpointComponentMappings": 18,
-        "registeredPixsoTargets": 39,
+        "registeredPixsoTargets": 41,
         "htmlToPixsoExactMatches": 25,
         "nativeSourceMappings": 20,
         "runtimeSemanticAliases": 25

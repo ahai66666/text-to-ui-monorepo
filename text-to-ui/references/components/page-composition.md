@@ -19,6 +19,11 @@ renders repeated registered instances. Composition wrappers may arrange and
 size component hosts, but page CSS must not override protected component
 internals.
 
+When a region contains repeated Accordion instances, give the wrapper the
+canonical `tui-disclosure-group` class. Its parent-owned Grid gap is
+`--space-5` (16px) between Accordion instances. Do not add margins to each
+Accordion or change `.tui-disclosure`'s internal trigger-to-content gap.
+
 This is a hard source rule: if a requested control or surface exists in the
 canonical registry for the target framework, the composition must reference
 that binding and let the adapter render it. A page-owned wrapper is not a
@@ -130,9 +135,18 @@ Every page binding file includes two pre-generation plans:
   structural exception.
 - `behaviorPlan.schemaVersion: 1` with declared interactions. Every interaction
   has an id, a supported kind (`component-native`, `toggle-hidden`,
-  `set-selected`, `filter-collection`, `open-overlay`, or `close-overlay`) and
+  `set-selected`, `filter-collection`, `open-overlay`, `close-overlay`, or
+  `open-secondary-page`) and
   trigger binding IDs. A binding that uses `behaviorId` must be one of that
-  interaction's triggers.
+  interaction's triggers. `open-secondary-page` requires
+  `secondaryPage.layout: "continuation" | "new-page"`: `continuation` keeps the
+  primary shell and replaces the owning right/Main content; `new-page` opens a
+  standalone Secondary Page Runtime, which may be presented as a button-triggered
+  pop-up page. “Pop-up” is not a Dialog classification. The generated entry
+  dispatches its behavior; the page module owns the page host, Back/close, state
+  preservation, and focus restoration. Use `open-overlay` for actual transient
+  Dialog/overlay content, not for a Secondary Page just because it is opened
+  above the parent.
 
 The generator embeds both plans in every framework module and emits behavior
 hosts for bound components. The generated HTML entry dispatches a
@@ -156,6 +170,11 @@ The renderer owns slot order and layout. A `primary-navigation-shell` binding
 must use `primary-navigation-bottom`; a `secondary-navigation` binding must
 use `secondary-navigation-content`. The generator rejects any other placement
 before it writes a page artifact.
+When multiple first-level items share a behavior group in
+`primary-navigation-bottom`, use `tag: "nav"` and include
+`tui-primary-navigation-items` in its `className`. Do not define a vertical
+layout for this group in page CSS; the registered container and Pattern
+Runtime own the horizontal distribution.
 
 `global-primary-action` owns the primary action's only horizontal inset. Its
 `navigation-top` wrapper is structural and carries no additional padding, even

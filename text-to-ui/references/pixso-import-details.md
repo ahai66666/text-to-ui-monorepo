@@ -83,7 +83,9 @@ as an editable source:
   `pixsoMappingPolicy: "excluded"` with a concrete `pixsoMappingReason`. Its
   generated availability is `excluded`, not `blocked`, and it must not appear
   in the pending-mapping queue. The current explicit exclusions are
-  `Context Menu/Default` and `Dropdown Menu/Default`.
+  `Context Menu/Default` and `Dropdown Menu/Default`. For Dropdown Menu, page
+  generation must directly compose native nodes from its Token/interaction
+  contract; it must not import, instantiate, or reference a reusable master.
 - `componentAliases` declares compatibility variants with unique names that
   cannot shadow formal mappings. Normalize canonical bindings once through
   `scripts/component-mapping-resolver.mjs`; never overlay an old generated map.

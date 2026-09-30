@@ -21,6 +21,7 @@ assert.equal(route.ok, true);
 assert.ok(route.materials.length >= 10);
 assert.equal(route.materialsDigest, route.readReceipt.materialsDigest);
 assert.ok(route.materials.some((material) => material.role === 'titlebar-scene-contract'));
+assert.ok(route.materials.some((material) => material.path === 'text-to-ui/references/index/task-routes.source.json' && material.role === 'task-route-registry'), 'new-page receipts must cover the canonical task-route registry');
 const verify = spawnSync(process.execPath, [
   path.join(scripts, 'verify-route-materials.mjs'),
   '--route', 'new-page', '--repo', repo, '--receipt', receipt

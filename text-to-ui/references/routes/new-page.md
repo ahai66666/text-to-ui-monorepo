@@ -11,6 +11,7 @@ node scripts/generate-compliant-page.mjs \
   --repo <monorepo> \
   --framework <html|react|vue> \
   --task <request> \
+  [--task-route <canonical-task-route-id>] \
   --blueprint <page-blueprint.json> \
   --content-recipes <page-content-recipes.json> \
   --bindings <page-bindings.json> \
@@ -38,7 +39,8 @@ For an unknown task select an approved `--pattern` and explicit
 not a reason to make the user choose routine implementation details.
 
 Use the discovery packet to understand the actual Pattern and legal component
-inputs before Gate 0 from `SKILL.md`, then read only:
+inputs before the blueprint gate in `references/page-blueprint-design.md`, then
+read only:
 
 1. `references/requirement-spec.md`
 2. the discovery packet's `exactReferencesToRead` (read each reference once)
@@ -47,6 +49,13 @@ inputs before Gate 0 from `SKILL.md`, then read only:
 5. `references/page-blueprint-design.md`
 6. the domain reference selected by the task route, such as
    `references/domains/email-workbench.md`
+7. `packages/pattern-runtime/README.md` when building a direct browser Runtime
+   or Secondary Page preview
+
+The hash closure is checked by the resolver and receipt verifier. The model
+reads the selected route documents, the packet's `exactReferencesToRead`, and
+only the matching component/Token/icon registry entries needed for this task;
+hash verification does not require loading every registry or asset.
 
 After automatic blueprint planning (ask only if the user must choose a different
 Pattern or primary task):
@@ -58,7 +67,7 @@ entry point.
 ```bash
 node scripts/locate-monorepo.mjs --start "$PWD"
 node scripts/resolve-workflow-route.mjs --route new-page --repo <monorepo> --receipt-out <route-read-receipt.json>
-node scripts/resolve-context.mjs --task <task> --framework <html|react|vue> --mode fast-preview --auto --blueprint <page-blueprint.json> --out <context-packet.json> --receipt-out <context-material-receipt.json>
+node scripts/resolve-context.mjs --task <task> [--task-route <canonical-task-route-id>] --framework <html|react|vue> --mode fast-preview --auto --blueprint <page-blueprint.json> --out <context-packet.json> --receipt-out <context-material-receipt.json>
 node scripts/verify-route-materials.mjs --route new-page --repo <monorepo> --receipt <route-read-receipt.json>
 node scripts/verify-context-materials.mjs --repo <monorepo> --context <context-packet.json> --receipt <context-material-receipt.json>
 node scripts/query-components.mjs --framework <html|react|vue> --capabilities <capability,...> --semantic-context <semantic-context>
@@ -83,16 +92,35 @@ queries are targeted to ambiguous or additional capabilities, not a second
 whole-library discovery. Run this sequence for the selected framework only;
 cross-framework and Skill sync tests belong to maintenance.
 
+If a task description matches several task routes, the resolver stops and
+prints the candidate IDs. Pass the intended canonical ID with
+`--task-route <canonical-task-route-id>`; the original `--task` description is
+kept in the Context Packet. The explicit route must agree with any supplied
+Pattern and the blueprint. Exact route terms such as `file-list`, `tasks`,
+`mail`, and `settings` keep their existing behavior. Short inputs such as `file` and
+`workbench` are intentionally not auto-routed; migrate them by choosing the
+intended route, for example `--task-route tool-workspace` or
+`--task-route record-management-workbench`.
+
 Run scaffold in the actual project root, not a nested temporary `project/`
-directory. For HTML use `--entry ./generated-entry.js` (or the actual relative
-generated entry). It creates package.json, index.html, main.js and Vite config
-when missing. Install in that directory, then run its build command before
-stamping. Do not replace local dependencies with absolute host aliases.
+directory. Outside the Monorepo, invoke Skill scripts from the canonical or
+installed Skill root and pass `--repo <monorepo>`; do not assume the target
+project has a `scripts/` directory. `scaffold-standalone-project.mjs` copies
+the component, Token, and Runtime packages into `vendor/` and creates a local
+`pnpm-workspace.yaml` boundary so an ancestor workspace cannot supply stale
+packages. An empty project is scaffolded automatically; use `--scaffold` only
+to refresh managed copies in an existing project. For HTML use
+`--entry ./generated-entry.js` (or the actual relative generated entry). It
+creates package.json, index.html, main.js and Vite config when missing. Install
+in that directory, then run its build command before stamping. Do not replace
+local dependencies with absolute host aliases.
 
 The route's capability list is only a starting selection. Extend the Context
 Packet with `--capabilities attachment,collapsible,...` when the task needs
 additional library controls. A component missing from the packet is not proof
-that it is absent from the library. Query it and extend context first.
+that it is absent from the library. Query it and extend context first. The
+query's `--context` argument is a semantic-context value, not a Context Packet
+file path.
 
 For custom HTML business content use the executable `pageModules` API in
 page-composition.md. Create its source before generation. Keep Pattern shell

@@ -45,14 +45,48 @@ const specs = readJson(specsPath).components ?? {};
 const registry = readJson(registryPath);
 const registryNames = new Set(Object.values(registry.categories ?? {}).flat());
 const requested = args["logical-name"] ? String(args["logical-name"]) : null;
-const excluded = new Set(String(args.exclude ?? "").split(",").map((value) => value.trim()).filter(Boolean));
+const requestedNames = requested
+  ? [...new Set(requested.split(",").map((value) => value.trim()).filter(Boolean))]
+  : null;
+const PIXSO_COMPONENT_EXCLUSIONS = new Map([
+  ["Dropdown Menu/Default", "compose directly from Token-bound native nodes; do not create or reference a reusable Pixso component"],
+]);
+const excluded = new Set([
+  ...PIXSO_COMPONENT_EXCLUSIONS.keys(),
+  ...String(args.exclude ?? "").split(",").map((value) => value.trim()).filter(Boolean),
+]);
 if (requested === "Search/White Surface/Advanced") {
   throw new Error("Search/White Surface/Advanced is not a Pixso component to create; reuse Search/White Surface/Default instead");
 }
-const requestedSelection = contracts.filter((contract) => !requested || contract.logicalName === requested);
-const selected = requestedSelection.filter((contract) => !excluded.has(contract.logicalName));
-if (requested && excluded.has(requested)) throw new Error(`Requested component is excluded: ${requested}`);
-if (requested && selected.length === 0) throw new Error(`Unknown HTML component logicalName: ${requested}`);
+const COMPONENT_ALIAS_SOURCES = {
+  "Input/Tag Entry/Default": { sourceId: "input", variants: ["tag-entry"], slots: ["label", "value", "tags", "suggestions"] },
+  "Search/Scoped/Default": { sourceId: "search", variants: ["scoped-search", "scoped-advanced-search"] },
+};
+const resolveRequestedContract = (logicalName) => {
+  const exact = contracts.find((contract) => contract.logicalName === logicalName);
+  if (exact) return exact;
+  const alias = COMPONENT_ALIAS_SOURCES[logicalName];
+  if (!alias) return null;
+  const source = contracts.find((contract) => contract.id === alias.sourceId);
+  return source ? {
+    ...source,
+    logicalName,
+    variants: alias.variants ?? source.variants,
+    slots: alias.slots ?? source.slots,
+  } : null;
+};
+const selectedCandidates = requestedNames
+  ? requestedNames.map(resolveRequestedContract)
+  : contracts;
+const unknownNames = requestedNames?.filter((name, index) => !selectedCandidates[index]) ?? [];
+if (unknownNames.length) throw new Error("Unknown HTML component logicalName: " + unknownNames.join(", "));
+const selected = selectedCandidates.filter((contract) => !excluded.has(contract.logicalName));
+const excludedRequested = requestedNames?.filter((name) => excluded.has(name)) ?? [];
+if (excludedRequested.length) {
+  const policies = excludedRequested.map((name) => `${name}: ${PIXSO_COMPONENT_EXCLUSIONS.get(name) ?? "excluded by request"}`);
+  throw new Error("Requested component is excluded from the reusable Pixso library: " + policies.join("; "));
+}
+if (requestedNames && !selected.length) throw new Error("No requested components selected: " + requested);
 if (!selected.length) throw new Error("HTML component contract has no components");
 
 const tokens = loadTokenResources();
@@ -239,7 +273,7 @@ function layoutForRoot(spec, logicalName = "") {
   const width = sizing.masterWidth === "hug" ? "hug" : sizing.masterWidth === "fill" ? "fill" : numericToken(sizing.masterWidth ?? 280);
   const height = sizing.height === "hug" ? "hug" : numericToken(sizing.height ?? 40);
   const family = String(logicalName).split("/")[0];
-  const gap = maybeToken(spec?.gapToken) ?? (spec?.gap !== undefined ? numericToken(spec.gap) : family === "Search" || family === "Button" ? numericToken(8) : null);
+  const gap = maybeToken(spec?.gapToken) ?? (spec?.gap !== undefined ? numericToken(spec.gap) : family === "Search" ? numericToken(0) : family === "Button" ? numericToken(8) : null);
   const paddingX = spec?.paddingX !== undefined
     ? numericToken(spec.paddingX)
     : family === "Titlebar" ? numericToken(24)
@@ -368,7 +402,186 @@ function sliderOperations(contract) {
   return { operations, rootId, iconSlots: [] };
 }
 
+function componentLibraryRoot(contract, { layout, style, slots = contract.slots, variants = contract.variants, properties = {}, slotContracts = contract.slotContracts } = {}) {
+  const logicalName = contract.logicalName;
+  const resolvedSpec = resolveSpec(logicalName, contract);
+  const rootId = "component-" + slug(logicalName);
+  const operation = {
+    nodeId: rootId,
+    parentId: null,
+    op: "create-component",
+    phase: "library",
+    name: logicalName,
+    region: contract.category ?? "component-library",
+    layout,
+    style,
+    componentContract: {
+      logicalName,
+      rendererKey: rendererKey(contract),
+      sourceEvidence: {
+        html: contract.implementations?.html ?? contract.frameworks?.html?.source ?? null,
+        contractId: contract.id,
+        contractPath: path.relative(repositoryRoot, contractsPath),
+        pixsoSpec: resolvedSpec.name,
+      },
+      props: contract.props ?? [],
+      properties: { ...makeContractProperties(contract), ...properties },
+      slots,
+      slotContracts: slotContracts ?? {},
+      variants: variants ?? [],
+      states: contract.states ?? [],
+      tokenRoles: contract.tokenRoles ?? [],
+    },
+  };
+  return { rootId, operations: [operation] };
+}
+
+function specializedComponentOperations(contract) {
+  const logicalName = contract.logicalName;
+  const region = contract.category ?? "component-library";
+  const rootId = "component-" + slug(logicalName);
+  const operations = [];
+  const add = (operation) => operations.push({ phase: "library", region, ...operation });
+  const addFrame = (nodeId, parentId, name, layout, options = {}) => add({
+    nodeId,
+    parentId,
+    op: "create-frame",
+    name,
+    layout,
+    style: options.style ?? { fill: { kind: "transparent" } },
+    ...(options.slotName ? { slotName: options.slotName } : {}),
+    metadata: { source: "html-component-contract", ...(options.metadata ?? {}) },
+  });
+  const addText = (nodeId, parentId, name, characters, role, colorRef = "text/primary", propName = null, slotName = null) => add({
+    nodeId,
+    parentId,
+    op: "create-text",
+    name,
+    layout: { direction: "HORIZONTAL", width: "hug", height: "hug", align: "CENTER", padding: {} },
+    style: { fill: token(colorRef), textStyle: textStyle(role) },
+    characters,
+    ...(propName ? { propertyBinding: { propName, ...(slotName ? { slotName } : {}) } } : {}),
+    metadata: { source: "html-component-contract", ...(slotName ? { namedSlot: slotName } : {}), textRole: role, colorRole: colorRef },
+  });
+  const addIcon = (nodeId, parentId, name, alias, size = 16, colorRef = "neutral-dark/60") => {
+    const icon = resolveIconSafely(alias);
+    if (!icon) return;
+    add({
+      nodeId,
+      parentId,
+      op: "create-icon",
+      name,
+      layout: { direction: "NONE", width: numericToken(size), height: numericToken(size), align: "CENTER", padding: {} },
+      style: { fill: token(colorRef) },
+      iconRef: { alias, size, svg: icon.svg },
+      metadata: { source: "html-component-contract", semanticIcon: alias },
+    });
+  };
+
+  if (logicalName === "Input/Tag Entry/Default") {
+    const built = componentLibraryRoot(contract, {
+      layout: { direction: "HORIZONTAL", width: 360, height: 56, gap: token("space/4"), align: "CENTER", padding: {} },
+      style: { fill: { kind: "transparent" } },
+      slots: ["label", "value", "tags", "suggestions"],
+      properties: {
+        label: { type: "TEXT", defaultValue: "参与成员" },
+        placeholder: { type: "TEXT", defaultValue: "输入姓名后按 Enter" },
+        surface: { type: "TEXT", defaultValue: "white" },
+        tags: { type: "TEXT", defaultValue: "林娜" },
+        variant: { type: "TEXT", defaultValue: "tag-entry" },
+      },
+    });
+    operations.push(...built.operations);
+    const labelSlot = rootId + "-slot-label";
+    const valueSlot = rootId + "-slot-value";
+    const tagsSlot = rootId + "-slot-tags";
+    const suggestionsSlot = rootId + "-slot-suggestions";
+    addFrame(labelSlot, rootId, "#label", { direction: "HORIZONTAL", width: 88, height: 56, align: "CENTER", padding: {} }, { slotName: "label" });
+    addText(rootId + "-label-text", labelSlot, "Label · 参与成员", "参与成员", "body-l", "text/secondary", "label", "label");
+    addFrame(valueSlot, rootId, "#value", { direction: "HORIZONTAL", width: "fill", height: 40, gap: token("space/2"), align: "CENTER", padding: {} }, {
+      slotName: "value",
+      style: { fill: { kind: "transparent" }, stroke: token("neutral-dark/10"), strokeEdges: ["bottom"], strokeWeights: { bottom: 1 } },
+    });
+    addFrame(tagsSlot, valueSlot, "#tags", { direction: "HORIZONTAL", width: "hug", height: 32, gap: token("space/2"), align: "CENTER", padding: {} }, {
+      slotName: "tags",
+      metadata: { sharedComponent: "Chips/Default", hover: false, expandedHitArea: false },
+    });
+    add({
+      nodeId: rootId + "-tag-member",
+      parentId: tagsSlot,
+      op: "create-instance",
+      name: "Selected member · 林娜",
+      layout: { direction: "HORIZONTAL", width: "hug", height: 32, align: "CENTER", padding: {} },
+      style: { fill: { kind: "transparent" } },
+      componentRef: { logicalName: "Chips/Default", pixsoName: "Chips", componentSetName: "Chips", variant: { "状态": "Default" } },
+      props: { label: "林娜", closable: true },
+      slots: { label: "林娜" },
+      metadata: { source: "html-component-contract", sharedComponent: "Chips/Default" },
+    });
+    addFrame(suggestionsSlot, valueSlot, "#suggestions", {
+      direction: "VERTICAL",
+      positioning: "ABSOLUTE",
+      x: 0,
+      y: 40,
+      width: "fill",
+      height: 120,
+      gap: token("space/1"),
+      align: "MIN",
+      padding: { top: token("space/2"), right: token("space/2"), bottom: token("space/2"), left: token("space/2") },
+      clipsContent: false,
+    }, {
+      slotName: "suggestions",
+      style: { fill: token("neutral-light/100"), stroke: token("neutral-dark/10"), strokeEdges: ["top", "right", "bottom", "left"], radius: maybeToken("radius/card") ?? numericToken(12), effectStyle: addStyle(tokens.styleForEffect("shadow-2")) },
+      metadata: { semanticRole: "listbox", defaultVisibility: "hidden", optionRole: "option", compositionStrategy: "direct-native-nodes" },
+    });
+    for (const [index, label] of ["林娜", "王昊", "陈佳"].entries()) {
+      const optionId = rootId + "-suggestion-" + (index + 1);
+      addFrame(optionId, suggestionsSlot, "Option · " + label, { direction: "HORIZONTAL", width: "fill", height: 32, align: "CENTER", padding: { left: token("space/2"), right: token("space/2") } });
+      addText(optionId + "-text", optionId, label + " option", label, "body-l", "text/primary");
+    }
+    return { operations, rootId, iconSlots: [] };
+  }
+
+  if (logicalName === "Search/Scoped/Default") {
+    const built = componentLibraryRoot(contract, {
+      layout: { direction: "HORIZONTAL", width: 360, height: 40, gap: token("space/0"), align: "CENTER", padding: { left: token("space/4"), right: token("space/3") } },
+      style: { fill: token("neutral-dark/05"), radius: maybeToken("radius/control") ?? numericToken(8) },
+      slots: ["scope-selector", "leading", "value", "clear", "advanced-search"],
+      properties: {
+        scope: { type: "TEXT", defaultValue: "全部" },
+        defaultScope: { type: "TEXT", defaultValue: "全部" },
+        scopeOptions: { type: "TEXT", defaultValue: "全部,标题,内容" },
+        scopeLabel: { type: "TEXT", defaultValue: "搜索范围" },
+        advancedSearch: { type: "BOOLEAN", defaultValue: true },
+        advancedSearchLabel: { type: "TEXT", defaultValue: "高级" },
+        surface: { type: "TEXT", defaultValue: "white" },
+      },
+    });
+    operations.push(...built.operations);
+    const scopeSlot = rootId + "-slot-scope-selector";
+    const leadingSlot = rootId + "-slot-leading";
+    const valueSlot = rootId + "-slot-value";
+    addFrame(scopeSlot, rootId, "#scope-selector", { direction: "HORIZONTAL", width: 72, height: 40, gap: token("space/1"), align: "CENTER", padding: { right: token("space/3") } }, { slotName: "scope-selector", metadata: { compositionStrategy: "direct-native-nodes" } });
+    addText(rootId + "-scope-value", scopeSlot, "Scope · 全部", "全部", "body-m", "text/secondary", "scope", "scope-selector");
+    addIcon(rootId + "-scope-chevron", scopeSlot, "Scope chevron", "navigation/chevron-down", 16);
+    add({ nodeId: rootId + "-scope-divider", parentId: scopeSlot, op: "create-rectangle", name: "Scope divider", layout: { direction: "NONE", width: 1, height: 16, align: "CENTER", padding: {} }, style: { fill: token("neutral-dark/10") }, metadata: { source: "html-component-contract", dividerToken: "color.border" } });
+    addFrame(leadingSlot, rootId, "#leading", { direction: "HORIZONTAL", width: 16, height: 16, align: "CENTER", padding: {} }, { slotName: "leading" });
+    addIcon(rootId + "-search-icon", leadingSlot, "Search icon", "field/search", 16);
+    addFrame(valueSlot, rootId, "#value", { direction: "HORIZONTAL", width: "fill", height: 40, align: "CENTER", primaryAlign: "MIN", padding: {} }, { slotName: "value" });
+    addText(rootId + "-placeholder", valueSlot, "Placeholder · 搜索项目", "搜索项目", "body-l", "text/tertiary", "placeholder", "value");
+    addFrame(rootId + "-slot-clear", valueSlot, "#clear", { direction: "HORIZONTAL", positioning: "ABSOLUTE", x: 168, y: 4, width: 32, height: 32, align: "CENTER", padding: {} }, { slotName: "clear", metadata: { optional: true, defaultVisibility: "hidden" } });
+    const advancedSlot = rootId + "-slot-advanced-search";
+    addFrame(advancedSlot, rootId, "#advanced-search", { direction: "HORIZONTAL", width: "hug", height: 32, align: "CENTER", padding: {} }, { slotName: "advanced-search" });
+    addText(rootId + "-advanced-label", advancedSlot, "Advanced search · 高级", "高级", "body-m", "text/secondary", "advancedSearchLabel", "advanced-search");
+    return { operations, rootId, iconSlots: [] };
+  }
+
+  return null;
+}
+
 function componentOperations(contract) {
+  const specialized = specializedComponentOperations(contract);
+  if (specialized) return specialized;
   if (contract.logicalName === "Slider/Default") return sliderOperations(contract);
   const logicalName = contract.logicalName;
   const resolvedSpec = resolveSpec(logicalName, contract);
@@ -611,7 +824,7 @@ const plan = {
     // can keep the same logical name while its generated visual structure
     // changes (for example Slider's former generic slots became real track,
     // fill, and thumb geometry); that must publish a new bridge job.
-    agentContract: permanentAgentContract(`component-library:v3:${libraryPage}:${selected.map((contract) => contract.logicalName).join("|")}`),
+    agentContract: permanentAgentContract(`component-library:v4:${libraryPage}:${selected.map((contract) => contract.logicalName).join("|")}`),
   },
   page: { name: libraryPage, targetPage: libraryPage, reviewOnly: libraryPage !== "NewComponents", excludedComponents: [...excluded] },
   resources: {

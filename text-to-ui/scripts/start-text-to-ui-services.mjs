@@ -74,12 +74,18 @@ function contentType(file) {
   })[extension] ?? "application/octet-stream";
 }
 
+function galleryUpstreamPath(requestUrl = "/") {
+  return requestUrl.startsWith("/components/")
+    ? `/gallery/${requestUrl.slice("/components/".length)}`
+    : requestUrl;
+}
+
 function proxyToGallery(request, response) {
   const upstream = http.request({
     host,
     port: galleryPort,
     method: request.method,
-    path: request.url,
+    path: galleryUpstreamPath(request.url),
     headers: { ...request.headers, host: `${host}:${galleryPort}` }
   }, (upstreamResponse) => {
     response.writeHead(upstreamResponse.statusCode ?? 502, upstreamResponse.headers);
@@ -93,7 +99,7 @@ function proxyToGallery(request, response) {
 }
 
 function proxyGalleryUpgrade(request, socket, head) {
-  const upstream = http.request({ host, port: galleryPort, method: request.method, path: request.url, headers: request.headers });
+  const upstream = http.request({ host, port: galleryPort, method: request.method, path: galleryUpstreamPath(request.url), headers: request.headers });
   upstream.on("upgrade", (upstreamResponse, upstreamSocket, upstreamHead) => {
     const lines = [`HTTP/${upstreamResponse.httpVersion} ${upstreamResponse.statusCode} ${upstreamResponse.statusMessage}`];
     for (const [name, value] of Object.entries(upstreamResponse.headers)) {
@@ -107,6 +113,10 @@ function proxyGalleryUpgrade(request, socket, head) {
   });
   upstream.on("error", () => socket.destroy());
   upstream.end();
+}
+
+function isGalleryPath(pathname) {
+  return pathname.startsWith("/components/") || pathname.startsWith("/gallery/");
 }
 
 function serveFileTree(response, pathname, prefix, root) {
@@ -145,18 +155,22 @@ function createHub() {
       response.writeHead(302, { location: "/components/" });
       return response.end();
     }
-    if (url.pathname.startsWith("/components/")) return proxyToGallery(request, response);
+    if (url.pathname === "/gallery") {
+      response.writeHead(302, { location: "/gallery/" });
+      return response.end();
+    }
+    if (isGalleryPath(url.pathname)) return proxyToGallery(request, response);
     if (serveOutput(request, response, url.pathname)) return;
     if (serveRepository(request, response, url.pathname)) return;
     if (url.pathname === "/") {
       response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-      return response.end(`<!doctype html><meta charset="utf-8"><title>Text-to-UI Preview Hub</title><style>body{font:16px system-ui;margin:40px;line-height:1.6}a{display:block}</style><h1>Text-to-UI Preview Hub</h1><a href="/components/">组件预览</a><p>页面产物路径：${outputsPrefix}&lt;artifact&gt;/</p><p>Pixso 自动桥接：${host}:${bridgePort}</p>`);
+      return response.end(`<!doctype html><meta charset="utf-8"><title>Text-to-UI Preview Hub</title><style>body{font:16px system-ui;margin:40px;line-height:1.6}a{display:block}</style><h1>Text-to-UI Preview Hub</h1><a href="/gallery/">组件预览</a><p>页面产物路径：${outputsPrefix}&lt;artifact&gt;/</p><p>Pixso 自动桥接：${host}:${bridgePort}</p>`);
     }
     response.writeHead(404);
     response.end("Not Found");
   });
   server.on("upgrade", (request, socket, head) => {
-    if (request.url?.startsWith("/components/")) proxyGalleryUpgrade(request, socket, head);
+    if (isGalleryPath(request.url ?? "")) proxyGalleryUpgrade(request, socket, head);
     else socket.destroy();
   });
   return server;
@@ -187,7 +201,7 @@ async function main() {
       bridge: bridgeReady(bridgeHealth),
     };
     if (Object.values(initialStatus).every(Boolean)) {
-      process.stdout.write(`${JSON.stringify({ ok: true, reused: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
+    process.stdout.write(`${JSON.stringify({ ok: true, reused: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/gallery/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
       return;
     }
     if (!initialStatus.gallery) {
@@ -195,6 +209,7 @@ async function main() {
       if (!fs.existsSync(viteEntry)) throw new Error(`Component Gallery Vite runtime not found: ${viteEntry}`);
       spawn(process.execPath, [viteEntry, "--host", host, "--port", String(galleryPort), "--strictPort"], {
         cwd: path.join(repository, "apps/component-gallery"),
+        env: { ...process.env, TEXT_TO_UI_GALLERY_BASE: "/gallery/" },
         detached: true,
         stdio: "ignore"
       }).unref();
@@ -217,7 +232,7 @@ async function main() {
       spawn(process.execPath, [fileURLToPath(import.meta.url), "serve"], { detached: true, stdio: "ignore" }).unref();
       await waitFor(endpoints.hub, "text-to-ui-preview-hub");
     }
-    process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, outputs: `http://${host}:${hubPort}${outputsPrefix}<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
+    process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/gallery/`, outputs: `http://${host}:${hubPort}${outputsPrefix}<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
     return;
   }
   if (command !== "serve") throw new Error("Usage: start-text-to-ui-services.mjs [start|status]");
@@ -231,7 +246,7 @@ async function main() {
     hub.once("error", reject);
     hub.listen(hubPort, host, resolve);
   });
-  process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/components/`, outputs: `http://${host}:${hubPort}${outputsPrefix}<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify({ ok: true, hub: `http://${host}:${hubPort}/`, gallery: `http://${host}:${hubPort}/gallery/`, outputs: `http://${host}:${hubPort}${outputsPrefix}<artifact>/`, bridge: `http://${host}:${bridgePort}` }, null, 2)}\n`);
 
   const shutdown = () => {
     hub.close();

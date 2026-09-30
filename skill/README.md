@@ -1,6 +1,15 @@
-# text-to-ui Skill · v1.4.0
+# text-to-ui Skill · v2.0.0
 
-`text-to-ui v1.4.0` 是一个 Codex Skill：将文本产品需求转换为符合 HarmonyOS PC 客户端设计语言的可编辑 Pixso 设计稿和可交互 Demo，并让需求、Token、组件、布局和状态在全过程可追溯。Skill 通过 Monorepo 中的组件契约和真实组件包复用 HTML、React/Next、Vue 三种 Web 实现；它本身保存规则和索引，不替代生产组件源码。
+`text-to-ui v2.0.0` 是一个 Codex Skill：将文本产品需求转换为符合 HarmonyOS PC 客户端设计语言的可编辑 Pixso 设计稿和可交互 Demo，并让需求、Token、组件、布局和状态在全过程可追溯。Skill 通过 Monorepo 中的组件契约和真实组件包复用 HTML、React/Next、Vue 三种 Web 实现；它本身保存规则和索引，不替代生产组件源码。
+
+## v2.0.0 更新摘要
+
+- 分离任务路由与工作流路由，新增显式 `--task-route`；匹配歧义时列出候选项并停止猜测。
+- 新增 `generate-compliant-page.mjs` 一次性页面生成入口，统一路由/上下文凭据、生成预检、页面编译和回执。
+- 补齐 Secondary Page 页面续接与 Pattern 约束，并明确 Dropdown Menu 在 Pixso 中采用原生节点组合的边界。
+- 更新组件、Token 和 Pixso 映射资料，合并常驻 Agent 与组件映射同步能力为 Pixso Unified Agent v2。
+
+完整迁移说明见 [Text-to-UI Skill v2.0.0 更新记录](../docs/releases/text-to-ui-v2.0.0.md)。
 
 ## 与完整组件仓的交付边界
 
@@ -40,7 +49,7 @@ Text-to-UI Skill（Text-to-UI 技能编排系统）
 │   ├── DOM Visual IR（DOM 视觉中间表示）
 │   ├── Pixso Native Scene（Pixso 原生场景）
 │   └── Page Import Operation Plan（页面导入执行计划）
-├── Pixso Native Renderer Plugin（Pixso 原生渲染插件）
+├── Pixso Unified Agent Plugin（Pixso 统一 Agent 插件）
 ├── Bridge Service & Persistent-Agent Protocol（桥接服务与常驻 Agent 协议）
 ├── Preview Hub & Component Gallery（预览中心与组件画廊）
 └── Readback, Visual QA & Audit（读回、视觉验收与审计）
@@ -75,7 +84,7 @@ pnpm page:generate --project <generated-project> --framework html \
 `.text-to-ui/generation-receipt.json`。普通页面不要直接调用底层
 `generate-framework-page.mjs`。
 
-当前配套 Monorepo 提供 55 个组件契约、4 个页面 Pattern，以及 HTML、React、Vue 三套真实 UI 组件实现。组件包、Tokens、共享样式、Pixso 映射和正式画廊位于 Monorepo 的 `packages/` 与 `apps/` 下；本 Skill 负责规则、索引、页面编排和导入工具，不替代生产组件源码。
+当前配套 Monorepo 提供 49 个组件契约、4 个页面 Pattern，以及 HTML、React、Vue 三套真实 UI 组件实现。组件包、Tokens、共享样式、Pixso 映射和正式画廊位于 Monorepo 的 `packages/` 与 `apps/` 下；本 Skill 负责规则、索引、页面编排和导入工具，不替代生产组件源码。
 
 当前版本提供三条可选工作流：
 
@@ -384,18 +393,20 @@ Pixso 在“HTML 初稿 → Pixso 细化”和“视觉优先”工作流中是�
 
 1. 启动 Pixso。
 2. 打开目标设计文件。
-3. 打开 Text-to-UI Pixso Permanent Agent，并确认 Kernel `5.0.0`、协议 `4` 已连接。
+3. 在 Pixso Developer Mode 加载 Pixso Unified Agent v2 的 `manifest.json`，并确认插件已连接。
 4. 确认当前活动文档正确。正常整页导入只发布一次，成功后只保留一个托管画板。
 
 HTML 初稿导入 Pixso 后，代码中的字面量会先成为图层属性；需要再绑定到 Pixso 变量、样式和组件实例，才能保持 Token 可追溯。React 和 Vue 也必须消费同一份 Web CSS Variables 与组件契约；直接生成 HTML、React 或 Vue 时不需要 Pixso。
 
 ## 版本与命名
 
-- 当前工作区 Skill 版本：`v1.4.0`（以 `package.json` 为准）
+- 当前工作区 Skill 版本：`v2.0.0`（以 `package.json` 为准）
 - 工作流编号：`V1`（HTML 初稿 → Pixso 细化）、`V2`（视觉优先）、`V3`（直接生成 HTML）。
 - 最新稳定发布：[`v1.1.0`](https://github.com/ahai66666/text-to-ui/releases/tag/v1.1.0)
 
 完整安装包和历史版本请查看 [GitHub Releases](https://github.com/ahai66666/text-to-ui/releases)。
+
+Pixso 插件源码在 `scripts/pixso-unified-agent-plugin/`；本机默认交付/安装目录为 `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，加载文件是该目录下的 `manifest.json`。其他机器可通过 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT` 自定义目录；详见仓库根目录的 Pixso 插件交付说明。
 
 ## 许可证
 

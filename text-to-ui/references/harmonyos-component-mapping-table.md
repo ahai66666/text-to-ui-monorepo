@@ -2,11 +2,11 @@
 
 > 该表由 `scripts/build-harmonyos-component-mapping-table.mjs` 生成。映射成功只表示已找到源组件；只有 `verified` 才能进入严格交付。
 
-- 注册组件：83
+- 注册组件：86
 - 已映射待验证：16
 - 已映射需重建：4
 - 已验证：0
-- 缺失待补：63
+- 缺失待补：66
 
 | 分类 | Text-to-UI 注册名 | 状态 | HarmonyOS 源组件 | 源 Variant | 下一步 |
 | --- | --- | --- | --- | --- | --- |
@@ -20,6 +20,7 @@
 | 01 Actions | Icon Button/Secondary/Default | mapped-needs-rebuild | Icon Button | size=Medium, state=Default, type=Ghost | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |
 | 01 Actions | Split Dropdown Button/Icon Text/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 01 Actions | Split Dropdown Button/Icon Only/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
+| 01 Actions | Dropdown Menu/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 01 Actions | Toggle/Off/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Chips | Chips/Default | mapped-pending-verification | Chips | 状态=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 02 Forms | Form Field/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
@@ -27,8 +28,10 @@
 | 02 Forms | Field/With Description | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Input/White Surface/Default | mapped-pending-verification | Input | surface=white, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 02 Forms | Input/Gray Surface/Default | mapped-pending-verification | Input | surface=dark, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
+| 02 Forms | Input/Tag Entry/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Search/White Surface/Default | mapped-pending-verification | Search | surface=white, state=Default | Finish the registered target and verify it live in Pixso before strict delivery. |
 | 02 Forms | Search/Gray Surface/Default | mapped-needs-rebuild | Search | surface=dark, state=Default | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |
+| 02 Forms | Search/Scoped/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Textarea/White Surface/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Textarea/Gray Surface/Default | missing-target |  |  | Add a source mapping or draw a new registered target, then verify it live in Pixso. |
 | 02 Forms | Select/White Surface/Default | mapped-needs-rebuild | Selection Dropdown | size=Medium, state=Default | Rebuild the registered target from the mapped native source, then pass Token, icon, text-slot, layout, and linked-instance gates. |

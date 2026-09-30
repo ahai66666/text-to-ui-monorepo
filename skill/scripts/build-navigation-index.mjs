@@ -98,7 +98,9 @@ const taskRouter = {
   schemaVersion: 1,
   generatedFrom: [sourceEvidence.tasks, sourceEvidence.components, sourceEvidence.layouts],
   policy: {
-    lookupOrder: ['task-route', 'layout', 'components', 'exact-contract'],
+    lookupOrder: ['exact-task-route', 'complete-alias-or-domain-phrase', 'unambiguous-complete-word', 'explicit-pattern-for-unknown-task', 'layout', 'components', 'exact-contract'],
+    normalizeBeforeMatch: ['unicode-nfkc', 'lowercase', 'punctuation-to-space'],
+    ambiguityPolicy: 'stop-and-list-candidate-route-ids; --task-route explicitly selects among matching candidates',
     componentSourceOrder: ['real-framework-component', 'matching-contract', 'token-based-custom'],
     exactContractReadRequiredAfterSelection: true
   },

@@ -288,6 +288,8 @@
       "target": "Search/White Surface/Default",
       "reuse": "structure",
       "textStyles": {
+        "Scope": "Typography/Body_L",
+        "Value": "Typography/Body_L",
         "Placeholder": "Typography/Body_L"
       },
       "icons": {
@@ -296,15 +298,24 @@
       "tokens": {
         "background": "neutral-dark/05",
         "content": "neutral-dark/90",
-        "placeholder": "neutral-dark/40",
+        "placeholder": "neutral-dark/60",
         "icon": "neutral-dark/60",
+        "scope": "neutral-dark/90",
+        "scopeArrow": "neutral-dark/90",
+        "scopeDivider": "neutral-dark/10",
+        "clearIcon": "neutral-dark/90",
         "advanced": "neutral-dark/60",
-        "gap": "space/3",
+        "gap": "space/0",
+        "scopeGap": "space/2",
+        "inputGap": "space/3",
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
-        "paddingLeft": "space/4",
-        "paddingRight": "space/2"
+        "paddingLeft": "space/0",
+        "paddingRight": "space/0",
+        "scopePaddingLeft": "space/4",
+        "inputPaddingLeft": "space/3",
+        "inputPaddingRight": "space/2"
       }
     },
     {
@@ -323,6 +334,8 @@
       "reuse": "structure",
       "takeoverStatus": "needs-rebuild",
       "textStyles": {
+        "Scope": "Typography/Body_L",
+        "Value": "Typography/Body_L",
         "Placeholder": "Typography/Body_L"
       },
       "icons": {
@@ -331,15 +344,24 @@
       "tokens": {
         "background": "neutral-light/100",
         "content": "neutral-dark/90",
-        "placeholder": "neutral-dark/40",
+        "placeholder": "neutral-dark/60",
         "icon": "neutral-dark/60",
+        "scope": "neutral-dark/90",
+        "scopeArrow": "neutral-dark/90",
+        "scopeDivider": "neutral-dark/10",
+        "clearIcon": "neutral-dark/90",
         "advanced": "neutral-dark/60",
-        "gap": "space/3",
+        "gap": "space/0",
+        "scopeGap": "space/2",
+        "inputGap": "space/3",
         "height": "size/40",
         "iconSize": "size/16",
         "radius": "radius/08",
-        "paddingLeft": "space/4",
-        "paddingRight": "space/2"
+        "paddingLeft": "space/0",
+        "paddingRight": "space/0",
+        "scopePaddingLeft": "space/4",
+        "inputPaddingLeft": "space/3",
+        "inputPaddingRight": "space/2"
       },
       "notes": [
         "Create the gray-canvas surface variant from the same native structure and expose Placeholder as instance-safe content."
@@ -587,7 +609,7 @@
         "contentGap": "space/1",
         "closeIconSize": "size/20"
       },
-      "effectStyle": "Effect/Foundation/shadow-3"
+      "effectStyle": "Effect/Foundation/shadow-1"
     }
   ],
   "sourceOnly": [

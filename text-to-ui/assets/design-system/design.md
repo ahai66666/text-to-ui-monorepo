@@ -444,7 +444,7 @@ Use `typography-style-map.json` as the single mapping table. New visible UI is l
 
 ### HTML ↔ Pixso Effect Mapping
 
-Use `effect-style-map.json` as the single mapping table. Pixso exposes only the six physical styles `Effect/Foundation/shadow-1` through `shadow-6`; HTML semantic names such as `dialog` and `floating-feedback` resolve to one of these six styles instead of creating duplicate Pixso Effect Styles. Imported `Effect/Component/*` effects are native-component implementation dependencies, never public Text to UI effects.
+Use `effect-style-map.json` as the single mapping table. Pixso exposes six physical styles `Effect/Foundation/shadow-1` through `shadow-6`; shared shadow Token roles are registered for Snackbar, Tooltip, Popover, Hover Card, Dialog, Alert Dialog, Semi-modal, Dropdown Menu, and Context Menu. HTML semantic names resolve to those standard component contexts. `shadow-6` is retained but has no standard role. Imported `Effect/Component/*` effects are native-component implementation dependencies, never public Text to UI effects.
 
 ### Platform Scope
 
@@ -729,9 +729,9 @@ Native Select / 原生选择器: use a real HTML `select` whose interactive box 
 Card internal rhythm: outer inset uses --padding-card; internal content gaps remain component-specific
 List and table row rhythm: standalone List containers use --padding-list. In Secondary List Pane, the scroll wrapper owns the 16px surface inset, the standalone Search frame and List Card state background fill that width, and each row uses the approved 8px horizontal padding. The resulting 24px content axis aligns title, toolbar/meta copy, states, and row content. Row height and vertical padding remain component-specific.
 
-Pattern B Secondary List Pane anatomy: compose the second column as `standalone Search in the transparent Titlebar segment -> one scrolling inset owner -> List title + action row -> optional meta row -> List collection`. Search fills the Secondary Pane Titlebar row at the 16px surface axis without a title or adjacent action. The scrolling inset owner applies 16px horizontally and `--layout-secondary-pane-padding-y` (8px) on the top and bottom. The first content row is 40px high through `--height-list-heading`; its title uses the complete `title-s` style and its Ghost actions sit on the right in the same row. The title, actions, optional meta row, and list states add the tokenized 8px nested inset and therefore align to the 24px content axis. Rows fill the 16px surface width and apply 8px horizontal padding. Selection updates Main Detail in place and does not replace the three-pane shell.
+Pattern B Secondary List Pane anatomy: compose the second column as `standalone Search in the transparent Titlebar segment -> one scrolling inset owner -> List title + action row -> optional meta row -> List collection`. Search fills the Secondary Pane Titlebar row at the 16px surface axis without a title or adjacent action. The Renderer-owned scrolling inset owner applies 16px horizontally, `space/3` on the top, and `space/0` on the bottom. The first content row is 40px high through `--height-list-heading`; its title uses the complete `title-s` style and its Ghost actions sit on the right in the same row. The title, actions, optional meta row, and list states add the tokenized 8px nested inset and therefore align to the 24px content axis. Rows fill the 16px surface width and apply 8px horizontal padding. Selection updates Main Detail in place and does not replace the three-pane shell.
 
-Secondary Page has two approved forms. **Continuation form:** keeps the current application shell, pane boundaries, and parent navigation selection stable while replacing only the owning Main pane. Its final-pane leading group uses a 40px Ghost Back Icon Button to the left of the `title-s` page title at the normal 24px Main Content axis. The body reuses the existing Main Content/Main Detail scroll wrapper and insets; never add a second page-padding wrapper. Back restores parent state and focus to the opening control. **New-page form:** opens an independent secondary page with a vertical layout: `Titlebar S` (40px) at the top, then content designed for the task below. It does not inherit the original page's sidebar or pane layout. Hide a parent-specific Global Primary action at child depth, but retain a genuinely application-global action when valid. Do not use Dialog or Semi-modal for ordinary full-page hierarchy.
+Secondary Page has two approved forms. **Continuation form:** keeps the current application shell, pane boundaries, and parent navigation selection stable while replacing only the owning Main pane. Its final-pane leading group uses a 40px Ghost Back Icon Button to the left of the `title-s` page title at the normal 24px Main Content axis. The body reuses the existing Main Content/Main Detail scroll wrapper and insets; never add a second page-padding wrapper. Back restores parent state and focus to the opening control. **New-page form:** opens an independent secondary page with a vertical layout: `Titlebar S` (40px) at the top, then content designed for the task below. Its standalone title uses `Subtitle_M` (16px / 20px / 500), not the larger `Title_S`; the component owns this size-specific typography. It does not inherit the original page's sidebar or pane layout. Hide a parent-specific Global Primary action at child depth, but retain a genuinely application-global action when valid. Do not use Dialog or Semi-modal for ordinary full-page hierarchy.
 
 Vertical-axis alignment principle: classify edges before aligning them. Comparable control/state surfaces share a surface axis, while readable content shares a nested content axis. In Secondary List Pane, Search and List Card state backgrounds use 16px; title, toolbar/meta copy, states, and row content use 24px. Never align a full-width Search frame to the nested card-content axis or repair alignment with per-child margins and literal pixel offsets.
 Dialog internal rhythm: outer inset uses --padding-dialog; header/body/footer gaps remain component-specific
@@ -1031,21 +1031,31 @@ Shell dimensions are owned by Layout tokens: the expanded Sidebar is 240px, the 
 
 `elevation` is interpreted as the blur radius for CSS and Pixso shadow effects. Spread is `0` for every level. The shared shadow color is `#00001E`; opacity is stored independently in machine-readable tokens.
 
-### Elevation Roles
+### Projection Usage Policy
 
 ```text
-Flat surface: none; prefer the approved border token when separation is required
-Selected or raised control: shadow-1
-Dropdown, Select listbox, Popover, Hover Card: shadow-2
+共享投影 Token 的常规使用场景只有以下九类浮层的外层容器：
+Snackbar: shadow-1
+Tooltip: shadow-1
+Popover: shadow-2
+Hover Card: shadow-2
+Dropdown Menu: shadow-2
 Context Menu: shadow-3
-Snackbar / Toast: white Surface with shadow-1 for compact, low-elevation feedback
+Dialog: shadow-4
+Alert Dialog: shadow-4
+Semi-modal: shadow-5
+
+其他场景一般不使用投影，默认以边框或批准的表面色差区分层级；Focus 使用 Focus Ring Token。普通 Toast、Select/Combobox 的选项列表、独立 Calendar、Menubar 栏本体、卡片、页面面板、窗口壳层、选中和聚焦状态默认无投影。Dropdown Menu（含 Menubar 展开的命令菜单）的面板使用 shadow-2；Input / Tag Entry 的建议列表复用 Dropdown Menu 面板与菜单项样式（含 shadow-2），但仍保留 listbox/option 语义，这属于 Dropdown Menu 样式复用而非新增通用投影场景；Context Menu 的面板使用 shadow-3。若具体项目确需例外，须在该项目设计系统中明确场景与效果，不自动扩展为 Text-to-UI 的通用投影 Token 角色。shadow-6 保留为兼容性基础样式，不分配常规场景。
+```
 
 Context Menu / 上下文菜单: every menu item uses a horizontal semantic icon + text structure. The leading icon is exactly 24×24px (`--icon-size-lg`) and the icon-to-text gap uses `--gap-menu-item-content` (8px). Do not render Context Menu commands as text-only rows.
+
+Dropdown Menu and Context Menu panels use `--padding-popup-menu` on both horizontal sides (4px). Therefore the hover/focus surface of each menu item starts 4px inside the panel's left and right border; keep the item text inset at `--padding-menu-item-x` (12px) and do not remove the panel inset or compensate it with a negative margin.
 
 ### Date Picker · 日期选择器
 
 - 客户端日期选择器使用组件库自绘的 Calendar Popover，不使用浏览器原生 `input[type="date"]` 下拉层。
-- 触发字段高度引用 `--height-input`，Popover 使用 raised surface、`--radius-card`、边框色与 `--shadow-3`。
+- 触发字段高度引用 `--height-input`，Popover 使用 raised surface、`--radius-card`、边框色与 `--shadow-2`。
 - 月份栏高度 40px；日期固定为完整 6×7 网格，日期热区 32px，星期标签使用 Caption L，月份标题使用 Subtitle S。
 - 默认日期使用一级文本色，相邻月份使用次级文本色；选中日期使用品牌背景与反白文字；今天在未选中时使用品牌色描边。Hover、Pressed 与 Focus 分别引用对应状态层和 focus ring。
 - 底部“清除”“今天”使用 Small Ghost Button。方向键按日/周移动，Escape 关闭且焦点返回触发字段。
@@ -1053,15 +1063,10 @@ Context Menu / 上下文菜单: every menu item uses a horizontal semantic icon 
 ### Time Picker · 时间选择器
 
 - 客户端时间选择器使用组件库自绘 Popover，默认采用 24 小时制，分钟步进为 5；不要使用浏览器原生 `input[type="time"]` 下拉层。
-- 触发字段高度引用 `--height-input`；Popover 使用 raised surface、`--radius-card`、边框色与 `--shadow-3`。
+- 触发字段高度引用 `--height-input`；Popover 使用 raised surface、`--radius-card`、边框色与 `--shadow-2`。
 - 小时与分钟分列为两个透明背景的 Listbox，不使用灰色列底；列标题使用 Caption L，弹层标题使用 Subtitle S，选项使用 Body L；列表高度 144px，单项高度 32px。触发字段右侧使用 16px `field/time` 时钟图标，展开时保持静止。
 - 默认选项使用一级文本色，选中项使用 Ghost 样式：品牌色文字、透明背景；Hover、Pressed 与 Focus 引用对应状态层和 focus ring，不得使用品牌实底与反白文字。
 - “清除”“现在”使用 Small Ghost Button，“确定”使用 Small Primary Button。时/分选择先保留为草稿，确定后提交；Escape 或点按外部放弃草稿并关闭。
-Dialog: shadow-4
-Side Panel: shadow-5
-Highest-emphasis transient overlay: shadow-6
-Focused control: use the focus ring tokens, not shadow elevation
-```
 
 ## 4.7 Breakpoints
 
@@ -1232,9 +1237,17 @@ Loading:
 
 Input, Search, Textarea, field Select/Combobox, Date Picker, Time Picker, and Input OTP use the complete `body-l` text style (16px / 22px / Regular 400) for their displayed or entered value. Input and Search use `--height-input` (40px). Search uses a leading search icon sized with `--icon-size-sm` (16px), never a text glyph or the 20px medium icon token. When Search contains text, show a trailing quick-clear button whose icon also uses `--icon-size-sm`; clearing empties the value, hides the button, and returns focus to Search. Reserve the trailing button space so text does not shift when the button appears. Textarea uses `--min-height-textarea` (80px), `--padding-textarea-x` (12px), and `--padding-textarea-y` (8px), with vertical resize enabled by default.
 
+Search matches the current Pixso component set's nine states on both surfaces (18 combinations total): `default`, `focus`, `typing`, `filled`, `hover-left`, `hover-right`, `pressed-left`, `pressed-right`, and `disabled`. There is no Error state: never render a Search Error variant, error border, or `aria-invalid`. With default state behavior, focus on an empty field resolves to Focus; entering text while focused resolves to Typing; a non-empty field after blur resolves to Filled; Disabled overrides the other states. Hover and Pressed are transient and region-specific: left means the complete scope selector; right means the input region, including search icon, value, clear action, and optional Advanced action. Never use generic Search `hover` or `pressed` states.
+
+Input / Tag Entry is one structural Input variant (`variant="tag-entry"`), not separate white- and gray-surface components. Set its existing `surface` prop from the containing content surface: `white` uses the default gray input fill; `gray` uses the subtle white input fill. The single row places a left label and a flexible, bottom-underlined editor slot on the right. The label uses Body_L (16px / 22px / Regular 400) and `--color-text-muted` (secondary text); the empty-slot hint uses Body_L and `--color-text-subtle` (tertiary text); entered text uses Body_L and `--color-text` (primary text). The outer Input surface, label, and selected Chips have no hover treatment or enlarged hover hit area. Hover feedback is limited to the right editor slot's underline, which changes from `--color-border` to `--color-icon` (primary icon color); do not add an outer fill, border, or layout shift. Selected values reuse the existing removable Chips component. Free text remains ordinary editable input text unless the user chooses a suggestion. Enter opens a filtered suggestion listbox; Arrow Up/Down changes the active option; Enter or pointer selection converts that option into a removable tag and clears the query; Escape closes without committing. Omit already-selected suggestions, preserve focus on the input after selection/removal, and expose the combobox/listbox relationship with `aria-expanded`, `aria-controls`, and `aria-activedescendant`. The listbox reuses the Dropdown Menu panel and item visual styles, including the `shadow-2` panel; keep its combobox/listbox and option semantics rather than changing it to a command menu. Keep one Tag Entry catalog entry and reuse it across both surfaces; do not define surface-specific component variants.
+
+Search is one reusable component across content surfaces: white content uses the gray Search fill (`neutral-dark/05`); gray content uses the white Search fill (`neutral-light/100`). Its 324×40 root has an 8px radius, zero outer padding, and zero root gap. The left scope selector is 73×40 with a 12px leading inset, 4px internal spacing, and a 1×16 divider; the right input region fills the remaining width with 8px leading and 4px trailing inset and 8px spacing between slots. The scope label uses `Typography/Body_L` and primary text (`neutral-dark/90`); its 20px chevron also uses primary icon color. The leading search icon is 16px and secondary (`neutral-dark/60`); the placeholder uses Body_L and secondary text, while entered text uses Body_L and primary text. The clear icon is 16px and primary (`neutral-dark/90`). The optional Advanced action remains a small Ghost text action with secondary text and a stable 4px trailing inset.
+
+Keep the two sibling hit regions independent: scope selector on the left; search icon, value, clear action, and optional Advanced action on the right. Hover and Pressed affect only their named region and never change the 324×40 geometry or resize the root. On the gray Search fill, the left scope selector Hover overlays `neutral-dark/05`, the right input region Hover uses `neutral-dark/10`, and Pressed uses `neutral-dark/15`. On the white Search fill, Hover uses a `neutral-dark/05` layer and Pressed uses `neutral-dark/10`, each with a 2px white outline. Do not recolor the opposite region. Keyboard focus remains visible on the Dropdown Menu trigger; the Advanced action keeps the same trailing inset in resting, hover, and focus-within states.
+
 Form Field / 表单字段 stacks its title above its control. The title uses `body-m` (14px / 20px / Regular 400), `--color-text`, and a tokenized `--gap-field-label` (8px) before the control. Adjacent fields use `--gap-form-field` (16px). In a multi-column form grid, the grid owns both axes with that same 16px row and column gap: all same-row fields start on the same horizontal baseline, and sibling vertical margins are reset to zero. Textarea and form Select inherit the same white/default and gray/subtle surface state mappings as Input. Default and Hover have no visible border on white surfaces. Focus retains the approved background with no focus border. Error uses a 1px `--color-input-error-border`; Disabled applies `--state-disabled-opacity` (40%) once to the complete control.
 
-Whenever white/default and gray/subtle surface examples are presented together, keep their component matrix semantically identical: the same Input, Search, Textarea, form Select, Error, and Disabled examples in the same order. Only the surface-specific fill and hover treatment may differ. Both contexts must include an operable form Select, visible Error examples with error text, and Disabled Input and Select examples. At supported desktop widths, present the two surface contexts as equal left/right columns; do not collapse them merely because an embedded framework preview is narrower than the page canvas. A one-column fallback is reserved for genuinely narrow widths below the two-column minimum.
+Whenever white/default and gray/subtle surface examples are presented together, keep their component matrix semantically identical: the same Input, Search, Textarea, form Select, Input/Field Error, and Disabled examples in the same order. Only the surface-specific fill and hover treatment may differ. Both contexts must include an operable form Select, visible Error examples attached to Input/Field controls only, and Disabled Input, Search, and Select examples. Search never has an Error state. At supported desktop widths, present the two surface contexts as equal left/right columns; do not collapse them merely because an embedded framework preview is narrower than the page canvas. A one-column fallback is reserved for genuinely narrow widths below the two-column minimum.
 
 Form Select presents a field value, uses `role="combobox"`, controls a `role="listbox"`, and exposes `aria-expanded`, `aria-controls`, and `aria-activedescendant` when open. Pointer click, `Enter`, or `Space` opens it; Arrow keys, Home, and End move the active option; `Enter` or `Space` commits the active option; `Escape` closes without changing the value and restores focus to the trigger. A pointer or focus move outside the Select closes the listbox without committing a draft value.
 
@@ -1292,9 +1305,20 @@ Metric Cards use the same shell and show one `title-s` Card title, one primary v
 
 Breadcrumb separators between every hierarchy level use the secondary icon color `--color-icon-muted` (`--color-neutral-dark-60`). Separator color does not inherit from the adjacent link or current-page text.
 
-Accordion triggers use `body-l` (16px / 22px / Regular 400). The default trigger is a transparent Ghost row with no outer border, uses 8px horizontal padding, 8px button radius, and fills its available frame. Put one 20px SVG `navigation/chevron-right` before the title with an 8px token gap; collapsed points right and expanded rotates 90 degrees to point down. Keep the label/icon order, SVG geometry, and fixed icon box unchanged across states.
+Accordion triggers use `body-l` (16px / 22px / Regular 400). The label and chevron both use secondary text color `--color-text-muted`; the icon inherits the trigger color. The default trigger is a transparent Ghost row with no outer border, uses 8px horizontal padding, 8px button radius, and fills its available frame. Put one 20px SVG `navigation/chevron-right` before the title with an 8px token gap; collapsed points right and expanded rotates 90 degrees to point down. Keep the label/icon order, SVG geometry, and fixed icon box unchanged across states.
 
-Collapsible triggers vertically center the label and one fixed 20px SVG `navigation/chevron-down` on the right. The trigger fills its available frame, uses 8px horizontal padding and 8px button radius, keeps the label on the left and the icon on the right, and has no outer border on the default transparent Ghost surface. The label and icon positions never change when content opens. Collapsed rotates the same icon 180 degrees to point up; expanded leaves it pointing down. Do not use a text character as the disclosure icon.
+When multiple Accordion instances are composed in one region, the parent wrapper
+uses the canonical `tui-disclosure-group` class and owns a `--space-5` (16px)
+gap between Accordion instances. The individual Accordion keeps its own
+trigger-to-panel spacing; do not add per-instance margins.
+
+Collapsible triggers vertically center the label and one fixed 20px SVG `navigation/chevron-down` on the right. The label and chevron both use secondary text color `--color-text-muted`; the icon inherits the trigger color. The trigger fills its available frame, uses 8px horizontal padding and 8px button radius, keeps the label on the left and the icon on the right, and has no outer border on the default transparent Ghost surface. The label and icon positions never change when content opens. Collapsed rotates the same icon 180 degrees to point up; expanded leaves it pointing down. Do not use a text character as the disclosure icon.
+
+Independent Collapsible navigation groups are separated by a parent-owned
+`--space-5` (16px) gap. The gap from each group heading to its own route list
+remains `--space-1` (2px); these are separate spacing responsibilities.
+
+Accordion and Collapsible trigger labels are single-line content. When a label is too long for the available width, keep the fixed chevron and hit area in place and truncate the label with an ellipsis (`text-overflow: ellipsis`); do not wrap the trigger or increase its height. Put the complete explanation in the expanded content region instead.
 
 Tabs switch between peer panels inside one page. Use them for content views at the same hierarchy level; do not use Tabs for primary application navigation, sequential steps, filters that do not replace a panel, or independent toggle actions.
 
@@ -1386,9 +1410,9 @@ Dialog and Semi-modal are separate component families.
 - **Composition rule:** Dialog and Semi-modal own only the container, header, body layout, and footer. Every child control must be a component-library instance: Button, Icon Button, Input, Search, Select, Textarea, and their established states. Do not create modal-only field, search, button, or icon styles. Surface switching must use the existing component context (`on-white` or `on-gray`) so all child states remain identical to the component gallery.
 - **Behavior variants are not Tokens:** `non-modal` has no overlay, does not lock background interaction, and uses `aria-modal="false"`; `modal` uses `--color-overlay`, makes the background inert, constrains focus, locks background scrolling, and uses `aria-modal="true"`. Both variants share the same size and surface tokens. Escape closes only when the task permits dismissal and always restores focus to the trigger.
 
-- **Snackbar / Toast:** use `--height-snackbar` (48px), a white `--color-surface` background, primary text color `--color-text`, and the compact `--shadow-1` elevation. It is short-lived, non-blocking feedback and must not use a dark fill or large overlay shadow.
+- **Snackbar:** use `--height-snackbar` (48px), a white `--color-surface` background, primary text color `--color-text`, and `--shadow-1`. It is short-lived, non-blocking feedback. A separate Toast component has no shadow.
 
-Use `--radius-dialog` / `--radius-modal` and `--shadow-4`; constrain width to the available viewport inset without inventing another width.
+Dialog and Alert Dialog use `--radius-dialog` and `--shadow-4`; Semi-modal uses `--radius-modal` and `--shadow-5`. Constrain width to the available viewport inset without inventing another width.
 
 ### Alert / 公告提示
 
@@ -1404,7 +1428,7 @@ Alert is a single-line, fixed-height announcement bar. Its anatomy is `Status Ic
 
 ## 5.7 Tooltip
 
-Tooltip (Tips) is supporting text for an unfamiliar control, never the only place for essential information. It shares the Snackbar visual surface: white `--color-tooltip-bg` / `--color-surface`, primary `--color-tooltip-text` / `--color-text`, a 1px `--color-border` outline, and small `--shadow-1` elevation. The outline matches the List Selection dropdown menu. Keep `--radius-tooltip` (6px) and `--padding-tooltip` (8px), keep copy concise, and place it at least 4px from its trigger. Tooltip is one complete rounded rectangular floating surface and does not use a directional caret or arrow.
+Tooltip (Tips) is supporting text for an unfamiliar control, never the only place for essential information. It shares the Snackbar visual surface: white `--color-tooltip-bg` / `--color-surface`, primary `--color-tooltip-text` / `--color-text`, a 1px `--color-border` outline, and `--shadow-1`. The outline matches the List Selection dropdown menu. Keep `--radius-tooltip` (6px) and `--padding-tooltip` (8px), keep copy concise, and place it at least 4px from its trigger. Tooltip is one complete rounded rectangular floating surface and does not use a directional caret or arrow.
 
 Show Tooltip on pointer hover and keyboard focus after a short delay. The trigger references the tooltip through `aria-describedby`. Hide it when pointer and focus leave, on `Escape`, or when the trigger is disabled. Tooltip itself is non-interactive and must not receive focus.
 
@@ -1497,7 +1521,7 @@ Components -> @layer components
 ```css
 @layer components {
   .btn-primary {
-    @apply inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white shadow-card;
+    @apply inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-white;
   }
 
   .input {
@@ -1505,7 +1529,7 @@ Components -> @layer components
   }
 
   .card {
-    @apply rounded-xl border border-border bg-surface shadow-card;
+    @apply rounded-xl border border-border bg-surface;
   }
 }
 ```

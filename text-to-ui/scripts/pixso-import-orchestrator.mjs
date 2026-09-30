@@ -89,7 +89,12 @@ if (command === "cancel") {
   console.log(JSON.stringify({ ok: true, ...cancelActiveRun({ runsRoot: path.resolve(args["runs-root"]), reason: args.reason || undefined }) }, null, 2));
   process.exit(0);
 }
-if (command === "start") run("create-pixso-import-run.mjs", forwarded);
+if (command === "start") {
+  // The import entry point owns service readiness. A user should only need to
+  // open the Pixso plugin when its session is absent, not start local services.
+  parseOutput(runCapture("start-text-to-ui-services.mjs", ["start"]), "managed services");
+  run("create-pixso-import-run.mjs", forwarded);
+}
 if (command === "capture") {
   if (!args["run-manifest"]) throw new Error("capture requires --run-manifest");
   const manifestPath = path.resolve(args["run-manifest"]);
@@ -224,7 +229,21 @@ if (command === "publish") {
     ]);
     throw new Error(`plugin publication failed:\n${published.stderr || published.stdout}`);
   }
-  process.stdout.write(`${JSON.stringify({ ok: true, runId: manifest.runId, stage: "publish", executor: "plugin", mcpFallbackAllowed: false, publication: JSON.parse(published.stdout) }, null, 2)}\n`);
+  const publication = JSON.parse(published.stdout);
+  process.stdout.write(`${JSON.stringify({
+    ok: true,
+    runId: manifest.runId,
+    stage: "publish",
+    executor: "plugin",
+    mcpFallbackAllowed: false,
+    publication,
+    nextAction: publication.queued ? publication.waitingAction : "plugin-imports-automatically",
+    userMessage: publication.queued
+      ? publication.waitingAction === "reload-latest-plugin"
+        ? "当前 Pixso 插件版本或能力与计划不兼容；请在目标文件中加载新版 Text-to-UI 插件，连接后会自动执行。"
+        : "请在目标 Pixso 文件中打开 Text-to-UI 插件；打开后会自动领取并执行当前导入，无需再次点击生成。"
+      : "Pixso 插件已连接，导入将自动开始。",
+  }, null, 2)}\n`);
   process.exit();
 }
 if (command === "diff") run("compare-pixso-screenshots.mjs", forwarded);
