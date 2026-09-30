@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p release
           case "${{ inputs.release_kind }}" in
-            skill) tar --exclude='skill/node_modules' --exclude='skill/outputs' -czf release/text-to-ui-skill-v1.4.0.tgz skill ;;
+            skill) pnpm skill:package ;;
             components) tar -czf release/text-to-ui-components-v0.1.0.tgz packages ;;
             tokens) tar -czf release/text-to-ui-tokens-v0.1.0.tgz packages/tokens ;;
             *) echo "Unknown release kind"; exit 1 ;;

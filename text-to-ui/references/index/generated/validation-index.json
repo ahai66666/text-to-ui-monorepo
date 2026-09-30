@@ -3,7 +3,7 @@
   "generatedFrom": [
     {
       "path": "package.json",
-      "sha256": "d1f38fcb0308e46c986a37b5a32f73e7678848aa16debb9e8aa1b28e1b2cd98e"
+      "sha256": "4874f74b84bf9e30b6fb28a8ffbb4c3775bd2ab04c07c3c3d41d4c72c3959c60"
     }
   ],
   "modes": {
@@ -117,6 +117,8 @@
     "test": "pnpm index:check && pnpm catalog:test && pnpm route:materials:test && pnpm components:readiness:test && pnpm components:selection:test && pnpm components:acceptance:test && pnpm references:approved:test && pnpm patterns:validate && pnpm patterns:resolution:test && pnpm patterns:scene-binding:test && pnpm titlebar:scene:test && pnpm page:blueprint:test && pnpm page:content-recipes:test && pnpm page:css-boundaries:test && pnpm page:composite-boundaries:test && pnpm frameworks:page-generation:test && pnpm mappings:check && pnpm mappings:test && pnpm mappings:obsidian:test && pnpm components:resolution:test && pnpm delivery:validate && pnpm contracts:validate && pnpm styles:validate && pnpm pixso:mapping:test && pnpm frameworks:validate && pnpm layout:contract:test && pnpm layout:binding:test && pnpm layout:markers:test && pnpm layout:route:test && pnpm components:reuse:test && pnpm components:strict-html:test && pnpm components:strict-html:forward && pnpm runtime:evidence && pnpm dialogs:validate && pnpm gallery:readiness:test && pnpm gallery:baseline:validate && pnpm tokens:validate",
     "skill:sync": "node text-to-ui/scripts/skill-delivery.mjs --write",
     "skill:check": "node text-to-ui/scripts/skill-delivery.mjs --check",
-    "skill:test": "node tools/test-skill-delivery.mjs"
+    "skill:test": "node tools/test-skill-delivery.mjs",
+    "skill:package": "node tools/package-skill.mjs",
+    "skill:package:check": "node tools/package-skill.mjs --check"
   }
 }

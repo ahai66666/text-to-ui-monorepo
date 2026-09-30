@@ -221,7 +221,13 @@ text-to-ui-monorepo/
 - `skill/` 是可独立安装的规则包，但它本身不是生产组件库。
 - `packages/` 才包含 HTML、React、Vue 的真实实现和共享设计系统能力。
 - 只安装 Skill 而没有组件包时，Skill 必须明确报告组件库不可用，不能静默生成视觉相似替代品。
-- 克隆仓库不会自动把 Skill 注册到 Codex；仍需安装 `skill/`，并为组件复用提供完整仓库或已发布包。
+- 克隆仓库不会自动把 Skill 注册到 AI 工具；仍需按宿主工具的方式导入 Skill 文件夹，并为组件复用提供完整仓库或已发布包。
+
+### 在其他 AI 工具中导入 Skill
+
+部分工具只检查所选文件夹顶层是否存在 `SKILL.md`，也有工具要求文件夹名与其中的 `name: text-to-ui` 一致。下载 GitHub 仓库源码 ZIP 并解压后，推荐选择“解压后的仓库目录”中的 `text-to-ui/`；独立 Skill ZIP 解压后同样选择 `text-to-ui/`。所选文件夹应直接包含 `SKILL.md`、`references/` 和 `scripts/`。仓库内的 `skill/` 是交付镜像，按顶层文件识别的工具也能发现它，但跨工具导入推荐使用 `text-to-ui/`。具体导入入口由所用工具提供。
+
+独立 Skill 包可供工具发现规则和索引，但不包含 `packages/` 中的 HTML、React、Vue 组件与运行时。需要生成使用真实组件的页面时，还须提供完整 Monorepo 或兼容的组件包；缺少这些依赖时，应将组件能力标为不可用。
 
 ## Text-to-UI 与 Pixso 插件交付
 

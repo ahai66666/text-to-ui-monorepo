@@ -9,6 +9,24 @@ Build HarmonyOS PC interfaces from the canonical components, Tokens, and
 Patterns in this Monorepo. Choose one workflow, read its route and only the
 selected supporting material, then follow its acceptance gates.
 
+## 0. Check runtime availability
+
+This folder can also be imported as a standalone Skill. Importing it lets an AI
+tool discover and read the instructions; it does not install the Monorepo's
+HTML, React, and Vue component packages. Before running a workflow, locate a
+Monorepo root containing `pnpm-workspace.yaml`, `packages/component-contracts`,
+`packages/components-html`, `packages/components-react`,
+`packages/components-vue`, and `packages/tokens`. If those packages are not
+available, stop the executable workflow and report the missing dependency.
+Do not run repository checks from the standalone Skill folder or claim that
+production components were reused. See
+`references/component-package-integration.md` for the integration contract.
+
+Run repository checks from the Monorepo root. Invoke the route scripts from its
+canonical `text-to-ui/scripts/` directory (or from this Skill's `scripts/`
+directory with `--repo` pointing to that root). The commands below show the
+Monorepo-root form.
+
 ## 1. Choose one workflow
 
 Classify the requested operation before loading detailed references:
@@ -34,8 +52,8 @@ Use the route resolver and receipt verifier when executing a workflow:
 
 ```bash
 pnpm index:check
-node scripts/resolve-workflow-route.mjs --route <workflow-route> --repo <monorepo> --receipt-out <route-receipt.json>
-node scripts/verify-route-materials.mjs --route <workflow-route> --repo <monorepo> --receipt <route-receipt.json>
+node text-to-ui/scripts/resolve-workflow-route.mjs --route <workflow-route> --repo . --receipt-out <route-receipt.json>
+node text-to-ui/scripts/verify-route-materials.mjs --route <workflow-route> --repo . --receipt <route-receipt.json>
 ```
 
 Receipts verify that the selected material closure is current. They do not mean
@@ -138,7 +156,7 @@ user asks for an audit or release-readiness assessment.
 Start the managed Preview Hub, Component Gallery, and Pixso Bridge through:
 
 ```bash
-node scripts/start-text-to-ui-services.mjs start
+node text-to-ui/scripts/start-text-to-ui-services.mjs start
 ```
 
 Do not start a per-page server on `4173` or terminate an unknown service to
@@ -155,8 +173,9 @@ approved source when the request is an import.
 
 ## 5. Skill maintenance and completion
 
-The normative source is this `text-to-ui/` directory. For Skill maintenance,
-work in the canonical source, inspect existing changes, rebuild and validate
+The normative source is the Monorepo's `text-to-ui/` directory; an imported
+standalone copy is not an authoring source. For Skill maintenance, work in the
+canonical source, inspect existing changes, rebuild and validate
 the relevant indexes, and run source checks before synchronizing mirrors.
 Follow `references/routes/skill-maintenance.md` and, for a major update,
 `references/governance/major-version-update-checklist.md`. Never edit a

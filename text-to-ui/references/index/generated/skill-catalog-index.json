@@ -273,11 +273,11 @@
       "files": [
         {
           "path": "package.json",
-          "sha256": "d1f38fcb0308e46c986a37b5a32f73e7678848aa16debb9e8aa1b28e1b2cd98e"
+          "sha256": "4874f74b84bf9e30b6fb28a8ffbb4c3775bd2ab04c07c3c3d41d4c72c3959c60"
         },
         {
           "path": "text-to-ui/SKILL.md",
-          "sha256": "2a86b586dad12947e161a33fd893b79f7e090ddbf21671d6437efd3c74d08fa7"
+          "sha256": "79dfa582c51ef0facd2807ee3df1f71476dc8606bc6210d6c930b7927fff4b82"
         },
         {
           "path": "text-to-ui/package.json",
