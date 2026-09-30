@@ -243,10 +243,10 @@ HTML / 浏览器最终计算样式
 | `text-to-ui/` | Skill 唯一规范源、导入编译器、映射规则和测试 | 否 |
 | `skill/` | 可独立安装的 Skill 同步镜像 | 否；`.text-to-ui/` 运行状态不发布 |
 | `text-to-ui/scripts/pixso-unified-agent-plugin/` | Pixso Unified Agent v2 插件源码，包含 `manifest.json` | 否 |
-| `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/` | 本机默认插件交付/安装目录；在 Pixso Developer Mode 加载其中的 `manifest.json` | 插件包 |
+| 使用者自行选择的插件目录 | 在 Pixso Developer Mode 加载该目录中的 `manifest.json`；目录不属于仓库 | 插件包 |
 | `packages/` | HTML、React、Vue 组件和共享设计系统源码 | 否 |
 
-插件源码位于 `text-to-ui/scripts/pixso-unified-agent-plugin/`。默认交付目录为 `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，应在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。这是本机默认路径，不是仓库源码路径；其他开发者可以通过 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（或兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）指定自己的插件目录。
+插件源码位于 `text-to-ui/scripts/pixso-unified-agent-plugin/`。使用者可将构建后的插件包放在自行选择的位置，并在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。如需由交付脚本同步到已存在的额外目录，设置 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（兼容变量 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）；未设置时不会写入任何机器专属目录。
 
 插件包负责在已打开的 Pixso 文件中执行 Operation Plan，并持续监听本地桥接服务；Skill 负责采集 HTML、锁定几何、生成计划和提供规则。正常整页导入只使用插件执行，不与 MCP 整页绘制并行，也不读取旧计划、旧截图、旧 GUID 或旧画板作为新运行输入。插件代码/API 变更后需要重新加载插件包；规则、映射或页面内容变化只需要重新生成并发布新的 Operation Plan。
 

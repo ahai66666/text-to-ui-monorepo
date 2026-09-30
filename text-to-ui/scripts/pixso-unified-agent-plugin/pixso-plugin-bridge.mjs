@@ -3,7 +3,6 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import http from "node:http";
-import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -62,9 +61,11 @@ const permanentExecutorOperations = new Set([
   "create-icon-slot", "create-instance", "create-image", "create-rectangle",
   "create-ellipse", "create-line", "hydrate-icon",
 ]);
-const pluginDeliveryPath = process.env.TEXT_TO_UI_PLUGIN_DELIVERY_ROOT
-  ? path.resolve(process.env.TEXT_TO_UI_PLUGIN_DELIVERY_ROOT)
-  : path.join(os.homedir(), "Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2");
+const configuredPluginDeliveryPath = process.env.TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT
+  ?? process.env.TEXT_TO_UI_PLUGIN_DELIVERY_ROOT;
+const pluginDeliveryPath = configuredPluginDeliveryPath
+  ? path.resolve(configuredPluginDeliveryPath)
+  : null;
 const scriptPath = fileURLToPath(import.meta.url);
 const componentSyncRoot = process.env.TEXT_TO_UI_COMPONENT_SYNC_ROOT
   ? path.resolve(process.env.TEXT_TO_UI_COMPONENT_SYNC_ROOT)

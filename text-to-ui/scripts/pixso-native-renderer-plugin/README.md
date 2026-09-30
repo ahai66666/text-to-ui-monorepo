@@ -1,9 +1,8 @@
 # Text-to-UI Pixso Native Renderer (Legacy)
 
 > 兼容保留的旧版插件包。新安装请使用 Pixso Unified Agent v2：源码位于
-> `text-to-ui/scripts/pixso-unified-agent-plugin/`，默认交付目录为
-> `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，并在 Pixso Developer Mode
-> 加载该目录下的 `manifest.json`。不要与 Unified Agent v2 同时运行。
+> `text-to-ui/scripts/pixso-unified-agent-plugin/`。在 Pixso Developer Mode 中加载使用者所选插件包目录下的
+> `manifest.json`。不要与 Unified Agent v2 同时运行。
 
 这个插件消费 `pixso-operation-plan.json`，也消费由 HTML 组件契约生成的
 `pixso-component-library-plan.json`。页面计划在目标页创建 Instance；组件库计划只在

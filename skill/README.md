@@ -406,7 +406,7 @@ HTML 初稿导入 Pixso 后，代码中的字面量会先成为图层属性；�
 
 完整安装包和历史版本请查看 [GitHub Releases](https://github.com/ahai66666/text-to-ui/releases)。
 
-Pixso 插件源码在 `scripts/pixso-unified-agent-plugin/`；本机默认交付/安装目录为 `~/Desktop/资源管理/我的代码仓/pixso插件/text-to-ui-pixso-agent-v2/`，加载文件是该目录下的 `manifest.json`。其他机器可通过 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT` 自定义目录；详见仓库根目录的 Pixso 插件交付说明。
+Pixso 插件源码在 `scripts/pixso-unified-agent-plugin/`。使用者可将构建后的插件包放在自行选择的位置，并在 Pixso Developer Mode 中加载该目录下的 `manifest.json`。如需交付脚本同步到已存在的额外目录，设置 `TEXT_TO_UI_UNIFIED_PLUGIN_DELIVERY_ROOT`（兼容 `TEXT_TO_UI_PLUGIN_DELIVERY_ROOT`）；详见仓库根目录的 Pixso 插件交付说明。
 
 ## 许可证
 

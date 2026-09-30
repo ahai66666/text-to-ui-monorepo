@@ -256,7 +256,7 @@
     "pixso-component-library": {
       "id": "pixso-component-library",
       "dynamicMaterials": [],
-      "materialsDigest": "3ed9e8a7bbf0636fe460ff91d0cf4cc60b2a8230edfc6fb8970c87e5e31f531e",
+      "materialsDigest": "7b54b2ef9913564cf5ed4e5a9d0a3080557517d23235cb1f62f9d535ca42d95e",
       "materials": [
         {
           "path": "packages/component-contracts/src/components.json",
@@ -328,7 +328,7 @@
           "path": "text-to-ui/references/pixso-native-scene.md",
           "role": "native-scene",
           "required": true,
-          "sha256": "7453723d905e918dbc6543f4c2b733907c4dddfdc129490a33629a59ba44e34b"
+          "sha256": "bc074ae800cf8d8830f51c84b3394727cb40ae2cfe5f1f554c40fc604dd0fc44"
         },
         {
           "path": "text-to-ui/references/requirement-spec.md",
@@ -347,7 +347,7 @@
     "converter-diagnosis": {
       "id": "converter-diagnosis",
       "dynamicMaterials": [],
-      "materialsDigest": "2ca8a1e78dd63ecbed746e48b8a7eb419c116c1d22ed7119a725bc084cc62b3a",
+      "materialsDigest": "cbe2688eb649ad2e139ec979b7713447412f356f337fc400d2a509c1af50c4b3",
       "materials": [
         {
           "path": "packages/component-contracts/src/components.json",
@@ -413,7 +413,7 @@
           "path": "text-to-ui/references/pixso-native-scene.md",
           "role": "native-scene",
           "required": true,
-          "sha256": "7453723d905e918dbc6543f4c2b733907c4dddfdc129490a33629a59ba44e34b"
+          "sha256": "bc074ae800cf8d8830f51c84b3394727cb40ae2cfe5f1f554c40fc604dd0fc44"
         },
         {
           "path": "text-to-ui/references/pixso-visual-parity.md",
@@ -438,7 +438,7 @@
     "skill-maintenance": {
       "id": "skill-maintenance",
       "dynamicMaterials": [],
-      "materialsDigest": "d49e7dda86c7d4eeecd26c1be6a430b39f8b4930484d8f1700509ee9fc853aa1",
+      "materialsDigest": "c5e586aed394be58a64e44263d7e6dd0b833310a443e67a7bff2323906265cb2",
       "materials": [
         {
           "path": "packages/component-contracts/src/components.json",
@@ -498,7 +498,7 @@
           "path": "text-to-ui/references/index/generated/skill-catalog-index.json",
           "role": "skill-catalog-index",
           "required": true,
-          "sha256": "4ba49cc3b001b08474c9596efc8c3d4c6f85380810b995768f9b3373c8f223ac"
+          "sha256": "4f58e9542db08a9fa70dda0a1a2d6e04d74bce372cbec8e0b587d0d2567f4d15"
         },
         {
           "path": "text-to-ui/references/layouts/framework-layout-routing.md",
@@ -533,5 +533,5 @@
       ]
     }
   },
-  "indexDigest": "1fc489939090d0159f953ed324c5eee321f55466aa3e47b3f825ea4ad6b0084f"
+  "indexDigest": "9ff4d7caf44ec86b4e5fee28d66b21d60bc44a90420377dcb81dbe0d2181015a"
 }
