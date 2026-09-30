@@ -33,6 +33,7 @@ example, or a delivery mirror as sufficient source material.
 
 ## Import reliability maintenance
 
+- Bridge 的 `.text-to-ui/pixso-bridge/` 只保留当前 `current-plan.json`、`current-job.json`、`latest-result.json`；新发布或清理失效发布时直接移除旧文件，不生成 `archive/` 历史副本。正在执行或取消中的任务仍需先完成或取消，不能被新发布覆盖。
 - Publish exclusively through the running Bridge's `POST /publish` endpoint via
   `pixso-import-orchestrator.mjs publish`. The CLI must never write a private queue.
   If an older Bridge lacks the endpoint, update the managed service; do not fall

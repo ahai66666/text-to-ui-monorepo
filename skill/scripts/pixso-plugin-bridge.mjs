@@ -36,7 +36,6 @@ const stateDirectory = process.env.TEXT_TO_UI_PIXSO_BRIDGE_STATE_DIR
   // durable queue. A port-suffixed default created a shadow queue: publish
   // could succeed while the running bridge (using pixso-bridge/) never saw it.
   : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.text-to-ui/pixso-bridge");
-const archiveDirectory = path.join(stateDirectory, "archive");
 const stateFile = path.join(stateDirectory, "current-plan.json");
 const resultFile = path.join(stateDirectory, "latest-result.json");
 const pluginSessionFile = path.join(stateDirectory, "plugin-session.json");
@@ -433,16 +432,10 @@ function syncImportRunFromPluginResult(state, payload, record) {
   return { ok: true, runId: manifest.runId, runStatus: manifest.status };
 }
 
-function archiveActivePublication(reason, detail = null) {
-  if (!fs.existsSync(stateFile) && !fs.existsSync(jobFile) && !fs.existsSync(resultFile)) return null;
-  const suffix = `${new Date().toISOString().replace(/[:.]/g, "-")}-${crypto.randomBytes(3).toString("hex")}`;
-  const target = path.join(archiveDirectory, suffix);
-  fs.mkdirSync(target, { recursive: true });
+function clearCurrentPublication() {
   for (const file of [stateFile, jobFile, resultFile]) {
-    if (fs.existsSync(file)) fs.renameSync(file, path.join(target, path.basename(file)));
+    if (fs.existsSync(file)) fs.unlinkSync(file);
   }
-  fs.writeFileSync(path.join(target, "archive-reason.json"), `${JSON.stringify({ reason, detail, archivedAt: new Date().toISOString() }, null, 2)}\n`);
-  return target;
 }
 
 function currentJob(state = readState()) {
@@ -487,8 +480,8 @@ function readState() {
   if (!fs.existsSync(stateFile)) return { revision: "", plan: null, requiredRuntimeVersion: minimumPluginRuntimeVersion };
   let stored;
   try { stored = JSON.parse(fs.readFileSync(stateFile, "utf8")); }
-  catch (error) {
-    archiveActivePublication("invalid-publication-json", error.message);
+  catch {
+    clearCurrentPublication();
     return { revision: "", plan: null, requiredRuntimeVersion: minimumPluginRuntimeVersion };
   }
   const envelope = stored?.kind === "text-to-ui-pixso-publication"
@@ -758,7 +751,7 @@ async function publish(planPath, serviceOwned = false) {
     return { ok: true, reused: true, queued: !terminalJobStatuses.has(existingJob.status), jobId: existingJob.jobId, revision: existingState.revision, plan: absolute, bridge: `http://${host}:${port}` };
   }
   // A claimed job has not started Pixso execution yet. Replacing it with a
-  // freshly published plan is safe: archive the old publication below and
+  // freshly published plan is safe: clear the old publication below and
   // let the plugin claim only the new revision. Running or cancelling jobs
   // still require an explicit finish/cancel before publication.
   if (existingJob && !terminalJobStatuses.has(existingJob.status) && existingJob.status !== "claimed") {
@@ -766,7 +759,7 @@ async function publish(planPath, serviceOwned = false) {
   }
   const officialAdapter = createPixsoOfficialAdapterPlan(plan, { ...plugin, ready: true });
   fs.mkdirSync(stateDirectory, { recursive: true });
-  if (existingState.plan) archiveActivePublication("superseded-by-new-publication", { publicationId: existingState.publicationId, idempotencyKey });
+  clearCurrentPublication();
   const publication = {
     kind: "text-to-ui-pixso-publication",
     publicationId: `${Date.now().toString(36)}-${crypto.randomBytes(4).toString("hex")}`,
@@ -1467,7 +1460,7 @@ function serve() {
         { capabilities: parseCapabilities(url.searchParams.get("capabilities")) },
       );
       if (state.stale) {
-        const archivedTo = archiveActivePublication("stale-publication-envelope", { publicationId: state.stalePublicationId, planPath: state.stalePlanPath });
+        clearCurrentPublication();
         response.writeHead(200, headers());
         return response.end(JSON.stringify({
           ok: true,
@@ -1476,17 +1469,16 @@ function serve() {
           reason: "stale-publication",
           revision: state.staleRevision,
           cleared: true,
-          archivedTo,
-          error: "已隔离旧 publication；请由当前 Text-to-UI import run 重新发布计划。",
+          error: "已清理旧 publication；请由当前 Text-to-UI import run 重新发布计划。",
         }));
       }
       if (state.plan?.kind === "pixso-operation-plan") {
         try {
           validateCurrentImportPublication(state.plan, state.planPath ?? "");
         } catch (error) {
-          const archivedTo = archiveActivePublication("stale-publication", { publicationId: state.publicationId, error: error.message });
+          clearCurrentPublication();
           response.writeHead(200, headers());
-          return response.end(JSON.stringify({ ok: true, changed: false, blocked: true, cleared: true, archivedTo, reason: "stale-publication", revision: state.revision, error: error.message }));
+          return response.end(JSON.stringify({ ok: true, changed: false, blocked: true, cleared: true, reason: "stale-publication", revision: state.revision, error: error.message }));
         }
       }
       // Delivery is scoped to the requesting plugin session. The plugin sends

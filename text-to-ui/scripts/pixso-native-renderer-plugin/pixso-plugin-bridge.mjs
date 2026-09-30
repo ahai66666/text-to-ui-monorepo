@@ -18,6 +18,7 @@ import {
   MODULE_NO_PROGRESS_TIMEOUT_MS,
   RESULT_ACK_DEADLINE_MS,
   WAITING_FOR_PLUGIN_DEADLINE_MS,
+  WAITING_FOR_PLUGIN_CONNECTION_DEADLINE_MS,
   WAITING_FOR_PLUGIN_RETRY_AFTER_MS,
   appendLifecycleEvent,
   elapsedMs,
@@ -35,7 +36,6 @@ const stateDirectory = process.env.TEXT_TO_UI_PIXSO_BRIDGE_STATE_DIR
   // durable queue. A port-suffixed default created a shadow queue: publish
   // could succeed while the running bridge (using pixso-bridge/) never saw it.
   : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.text-to-ui/pixso-bridge");
-const archiveDirectory = path.join(stateDirectory, "archive");
 const stateFile = path.join(stateDirectory, "current-plan.json");
 const resultFile = path.join(stateDirectory, "latest-result.json");
 const pluginSessionFile = path.join(stateDirectory, "plugin-session.json");
@@ -432,16 +432,10 @@ function syncImportRunFromPluginResult(state, payload, record) {
   return { ok: true, runId: manifest.runId, runStatus: manifest.status };
 }
 
-function archiveActivePublication(reason, detail = null) {
-  if (!fs.existsSync(stateFile) && !fs.existsSync(jobFile) && !fs.existsSync(resultFile)) return null;
-  const suffix = `${new Date().toISOString().replace(/[:.]/g, "-")}-${crypto.randomBytes(3).toString("hex")}`;
-  const target = path.join(archiveDirectory, suffix);
-  fs.mkdirSync(target, { recursive: true });
+function clearCurrentPublication() {
   for (const file of [stateFile, jobFile, resultFile]) {
-    if (fs.existsSync(file)) fs.renameSync(file, path.join(target, path.basename(file)));
+    if (fs.existsSync(file)) fs.unlinkSync(file);
   }
-  fs.writeFileSync(path.join(target, "archive-reason.json"), `${JSON.stringify({ reason, detail, archivedAt: new Date().toISOString() }, null, 2)}\n`);
-  return target;
 }
 
 function currentJob(state = readState()) {
@@ -486,8 +480,8 @@ function readState() {
   if (!fs.existsSync(stateFile)) return { revision: "", plan: null, requiredRuntimeVersion: minimumPluginRuntimeVersion };
   let stored;
   try { stored = JSON.parse(fs.readFileSync(stateFile, "utf8")); }
-  catch (error) {
-    archiveActivePublication("invalid-publication-json", error.message);
+  catch {
+    clearCurrentPublication();
     return { revision: "", plan: null, requiredRuntimeVersion: minimumPluginRuntimeVersion };
   }
   const envelope = stored?.kind === "text-to-ui-pixso-publication"
@@ -747,6 +741,9 @@ async function publish(planPath, serviceOwned = false) {
   if (plan.kind === "pixso-operation-plan") validateCurrentImportPublication(plan, absolute);
   const pluginSession = readPluginSession();
   const plugin = pluginCompatibility(plan, pluginSession);
+  const pluginStartDeadlineMs = plugin.ready
+    ? WAITING_FOR_PLUGIN_DEADLINE_MS
+    : WAITING_FOR_PLUGIN_CONNECTION_DEADLINE_MS;
   const idempotencyKey = planIdempotencyKey(plan, absolute);
   const existingState = readState();
   const existingJob = currentJob(existingState);
@@ -754,7 +751,7 @@ async function publish(planPath, serviceOwned = false) {
     return { ok: true, reused: true, queued: !terminalJobStatuses.has(existingJob.status), jobId: existingJob.jobId, revision: existingState.revision, plan: absolute, bridge: `http://${host}:${port}` };
   }
   // A claimed job has not started Pixso execution yet. Replacing it with a
-  // freshly published plan is safe: archive the old publication below and
+  // freshly published plan is safe: clear the old publication below and
   // let the plugin claim only the new revision. Running or cancelling jobs
   // still require an explicit finish/cancel before publication.
   if (existingJob && !terminalJobStatuses.has(existingJob.status) && existingJob.status !== "claimed") {
@@ -762,7 +759,7 @@ async function publish(planPath, serviceOwned = false) {
   }
   const officialAdapter = createPixsoOfficialAdapterPlan(plan, { ...plugin, ready: true });
   fs.mkdirSync(stateDirectory, { recursive: true });
-  if (existingState.plan) archiveActivePublication("superseded-by-new-publication", { publicationId: existingState.publicationId, idempotencyKey });
+  clearCurrentPublication();
   const publication = {
     kind: "text-to-ui-pixso-publication",
     publicationId: `${Date.now().toString(36)}-${crypto.randomBytes(4).toString("hex")}`,
@@ -773,7 +770,7 @@ async function publish(planPath, serviceOwned = false) {
     requiredRuntimeVersion: requiredRuntimeVersionFor(plan),
     governance: {
       queueRecoveryAfterMs: WAITING_FOR_PLUGIN_RETRY_AFTER_MS,
-      pluginStartDeadlineMs: WAITING_FOR_PLUGIN_DEADLINE_MS,
+      pluginStartDeadlineMs,
       moduleHeartbeatTimeoutMs: MODULE_HEARTBEAT_TIMEOUT_MS,
       moduleNoProgressTimeoutMs: MODULE_NO_PROGRESS_TIMEOUT_MS,
       resultAckDeadlineMs: RESULT_ACK_DEADLINE_MS,
@@ -804,8 +801,8 @@ async function publish(planPath, serviceOwned = false) {
     operationProgress: null,
     resultReadyAt: null,
     resultAckDeadlineAt: null,
-    waitDeadlineAt: isoAfter(WAITING_FOR_PLUGIN_DEADLINE_MS, Date.parse(publishedAt)),
-    startDeadlineAt: isoAfter(WAITING_FOR_PLUGIN_DEADLINE_MS, Date.parse(publishedAt)),
+    waitDeadlineAt: isoAfter(pluginStartDeadlineMs, Date.parse(publishedAt)),
+    startDeadlineAt: isoAfter(pluginStartDeadlineMs, Date.parse(publishedAt)),
     recoveryAt: isoAfter(WAITING_FOR_PLUGIN_RETRY_AFTER_MS, Date.parse(publishedAt)),
     recoveryAttempt: 0,
     deliveryAttempt: 0,
@@ -825,6 +822,15 @@ async function publish(planPath, serviceOwned = false) {
       officialAdapterVersion: pixsoOfficialAdapterVersion,
     });
   }
+  updateImportRunLifecycle(readState(), IMPORT_LIFECYCLE_STATES.WAITING_FOR_PLUGIN, {
+    at: publishedAt,
+    stage: "execute",
+    status: plugin.ready ? "queued" : "queued-awaiting-plugin",
+    phase: "wait-for-plugin",
+    deadline: isoAfter(pluginStartDeadlineMs, Date.parse(publishedAt)),
+    blockingReason: plugin.ready ? null : plugin.reason,
+    nextAction: plugin.ready ? "plugin-imports-automatically" : pluginSession.connected ? "reload-latest-plugin" : "open-pixso-plugin-panel",
+  });
   return {
     ok: true,
     jobId: publication.publicationId,
@@ -837,7 +843,7 @@ async function publish(planPath, serviceOwned = false) {
     pluginReady: plugin.ready,
     pluginReason: plugin.reason,
     missingCapabilities: plugin.missingCapabilities,
-    waitingAction: plugin.ready ? null : pluginSession.sessionId && plugin.missingCapabilities.length ? "reload-latest-plugin" : "open-pixso-plugin-panel",
+    waitingAction: plugin.ready ? null : pluginSession.connected ? "reload-latest-plugin" : "open-pixso-plugin-panel",
     pluginDeliveryPath,
     queued: !plugin.ready,
     requiredRuntimeVersion: publication.requiredRuntimeVersion,
@@ -920,7 +926,10 @@ function bridgeWatchdog() {
   }
   if (!job.startedAt && startDeadline !== null && now >= startDeadline) {
     const reason = "plugin-start-timeout";
-    const detail = `统一 Pixso 插件在 ${Math.round(WAITING_FOR_PLUGIN_DEADLINE_MS / 1000)} 秒内没有确认启动；已清除领取状态并释放运行锁，不再自动重放。`;
+    const waitSeconds = Number.isFinite(publishedAt)
+      ? Math.round((startDeadline - publishedAt) / 1000)
+      : Math.round(WAITING_FOR_PLUGIN_DEADLINE_MS / 1000);
+    const detail = `统一 Pixso 插件在 ${waitSeconds} 秒内没有确认启动；已清除领取状态并释放运行锁，不再自动重放。`;
     const updated = {
       ...job,
       status: "needs-attention",
@@ -1451,7 +1460,7 @@ function serve() {
         { capabilities: parseCapabilities(url.searchParams.get("capabilities")) },
       );
       if (state.stale) {
-        const archivedTo = archiveActivePublication("stale-publication-envelope", { publicationId: state.stalePublicationId, planPath: state.stalePlanPath });
+        clearCurrentPublication();
         response.writeHead(200, headers());
         return response.end(JSON.stringify({
           ok: true,
@@ -1460,17 +1469,16 @@ function serve() {
           reason: "stale-publication",
           revision: state.staleRevision,
           cleared: true,
-          archivedTo,
-          error: "已隔离旧 publication；请由当前 Text-to-UI import run 重新发布计划。",
+          error: "已清理旧 publication；请由当前 Text-to-UI import run 重新发布计划。",
         }));
       }
       if (state.plan?.kind === "pixso-operation-plan") {
         try {
           validateCurrentImportPublication(state.plan, state.planPath ?? "");
         } catch (error) {
-          const archivedTo = archiveActivePublication("stale-publication", { publicationId: state.publicationId, error: error.message });
+          clearCurrentPublication();
           response.writeHead(200, headers());
-          return response.end(JSON.stringify({ ok: true, changed: false, blocked: true, cleared: true, archivedTo, reason: "stale-publication", revision: state.revision, error: error.message }));
+          return response.end(JSON.stringify({ ok: true, changed: false, blocked: true, cleared: true, reason: "stale-publication", revision: state.revision, error: error.message }));
         }
       }
       // Delivery is scoped to the requesting plugin session. The plugin sends

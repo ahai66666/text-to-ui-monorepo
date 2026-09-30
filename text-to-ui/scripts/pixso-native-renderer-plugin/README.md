@@ -54,7 +54,7 @@ node ./pixso-plugin-bridge.mjs publish ./pixso-operation-plan.json
 - `GET /job` 查看当前任务的排队、执行、成功或失败结果；
 - `/claim` 只会发出 15 秒领取租约，UI 必须用 `POST /start` 证明 Pixso 执行器已真正开始，才会把任务标为 `running`；断开的轮询不会再占住导入锁；
 - `POST /result` 只接受当前 revision 和当前 import run 的结果；
-- 插件 UI 会把 Kernel `5.0.0`、协议 `4`、Operation Plan 版本和能力清单发给服务；Bridge 会隔离旧计划、排队等待重连，并在 `/claim` 前完成能力协商。新版本页面计划要求 `asset.icon.deferred` 与 `asset.image.deferred`，旧插件会被拒绝执行。
+- 插件 UI 会把 Kernel `5.0.0`、协议 `4`、Operation Plan 版本和能力清单发给服务；Bridge 只保留当前计划、任务和结果，清理失效计划、排队等待重连，并在 `/claim` 前完成能力协商。新版本页面计划要求 `asset.icon.deferred` 与 `asset.image.deferred`，旧插件会被拒绝执行。
 - 导入期间新草稿保持可见，便于及时暂停；页面级图标或图片优化失败时提交结构并留下可追踪的降级占位，后续再修复资源；暂停、结构失败或最终读回失败仍会清理草稿并保留旧正式画板，正常导入最终只留下一个托管画板。
 - 插件结果在 Bridge 确认前会保存在 UI 本地并自动重试；Bridge 收到结果后自动同步运行清单。取消、成功或失败的终态计划不会因插件重开而再次执行。
 
